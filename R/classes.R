@@ -10,7 +10,8 @@ setOldClass("DNAbin")
 setOldClass("POSIXct")
 setClassUnion("matrixOrNULL", c("matrix","NULL"))
 setClassUnion("DNAbinOrNULL", c("DNAbin","NULL"))
-setClassUnion("date", c("POSIXct","numeric","integer","NULL"))
+setClassUnion("date", c("POSIXct","NULL"))
+##setClassUnion("date", c("POSIXct","numeric","integer","NULL"))
 
 ## class description:
 ## @n: number of cases reported
@@ -18,11 +19,11 @@ setClassUnion("date", c("POSIXct","numeric","integer","NULL"))
 ## @swabs: matrix indicating positive/negative swabs, with patient/swab type in rows, dates in columns
 ## @swab.case: indicator of the case (i.e., patient) for each row of '@swabs'; values must have a match in '@case.id'
 ## @swab.type: indicator of the type of swab for each row of '@swabs'; could be for instance body location, or technique used
-## @swab.date: sequence of dates from first to last swab, by steps of 1 day; format depends on input, may be POSIXct
+## @swab.date: sequence of dates from first to last swab, by steps of 1 day, in POSIXct
 ## @swab.day: sequence of integer dates from first to last swab, by steps of 1 day; '0' is the first swab or sequence collected
 ## @dna: DNA sequences sampled for some or all cases, as a DNAbin object matrix
 ## @dna.case: indicator of the case (i.e., patient) for each row of '@dna'; values must have a match in '@case.id'
-## @dna.date: collection date of each DNA sequence in '@dna'; format depends on input, may be POSIXct
+## @dna.date: collection date of each DNA sequence in '@dna', in POSIXct format
 ## @dna.day: integer collection date of each DNA sequence in '@dna'; '0' is the first swab or sequence collected
 
 setClass("outbreak", representation(n="integer", case.id="character",
@@ -271,11 +272,19 @@ setReplaceMethod("swabDates","outbreak",function(x,value) {
         if(length(value)!=length(swabDates(x))) stop(paste("Wrong length provided for replacement (old:",length(swabDates(x)), ", new:",length(value)))
     }
 
-    ## if this is OK, check type
-    if(inherits(value, c("POSIXct","integer","numeric"))){
+    ## handle NULL argument
+    if(is.null(value)){
+        slot(x,"swab.date",check=TRUE) <- NULL
+        return(x)
+    }
+    ## convert characters to POSIXct
+    if(is.character(value)){
+        value <- as.POSIXct(value)
+    }
+    if(inherits(value, "POSIXct")){
         slot(x,"swab.date",check=TRUE) <- value
     } else {
-        stop("Unknown type for replacement; accepted classes for dates are: POSIXct, integer or numeric")
+        stop("Unknown type for replacement; accepted inputs for dates are: characters (yyyy-mm-dd) or POSIXct")
     }
 
     ## return
@@ -395,8 +404,18 @@ setReplaceMethod("dnaDates","outbreak",function(x,value) {
         if(length(value)!=length(dnaDates(x))) stop(paste("Wrong length provided for replacement (old:",length(dnaDates(x)), ", new:",length(value)))
     }
 
-    ## if this is OK, check type
-    if(inherits(value, c("POSIXct","integer","numeric"))){
+    ## handle NULL argument
+    if(is.null(value)){
+        slot(x,"dna.date",check=TRUE) <- NULL
+        return(x)
+    }
+
+    ## convert characters to POSIXct
+    if(is.character(value)){
+        value <- as.POSIXct(value)
+    }
+
+    if(inherits(value, "POSIXct")){
         slot(x,"dna.date",check=TRUE) <- value
     } else {
         stop("Unknown type for replacement; accepted classes for dates are: POSIXct, integer or numeric")
