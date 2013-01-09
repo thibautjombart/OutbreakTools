@@ -81,7 +81,7 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, locus=NULL) 
 ## get.nlocus ##
 ################
 setMethod("get.nlocus","obkSequences", function(x, ...){
-    if(is.null(locus)) return(0)
+    if(is.null(x@dna)) return(0)
     return(length(x@dna))
 })
 
@@ -104,7 +104,7 @@ setMethod("get.nsequences","obkSequences", function(x, ...){
 ## get.locus ##
 ################
 setMethod("get.locus","obkSequences", function(x, ...){
-    if(is.null(locus)) return(NULL)
+    if(is.null(x)) return(NULL)
     return(names(x@dna))
 })
 
