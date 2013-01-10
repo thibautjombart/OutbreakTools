@@ -6,6 +6,7 @@
 ## - instance of obkClinicalEvent store a clinical event associated with an individual
 ## - individual.ID is the ID of the individual to which the clinical event refers to
 ## - type is the type of clinical event from a constraint list
+## - characteristic is a descriptor of the event of given type
 ## - start.date is the starting date
 ## - end.date is the ending date
 ## - location is the location of the event
@@ -61,3 +62,68 @@ setMethod("initialize", "obkClinicalEvent", function(.Object, individual.ID=NULL
     return(x)
     
 }) # end obkClinicalEvent constructor
+
+####################
+####  ACCESSORS ####
+####################
+
+################
+## get.type ##
+################
+setMethod("get.type","obkClinicalEvent", function(x, ...){
+    return(x@type)
+})
+
+################
+## get.ID ##
+################
+setMethod("get.ID","obkClinicalEvent", function(x, ...){
+    return(x@individual.ID)
+})
+
+################
+## get.characteristic ##
+################
+setMethod("get.characteristic","obkClinicalEvent", function(x, ...){
+    return(x@characteristic)
+})
+
+######################
+####  SHOW METHOD ####
+######################
+
+setMethod ("show", "obkClinicalEvent", function(object){
+    ID <- get.ID(object)
+    type.event <- get.type(object)
+    start <- get.start.date(object)
+    end <- get.end.date(object)
+    duration <- get.duration(object)
+    
+    cat(paste("individual (ID) =", ID,"Type =", type.event)
+    if(!is.null(start)) cat(paste("Start date =",start))
+    if(!is.null(end)) cat(paste("End date =",end))
+    if(!is.null(duration)) cat(paste("Duration of event =",duration))
+    
+})
+
+####################
+## get.start.date ##
+####################
+setMethod("get.start.date", "obkClinicalEvent", function(x, ...){
+  return(x@start.date)
+})
+
+####################
+## get.end.date ##
+####################
+setMethod("get.end.date", "obkClinicalEvent", function(x, ...){
+  return(x@end.date)
+})
+
+####################
+## get.duration ##
+####################
+setMethod("get.duration", "obkClinicalEvent", function(x, ...){
+  return(x@duration)
+})
+
