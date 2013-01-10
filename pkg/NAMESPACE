@@ -8,5 +8,6 @@ exportPattern(".")
 import(
   methods,
   MASS,
-  ape
+  ape,
+  ggplot2
 )
