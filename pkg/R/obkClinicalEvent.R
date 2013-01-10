@@ -90,3 +90,25 @@ setMethod("get.characteristic","obkClinicalEvent", function(x, ...){
     if(is.null(x@characteristic)) return(NULL)
     return(x@characteristic)
 })
+
+
+####################
+## get.start.date ##
+####################
+setMethod("get.start.date", "obkClinicalEvent", function(x, ...){
+  return(x@start.date)
+})
+
+####################
+## get.end.date ##
+####################
+setMethod("get.end.date", "obkClinicalEvent", function(x, ...){
+  return(x@end.date)
+})
+
+####################
+## get.duration ##
+####################
+setMethod("get.duration", "obkClinicalEvent", function(x, ...){
+  return(x@duration)
+})
