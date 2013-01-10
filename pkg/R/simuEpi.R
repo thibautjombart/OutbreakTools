@@ -56,7 +56,10 @@ network.vertex.names(y) <- uniqueIDs
 for(i in 1:numEdges){
 v1 <- match(as.character(edgeList[i,1]),uniqueIDs)
 v2 <- match(as.character(edgeList[i,2]),uniqueIDs)
+<<<<<<< HEAD
 
+=======
+>>>>>>> db95e45e3ff65f07d5d988e420163d7b6b4f92a1
 if (!is.na(v2)) add.edges(y,v2,v1)
 }
 return(y)
