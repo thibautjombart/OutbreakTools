@@ -99,7 +99,7 @@ setMethod ("show", "obkClinicalEvent", function(object){
     end <- get.end.date(object)
     duration <- get.duration(object)
     
-    cat(paste("individual (ID) =", ID,"Type =", type.event)
+    cat(paste("individual (ID) =", ID,"Type =", type.event))
     if(!is.null(start)) cat(paste("Start date =",start))
     if(!is.null(end)) cat(paste("End date =",end))
     if(!is.null(duration)) cat(paste("Duration of event =",duration))
@@ -126,4 +126,3 @@ setMethod("get.end.date", "obkClinicalEvent", function(x, ...){
 setMethod("get.duration", "obkClinicalEvent", function(x, ...){
   return(x@duration)
 })
-
