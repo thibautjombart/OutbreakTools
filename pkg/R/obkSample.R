@@ -8,7 +8,7 @@
 ## - samples are stored as a (possibly named) list
 ## - names of the list are the names of the different elements
 
-setClass("obkSample", representation(labID="characterOrNULL", colldate="DateOrNull", type="characterOrNULL", outcome="listOrNULL",seqlist="listOrNULL"), prototype(labID=NULL,colldate=NULL,type=NULL,outcome=NULL,seqlist=NULL))
+setClass("obkSample", representation(sampleID="characterOrNULL", colldate="DateOrNull", type="characterOrNULL", outcome="listOrNULL",seqlist="listOrNULL"), prototype(sampleID=NULL,colldate=NULL,type=NULL,outcome=NULL,seqlist=NULL))
 
 
 
@@ -19,28 +19,28 @@ setClass("obkSample", representation(labID="characterOrNULL", colldate="DateOrNu
 ######################
 
 ## INPUT DESCRIPTION:
-## labID: a character defining the ID provided by the user
+## sampleID: a character defining the ID provided by the user
 ## colldate: a Date object indicating the collection date
 ##         :  if not specified, it will try "%Y-%m-%d" then "%Y/%m/%d" (from Date package)
-## type: a character indicating the type of sample ("nasal", "blood", "pcr", "serology", "sequence")
+## sampletype: a character indicating the type of sample ("nasal", "blood", "pcr", "serology", "sequence")
 ## outcomes: a list specifying the result of the sample eg. concentration, positive/negative etc.
 ## assaytypes: the type of assay is defined as the name of elements of the list
 ## sequences: a object obkSequences
-setMethod("initialize", "obkSample", function(.Object, labID=NULL, colldate=NULL, type=NULL, outcomes=NULL, assaytypes=NULL, seqlist=NULL) {
+setMethod("initialize", "obkSample", function(.Object, sampleID=NULL, colldate=NULL, sampletype=NULL, outcomes=NULL, assaytypes=NULL, seqlist=NULL) {
 
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
 
     ## escape if no info provided ##
-    if(is.null(labID) && is.null(colldate) && is.null(type) && is.null(outcomes)&& is.null(assaytypes) && is.null(sequences) )
+    if(is.null(sampleID) && is.null(colldate) && is.null(sampletype) && is.null(outcomes)&& is.null(assaytypes) && is.null(sequences) )
       return(x)
 
 
     ## PROCESS ARGUMENTS ##
 
-    if(!is.null(labID))
+    if(!is.null(sampleID))
     {
-        labID <- as.character(labID)[1]
+        sampleID <- as.character(sampleID)[1]
     }
 
     if(!is.null(colldate))
@@ -52,9 +52,9 @@ setMethod("initialize", "obkSample", function(.Object, labID=NULL, colldate=NULL
         
     }
     
-    if(!is.null(type))
+    if(!is.null(sampletype))
     {
-        type <- as.character(type)[1]
+        sampletype <- as.character(sampletype)[1]
     }
 
     if(!is.null(outcomes))
@@ -72,10 +72,10 @@ setMethod("initialize", "obkSample", function(.Object, labID=NULL, colldate=NULL
     ## more checkings?    
 
     ## SHAPE OUTPUT ##
-    x@labID <- labID
+    x@sampleID <- sampleID
     x@colldate <- colldate
-    x@type <- type
-    if(is.null(assays))
+    x@sampletype <- sampletype
+    if(is.null(assaytypes))
       x@outcomes <- outcomes
     else if(length(outcomes) != length(assaytypes)) 
       stop(paste("Length mismatch (outcomes:", length(outcomes), "items; assaytypes:", length(assaytypes),"items)"))
@@ -93,7 +93,7 @@ setMethod("initialize", "obkSample", function(.Object, labID=NULL, colldate=NULL
 ####  ACCESSORS ####
 ####################
 
-## labID: a character defining the ID provided by the user
+## sampleID: a character defining the ID provided by the user
 ## colldate: a Date object indicating the collection date
 ##         :  if not specified, it will try "%Y-%m-%d" then "%Y/%m/%d" (from Date package)
 ## type: a character indicating the type of sample ("nasal", "blood", "pcr", "serology", )
@@ -101,66 +101,132 @@ setMethod("initialize", "obkSample", function(.Object, labID=NULL, colldate=NULL
 ## seqlist: a list of sequences
 
 ################
-## get.labID ##
+## get.sampleID ##
 ################
-setMethod("get.labID","obkSample", function(x, ...){
-    if(is.null(x@labID)) return(0)
-    return(x@labID)
+setMethod("get.sampleID","obkSample", function(x, ...){
+    if(is.null(x@sampleID)) return(NULL)
+    return(x@sampleID)
 })
 
 ################
 ## get.colldate ##
 ################
 setMethod("get.colldate","obkSample", function(x, ...){
-  if(is.null(x@colldate)) return(0)
+  if(is.null(x@colldate)) return(NULL)
   return(x@colldate)
 })
 
 ################
 ## get.type ##
 ################
-setMethod("get.type","obkSample", function(x, ...){
-  if(is.null(x@type)) return(0)
-  return(x@type)
+setMethod("get.sampletype","obkSample", function(x, ...){
+  if(is.null(x@sampletype)) return(NULL)
+  return(x@sampletype)
 })
 
 ################
 ## get.noutcomes ##
 ################
 setMethod("get.noutcomes","obkSample", function(x, ...){
-  if(is.null(x@outcome)) return(0)
-  return(length(x@outcome))
+  if(is.null(x@outcomes)) return(0)
+  return(length(x@outcomes))
 })
 
 ################
-## get.outcome ##
+## get.outcomes ##
 ################
-setMethod("get.outcome","obkSample", function(x, index=NULL,...){
-  if(is.null(x@outcome)) return(0)
-  if(is.null(index))  return(x@outcome)
+setMethod("get.outcomes","obkSample", function(x, index=NULL,...){
+  if(is.null(x@outcomes)) return(NULL)
+  if(is.null(index))  return(x@outcomes)
   else
     {
-    if(index>=1 && index<=get.noutcomes(x)) return(x@outcome[[index]]) 
-    else stop("index must be an integer between 1 and number of outcomes")
+      if(is.numeric(index) && index>=1 && index<=get.noutcomes(x)) return(x@outcome[[index]]) 
+      else
+      {
+        z<-match(index,names(x@outcomes))
+        if(!is.na(z)) return(x@outcomes[[z]])
+        else stop("index must be either an integer between 1 and number of outcomes or an existing assaytype")
+      }
     }
 })
+
+################
+## get.assaytypes ##
+################
+setMethod("get.assaytypes","obkSample", function(x, index=NULL,...){
+  if(is.null(x@outcomes)) return(NULL)
+  if(is.null(index))  return(names(x@outcomes))
+  else
+  {
+    if(is.numeric(index) && index>=1 && index<=get.noutcomes(x)) return(names(x@outcome)[index]) 
+    else stop("index must be an integer between 1 and number of outcomes")
+  }
+})
+
+
+################
+## is.assaytype.done ##
+################
+setMethod("is.assaytype.done","obkSample", function(x, assaylabel=NULL,...){
+  if(is.null(x@outcomes)) return(FALSE)
+  if(is.null(assaylabel))
+    stop("assay label is missing")
+  else
+  {
+    z<-match(assaylabel,names(x@outcomes))
+    if(!is.na(z))
+      {
+      if(!is.na(x@outcomes[[z]])
+        return (TRUE)
+      else return(FALSE)
+    }
+    else stop("assaylabel must be an existing assaytype")
+  }
+})
+
 
 ####################
 ## get.nsequences ##
 ####################
 setMethod("get.nsequences","obkSample", function(x, ...){
-    
-    return(length(x@seqlist))
+  out<-get.nsequences(x@sequences)
+    return(out)
 })
 
 ####################
 ## get.sequences ##
 ####################
 setMethod("get.sequences","obkSample", function(x, ...){
-  
-  return(x@seqlist)
-## shall we heritate from the sequence class method here?
-  })
+  out<-get.sequences(x@sequences)
+  return(out)
+})
+
+
+################
+## get.nlocus ##
+################
+setMethod("get.nlocus","obkSample", function(x, ...){
+  return(get.nlocus(x@sequences))
+})
+
+
+
+################
+## get.locus ##
+################
+setMethod("get.locus","obkSample", function(x, ...){
+  return(get.locus(x@sequences)
+})
+
+
+
+#############
+## get.dna ##
+#############
+## returns a matrix of dna sequences for a given locus
+setMethod("get.dna","obkSample", function(x, locus=NULL, ...){
+  return(get.dna(x@sequences)
+})
 
 
 
@@ -169,7 +235,7 @@ setMethod("get.sequences","obkSample", function(x, ...){
 ######################
 
 setMethod ("show", "obkSample", function(object){
-    labID <- get.labID(object)
+    sampleID <- get.sampleID(object)
     colldate <- get.colldate(object)
     type<-get.type(object)
     noutcomes<-get.noutcomes(object)
