@@ -5,11 +5,11 @@
 
 ## CLASS DESCRIPTION:
 ## Instance of obkData store outbreak data; its content includes:
-## - @individuals: a list of obkIndividual
+## - @data: data about samples
 ## - @meta: meta-information on the individuals (group, etc.), as a data.frame
 ## - @contacts: contact information as obkContacts
-setClass("obkData", representation(individuals="listOrNULL", meta="dataFrameOrNULL", contacts="obkContacts"),
-         prototype(individuals=NULL, meta=NULL, contacts=NULL))
+setClass("obkData", representation(data="dataframeOrNULL", meta="dataframeOrNULL", dna="listOrNULL", contacts="obkContacts"),
+         prototype(data=NULL, meta=NULL, dna=NULL, contacts=NULL))
 
 
 
@@ -22,16 +22,23 @@ setClass("obkData", representation(individuals="listOrNULL", meta="dataFrameOrNU
 ######################
 
 ## INPUT DESCRIPTION:
-## data: a data.frame where each row is a sample of a given type, at a given data, and the following (optional) columns:
-## - individualID
-## - sampleID
-## - colldate
-## - outcome
-## - assaytype
+## 'data': a data.frame where each row is an observation made on a sample, and the following mandatory columns:
+## - "individualID"
+## - "sampleID"
+## - "date"
+## - any optional, named column
+## - "sequence": optional but particular processing by the constructor, a sequence ID existing in 'dna'
+## - "locus": optional but particular processing by the constructor, the locus of a sequence
 ##
-## meta: a data.frame with any information about the individuals
-## locus: a vector of characters indicating which locus each sequence corresponds to
-setMethod("initialize", "obkData", function(.Object, data=NULL, meta=NULL, contacts=NULL){
+## 'meta': a data.frame with any information on the individuals, each row being an individual, with the following columns:
+## - "individualID"
+## - any other named column
+##
+## 'dna': a DNAbin list with named sequences
+##
+## 'contacts': whatever Simon Frost has in mind
+##
+setMethod("initialize", "obkData", function(.Object, data=NULL, meta=NULL, dna=NULL, contacts=NULL){
 
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
