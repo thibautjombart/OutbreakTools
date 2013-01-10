@@ -6,7 +6,7 @@ library(network)
 #beta=Rate of infection
 #nu=Rate of recovery
 #f=Rate of loss of immunity
-simuEpi <- function (N=1000,D=365,beta=0.5,nu=0.1,f=0.5) {
+simuEpi <- function (N=1000,D=20,beta=0.5,nu=0.1,f=0.5) {
 	S<-matrix(0,D,3)
 	T<-matrix(0,N,3)
 	S[1,1]=N-1;S[1,2]=1;S[1,3]=0
@@ -56,11 +56,52 @@ network.vertex.names(y) <- uniqueIDs
 for(i in 1:numEdges){
 v1 <- match(as.character(edgeList[i,1]),uniqueIDs)
 v2 <- match(as.character(edgeList[i,2]),uniqueIDs)
+<<<<<<< HEAD
+
+=======
+>>>>>>> db95e45e3ff65f07d5d988e420163d7b6b4f92a1
 if (!is.na(v2)) add.edges(y,v2,v1)
 }
 return(y)
 }
 
+
+## BEGIN: create phylo tree in very simple way from transmission tree
+phylofromtranstree <- function(transmissiontreeData,method='nj'){
+
+
+# use the transmission tree data to create an *undirected* network
+
+uniqueIDs <- sort(c(unique(as.character(transmissiontreeData[,1]),as.character(transmissiontreeData[,2]))))
+nUniqueIDs <- length(uniqueIDs)
+edgeList <- na.omit(transmissiontreeData[,1:2])
+
+numEdges <- dim(edgeList)[1]
+y <- network.initialize(nUniqueIDs)
+network.vertex.names(y) <- uniqueIDs
+for(i in 1:numEdges){
+v1 <- match(as.character(edgeList[i,1]),uniqueIDs)
+v2 <- match(as.character(edgeList[i,2]),uniqueIDs)
+
+if (!is.na(v2) & !is.na(v1)) add.edges(y,v2,v1)
+if (!is.na(v1) & !is.na(v2)) add.edges(y,v1,v2)
+}
+mynet<-y
+
+# get pairwise shortest path distances in this network and use them to make a phylogeny in one of 2 very simple ways
+
+
+if (method=='upgma')
+phylotree=upgma(geodist(mynet)$gdist)
+if (method=='nj')
+phylotree=nj(geodist(mynet)$gdist)
+
+return(phylotree)
+}
+## end function for creating phylo tree
+
+
 ret<-simuEpi(f=0)
 plotEpi(ret$S)
 plot(infectorTableToNetwork(ret$T))
+plot(phylofromtranstree(ret$T)) 
