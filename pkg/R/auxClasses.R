@@ -8,6 +8,7 @@ setOldClass("DNAbin")
 
 ## DATES
 setOldClass("POSIXct")
+setOldClass("Date")
 
 ## CONTACT NETWORKS
 setOldClass("networkDynamic")
@@ -23,5 +24,9 @@ setClassUnion("matrixOrNULL", c("matrix","NULL"))
 setClassUnion("listOrNULL", c("list","NULL"))
 setClassUnion("DNAbinOrNULL", c("DNAbin","NULL"))
 setClassUnion("POSIXctOrNULL", c("POSIXct","NULL"))
+<<<<<<< HEAD
 setClassUnion("networkDynamicOrNetworkOrNULL",c("networkDynamicOrNetwork","NULL"))
 
+=======
+setClassUnion("DateOrNULL", c("Date", "NULL"))
+>>>>>>> 18446196d9bae2d9faae8502ae3abac38bd920d5
