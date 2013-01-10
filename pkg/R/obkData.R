@@ -10,8 +10,8 @@
 ## - @clinical: information about interventions and events, stored as obkClinicalEvent
 ## - @dna: dna data, stored as a list of DNA sequences (list of DNAbin)
 ## - @contacts: contact information as obkContacts
-setClass("obkData", representation(data="dataframeOrNULL", meta="dataframeOrNULL", dna="listOrNULL", clinical="obkClinicalEventOrNULL", contacts="obkContactsOrNULL"),
-         prototype(data=NULL, meta=NULL, dna=NULL, clinical=NULL, contacts=NULL))
+setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataframeOrNULL", clinical="obkClinicalEventOrNULL", dna="listOrNULL", contacts="obkContactsOrNULL"),
+         prototype(individuals=NULL, samples=NULL, dna=NULL, clinical=NULL, contacts=NULL))
 
 
 
@@ -33,7 +33,7 @@ setClass("obkData", representation(data="dataframeOrNULL", meta="dataframeOrNULL
 ## - "sampleID"
 ## - "date"
 ## - any optional, named column
-## - "sequence": optional but particular processing by the constructor, a sequence ID existing in 'dna'
+## - "sequenceID": optional but particular processing by the constructor, a sequence ID existing in 'dna'
 ## - "locus": optional but particular processing by the constructor, the locus of a sequence
 ##
 ## 'dna': a DNAbin list with named sequences
@@ -52,29 +52,60 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 
 
     ## PROCESS INFORMATION TO CREATE INDIVIDUALS ('data') ##
+    ## coerce to data.frames
+    individuals <- as.data.frame(individuals)
+    samples <- as.data.frame(samples)
+    clinical <- as.data.frame(clinical)
+    if(inherits(dna, "DNAbin") && is.matrix(dna)) dna <- as.list(dna)
+    if(!is.null(dna) && (!is.list(dna) || !inherits(dna, "DNAbin"))) stop("dna is not a list of DNAbin objects.")
+
     ## check that relevant fields are here ##
-    if("individualID" %in% names(data)) stop("no field 'individualID' in the sample data.frame ('data')")
-    if("sampleID" %in% names(data)) stop("no field 'sampleID' in the sample data.frame ('data')")
-    if("colldate" %in% names(data)) stop("no field 'colldate' in the sample data.frame ('data')")
-    if("outcome" %in% names(data)) stop("no field 'outcome' in the sample data.frame ('data')")
-    if("assaytype" %in% names(data)) stop("no field 'assaytype' in the sample data.frame ('data')")
-
-    ## here, we just lapply the constructor for obkIndividuals
-    ## the constructor has to take as argument a data.frame with columns:
-    ## individualID, sampleID, colldate, outcome, assaytype
-    indivID <- data$individualID
-    data <- data[, !"individualID" %in% names(data), drop=FALSE]
-    x@individuals <- lapply(split(data, indivID), new)
+    if("individualID" %in% names(individuals)) stop("no field 'individualID' in the individuals data.frame ('individuals')")
+    if("individualID" %in% names(samples)) stop("no field 'individualID' in the sample data.frame ('samples')")
+    if("sampleID" %in% names(samples)) stop("no field 'sampleID' in the sample data.frame ('samples')")
+    if("date" %in% names(samples)) stop("no field 'date' in the sample data.frame ('samples')")
 
 
-    ## PROCESS META-INFORMATION ABOUT INDIVIDUALS ('meta') ##
-    ## check number of rows
-    meta <- as.data.frame(data)
-    if(nrow(meta)!=length(x@individuals)) stop("meta information should have one row")
+    ## PROCESS INFORMATION ABOUT INDIVIDUALS ('individuals') ##
+    if(!is.null(individuals)){
+        lab.posi <- match("individualID", names(individuals))
+        x@individuals <- cbind.data.frame(id=as.character(individuals[,lab.posi,drop=FALSE]), individuals[,-lab.posi,drop=FALSE])
+    }
+
+
+    ## PROCESS INFORMATION ABOUT SAMPLES ('SAMPLES') ##
+    if(!is.null(samples)){
+        x@samples <- samples[,c("individualID","sampleID","date"),drop=FALSE]
+        x@samples[,"individualID"] <- as.character(x@samples[,"individualID"])
+        x@samples[,"sampleID"] <- as.character(x@samples[,"sampleID"])
+        x@samples[,"date"] <- as.Date(x@samples[,"date"])
+        extraInfo <- samples[, !names(samples) %in% c("individualID","sampleID","date"), drop=FALSE]
+        x@samples <- cbind.data.frame(x@samples, extraInfo)
+    }
+
+    ## PROCESS INFORMATION ABOUT CLINICAL ('clinicals') ##
+    ## to be filled in by Paul & Marc
 
     ## PROCESS INFORMATION ABOUT CONTACTS ('contacts') ##
     ## need to make sure that contact input is consisten with constructor
-    x@contacts <- new("obkContacts", contacts)
+    if(!is.null(contacts)){
+        x@contacts <- new("obkContacts", contacts)
+    }
+
+
+    ## PROCESS INFORMATION ABOUT DNA SEQUENCES ('sequenceID') ##
+    seqPos <- which(names(samples) %in% c("sequenceID"))
+    if(length(seqPos)==0 || is.null(dna)){
+        x@dna <- NULL
+    } else {
+        if(!all(samples$sequenceID %in% names(dna))) warning("some sequence ID where not present in the dna list")
+        temp <- split(samples, samples$sampleID)
+        x@dna <- lapply(temp, function(e) new("obkSequences", dna=dna[e$sequenceID], locus=e$locus))
+    }
+
+
+    ## PROCESS INFORMATION ABOUT CONTACTS ('contacts') ##
+    ## to be filled in by Simon Frost
 
 
     ## RETURN OBJECT ##
