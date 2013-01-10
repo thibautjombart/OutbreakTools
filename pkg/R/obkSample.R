@@ -176,7 +176,7 @@ setMethod("is.assaytype.done","obkSample", function(x, assaylabel=NULL,...){
     z<-match(assaylabel,names(x@outcomes))
     if(!is.na(z))
       {
-      if(!is.na(x@outcomes[[z]])
+      if(!is.na(x@outcomes[[z]]))
         return (TRUE)
       else return(FALSE)
     }
