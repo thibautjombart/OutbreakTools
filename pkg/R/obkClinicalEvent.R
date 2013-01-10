@@ -42,10 +42,15 @@ setMethod("initialize", "obkClinicalEvent", function(.Object, individual.ID=NULL
     if(!is.NULL(individual.ID)) x@individual.ID <- as.character(individual.ID)
 
     ## force start.date in the standard date format
-    if(!is.NULL(start.date) x@start.date <- as.Date(start.date, format=format.Date)
+    if(!is.NULL(start.date)) x@start.date <- as.Date(start.date, format=format.Date)
     
     ## force start.date in the standard date format
-    if(!is.NULL(end.date) x@end.date <- as.Date(end.date, format=format.Date)
+    if(!is.NULL(end.date)) x@end.date <- as.Date(end.date, format=format.Date)
+    
+    ## force duration in the numeric format
+    if(!is.NULL(duration)) x@duration <- as.numeric(duration)
 
+    ## force character type if the location is not NULL
+    if(!is.NULL(location)) x@location <- as.character(location)
     
 }) # end obkClinicalEvent constructor
