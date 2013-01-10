@@ -8,6 +8,24 @@
 ## only generic functions are defined here, and possibly default methods
 ## specific methods are defined in relevant files
 
+##################
+## get.ID ##
+##################
+## return the ID of the object
+setGeneric("get.ID", function(x, ...) standardGeneric("get.ID"))
+
+##################
+## get.type ##
+##################
+## return the type of the object
+setGeneric("get.type", function(x, ...) standardGeneric("get.type"))
+
+##################
+## get.characteristic ##
+##################
+## return the characteristic of the object
+setGeneric("get.characteristic", function(x, ...) standardGeneric("get.characteristic"))
+
 #############
 ## get.dna ##
 #############
