@@ -47,9 +47,6 @@ parse.value = function(text) {
         r = regexpr(pattern="\\{+",value,perl=TRUE)
         match.length = attr(r, "match.length")
         
-#        if (length(match.length) > 1) {
-#            browser()
-#        }
         if (match.length > 0) {
             depth = match.length
         }
@@ -116,7 +113,6 @@ parse.traits = function(text, header=FALSE) {
     return(traits)
 }
 
-
 # THE CODE BELOW COMES FROM 'ape'. MY GOAL IS TO DERIVE FROM THIS TO READ IN BEAST-STYLE ANNOTATIONS
 
 
@@ -164,9 +160,7 @@ function (tp) {
     annotations = result$annotations
     new.tp.stripped = result$tree
     
-    annotations = lapply(annotations, parse.traits, header=TRUE)
-    
-#    browser()
+    annotations = lapply(annotations, parse.traits, header=TRUE)    
     
     tp.stripped = gsub("\\[.*?\\]","",tp)
     tpc <- unlist(strsplit(tp.stripped, "[\\(\\),;]"))
@@ -178,8 +172,6 @@ function (tp) {
     nb.node <- sum(skeleton == ")")
     nb.tip <- sum(skeleton == ",") + 1
     nb.edge <- nb.node + nb.tip
-    
-#    browser()
     
     node.label <- character(nb.node)
     tip.label <- character(nb.tip)
@@ -221,9 +213,7 @@ function (tp) {
     class(obj) <- "phylo"
     attr(obj, "order") <- "cladewise"
     
-    obj$annotations = annotations
-#    obj$tmp = new.tp.stripped
-    
+    obj$annotations = annotations    
     obj
 }
 
@@ -279,10 +269,7 @@ MAS.read.tree = function (file = "", text = NULL, tree.names = NULL, skip = 0,
         tree.names = lapply(tree.names, split.tree.names)
         tree.traits = lapply(traits.text, parse.traits)
     }
-    
-    lapply(STRING, check.magic.character, magic.character="\\|")
-    lapply(STRING, convert.to.magic.character, magic.character="\\|")    
-    
+        
     if (!length(colon)) {
         stop(paste("Annotated clado.build is not yet implemented.\n"))
         obj <- lapply(STRING, MAS.clado.build)
