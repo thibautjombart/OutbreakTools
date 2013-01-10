@@ -1,3 +1,5 @@
+library(ape)
+library(sna)
 library(network)
 
 #Simulate an epidemic following a SIRS model
@@ -6,11 +8,11 @@ library(network)
 #beta=Rate of infection
 #nu=Rate of recovery
 #f=Rate of loss of immunity
-simuEpi <- function (N=1000,D=20,beta=0.5,nu=0.1,f=0.5) {
+simuEpi <- function (N=1000,D=50,beta=0.2,nu=0.1,f=0.5) {
 	S<-matrix(0,D,3)
 	T<-matrix(0,N,3)
 	S[1,1]=N-1;S[1,2]=1;S[1,3]=0
-	T[1,1]=1;T[1,2]=NA;T[1,1]=0
+	T[1,1]=1;T[1,2]=NA;T[1,3]=0
 	curinf=1;
 	ninf=1;
 	for (i in 2:D) {
@@ -31,7 +33,7 @@ simuEpi <- function (N=1000,D=20,beta=0.5,nu=0.1,f=0.5) {
 	}
 	ret=list()
 	ret$S=S
-	ret$T=T[T[,1]>0,]
+	ret$T=T[1:ninf,]
 	return(ret)
 }
 
