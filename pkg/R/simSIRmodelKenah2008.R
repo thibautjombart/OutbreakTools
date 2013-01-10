@@ -1,5 +1,15 @@
 # Simulation of an epidemic tree following Kenah 2008 
-# Competition between infectors
+# "Competition between infectors"
+# Assumptions:
+# 		  constant infectious period
+# 		  exponential infectious contact interval
+#         no intervention
+# Output: time= infection time
+#         v= source case
+#         genvec= generation interval
+#         S= number susceptibles
+#         I= number infected
+#         PI= number of potential infectors
 
 #rm(list=ls())
 count=function(C,k){
