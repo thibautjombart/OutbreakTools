@@ -11,7 +11,7 @@
 ## - location is the location of the event
 ## - non defined elements are set as NULL
 
-setClass("obkClinicalEvent", representation(individual.ID="characterOrNULL", type="characterOrNULL", start.date="DateOrNULL", end.date="DateOrNULL", start.date="DateOrNULL", duration="numericOrNULL", location="characterOrNULL"), prototype(individual.ID=NULL, type=NULL, start.date=NULL, end.date=NULL, start.date=NULL, duration=NULL, location=NULL))
+setClass("obkClinicalEvent", representation(individual.ID="characterOrNULL", type="characterOrNULL", start.date="DateOrNULL", end.date="DateOrNULL", duration="numericOrNULL", location="characterOrNULL"), prototype(individual.ID=NULL, type=NULL, start.date=NULL, end.date=NULL, start.date=NULL, duration=NULL, location=NULL))
 
 
 ######################
@@ -25,7 +25,7 @@ setClass("obkClinicalEvent", representation(individual.ID="characterOrNULL", typ
 ## end.date : a Date
 ## duration : a numeric
 ## location : a character
-setMethod("initialize", "obkClinicalEvent", function(.Object, individual.ID=NULL, type=c("hospitalisation", "vaccination", "treatment"), start.date=NULL, end.date=NULL, start.date=NULL, duration=NULL, location=NULL, format.Date="%Y-%m-%d") {
+setMethod("initialize", "obkClinicalEvent", function(.Object, individual.ID=NULL, type=c("hospitalisation", "vaccination", "treatment"), start.date=NULL, end.date=NULL, duration=NULL, location=NULL, format.Date="%Y-%m-%d") {
 
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
@@ -39,18 +39,20 @@ setMethod("initialize", "obkClinicalEvent", function(.Object, individual.ID=NULL
     x@type <- match.arg(type)
 
     ## force character type if the ID is not NULL
-    if(!is.NULL(individual.ID)) x@individual.ID <- as.character(individual.ID)
+    if(!is.null(individual.ID)) x@individual.ID <- as.character(individual.ID)
 
     ## force start.date in the standard date format
-    if(!is.NULL(start.date)) x@start.date <- as.Date(start.date, format=format.Date)
+    if(!is.null(start.date)) x@start.date <- as.Date(start.date, format=format.Date)
     
     ## force start.date in the standard date format
-    if(!is.NULL(end.date)) x@end.date <- as.Date(end.date, format=format.Date)
+    if(!is.null(end.date)) x@end.date <- as.Date(end.date, format=format.Date)
     
     ## force duration in the numeric format
-    if(!is.NULL(duration)) x@duration <- as.numeric(duration)
+    if(!is.null(duration)) x@duration <- as.numeric(duration)
 
     ## force character type if the location is not NULL
-    if(!is.NULL(location)) x@location <- as.character(location)
+    if(!is.null(location)) x@location <- as.character(location)
+    
+    return(x)
     
 }) # end obkClinicalEvent constructor
