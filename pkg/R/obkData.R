@@ -4,14 +4,12 @@
 ############################
 
 ## CLASS DESCRIPTION:
-## - instance of obkSequences store DNA sequences for a given sample
-## - sequences are stored as a (possibly named) list
-## - each element of the list corresponds to a locus
-## - names of the list are locus names
-## - each element of the list is a DNAbin matrix
-## (i.e., if there are several sequences, they are to be aligned)
-
-setClass("obkSequences", representation(dna="listOrNULL"), prototype(dna=NULL))
+## Instance of obkData store outbreak data; its content includes:
+## - @individuals: a list of obkIndividual
+## - @meta: meta-information on the individuals (group, etc.), as a data.frame
+## - @contacts: contact information as obkContacts
+setClass("obkData", representation(individuals="listOrNULL", meta="dataFrameOrNULL", contacts="obkContacts"),
+         prototype(individuals=NULL, meta=NULL, contacts=NULL))
 
 
 
@@ -24,47 +22,53 @@ setClass("obkSequences", representation(dna="listOrNULL"), prototype(dna=NULL))
 ######################
 
 ## INPUT DESCRIPTION:
-## dna: a list of DNA sequences
+## data: a data.frame where each row is a sample of a given type, at a given data, and the following (optional) columns:
+## - individualID
+## - sampleID
+## - colldate
+## - outcome
+## - assaytype
+##
+## meta: a data.frame with any information about the individuals
 ## locus: a vector of characters indicating which locus each sequence corresponds to
-setMethod("initialize", "obkSequences", function(.Object, dna=NULL, locus=NULL) {
+setMethod("initialize", "obkData", function(.Object, data=NULL, meta=NULL, contacts=NULL){
 
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
 
     ## escape if no info provided ##
-    if(is.null(dna)) return(x)
+    if(is.null(data)) return(x)
 
 
-    ## PROCESS ARGUMENTS ##
-    ## convert matrices of characters into DNAbin ##
-    if(is.matrix(dna) && is.character(dna)) dna <- as.DNAbin(dna)
+    ## PROCESS INFORMATION TO CREATE INDIVIDUALS ('data') ##
+    ## check that relevant fields are here ##
+    if("individualID" %in% names(data)) stop("no field 'individualID' in the sample data.frame ('data')")
+    if("sampleID" %in% names(data)) stop("no field 'sampleID' in the sample data.frame ('data')")
+    if("colldate" %in% names(data)) stop("no field 'colldate' in the sample data.frame ('data')")
+    if("outcome" %in% names(data)) stop("no field 'outcome' in the sample data.frame ('data')")
+    if("assaytype" %in% names(data)) stop("no field 'assaytype' in the sample data.frame ('data')")
 
-    ## force list type for DNAbin matrices ##
-    if(is.matrix(dna) && inherits(dna, "DNAbin")) dna <- as.list(dna)
-
-    ## convert list of characters to DNAbin list ##
-    if(is.list(dna) && all(sapply(dna, is.character))) dna <- lapply(dna, as.DNAbin)
-
-    ## check that dna is now a DNAbin list ##
-    if(!is.list(dna) || !inherits(dna, "DNAbin")) stop("dna input could not be processed into a DNAbin list")
+    ## here, we just lapply the constructor for obkIndividuals
+    ## the constructor has to take as argument a data.frame with columns:
+    ## individualID, sampleID, colldate, outcome, assaytype
+    indivID <- data$individualID
+    data <- data[, !"individualID" %in% names(data), drop=FALSE]
+    x@individuals <- lapply(split(data, indivID), new)
 
 
-    ## SHAPE OUTPUT ##
-    ## no locus info => unnamed list of length 1
-    if(is.null(locus)){
-        x@dna <- list(as.matrix(dna))
-        return(x)
-    }
+    ## PROCESS META-INFORMATION ABOUT INDIVIDUALS ('meta') ##
+    ## check number of rows
+    meta <- as.data.frame(data)
+    if(nrow(meta)!=length(x@individuals)) stop("meta information should have one row")
 
-    ## otherwise: locus info provided ##
-    ## check length consistency
-    if(length(dna) != length(locus)) stop(paste("Length mismatch (dna:", length(dna), "items; locus:", length(locus),"items)"))
+    ## PROCESS INFORMATION ABOUT CONTACTS ('contacts') ##
+    ## need to make sure that contact input is consisten with constructor
+    x@contacts <- new("obkContacts", contacts)
 
-    x@dna <- lapply(unique(locus), function(loc) as.matrix(dna[locus==loc]))
-    names(x@dna) <- unique(locus)
 
+    ## RETURN OBJECT ##
     return(x)
-}) # end obkSequences constructor
+}) # end obkData constructor
 
 
 
@@ -80,74 +84,71 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, locus=NULL) 
 ################
 ## get.nlocus ##
 ################
-setMethod("get.nlocus","obkSequences", function(x, ...){
-    if(is.null(x@dna)) return(0)
-    return(length(x@dna))
+setMethod("get.nlocus","obkData", function(x, ...){
+    return(sum(sapply(x@individuals, get.nlocus)))
 })
-
 
 
 ####################
 ## get.nsequences ##
 ####################
-setMethod("get.nsequences","obkSequences", function(x, ...){
-    nLoc <- get.nlocus(x)
-    if(nLoc==0) return(0)
-
-    out <- sum(sapply(x@dna, nrow))
-    return(out)
+setMethod("get.nsequences","obkData", function(x, ...){
+    return(sum(sapply(x@individuals, get.nsequences)))
 })
-
-
-
-################
-## get.locus ##
-################
-setMethod("get.locus","obkSequences", function(x, ...){
-    if(is.null(x)) return(NULL)
-    return(names(x@dna))
-})
-
-
-
-#############
-## get.dna ##
-#############
-## returns a matrix of dna sequences for a given locus
-setMethod("get.dna","obkSequences", function(x, locus=NULL, ...){
-    nLoc <- get.nlocus(x)
-
-    ## return NULL if no info ##
-    if(nLoc==0) return(NULL)
-
-    ## return only locus if nLoc==1 ##
-    if(nLoc==1) return(x@dna[[1]])
-
-    ## otherwise use locus info ##
-    if(is.null(locus)) stop("locus must be specified (data contain more than one locus)")
-
-    return(x@dna[[locus]])
-})
-
-
-
-
-
-
 
 
 ######################
-####  SHOW METHOD ####
+## get.nindividuals ##
 ######################
-
-setMethod ("show", "obkSequences", function(object){
-    nLoc <- get.nlocus(object)
-    nSeq <- get.nsequences(object)
-    seqword <- ifelse(nLoc>1, "sequences", "sequence")
-    locword <- ifelse(nLoc>1, "loci", "locus")
-    cat(paste("\n =", nSeq,"DNA", seqword, "in", nLoc, "loci =\n\n"))
-    if(nLoc>0) print(object@dna)
+setMethod("get.nindividuals","obkData", function(x, ...){
+    return(length(x@individuals, get.nsequences))
 })
+
+
+##################
+## get.nsamples ##
+##################
+setMethod("get.nsamples","obkData", function(x, ...){
+    return(lapply(x@individuals, get.nsamples))
+})
+
+
+## ################
+## ## get.locus ##
+## ################
+## setMethod("get.locus","obkData", function(x, ...){
+##     return(get.locus(get.dna(x)))
+## })
+
+
+
+## #############
+## ## get.dna ##
+## #############
+## ## returns a matrix of dna sequences for a given locus
+## setMethod("get.dna","obkData", function(x, locus=NULL, ...){
+##     return(get.dna(get.dna(x)))
+## })
+
+
+
+
+
+
+
+
+## ######################
+## ####  SHOW METHOD ####
+## ######################
+
+## setMethod ("show", "obkData", function(object){
+##     nLoc <- get.nlocus(object)
+##     nSeq <- get.nsequences(object)
+##     seqword <- ifelse(nLoc>1, "sequences", "sequence")
+##     locword <- ifelse(nLoc>1, "loci", "locus")
+##     cat(paste("\n =", nSeq,"DNA", seqword, "in", nLoc, "loci =\n\n"))
+##     if(nLoc>0) print(object@dna)
+## })
 
 
 
@@ -160,18 +161,3 @@ setMethod ("show", "obkSequences", function(object){
 ##################
 ## NOTE: THIS MUST BE COMMENTED WHEN COMPILING/INSTALLING THE PACKAGE
 
-## library(ape)
-## data(woodmouse)
-
-## ## test constructor / show
-## new("obkSequences") # empty object
-## new("obkSequences", woodmouse) # no locus info
-## new("obkSequences", as.matrix(woodmouse), locus=rep(c('loc1', 'loc2', 'locXX'), c(10,4,1)))
-
-
-## ## test accessors
-## x <- new("obkSequences", as.matrix(woodmouse), locus=rep(c('loc1', 'loc2', 'locXX'), c(10,4,1)))
-## get.dna(x, locus=1)
-## get.dna(x, locus="locXX")
-## get.nlocus(x)
-## get.nsequences(x)
