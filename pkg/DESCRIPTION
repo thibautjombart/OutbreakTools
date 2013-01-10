@@ -7,6 +7,6 @@ Maintainer: John Smith <john.smith@nowhere.com>
 Suggests: EpiEstim
 Depends: R (>= 2.10), methods, MASS, ape
 Description: basic tools for the analysis of disease outbreaks.
-Collate: auxClasses.R generics.R obkSequences.R zzz.R annotatedTreeReader.R
+Collate: auxClasses.R generics.R obkSequences.R annotatedTreeReader.R simuEpi.R simSIRmodelKenah2008.R zzz.R
 License: GPL (>=2)
 LazyLoad: yes
