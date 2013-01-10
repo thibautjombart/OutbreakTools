@@ -11,7 +11,8 @@ HorseFluSeqID: Information about the sample that each sequence was taken from, m
 HorseFluShedding: Data on the viral shedding load for each sample (Tube identifier , viral shedding load, yard identifer, horse identifier, swad date)
 HorseFluHorseInfo: Limited information relating to the host (age, sex, date of first vaccinaton)
 
-Article Source: Transmission of Equine Influenza Virus during an Outbreak Is Characterized by Frequent Mixed Infections and Loose Transmission Bottlenecks
+}
+\references{
 Hughes J, Allen RC, Baguelin M, Hampson K, Baillie GJ, et al. (2012) Transmission of Equine Influenza Virus during an Outbreak Is Characterized by Frequent Mixed Infections and Loose Transmission Bottlenecks. PLoS Pathog 8(12): e1003081. doi:10.1371/journal.ppat.1003081
 }
 \keyword{dataset}
