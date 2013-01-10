@@ -26,6 +26,24 @@ setGeneric("get.type", function(x, ...) standardGeneric("get.type"))
 ## return the characteristic of the object
 setGeneric("get.characteristic", function(x, ...) standardGeneric("get.characteristic"))
 
+##################
+## get.start.date ##
+##################
+## return the start.date of the object
+setGeneric("get.start.date", function(x, ...) standardGeneric("get.start.date"))
+
+##################
+## get.end.date ##
+##################
+## return the end.date of the object
+setGeneric("get.end.date", function(x, ...) standardGeneric("get.end.date"))
+
+##################
+## get.duration ##
+##################
+## return the duration of the object
+setGeneric("get.duration", function(x, ...) standardGeneric("get.duration"))
+
 #############
 ## get.dna ##
 #############
