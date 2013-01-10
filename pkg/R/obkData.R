@@ -5,11 +5,13 @@
 
 ## CLASS DESCRIPTION:
 ## Instance of obkData store outbreak data; its content includes:
-## - @data: data about samples
-## - @meta: meta-information on the individuals (group, etc.), as a data.frame
+## - @data: data about samples, stored as a data.frame
+## - @meta: meta-information on the individuals (group, etc.), stored as a data.frame
+## - @clinical: information about interventions and events, stored as obkClinicalEvent
+## - @dna: dna data, stored as a list of DNA sequences (list of DNAbin)
 ## - @contacts: contact information as obkContacts
-setClass("obkData", representation(data="dataframeOrNULL", meta="dataframeOrNULL", dna="listOrNULL", contacts="obkContacts"),
-         prototype(data=NULL, meta=NULL, dna=NULL, contacts=NULL))
+setClass("obkData", representation(data="dataframeOrNULL", meta="dataframeOrNULL", dna="listOrNULL", clinical="obkClinicalEventOrNULL", contacts="obkContactsOrNULL"),
+         prototype(data=NULL, meta=NULL, dna=NULL, clinical=NULL, contacts=NULL))
 
 
 
@@ -22,7 +24,11 @@ setClass("obkData", representation(data="dataframeOrNULL", meta="dataframeOrNULL
 ######################
 
 ## INPUT DESCRIPTION:
-## 'data': a data.frame where each row is an observation made on a sample, and the following mandatory columns:
+## 'individuals': a data.frame with any information on the individuals, each row being an individual, with the following columns:
+## - "individualID"
+## - any other named column
+##
+## 'samples': a data.frame where each row is an observation made on a sample, and the following mandatory columns:
 ## - "individualID"
 ## - "sampleID"
 ## - "date"
@@ -30,15 +36,13 @@ setClass("obkData", representation(data="dataframeOrNULL", meta="dataframeOrNULL
 ## - "sequence": optional but particular processing by the constructor, a sequence ID existing in 'dna'
 ## - "locus": optional but particular processing by the constructor, the locus of a sequence
 ##
-## 'meta': a data.frame with any information on the individuals, each row being an individual, with the following columns:
-## - "individualID"
-## - any other named column
-##
 ## 'dna': a DNAbin list with named sequences
+##
+## 'clinical': information about clinical events stored as a data.frame
 ##
 ## 'contacts': whatever Simon Frost has in mind
 ##
-setMethod("initialize", "obkData", function(.Object, data=NULL, meta=NULL, dna=NULL, contacts=NULL){
+setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=NULL, clinical=NULL, dna=NULL, contacts=NULL){
 
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
