@@ -1,11 +1,10 @@
-#Simulate an epidemic following a SIRS model with birth/death of individuals and loss of immunity
+#Simulate an epidemic following a SIRS model
 #N=Size of the population
 #D=Duration of simulation
 #beta=Rate of infection
 #nu=Rate of recovery
-#mu=Rate of birth/death of individuals
 #f=Rate of loss of immunity
-simuEpi <- function (N=1000,D=365,beta=0.5,nu=0.1,mu=0.1,f=0.5) {
+simuEpi <- function (N=1000,D=365,beta=0.5,nu=0.1,f=0.5) {
 	S<-matrix(0,D,3)
 	S[1,1]=N-1;S[1,2]=1;S[1,3]=0
 	for (i in 2:D) {
