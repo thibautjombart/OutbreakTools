@@ -42,7 +42,8 @@ setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataf
 ##
 ## 'contacts': whatever Simon Frost has in mind
 ##
-setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=NULL, clinical=NULL, dna=NULL, contacts=NULL){
+setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=NULL, clinical=NULL, dna=NULL, contacts=NULL
+                                            date.format=""){
 
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
@@ -61,7 +62,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     }
     if(!is.null(samples)){
         samples <- as.data.frame(samples)
-        if(nrow(samples)==0) samples <- NULL
+        if(nrow(samples)==0 || ncol(samples)<4) samples <- NULL
     }
     if(!is.null(clinical)) {
         clinical <- as.data.frame(clinical)
@@ -97,8 +98,8 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         x@samples <- samples[,c("individualID","sampleID","date"),drop=FALSE]
         x@samples[,"individualID"] <- as.character(x@samples[,"individualID"])
         x@samples[,"sampleID"] <- as.character(x@samples[,"sampleID"])
-        x@samples[,"date"] <- as.Date(x@samples[,"date"])
-        extraInfo <- samples[, !names(samples) %in% c("individualID","sampleID","date"), drop=FALSE]
+        x@samples[,"date"] <- as.Date(x@samples[,"date"], format=date.format)
+        extraInfo <- samples[, !names(samples) %in% c("individualID","sampleID","date")]
         x@samples <- cbind.data.frame(x@samples, extraInfo)
     }
 
@@ -238,3 +239,5 @@ setMethod("get.nsamples","obkData", function(x, ...){
 ## NOTE: THIS MUST BE COMMENTED WHEN COMPILING/INSTALLING THE PACKAGE
 
 new("obkData")
+new("obkData", individuals=data.frame("individualID"=letters))
+new("obkData", individuals=data.frame("individualID"=letters, toto=1:26, 1:26))
