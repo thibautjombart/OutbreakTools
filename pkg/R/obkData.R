@@ -10,7 +10,7 @@
 ## - @clinical: information about interventions and events, stored as obkClinicalEvent
 ## - @dna: dna data, stored as a list of DNA sequences (list of DNAbin)
 ## - @contacts: contact information as obkContacts
-setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataframeOrNULL", clinical="obkClinicalEventOrNULL", dna="listOrNULL", contacts="obkContactsOrNULL", trees="multiPhyloOrNULL"),
+setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataframeOrNULL", clinical="listOrNULL", dna="listOrNULL", contacts="obkContactsOrNULL", trees="multiPhyloOrNULL"),
          prototype(individuals=NULL, samples=NULL, dna=NULL, clinical=NULL, contacts=NULL, trees=NULL))
 
 
@@ -38,7 +38,7 @@ setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataf
 ##
 ## 'dna': a DNAbin list with named sequences
 ##
-## 'clinical': information about clinical events stored as a data.frame
+## 'clinical': list of clinical datasets, each stored as a data.frame
 ##
 ## 'contacts': whatever Simon Frost has in mind
 ##
@@ -65,8 +65,10 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         if(nrow(samples)==0) samples <- NULL
     }
     if(!is.null(clinical)) {
-        clinical <- as.data.frame(clinical)
-        if(nrow(clinical)==0) clinical <- NULL
+      if(is.data.frame(clinical))
+        clinical = list(clinical)
+      else clinical <- as.list(clinical)
+      if(length(clinical)==0) clinical <- NULL
     }
     if(!is.null(dna) && (inherits(dna, "DNAbin") && is.matrix(dna))) dna <- as.list(dna)
     if(!is.null(dna) && (!is.list(dna) || !inherits(dna, "DNAbin"))) stop("dna is not a list of DNAbin objects.")
@@ -114,7 +116,23 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 
     ## PROCESS INFORMATION ABOUT CLINICAL ('clinicals') ##
     ## to be filled in by Paul & Marc
+    if(!is.null(clinical)){
+      x@clinical <- list()
+      ## reorder the columns within each data frame.
+      nameOrder <- c(c("individualID","date"), setdiff(names(clinical), c("individualID","date")))
+      for(i in 1:length(clinical))
+        {
+          x@clinical[[i]] <- clinical[[i]][, nameOrder]
+          x@clinical[[i]][,"individualID"] <- as.character(x@clinical[[i]][,"individualID"])
+          x@clinical[[i]][,"date"] <- as.Date(x@clinical[[i]][,"date"], format=date.format)
+        }
 
+      ## make sure that all the individualIDs are in 'individuals', if the slot is NULL
+      ## if(!is.null(x@individuals)){
+      ##   unknownIDs <- unique(
+      
+    }
+    
     ## PROCESS INFORMATION ABOUT CONTACTS ('contacts') ##
     ## need to make sure that contact input is consisten with constructor
     if(!is.null(contacts)){
@@ -157,14 +175,6 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 
         x@trees <- trees
     }
-
-
-    ## PROCESS INFORMATION ABOUT CLINICAL EVENTS ('clinical') ##
-    ## to be filled in by Paul B
-
-
-    ## PROCESS INFORMATION ABOUT CONTACTS ('contacts') ##
-    ## to be filled in by Simon F
 
 
     ## RETURN OBJECT ##
