@@ -1,11 +1,44 @@
-Package: hackout
+Package: epibase
 Version: 1.0-0
 Date: 2013/01/11
-Title: Basic tools for the analysis of disease outbreaks.
-Author: The Hackout team
-Maintainer: John Smith <john.smith@nowhere.com>
-Suggests: EpiEstim
-Depends: R (>= 2.10), methods, MASS, ape, networkDynamic, ggplot2, proto, sna, grImport, scales, plyr
+Title: basic tools for the analysis of disease outbreaks.
+Author: {The Hackout team (In alphabetic order: David Aanensen, Marc Baguelin,
+    Paul Birrell, Simon Cauchemez, Anton Camacho, Caroline Colijn, Anne Cori,
+    Xavier Didelot, Ken Eames, Christophe Fraser, Simon Frost, Niel Hens,
+    Joseph Hugues, Thibaut Jombart, Lulla Opatowski, Oliver Ratmann, Samuel
+    Soubeyrand, Marc Suchard, Jacco Wallinga, Rolf Ypma)}
+Maintainer: Thibaut Jombart <t.jombart@imperial.ac.uk>
+Suggests:
+    EpiEstim
+Depends:
+    R (>= 2.10),
+    methods,
+    MASS,
+    ape,
+    networkDynamic,
+    ggplot2,
+    proto,
+    sna,
+    grImport,
+    scales,
+    plyr
 Description: basic tools for the analysis of disease outbreaks.
 License: GPL (>=2)
 LazyLoad: yes
+Collate:
+    'annotatedTreeReader.R'
+    'auxClasses.R'
+    'generics.R'
+    'ISOdate_format.R'
+    'obkClinicalEvent.R'
+    'obkContacts.R'
+    'obkData.R'
+    'obkSequences.R'
+    'phylo2ggphy.R'
+    'plot_ggphy.R'
+    'plotGraphviz.R'
+    'sheddingPlot.R'
+    'simSIRmodel.R'
+    'simuEpi.R'
+    'utils.R'
+    'zzz.R'

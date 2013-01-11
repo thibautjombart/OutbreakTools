@@ -3,8 +3,9 @@
 #' @param phylo an object of the class "phylo"
 #' @param tip_dates a vector containing the sample dates of the tip in "Date" format, the dates must be ordered like the tips
 #' @param branch_unit the unit of the branch. Either "year", "month", "day" or "subst". If a time unit is provided, together with tip_dates, then the x-axis of the phylogeny will be in the Date format 
+#' @export
 #' @author Anton Camacho
-#' @example see misc/plot_ggphy_test.R
+#' @examples see misc/plot_ggphy_test.R
 
 phylo2ggphy<-function(phylo,tip_dates=NULL,branch_unit="subst"){
 	

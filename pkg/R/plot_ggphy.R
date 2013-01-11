@@ -1,8 +1,14 @@
-#
-# @author Anton Camacho
-#
-# A function to plot phylogenies of the class 'ggphy'
-#
+#' Function to plot phylogenies of the class 'ggphy'
+#'
+#' @param ggphy An object of the class "ggphy"
+#' @param tip_labels Logical.Should tip labels be plotted?
+#' @param tip_attribute Dataframe with at least two columns. One column must contain the tip labels, the remainings are tip attributes
+#' @param var_tip_labels Character. The name of the column of tip_attribute that contains the tip labels.
+#' @param var_tip_colour Character. The name of the column of tip_attribute that contains the attribute to be colour-codded.
+#' @export
+#' @author Anton Camacho
+#' @examples see misc/plot_ggphy_test.R
+
 
 plot_ggphy<-function(ggphy,tip_labels=F,tip_attribute=NULL,var_tip_labels=NULL,var_tip_colour=NULL){
 	
@@ -28,7 +34,7 @@ plot_ggphy<-function(ggphy,tip_labels=F,tip_attribute=NULL,var_tip_labels=NULL,v
                             panel.grid.minor.y = element_blank())
     
 	p<-ggplot(df_edge)
-	p<-p+geom_segment2(data=df_edge,aes(x=x_beg,xend=x_end,y=y_beg,yend=y_end))
+	p<-p+geom_segment(data=df_edge,aes(x=x_beg,xend=x_end,y=y_beg,yend=y_end),lineend="round")
 	p<-p+scale_y_continuous("",labels=NULL)
 	if(is_x_date)
         p<-p+scale_x_date("Time",labels=date_format("%Y"),minor_breaks="1 year")
