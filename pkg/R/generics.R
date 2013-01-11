@@ -14,9 +14,9 @@
 ## return the ID of the object
 setGeneric("get.ID", function(x, ...) standardGeneric("get.ID"))
 
-##################
+##############
 ## get.type ##
-##################
+##############
 ## return the type of the object
 setGeneric("get.type", function(x, ...) standardGeneric("get.type"))
 
@@ -96,7 +96,7 @@ setGeneric("get.samples", function(x, ...) standardGeneric("get.samples"))
 ## get.sampletype ##
 ####################
 setGeneric("get.sampletype",function(x, ...) standardGeneric("get.sampletype"))
-  
+
 
 
 ######################
@@ -127,5 +127,12 @@ setGeneric("get.ncontacts", function(x, ...) standardGeneric("get.ncontacts"))
 ## return the number of contacts in the object
 setGeneric("get.contacts", function(x, ...) standardGeneric("get.contacts"))
 
-  
+
+##############
+## get.data ##
+##############
+## return the number of contacts in the object
+setGeneric("get.data", function(x, ...) standardGeneric("get.data"))
+
+
 

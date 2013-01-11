@@ -70,7 +70,7 @@
   more complex functions. These are indicated by a '*' symbol next to
   the method's name. This list also contains methods for conversion from
   \code{obkData} to other classes.
-  \describe{
+  %\describe{
     % \item{show}{\code{signature(x = "obkData")}: printing of the
     %   object.}
     % \item{get.nlocus}{\code{signature(x = "obkData")}: returns the number of
@@ -81,7 +81,7 @@
     %   of the loci in the sample.}
     % \item{get.dna*}{\code{signature(x = "obkData")}: returns the dna
     %   sequences in the sample for a given locus (\code{locus} argument).}
-  }
+  %}
 }
 \author{
   Thibaut Jombart, Simon Frost, Lulla Opatowski, Paul Birrell, Anne
