@@ -21,4 +21,7 @@
 \description{
   Simulate an epidemic following a SIRS model
 }
+\author{
+  Xavier Didelot
+}
 

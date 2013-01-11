@@ -13,4 +13,7 @@
 \description{
   Convert transmission tree to a network
 }
+\author{
+  Caroline Colijn
+}
 

@@ -8,4 +8,7 @@
   Test function: simulate an epidemic and produce various
   plots
 }
+\author{
+  Xavier Didelot
+}
 
