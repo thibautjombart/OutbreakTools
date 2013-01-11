@@ -100,8 +100,20 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     } else {
         if(!all(samples$sequenceID %in% names(dna))) warning("some sequence ID where not present in the dna list")
         temp <- split(samples, samples$sampleID)
-        x@dna <- lapply(temp, function(e) new("obkSequences", dna=dna[e$sequenceID], locus=e$locus))
+
+        ## small auxiliary function to pass relevant data to the constructor, and nothing otherwise
+        ## (can't be using dna[NA])
+        ## vecID: vector of sequence IDs (including possible NAs, can be NAs only)
+        f1 <- function(vecID, locus){
+            if(all()) return(NULL)
+            toRemove <- is.na(vecID)
+            vecID <- vecID[!toRemove]
+            locus <- locus[!toRemove]
+            return(new("obkSequences", dna=dna[vecID], locus=locus))
+        }
+        x@dna <- lapply(temp, function(e) f1(e$sequenceID, e$locus))
     }
+
 
 
     ## PROCESS INFORMATION ABOUT CONTACTS ('contacts') ##
