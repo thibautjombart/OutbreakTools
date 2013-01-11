@@ -47,17 +47,26 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
 
-    ## escape if no info provided ##
-    if(is.null(individuals) && is.null(samples) && is.null(clinical) && is.null(dna) && is.null(contacts)) return(x)
-
 
     ## PROCESS INFORMATION TO CREATE INDIVIDUALS ('data') ##
-    ## coerce to data.frames
-    if(!is.null(individuals)) individuals <- as.data.frame(individuals)
-    if(!is.null(samples)) samples <- as.data.frame(samples)
-    if(!is.null(clinical)) clinical <- as.data.frame(clinical)
+    ## coerce to data.frames, force to NULL if nrow=0
+    if(!is.null(individuals)) {
+        individuals <- as.data.frame(individuals)
+        if(nrow(individuals)==0) individuals <- NULL
+    }
+    if(!is.null(samples)){
+        samples <- as.data.frame(samples)
+        if(nrow(samples)==0) samples <- NULL
+    }
+    if(!is.null(clinical)) {
+        clinical <- as.data.frame(clinical)
+        if(nrow(clinical)==0) clinical <- NULL
+    }
     if(!is.null(dna) && (inherits(dna, "DNAbin") && is.matrix(dna))) dna <- as.list(dna)
     if(!is.null(dna) && (!is.list(dna) || !inherits(dna, "DNAbin"))) stop("dna is not a list of DNAbin objects.")
+
+     ## escape if no info provided ##
+    if(is.null(individuals) && is.null(samples) && is.null(clinical) && is.null(dna) && is.null(contacts)) return(x)
 
     ## check that relevant fields are here ##
     if(!is.null(individuals)){
