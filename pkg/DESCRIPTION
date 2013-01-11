@@ -22,7 +22,8 @@ Depends:
     grImport,
     scales,
     plyr,
-    RCurl
+    RCurl,
+    bitops
 Description: basic tools for the analysis of disease outbreaks.
 License: GPL (>=2)
 LazyLoad: yes
