@@ -17,14 +17,17 @@ phylo2ggphy<-function(phylo,tip_dates=NULL,branch_unit="subst"){
     
 	edge<-as.data.frame(phy$edge)
 	names(edge)<-c("beg","end")
-	edge$length<-phy$edge.length
+	
+	#if edge.length is not provided, set all to 1 by default
+	if(is.null(edge$length<-phy$edge.length)){edge$length<-rep(1,nrow(edge))}
+	
     
 #find root
 	ind<-which(!edge$beg%in%edge$end)
 	phy_root<-unique(edge$beg[ind])
 	if(length(phy_root)!=1){
         cat(length(phy_root),"root(s) found!!\n")
-        stop("Algorithm can not handle more than one root in the phylo at the moment!")
+        stop("Algorithm cannot handle more than one root in the phylo at the moment!")
 	}
     
 	if(!is.rooted(phy)){
