@@ -13,6 +13,7 @@
 
 setClass("obkSequences", representation(dna="listOrNULL"), prototype(dna=NULL))
 
+setClassUnion("obkSequencesOrNULL", c("obkSequences", "NULL"))
 
 
 
