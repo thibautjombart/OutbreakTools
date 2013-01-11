@@ -51,33 +51,56 @@ setMethod("get.dna", "obkData", function(x, locus=NULL, ...){
 
 
 
-######################
-## get.nindividuals ##
-######################
-setMethod("get.nindividuals", "obkData", function(x, ...){
-  if(is.null(x@individuals)) return(0)
-  return(nrow(x@individuals))
-})
-
-
-
 #####################
 ## get.individuals ##
 #####################
-setMethod("get.individuals", "obkData", function(x, individual = NULL, ...){
+setMethod("get.individuals", "obkData", function(x, data=c("samples", "individuals"), ...){
+    data <- match.arg(data)
 
-  ## return NA if no info
-  if(is.null(x@individuals)) return(NA)
+    ## list individuals in @samples
+    if(data=="samples"){
+        if(is.null(x@samples)) return(NULL)
+        return(unique(x@samples$individualID))
+    }
 
-  nInd <- get.nindividuals(x)
-  ## return only individual if
-  if(!is.null(individual)){
-   return(x)
-
-   ## otherwise use information attached to each individual
-   if(is.null(individual)) stop("individual must be specified (data contain more than one individual)")
-
-   ## return new obkData object subsetted according to the individual ID
-   ## return(new("obkData"))?
-
+    ## list individuals in @individuals
+    if(data=="individuals"){
+        if(is.null(x@individuals)) return(NULL)
+        return(row.names(x@individuals))
+    }
 })
+
+
+
+
+#####################
+## get.nindividuals ##
+#####################
+setMethod("get.nindividuals", "obkData", function(x, data=c("samples", "individuals"), ...){
+    data <- match.arg(data)
+
+    return(length(get.individuals(x, data=data)))
+})
+
+
+
+## #####################
+## ## get.individuals ##
+## #####################
+## setMethod("get.individuals", "obkData", function(x, individual = NULL, ...){
+
+##   ## return NA if no info
+##   if(is.null(x@individuals)) return(NA)
+
+##   nInd <- get.nindividuals(x)
+##   ## return only individual if
+##   if(!is.null(individual)){
+##    return(x)
+
+##    ## otherwise use information attached to each individual
+##    if(is.null(individual)) stop("individual must be specified (data contain more than one individual)")
+
+##    ## return new obkData object subsetted according to the individual ID
+##    ## return(new("obkData"))?
+
+## })
