@@ -14,4 +14,7 @@
 \description{
   Create phylogenetic tree from transmission tree
 }
+\author{
+  Caroline Colijn
+}
 

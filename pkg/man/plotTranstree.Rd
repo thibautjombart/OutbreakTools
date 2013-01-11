@@ -10,4 +10,7 @@
 \description{
   Plot transmission tree using graphviz
 }
+\author{
+  Xavier Didelot
+}
 
