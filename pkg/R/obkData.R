@@ -10,8 +10,8 @@
 ## - @clinical: information about interventions and events, stored as obkClinicalEvent
 ## - @dna: dna data, stored as a list of DNA sequences (list of DNAbin)
 ## - @contacts: contact information as obkContacts
-setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataframeOrNULL", clinical="obkClinicalEventOrNULL", dna="listOrNULL", contacts="obkContactsOrNULL"),
-         prototype(individuals=NULL, samples=NULL, dna=NULL, clinical=NULL, contacts=NULL))
+setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataframeOrNULL", clinical="obkClinicalEventOrNULL", dna="listOrNULL", contacts="obkContactsOrNULL", trees="multiPhyloOrNULL"),
+         prototype(individuals=NULL, samples=NULL, dna=NULL, clinical=NULL, contacts=NULL, trees=NULL))
 
 
 
@@ -42,7 +42,7 @@ setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataf
 ##
 ## 'contacts': whatever Simon Frost has in mind
 ##
-setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=NULL, clinical=NULL, dna=NULL, contacts=NULL,
+setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=NULL, clinical=NULL, dna=NULL, contacts=NULL, trees=NULL,
                                             date.format=""){
 
     ## RETRIEVE PROTOTYPED OBJECT ##
@@ -148,6 +148,17 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     }
 
 
+    ## PROCESS INFORMATION ABOUT PHYLOGENIES ('trees') ##
+    if(!is.null(trees)){
+        ## check class
+        if(!inherits(trees, "multiPhylo")) stop("trees must be a multiPhylo object")
+
+        ## check label consistency (to be added)
+
+        x@trees <- trees
+    }
+
+
     ## PROCESS INFORMATION ABOUT CLINICAL EVENTS ('clinical') ##
     ## to be filled in by Paul B
 
@@ -170,76 +181,6 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 ####################
 ####  ACCESSORS ####
 ####################
-
-################
-## get.nlocus ##
-################
-setMethod("get.nlocus","obkData", function(x, ...){
-    return(sum(sapply(x@individuals, get.nlocus)))
-})
-
-
-####################
-## get.nsequences ##
-####################
-setMethod("get.nsequences","obkData", function(x, ...){
-    return(sum(sapply(x@individuals, get.nsequences)))
-})
-
-
-######################
-## get.nindividuals ##
-######################
-setMethod("get.nindividuals","obkData", function(x, ...){
-    return(length(x@individuals, get.nsequences))
-})
-
-
-##################
-## get.nsamples ##
-##################
-setMethod("get.nsamples","obkData", function(x, ...){
-    return(lapply(x@individuals, get.nsamples))
-})
-
-
-## ################
-## ## get.locus ##
-## ################
-## setMethod("get.locus","obkData", function(x, ...){
-##     return(get.locus(get.dna(x)))
-## })
-
-
-
-## #############
-## ## get.dna ##
-## #############
-## ## returns a matrix of dna sequences for a given locus
-## setMethod("get.dna","obkData", function(x, locus=NULL, ...){
-##     return(get.dna(get.dna(x)))
-## })
-
-
-
-
-
-
-
-
-## ######################
-## ####  SHOW METHOD ####
-## ######################
-
-## setMethod ("show", "obkData", function(object){
-##     nLoc <- get.nlocus(object)
-##     nSeq <- get.nsequences(object)
-##     seqword <- ifelse(nLoc>1, "sequences", "sequence")
-##     locword <- ifelse(nLoc>1, "loci", "locus")
-##     cat(paste("\n =", nSeq,"DNA", seqword, "in", nLoc, "loci =\n\n"))
-##     if(nLoc>0) print(object@dna)
-## })
-
 
 
 
