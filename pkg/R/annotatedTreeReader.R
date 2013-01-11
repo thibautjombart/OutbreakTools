@@ -22,13 +22,13 @@ strip.annotations = function(text) {
     return(list(annotations=annotations,tree=text))
 }
 
-split.tree.names = function(text) {
+.split.tree.names = function(text) {
     text = gsub(pattern="\\[.*?\\]=",x=text,replacement="")
     text = gsub(pattern="^tree",x=text,replacement="")
     return(text)
 }
 
-split.tree.traits = function(text) {
+.split.tree.traits = function(text) {
 
   # Pull out annotation
   text = regmatches(text,regexpr(pattern="\\[.*?\\]",text))
@@ -261,8 +261,8 @@ read.annontated.tree = function (file = "", text = NULL, tree.names = NULL, skip
     colon <- grep(":", STRING)   
     
     if (!is.null(tree.names)) {
-        traits.text = lapply(tree.names, split.tree.traits)
-        tree.names = lapply(tree.names, split.tree.names)
+        traits.text = lapply(tree.names, .split.tree.traits)
+        tree.names = lapply(tree.names, .split.tree.names)
         tree.traits = lapply(traits.text, parse.traits)
     }
         
