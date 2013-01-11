@@ -48,7 +48,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     x <- .Object
 
     ## escape if no info provided ##
-    if(is.null(data)) return(x)
+    if(is.null(individuals) && is.null(samples) && is.null(clinical) && is.null(dna) && is.null(contacts)) return(x)
 
 
     ## PROCESS INFORMATION TO CREATE INDIVIDUALS ('data') ##
@@ -115,9 +115,12 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     }
 
 
+    ## PROCESS INFORMATION ABOUT CLINICAL EVENTS ('clinical') ##
+    ## to be filled in by Paul B
+
 
     ## PROCESS INFORMATION ABOUT CONTACTS ('contacts') ##
-    ## to be filled in by Simon Frost
+    ## to be filled in by Simon F
 
 
     ## RETURN OBJECT ##
