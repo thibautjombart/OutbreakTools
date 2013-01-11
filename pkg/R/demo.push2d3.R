@@ -1,3 +1,5 @@
+## David Aanensen and Samuel Soubeyrand
+
 
 newcases.zoomseries=function(data){
 	datachar=paste(colnames(data)[1],colnames(data)[2],sep=",")
