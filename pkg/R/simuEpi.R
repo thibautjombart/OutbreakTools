@@ -1,6 +1,7 @@
 library(ape)
 library(sna)
 library(network)
+#library(grImport)
 
 #Simulate an epidemic following a SIRS model
 #N=Size of the population
@@ -99,8 +100,7 @@ return(phylotree)
 }
 ## end function for creating phylo tree
 
-
-ret<-simuEpi(f=0)
-plotEpi(ret$S)
-plot(infectorTableToNetwork(ret$T))
-plot(phylofromtranstree(ret$T)) 
+#ret<-simuEpi(f=0)
+#plotEpi(ret$S)
+#plot(infectorTableToNetwork(ret$T))
+#plot(phylofromtranstree(ret$T)) 
