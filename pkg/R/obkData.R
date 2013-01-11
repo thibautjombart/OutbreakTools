@@ -53,10 +53,10 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 
     ## PROCESS INFORMATION TO CREATE INDIVIDUALS ('data') ##
     ## coerce to data.frames
-    individuals <- as.data.frame(individuals)
-    samples <- as.data.frame(samples)
-    clinical <- as.data.frame(clinical)
-    if(inherits(dna, "DNAbin") && is.matrix(dna)) dna <- as.list(dna)
+    if(!is.null(individuals)) individuals <- as.data.frame(individuals)
+    if(!is.null(samples)) samples <- as.data.frame(samples)
+    if(!is.null(clinical)) clinical <- as.data.frame(clinical)
+    if(!is.null(dna) && (inherits(dna, "DNAbin") && is.matrix(dna))) dna <- as.list(dna)
     if(!is.null(dna) && (!is.list(dna) || !inherits(dna, "DNAbin"))) stop("dna is not a list of DNAbin objects.")
 
     ## check that relevant fields are here ##
@@ -218,3 +218,4 @@ setMethod("get.nsamples","obkData", function(x, ...){
 ##################
 ## NOTE: THIS MUST BE COMMENTED WHEN COMPILING/INSTALLING THE PACKAGE
 
+new("obkData")
