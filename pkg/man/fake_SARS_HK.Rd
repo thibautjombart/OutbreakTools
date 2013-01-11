@@ -11,7 +11,7 @@
 
 	The dataset contains two objects.
 	
-	\code{individualData} is a datafram containing individual identifiers and an exposure code that can take 
+	\code{individualData} is a dataframe containing individual identifiers and an exposure code that can take 
 	the following values: 
 	\itemize{
 		\item{1 if individual was infected in Prince of Wales hospital 
@@ -34,3 +34,6 @@
 	
 }
 \keyword{dataset}
+\author{
+  Anne Cori
+}

@@ -24,3 +24,6 @@ These are the different datasets for the outbreak:
 Hughes J, Allen RC, Baguelin M, Hampson K, Baillie GJ, et al. (2012) Transmission of Equine Influenza Virus during an Outbreak Is Characterized by Frequent Mixed Infections and Loose Transmission Bottlenecks. PLoS Pathog 8(12): e1003081. doi:10.1371/journal.ppat.1003081
 }
 \keyword{dataset}
+\author{
+  Joseph Hughes, Anne Cori
+}
