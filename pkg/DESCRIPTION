@@ -1,9 +1,9 @@
-Package: hackout
+Package: epibase
 Version: 1.0-0
 Date: 2013/01/11
 Title: Basic tools for the analysis of disease outbreaks.
-Author: The Hackout team
-Maintainer: John Smith <john.smith@nowhere.com>
+Author: The Hackout team (In alphabetic order: Marc Baguelin, Anne Cori, Paul Birrell, Simon Cauchemez, ...)
+Maintainer: Thibaut Jombart <t.jombart@imperial.ac.uk>
 Suggests: EpiEstim
 Depends: R (>= 2.10), methods, MASS, ape, networkDynamic, ggplot2, proto, sna, grImport, scales, plyr
 Description: basic tools for the analysis of disease outbreaks.
