@@ -47,12 +47,17 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
 
+    ## store old option ##
+    o.opt <- options("stringsAsFactors")
+    options("stringsAsFactors"=FALSE)
+    on.exit(options(o.opt))
+
 
     ## PROCESS INFORMATION TO CREATE INDIVIDUALS ('data') ##
     ## coerce to data.frames, force to NULL if nrow=0
     if(!is.null(individuals)) {
         individuals <- as.data.frame(individuals)
-        if(nrow(individuals)==0) individuals <- NULL
+        if(nrow(individuals)==0 || ncol(individuals)==1) individuals <- NULL
     }
     if(!is.null(samples)){
         samples <- as.data.frame(samples)
@@ -81,12 +86,13 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 
     ## PROCESS INFORMATION ABOUT INDIVIDUALS ('individuals') ##
     if(!is.null(individuals)){
-        lab.posi <- match("individualID", names(individuals))
-        x@individuals <- cbind.data.frame(id=as.character(individuals[,lab.posi,drop=FALSE]), individuals[,-lab.posi,drop=FALSE])
+        lab <- as.character(individuals[,"individualID"])
+        x@individuals <- individuals[, names(individuals)!="individualID", drop=FALSE]
+        row.names(x@individuals) <- lab
     }
 
 
-    ## PROCESS INFORMATION ABOUT SAMPLES ('SAMPLES') ##
+    ## PROCESS INFORMATION ABOUT SAMPLES ('samples') ##
     if(!is.null(samples)){
         x@samples <- samples[,c("individualID","sampleID","date"),drop=FALSE]
         x@samples[,"individualID"] <- as.character(x@samples[,"individualID"])
@@ -118,7 +124,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         ## (can't be using dna[NA])
         ## vecID: vector of sequence IDs (including possible NAs, can be NAs only)
         f1 <- function(vecID, locus){
-            if(all()) return(NULL)
+            if(all(is.na(vecID))) return(NULL)
             toRemove <- is.na(vecID)
             vecID <- vecID[!toRemove]
             locus <- locus[!toRemove]
