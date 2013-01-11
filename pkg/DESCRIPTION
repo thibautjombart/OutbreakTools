@@ -24,4 +24,8 @@ Depends:
     plyr
 Description: basic tools for the analysis of disease outbreaks.
 License: GPL (>=2)
+<<<<<<< HEAD
 LazyLoad: yes
+=======
+LazyLoad: yes
+>>>>>>> bdf6ba35d681ffa7e93e29a2922c72c35186bae7

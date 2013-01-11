@@ -1,13 +1,13 @@
-###################
-#### ACCESSORS ####
-###################
+################################
+#### ACCESSORS  FOR OBKDATA ####
+################################
 
 ################
 ## get.nlocus ##
 ################
 setMethod("get.nlocus", "obkData", function(x, ...){
   if(is.null(x@dna)) return(0)
-  sum(sapply(x@dna, get.nlocus))  
+  sum(sapply(x@dna, get.nlocus))
 })
 
 ###############
@@ -54,7 +54,7 @@ setMethod("get.individuals", "obkData", function(x, individual = NULL, ...){
   if(is.null(x@individuals)) return(NA)
 
   nInd <- get.nindividuals(x)
-  ## return only individual if 
+  ## return only individual if
   if(!is.null(individual)){
    return(x)
 
@@ -63,5 +63,5 @@ setMethod("get.individuals", "obkData", function(x, individual = NULL, ...){
 
    ## return new obkData object subsetted according to the individual ID
    ## return(new("obkData"))?
-   
+
 })
