@@ -4,9 +4,13 @@
 \alias{obkData-class}
 \alias{initialize,obkData-method}
 %\alias{show,obkData-method}
-\alias{get.nlocus,obkData-method}
-\alias{get.nsequences,obkData-method}
 \alias{get.locus,obkData-method}
+\alias{get.nlocus,obkData-method}
+\alias{get.dna,obkData-method}
+\alias{get.nsequences,obkData-method}
+\alias{get.individuals,obkData-method}
+\alias{get.nindividuals,obkData-method}
+\alias{get.data,obkData-method}
 % \alias{[,obkData-method}
 % \alias{[,obkData,ANY,ANY-method}
 %%%%
@@ -71,16 +75,32 @@
   the method's name. This list also contains methods for conversion from
   \code{obkData} to other classes.
   \describe{
-    % \item{show}{\code{signature(x = "obkData")}: printing of the
-    %   object.}
-    % \item{get.nlocus}{\code{signature(x = "obkData")}: returns the number of
-    %   loci in the sample.}
-    % \item{get.nsequences}{\code{signature(x = "obkData")}: returns the number of
-    %   sequences in the sample.}
-    % \item{get.locus}{\code{signature(x = "obkData")}: returns the names
-    %   of the loci in the sample.}
-    % \item{get.dna*}{\code{signature(x = "obkData")}: returns the dna
-    %   sequences in the sample for a given locus (\code{locus} argument).}
+    \item{show}{\code{signature(x = "obkData")}: printing of the
+      object.}
+    \item{get.locus}{\code{signature(x = "obkData")}: returns the loci
+      existing in the data.}
+    \item{get.nlocus}{\code{signature(x = "obkData")}: returns the number of
+      loci.}
+    \item{get.dna*}{\code{signature(x = "obkData")}: returns the
+      sequences for a given locus (\code{locus} argument, required if
+      more than one locus was sequenced).}
+    \item{get.nsequences}{\code{signature(x = "obkData")}: returns the number of
+      sequences in the data.}
+    \item{get.locus}{\code{signature(x = "obkData")}: returns the names
+      of the loci in the sample.}
+    \item{get.individuals*}{\code{signature(x = "obkData")}: returns the
+      IDs of individuals in a given source of data (argument
+      \code{data}, can be 'samples' (default) or 'individuals').}
+    \item{get.nindividuals*}{\code{signature(x = "obkData")}: returns the
+      number of individuals in a given source of data (argument
+      \code{data}, can be 'samples' (default) or 'individuals').}
+    \item{get.data*}{\code{signature(x = "obkData")}: search for a
+      matching fields in the object and returns the corresponding
+      values; in the absence of match, \code{NULL} is returned. Several
+      values can be provided; they can be names of the slots, or any
+      variable stored within the data.frames \code{samples} or
+      \code{individuals}.
+    }
   }
 }
 \author{
@@ -147,5 +167,18 @@ new("obkData", samples=samp, dna=dat.dna)
 samp$locus <- c("gene1","gene2")[c(1,1,1,2,1,2)]
 new("obkData", samples=samp, dna=dat.dna)
 
+
+## TEST ACCESSORS ##
+x <- new("obkData", samples=samp, dna=dat.dna, individuals=ind)
+
+get.locus(x)
+get.individuals(x)
+get.individuals(x, "individuals")
+get.dna(x, locus="gene2")
+get.nsequences(x)
+get.data(x, "samples")
+get.data(x, "individuals")
+get.data(x, c("date","swab"))
+table(get.data(x, c("swab", "locus")))
 }
 \keyword{classes}
