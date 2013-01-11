@@ -42,17 +42,23 @@ setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataf
 ##
 ## 'contacts': whatever Simon Frost has in mind
 ##
-setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=NULL, clinical=NULL, dna=NULL, contacts=NULL){
+setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=NULL, clinical=NULL, dna=NULL, contacts=NULL,
+                                            date.format=""){
 
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
+
+    ## store old option ##
+    o.opt <- options("stringsAsFactors")
+    options("stringsAsFactors"=FALSE)
+    on.exit(options(o.opt))
 
 
     ## PROCESS INFORMATION TO CREATE INDIVIDUALS ('data') ##
     ## coerce to data.frames, force to NULL if nrow=0
     if(!is.null(individuals)) {
         individuals <- as.data.frame(individuals)
-        if(nrow(individuals)==0) individuals <- NULL
+        if(nrow(individuals)==0 || ncol(individuals)==1) individuals <- NULL
     }
     if(!is.null(samples)){
         samples <- as.data.frame(samples)
@@ -81,19 +87,29 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 
     ## PROCESS INFORMATION ABOUT INDIVIDUALS ('individuals') ##
     if(!is.null(individuals)){
-        lab.posi <- match("individualID", names(individuals))
-        x@individuals <- cbind.data.frame(id=as.character(individuals[,lab.posi,drop=FALSE]), individuals[,-lab.posi,drop=FALSE])
+        lab <- as.character(individuals[,"individualID"])
+        x@individuals <- individuals[, names(individuals)!="individualID", drop=FALSE]
+        row.names(x@individuals) <- lab
     }
 
 
-    ## PROCESS INFORMATION ABOUT SAMPLES ('SAMPLES') ##
+    ## PROCESS INFORMATION ABOUT SAMPLES ('samples') ##
     if(!is.null(samples)){
-        x@samples <- samples[,c("individualID","sampleID","date"),drop=FALSE]
+        ## reorder columns - mandatory fields come first
+        nameOrder <- c(c("individualID","sampleID","date"), setdiff(names(samples), c("individualID","sampleID","date")))
+        x@samples <- samples[,nameOrder]
         x@samples[,"individualID"] <- as.character(x@samples[,"individualID"])
         x@samples[,"sampleID"] <- as.character(x@samples[,"sampleID"])
-        x@samples[,"date"] <- as.Date(x@samples[,"date"])
-        extraInfo <- samples[, !names(samples) %in% c("individualID","sampleID","date"), drop=FALSE]
-        x@samples <- cbind.data.frame(x@samples, extraInfo)
+        x@samples[,"date"] <- as.Date(x@samples[,"date"], format=date.format)
+
+        ## make sure that all individualIDs are in 'individuals', if the slot is not NULL
+        if(!is.null(x@individuals)){
+            unknownIDs <- unique(x@samples$individualID)[!unique(x@samples$individualID) %in% row.names(x@individuals)]
+            if(length(unknownIDs)>0) {
+                unknownIDs.txt <- paste(unknownIDs, collapse=", ")
+                warning(paste("the following sampled individuals have no individual information:\n", unknownIDs.txt))
+            }
+        }
     }
 
     ## PROCESS INFORMATION ABOUT CLINICAL ('clinicals') ##
@@ -118,7 +134,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         ## (can't be using dna[NA])
         ## vecID: vector of sequence IDs (including possible NAs, can be NAs only)
         f1 <- function(vecID, locus){
-            if(all()) return(NULL)
+            if(all(is.na(vecID))) return(NULL)
             toRemove <- is.na(vecID)
             vecID <- vecID[!toRemove]
             locus <- locus[!toRemove]
@@ -231,4 +247,25 @@ setMethod("get.nsamples","obkData", function(x, ...){
 ##################
 ## NOTE: THIS MUST BE COMMENTED WHEN COMPILING/INSTALLING THE PACKAGE
 
+## empty object
 new("obkData")
+
+## individual info only
+new("obkData", individuals=data.frame("individualID"=letters))
+new("obkData", individuals=data.frame("individualID"=letters, age=1:26, 1:26))
+
+
+samp <- data.frame(individualID=c('toto','toto','titi'), sampleID=c(1,3,2), date=c("2001-02-13","2001-03-01","2001-05-25"), swab=c("+","-","+"))
+
+
+## sample info only
+new("obkData", sample=samp)
+new("obkData", sample=samp[,c(1:3)] )
+new("obkData", sample=samp[,c(1:3,4,4,4)] )
+
+## sample & indiv info - missing indiv
+new("obkData", sample=samp[,c(1:3,4,4,4)] , individuals=data.frame("individualID"=letters, age=1:26))
+
+## sample & indiv info
+ind <- data.frame("individualID"=c("toto","John Doe", "titi"), age=c(20,18,67), sex=c("m","m","?"))
+new("obkData", sample=samp, ind=ind)
