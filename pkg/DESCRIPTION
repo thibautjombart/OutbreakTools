@@ -25,20 +25,3 @@ Depends:
 Description: basic tools for the analysis of disease outbreaks.
 License: GPL (>=2)
 LazyLoad: yes
-Collate:
-    'annotatedTreeReader.R'
-    'auxClasses.R'
-    'generics.R'
-    'ISOdate_format.R'
-    'obkClinicalEvent.R'
-    'obkContacts.R'
-    'obkData.R'
-    'obkSequences.R'
-    'phylo2ggphy.R'
-    'plot_ggphy.R'
-    'plotGraphviz.R'
-    'sheddingPlot.R'
-    'simSIRmodel.R'
-    'simuEpi.R'
-    'utils.R'
-    'zzz.R'
