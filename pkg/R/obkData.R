@@ -127,7 +127,11 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     if(length(seqPos)==0 || is.null(dna)){
         x@dna <- NULL
     } else {
-        if(!all(samples$sequenceID %in% names(dna))) warning("some sequence ID where not present in the dna list")
+        if(is.character(samples$sequenceID) && !all(samples$sequenceID %in% names(dna))) {
+            err.txt <- samples$sequenceID[!samples$sequenceID %in% names(dna)]
+            err.txt <- paste(unique(err.txt), collapse=", ")
+            stop(paste("The following sequence ID were not found in the dna list:\n", err.txt))
+        }
         temp <- split(samples, samples$sampleID)
 
         ## small auxiliary function to pass relevant data to the constructor, and nothing otherwise
@@ -247,25 +251,61 @@ setMethod("get.nsamples","obkData", function(x, ...){
 ##################
 ## NOTE: THIS MUST BE COMMENTED WHEN COMPILING/INSTALLING THE PACKAGE
 
-## empty object
-new("obkData")
+## ## EMPTY OBJECT ##
+## new("obkData")
 
-## individual info only
-new("obkData", individuals=data.frame("individualID"=letters))
-new("obkData", individuals=data.frame("individualID"=letters, age=1:26, 1:26))
-
-
-samp <- data.frame(individualID=c('toto','toto','titi'), sampleID=c(1,3,2), date=c("2001-02-13","2001-03-01","2001-05-25"), swab=c("+","-","+"))
+## ## INDIVIDUAL INFO ONLY ##
+## new("obkData", individuals=data.frame("individualID"=letters))
+## new("obkData", individuals=data.frame("individualID"=letters, age=1:26, 1:26))
 
 
-## sample info only
-new("obkData", sample=samp)
-new("obkData", sample=samp[,c(1:3)] )
-new("obkData", sample=samp[,c(1:3,4,4,4)] )
+## samp <- data.frame(individualID=c('toto','toto','titi'), sampleID=c(1,3,2), date=c("2001-02-13","2001-03-01","2001-05-25"), swab=c("+","-","+"))
 
-## sample & indiv info - missing indiv
-new("obkData", sample=samp[,c(1:3,4,4,4)] , individuals=data.frame("individualID"=letters, age=1:26))
 
-## sample & indiv info
-ind <- data.frame("individualID"=c("toto","John Doe", "titi"), age=c(20,18,67), sex=c("m","m","?"))
-new("obkData", sample=samp, ind=ind)
+## ## SAMPLE INFO ONLY ##
+## new("obkData", sample=samp)
+## new("obkData", sample=samp[,c(1:3)] )
+## new("obkData", sample=samp[,c(1:3,4,4,4)] )
+
+## ## SAMPLE & INDIV INFO - MISSING INDIV ##
+## new("obkData", sample=samp[,c(1:3,4,4,4)] , individuals=data.frame("individualID"=letters, age=1:26))
+
+## ## SAMPLE & INDIV INFO ##
+## ind <- data.frame("individualID"=c("toto","John Doe", "titi"), age=c(20,18,67), sex=c("m","m","?"))
+## new("obkData", sample=samp, ind=ind)
+
+
+## ## DNA INFO, NOTHING ELSE ##
+## library(ape)
+## data(woodmouse)
+## dat.dna <- as.list(woodmouse)
+
+## new("obkData", dna=dat.dna) # should be empty
+
+## ## SAMP + DNA INFO ##
+## samp <- data.frame(individualID=c('toto','toto','titi'), sampleID=c(1,3,2), date=c("2001-02-13","2001-03-01","2001-05-25"), swab=c("+","-","+"))
+
+## samp <- cbind.data.frame(samp, sequenceID=c(1,2,3))
+
+## ## sequences given as indices
+## new("obkData", samples=samp, dna=dat.dna) # (note the nice sample ordering)
+
+## ## sequences given as IDs
+## samp$sequenceID <- c("No304","No306","No305")
+## new("obkData", samples=samp, dna=dat.dna) # (note the nice sample ordering)
+
+## ## sequences given as IDs, with wrong IDs
+## samp$sequenceID <- c("No304","No306","Arrrhhh")
+## new("obkData", samples=samp, dna=dat.dna) # (note the nice sample ordering)
+
+
+## ## multiple sequences per individual
+## samp$sequenceID <- c("No304","No306","No305")
+## samp <- samp[c(1,1,2,2,2,3),]
+## samp$sequenceID <- 1:6
+## new("obkData", samples=samp, dna=dat.dna)
+
+
+## ## multiple sequences per individual, locus information
+## samp$locus <- c("gene1","gene2")[c(1,1,1,2,1,2)]
+## new("obkData", samples=samp, dna=dat.dna)
