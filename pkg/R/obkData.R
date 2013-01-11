@@ -273,3 +273,8 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 ## ## multiple sequences per individual, locus information
 ## samp$locus <- c("gene1","gene2")[c(1,1,1,2,1,2)]
 ## new("obkData", samples=samp, dna=dat.dna)
+
+## ## clinical data
+## data(fakefludata)
+## inds <- data.frame(individualID = c("Lulla", "Paul"), gender = c("F", "M"))
+## x <- new("obkData", individuals = inds, clinical = clinicalfludata, date.format = "%d/%m/%Y") ## should give a warning that an individual record for Anne is missing
