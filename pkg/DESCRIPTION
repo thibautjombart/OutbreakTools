@@ -5,7 +5,7 @@ Title: Basic tools for the analysis of disease outbreaks.
 Author: The Hackout team
 Maintainer: John Smith <john.smith@nowhere.com>
 Suggests: EpiEstim
-Depends: R (>= 2.10), methods, MASS, ape, networkDynamic, ggplot2, proto
+Depends: R (>= 2.10), methods, MASS, ape, networkDynamic, ggplot2, proto, sna, grImport, scales, plyr
 Description: basic tools for the analysis of disease outbreaks.
 License: GPL (>=2)
 LazyLoad: yes

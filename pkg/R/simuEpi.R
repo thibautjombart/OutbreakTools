@@ -1,6 +1,7 @@
 library(ape)
 library(sna)
 library(network)
+library(grImport)
 
 #Simulate an epidemic following a SIRS model
 #N=Size of the population
@@ -89,7 +90,6 @@ mynet<-y
 
 # get pairwise shortest path distances in this network and use them to make a phylogeny in one of 2 very simple ways
 
-
 if (method=='upgma')
 phylotree=upgma(geodist(mynet)$gdist)
 if (method=='nj')
@@ -99,8 +99,10 @@ return(phylotree)
 }
 ## end function for creating phylo tree
 
-
-ret<-simuEpi(f=0)
-plotEpi(ret$S)
-plot(infectorTableToNetwork(ret$T))
-plot(phylofromtranstree(ret$T)) 
+testSimu <- function() {
+	set.seed(1);
+	ret<-simuEpi(f=0)
+	plotEpi(ret$S)
+	plot(infectorTableToNetwork(ret$T))
+	plot(phylofromtranstree(ret$T)) 
+}
