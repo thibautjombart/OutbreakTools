@@ -22,22 +22,13 @@ strip.annotations = function(text) {
     return(list(annotations=annotations,tree=text))
 }
 
-split.tree.names = function(text, header=FALSE) {
-    if (header) {
-      text = gsub(pattern="\\{",x=text,replacement="\\[")
-      text = gsub(pattern="\\}",x=text,replacement="\\]")
-    }
+split.tree.names = function(text) {
     text = gsub(pattern="\\[.*?\\]=",x=text,replacement="")
     text = gsub(pattern="^tree",x=text,replacement="")
     return(text)
 }
 
-split.tree.traits = function(text, header=FALSE) {
-
-    if (header) {
-      text = gsub(pattern="\\{",x=text,replacement="\\[")
-      text = gsub(pattern="\\}",x=text,replacement="\\]")
-    }
+split.tree.traits = function(text) {
 
   # Pull out annotation
   text = regmatches(text,regexpr(pattern="\\[.*?\\]",text))
@@ -45,6 +36,52 @@ split.tree.traits = function(text, header=FALSE) {
   text = substring(text,3,nchar(text)-1)  
   return(text)
 }
+
+parse.value = function(text) {
+    value = text
+    if (length(grep("^\\{",value))) { # starts with {
+        save = value
+        value = substring(value, 2, nchar(value)-1)
+        
+        depth = 0               
+        r = regexpr(pattern="\\{+",value,perl=TRUE)
+        match.length = attr(r, "match.length")
+        
+        if (match.length > 0) {
+            depth = match.length
+        }
+        
+        if (depth == 0) {
+            split = ","
+        } else {            
+            split = paste(
+                "(?<=",rep("\\}",depth),")",
+                ",",
+                "(?=" ,rep("\\{",depth),")",                
+                sep="")
+        }
+        
+        if (depth >= 1) {
+            return(save) # TODO Still error in recursion
+        }
+        
+        part = strsplit(value, split, perl=TRUE)[[1]]
+        value = list()
+        for (i in 1:length(part)) {
+            value[[i]] = parse.value(part[i])
+        }
+        # TODO Unlist when simple array?            
+    } else {
+        if (!is.na(suppressWarnings(as.numeric(value)))) { # is a number
+            value = as.numeric(value)
+        }
+    }
+    return(value)
+}
+
+
+
+     
 
 parse.traits = function(text, header=FALSE) {
 
@@ -64,31 +101,17 @@ parse.traits = function(text, header=FALSE) {
   for (i in 1:n) {
     s = start[i,3]
     e = s + length[i,3] - 1
-#    if (substring(text,e,e) == ",") {
-#        e = e - 1
-#    }
     value = substring(text,s,e)    
     
     s = start[i,1]
-    e = s + length[i,1]
-    if (substring(text,e,e) == "=") {
-        e = e - 1
-    }
+    e = s + length[i,1] - 1
     key = substring(text,s,e)
-    
-    ### TODO: Delegate below to a more generic parser
-    ### TODO: Need arrays, boolean
-    if (!is.na(as.numeric(value))) {
-        value = as.numeric(value)
-    }
-    traits[[key]] = value
+
+    traits[[key]] = parse.value(value)
   }
 
-#  browser() 
-#  print(traits)
     return(traits)
 }
-
 
 # THE CODE BELOW COMES FROM 'ape'. MY GOAL IS TO DERIVE FROM THIS TO READ IN BEAST-STYLE ANNOTATIONS
 
@@ -137,9 +160,7 @@ function (tp) {
     annotations = result$annotations
     new.tp.stripped = result$tree
     
-    annotations = lapply(annotations, parse.traits, header=TRUE)
-    
-#    browser()
+    annotations = lapply(annotations, parse.traits, header=TRUE)    
     
     tp.stripped = gsub("\\[.*?\\]","",tp)
     tpc <- unlist(strsplit(tp.stripped, "[\\(\\),;]"))
@@ -151,8 +172,6 @@ function (tp) {
     nb.node <- sum(skeleton == ")")
     nb.tip <- sum(skeleton == ",") + 1
     nb.edge <- nb.node + nb.tip
-    
-#    browser()
     
     node.label <- character(nb.node)
     tip.label <- character(nb.tip)
@@ -194,9 +213,7 @@ function (tp) {
     class(obj) <- "phylo"
     attr(obj, "order") <- "cladewise"
     
-    obj$annotations = annotations
-#    obj$tmp = new.tp.stripped
-    
+    obj$annotations = annotations    
     obj
 }
 
@@ -248,16 +265,11 @@ MAS.read.tree = function (file = "", text = NULL, tree.names = NULL, skip = 0,
     colon <- grep(":", STRING)   
     
     if (!is.null(tree.names)) {
-        traits.text = lapply(tree.names, split.tree.traits, header=T)
-        tree.names = lapply(tree.names, split.tree.names, header=T)
+        traits.text = lapply(tree.names, split.tree.traits)
+        tree.names = lapply(tree.names, split.tree.names)
         tree.traits = lapply(traits.text, parse.traits)
     }
-    
-    lapply(STRING, check.magic.character, magic.character="\\|")
-    lapply(STRING, convert.to.magic.character, magic.character="\\|")
-    
-#        browser()
-    
+        
     if (!length(colon)) {
         stop(paste("Annotated clado.build is not yet implemented.\n"))
         obj <- lapply(STRING, MAS.clado.build)
