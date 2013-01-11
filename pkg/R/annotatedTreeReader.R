@@ -112,7 +112,7 @@ parse.traits = function(text, header=FALSE) {
 # THE CODE BELOW COMES FROM 'ape'. MY GOAL IS TO DERIVE FROM THIS TO READ IN BEAST-STYLE ANNOTATIONS
 
 
-MAS.tree.build =
+annotated.tree.build =
 function (tp) {
     
     add.internal <- function() {
@@ -213,7 +213,7 @@ function (tp) {
     obj
 }
 
-MAS.read.tree = function (file = "", text = NULL, tree.names = NULL, skip = 0, 
+read.annontated.tree = function (file = "", text = NULL, tree.names = NULL, skip = 0, 
     comment.char = "#", keep.multi = FALSE, ...) 
 {
     unname <- function(treetext) {
@@ -268,14 +268,14 @@ MAS.read.tree = function (file = "", text = NULL, tree.names = NULL, skip = 0,
         
     if (!length(colon)) {
         stop(paste("Annotated clado.build is not yet implemented.\n"))
-        obj <- lapply(STRING, MAS.clado.build)
+        obj <- lapply(STRING, annotated.clado.build)
     }
     else if (length(colon) == Ntree) {
-        obj <- lapply(STRING, MAS.tree.build)
+        obj <- lapply(STRING, annotated.tree.build)
     }
     else {
         obj <- vector("list", Ntree)
-        obj[colon] <- lapply(STRING[colon], MAS.tree.build)
+        obj[colon] <- lapply(STRING[colon], annotated.tree.build)
         nocolon <- (1:Ntree)[!1:Ntree %in% colon]
         obj[nocolon] <- lapply(STRING[nocolon], clado.build)
     }
@@ -297,7 +297,7 @@ MAS.read.tree = function (file = "", text = NULL, tree.names = NULL, skip = 0,
     obj
 }
 
-MAS.read.nexus = function (file, tree.names = NULL) {
+read.annotated.nexus = function (file, tree.names = NULL) {
     X <- scan(file = file, what = "", sep = "\n", quiet = TRUE)
     LEFT <- grep("\\[", X)
     RIGHT <- grep("\\]", X)
@@ -387,22 +387,22 @@ MAS.read.nexus = function (file, tree.names = NULL) {
     
     colon <- grep(":", STRING)
     if (!length(colon)) {
-        stop("MAS.clado.build is not yet implemented.\n")
-        trees <- lapply(STRING, MAS.clado.build)
+        stop("annotated.clado.build is not yet implemented.\n")
+        trees <- lapply(STRING, annotated.clado.build)
     } else if (length(colon) == Ntree) {
 #        trees <- if (translation) {
 #            browser()
 #            stop("treeBuildWithTokens is not yet implemented.\n")
 #            lapply(STRING, .treeBuildWithTokens)
 #        }
-#        else lapply(STRING, MAS.tree.build)
-        trees <- lapply(STRING, MAS.tree.build)
+#        else lapply(STRING, annotated.tree.build)
+        trees <- lapply(STRING, annotated.tree.build)
 #        browser()
     } else {
 #        trees <- vector("list", Ntree)
-#        trees[colon] <- lapply(STRING[colon], MAS.tree.build)
+#        trees[colon] <- lapply(STRING[colon], annotated.tree.build)
 #        nocolon <- (1:Ntree)[!1:Ntree %in% colon]
-#        trees[nocolon] <- lapply(STRING[nocolon], MAS.clado.build)
+#        trees[nocolon] <- lapply(STRING[nocolon], annotated.clado.build)
 #        if (translation) {
 #            for (i in 1:Ntree) {
 #                tr <- trees[[i]]
@@ -421,7 +421,7 @@ MAS.read.nexus = function (file, tree.names = NULL) {
 #            }
 #            translation <- FALSE
 #        }
-        stop("Unknown error in MAS.read.nexus.\n")
+        stop("Unknown error in read.annotated.nexus.\n")
     }
     for (i in 1:Ntree) {
         tr <- trees[[i]]
