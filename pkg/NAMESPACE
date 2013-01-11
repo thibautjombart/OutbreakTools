@@ -9,5 +9,6 @@ import(
   methods,
   MASS,
   ape,
-  ggplot2
+  ggplot2,
+  proto
 )

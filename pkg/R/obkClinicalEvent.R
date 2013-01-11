@@ -14,6 +14,10 @@
 
 setClass("obkClinicalEvent", representation(individual.ID="characterOrNULL", type="characterOrNULL", characteristic="characterOrNULL", start.date="DateOrNULL", end.date="DateOrNULL", duration="numericOrNULL", location="characterOrNULL"), prototype(individual.ID=NULL, type=NULL, characteristic=NULL, start.date=NULL, end.date=NULL, start.date=NULL, duration=NULL, location=NULL))
 
+setClassUnion("obkClinicalEventOrNULL", c("obkClinicalEvent", "NULL"))
+
+
+
 
 ######################
 ####  CONSTRUCTOR ####

@@ -9,6 +9,11 @@
 
 setClass("obkContacts",representation(contacts="networkDynamicOrNetworkOrNULL"),prototype(contacts=NULL))
 
+setClassUnion("obkContactsOrNULL", c("obkContacts", "NULL"))
+
+
+
+
 ######################
 ####  CONSTRUCTOR ####
 ######################
