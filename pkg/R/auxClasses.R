@@ -27,7 +27,5 @@ setClassUnion("POSIXctOrNULL", c("POSIXct","NULL"))
 setClassUnion("networkDynamicOrNetworkOrNULL",c("networkDynamicOrNetwork","NULL"))
 setClassUnion("DateOrNULL", c("Date", "NULL"))
 setClassUnion("dataframeOrNULL", c("data.frame", "NULL"))
-setClassUnion("obkSequencesOrNULL", c("obkSequences", "NULL"))
-setClassUnion("obkContactsOrNULL", c("obkContacts", "NULL"))
-setClassUnion("obkClinicalEventOrNULL", c("obkClinicalEvent", "NULL"))
+
 
