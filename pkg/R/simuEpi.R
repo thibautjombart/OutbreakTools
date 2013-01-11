@@ -39,7 +39,8 @@ simuEpi <- function (N=1000,D=50,beta=0.2,nu=0.1,f=0.5) {
 	return(ret)
 }
 
-###Plot the epidemic
+#' Plot the number of susceptible, infected and recovered as a function of time
+#' @param S Matrix containing the numbers to be plotted
 plotEpi <- function(S) {
 	plot(c(0,dim(S)[1]),c(0,sum(S[1,])),type='n',xlab='Days',ylab='Individuals')
 	lines(S[,1],col='black')
@@ -48,7 +49,9 @@ plotEpi <- function(S) {
 	legend('right',lty=c(1,1),col=c('black','red','blue'),c('Susceptible','Infected','Recovered'))
 }
 
-###Convert transmission tree to a network
+#' Convert transmission tree to a network
+#' @param transmissiontreeData Matrix of who infected whom
+#' @return Network of who infected whom
 infectorTableToNetwork <- function (transmissiontreeData)
 {
 uniqueIDs <- sort(c(unique(as.character(transmissiontreeData[,1]),as.character(transmissiontreeData[,2]))))
@@ -66,8 +69,10 @@ if (!is.na(v2)) add.edges(y,v2,v1)
 return(y)
 }
 
-### Create phylo tree in very simple way from transmission tree
-phylofromtranstree <- function(transmissiontreeData,method='nj'){
+#' Create phylogenetic tree from transmission tree
+#' @param transmissiontreeData Matrix of who infected whom
+#' @return phylogenetic tree representing how samples of the infectious agents may be related
+phylofromtranstree <- function(transmissiontreeData){
 
 # use the transmission tree data to create an *undirected* network
 
@@ -89,15 +94,13 @@ mynet<-y
 
 # get pairwise shortest path distances in this network and use them to make a phylogeny in one of 2 very simple ways
 
-if (method=='upgma')
-phylotree=upgma(geodist(mynet)$gdist)
-if (method=='nj')
 phylotree=nj(geodist(mynet)$gdist)
 
 return(phylotree)
 }
 
-### Plot transmission tree
+#' Plot transmission tree using graphviz
+#' @param dat Matrix of who infected whom
 plotTranstree <- function (dat) {
     sink("graph.dot")
     cat("digraph G{\n\nrankdir=LR;\n")
@@ -118,7 +121,7 @@ plotTranstree <- function (dat) {
     grid.picture(graph)
 } 
 
-### Test functions in this file
+#' Test function: simulate an epidemic and produce various plots
 testSimu <- function() {
 	set.seed(1);
 	ret<-simuEpi(f=0,D=50)
