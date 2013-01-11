@@ -1,6 +1,6 @@
 test<-function(){
 
-dir<-"./"
+dir<-"."
 file<-"H3_WD_n1000_GTRGI_E_skyline.trees_time_MCC.txt"
 #create a phylo
 	my_phylo<-read.nexus(file=paste(dir,file,sep="/"))
