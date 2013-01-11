@@ -20,9 +20,9 @@ the resulting "phylo" objects
   An object of class "phylo" with an additional slot called annotations.  
   This slot is a list indexed by the nodes.
 }
-#\examples{
-#    see misc/annotated_example.R
-#}
+%\examples{
+%    see misc/annotated_example.R
+%}
 \author{
   Marc Suchard
 }

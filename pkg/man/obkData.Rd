@@ -40,7 +40,7 @@
       \code{?as.Date}). Default format for dates if in character strings
       is "%Y-%m-%d". Alternative format can be specified via the
       argument date.format}
-    \item{\code{clinical}}{... - to be filled}
+    \item{\code{clinical}}{a list of data.frames, each of which has 2 mandatory fields, 'individualID' and 'date'. Dates are specified as in the case of the samples data.frame. Each item of the list should be named according to the type of clinical event, e.g. 'hospitalisation', 'vaccination' or 'symptoms'. The 'date' field should be utilised as a start or onset date where the clinical event spans a period of time.}
     \item{\code{dna}}{a list of DNA sequences in \code{DNAbin} or
       \code{character} format.}
     \item{\code{contacts}}{... - to be filled}
@@ -58,7 +58,7 @@
     \item{\code{samples}:}{a \code{data.frame} containing sample
       information; the first three columns are 'individualID',
       'sampleID', and 'date'.}
-    \item{\code{clinical}:}{...}
+    \item{\code{clinical}:}{a \code{list} of \code{data.frame}, each member of the list containing clinical information of a particular type; the first two columns are 'individualID' and 'date'.}
     \item{\code{contacts}:}{an object of the class
       \linkS4class{obkContacts} storing contact information.}
     \item{\code{dna}:}{an object of the class
@@ -167,6 +167,10 @@ new("obkData", samples=samp, dna=dat.dna)
 samp$locus <- c("gene1","gene2")[c(1,1,1,2,1,2)]
 new("obkData", samples=samp, dna=dat.dna)
 
+## incorporating data on sample and clinical data
+data(fakefludata)
+new("obkData", individuals = Patientsdata, samples = samplefludata, clinical = clinicalfludata, date.format = "\%d/\%m/\%Y")
+
 
 ## TEST ACCESSORS ##
 x <- new("obkData", samples=samp, dna=dat.dna, individuals=ind)
@@ -180,5 +184,7 @@ get.data(x, "samples")
 get.data(x, "individuals")
 get.data(x, c("date","swab"))
 table(get.data(x, c("swab", "locus")))
+
+
 }
 \keyword{classes}

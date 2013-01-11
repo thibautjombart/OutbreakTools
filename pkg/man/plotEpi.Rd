@@ -11,4 +11,7 @@
   Plot the number of susceptible, infected and recovered as
   a function of time
 }
+\author{
+  Xavier Didelot
+}
 
