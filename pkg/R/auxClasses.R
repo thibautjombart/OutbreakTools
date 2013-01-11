@@ -5,6 +5,8 @@
 
 ## DNA SEQUENCES
 setOldClass("DNAbin")
+setOldClass("phylo")
+setOldClass("multiPhylo")
 
 ## DATES
 setOldClass("POSIXct")
