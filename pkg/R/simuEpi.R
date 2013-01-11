@@ -3,12 +3,13 @@ library(sna)
 library(network)
 library(grImport)
 
-#Simulate an epidemic following a SIRS model
-#N=Size of the population
-#D=Duration of simulation
-#beta=Rate of infection
-#nu=Rate of recovery
-#f=Rate of loss of immunity
+#' Simulate an epidemic following a SIRS model
+#' @param N Size of the population
+#' @param D Duration of simulation
+#' @param beta Rate of infection
+#' @param nu Rate of recovery
+#' @param f Rate of loss of immunity
+#' @return simulated epidemic
 simuEpi <- function (N=1000,D=50,beta=0.2,nu=0.1,f=0.5) {
 	S<-matrix(0,D,3)
 	T<-matrix(0,N,3)
@@ -38,7 +39,7 @@ simuEpi <- function (N=1000,D=50,beta=0.2,nu=0.1,f=0.5) {
 	return(ret)
 }
 
-#Plot the epidemic
+###Plot the epidemic
 plotEpi <- function(S) {
 	plot(c(0,dim(S)[1]),c(0,sum(S[1,])),type='n',xlab='Days',ylab='Individuals')
 	lines(S[,1],col='black')
@@ -47,7 +48,7 @@ plotEpi <- function(S) {
 	legend('right',lty=c(1,1),col=c('black','red','blue'),c('Susceptible','Infected','Recovered'))
 }
 
-#Convert transmission tree to a network
+###Convert transmission tree to a network
 infectorTableToNetwork <- function (transmissiontreeData)
 {
 uniqueIDs <- sort(c(unique(as.character(transmissiontreeData[,1]),as.character(transmissiontreeData[,2]))))
@@ -65,10 +66,8 @@ if (!is.na(v2)) add.edges(y,v2,v1)
 return(y)
 }
 
-
-## BEGIN: create phylo tree in very simple way from transmission tree
+### Create phylo tree in very simple way from transmission tree
 phylofromtranstree <- function(transmissiontreeData,method='nj'){
-
 
 # use the transmission tree data to create an *undirected* network
 
@@ -97,12 +96,35 @@ phylotree=nj(geodist(mynet)$gdist)
 
 return(phylotree)
 }
-## end function for creating phylo tree
 
+### Plot transmission tree
+plotTranstree <- function (dat) {
+    sink("graph.dot")
+    cat("digraph G{\n\nrankdir=LR;\n")
+    #Time structure
+    cat("node[shape=none]\n")
+    for (i in min(dat[,3]):max(dat[,3])) cat("t",i,"[label=\"t=",i,"\",fontname=Helvetica]\n",sep="")
+    for (i in min(dat[,3])+1:max(dat[,3])) cat("t",i-1," -> t",i," [color=white]\n",sep="")
+    cat("node[shape=circle]\n")
+    #When individuals became infected
+    for (i in 1:(length(dat)/3)) cat("{rank=same;",i,"[fontname=Helvetica];t",dat[i,3],"}\n",sep="")
+    #Who infected whom
+    for (i in 1:(length(dat)/3)) if (!is.na(dat[i,2])) cat(dat[i,2],"->",i,"[fontname=Helvetica,label=\"",0,"\"]\n",sep="")
+    cat("}")
+    sink()
+    system("dot graph.dot -Tps -o graph.ps")
+    PostScriptTrace('graph.ps','graph.xml')
+    graph<-readPicture('graph.xml')
+    grid.picture(graph)
+} 
+
+### Test functions in this file
 testSimu <- function() {
 	set.seed(1);
-	ret<-simuEpi(f=0)
+	ret<-simuEpi(f=0,D=50)
 	plotEpi(ret$S)
 	plot(infectorTableToNetwork(ret$T))
+	plot.new()
+	plotTranstree(ret$T)
 	plot(phylofromtranstree(ret$T)) 
 }
