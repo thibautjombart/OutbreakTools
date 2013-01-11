@@ -301,22 +301,26 @@ MAS.read.nexus = function (file, tree.names = NULL) {
     X <- scan(file = file, what = "", sep = "\n", quiet = TRUE)
     LEFT <- grep("\\[", X)
     RIGHT <- grep("\\]", X)
-    if (length(LEFT)) {
-        w <- LEFT == RIGHT
-        if (any(w)) {
-            s <- LEFT[w]
-            X[s] <- gsub("\\[[^]]*\\]", "", X[s])
-        }
-        w <- !w
-        if (any(w)) {
-            s <- LEFT[w]
-            X[s] <- gsub("\\[.*", "", X[s])
-            sb <- RIGHT[w]
-            X[sb] <- gsub(".*\\]", "", X[sb])
-            if (any(s < sb - 1)) 
-                X <- X[-unlist(mapply(":", (s + 1), (sb - 1)))]
-        }
-    }
+    
+#    browser()
+#    
+#    if (length(LEFT)) {
+#        w <- LEFT == RIGHT
+#        if (any(w)) {
+#            s <- LEFT[w]
+#            X[s] <- gsub("\\[[^]]*\\]", "", X[s])
+#        }
+#        w <- !w
+#        if (any(w)) {
+#            s <- LEFT[w]
+#            X[s] <- gsub("\\[.*", "", X[s])
+#            sb <- RIGHT[w]
+#            X[sb] <- gsub(".*\\]", "", X[sb])
+#            if (any(s < sb - 1)) 
+#                X <- X[-unlist(mapply(":", (s + 1), (sb - 1)))]
+#        }
+#    }
+    
     endblock <- grep("END;|ENDBLOCK;", X, ignore.case = TRUE)
     semico <- grep(";", X)
     i1 <- grep("BEGIN TREES;", X, ignore.case = TRUE)
@@ -338,6 +342,9 @@ MAS.read.nexus = function (file, tree.names = NULL) {
     else semico[semico > i1][1]
     end <- endblock[endblock > i1][1] - 1
     tree <- X[start:end]
+   
+#    browser()
+    
     rm(X)
     tree <- tree[tree != ""]
     semico <- grep(";", tree)
@@ -361,46 +368,60 @@ MAS.read.nexus = function (file, tree.names = NULL) {
         else STRING <- tree
     }
     rm(tree)
+    
+#    browser()
+    
     STRING <- STRING[grep("^[[:blank:]]*tree.*= *", STRING, ignore.case = TRUE)]
     Ntree <- length(STRING)
+    
+    STRING <- gsub("\\[&R\\]", "", STRING)
+
+    # TODO Parse out tree-level traits
     nms.trees <- sub(" *= *.*", "", STRING)
     nms.trees <- sub("^ *tree *", "", nms.trees, ignore.case = TRUE)
-    STRING <- sub("^.*= *", "", STRING)
-    STRING <- gsub(" ", "", STRING)
+            
+    STRING <- sub("^.*?= *", "", STRING)
+    STRING <- gsub("\\s", "", STRING)
+        
+#    browser()
+    
     colon <- grep(":", STRING)
     if (!length(colon)) {
-        trees <- lapply(STRING, clado.build)
-    }
-    else if (length(colon) == Ntree) {
-        trees <- if (translation) {
-            stop("treeBuildWithTokens is not yet implemented.\n")
-            lapply(STRING, .treeBuildWithTokens)
-        }
-        else lapply(STRING, MAS.tree.build)
-    }
-    else {
-        trees <- vector("list", Ntree)
-        trees[colon] <- lapply(STRING[colon], MAS.tree.build)
-        nocolon <- (1:Ntree)[!1:Ntree %in% colon]
-        trees[nocolon] <- lapply(STRING[nocolon], MAS.clado.build)
-        if (translation) {
-            for (i in 1:Ntree) {
-                tr <- trees[[i]]
-                for (j in 1:n) {
-                  ind <- which(tr$tip.label[j] == TRANS[, 1])
-                  tr$tip.label[j] <- TRANS[ind, 2]
-                }
-                if (!is.null(tr$node.label)) {
-                  for (j in 1:length(tr$node.label)) {
-                    ind <- which(tr$node.label[j] == TRANS[, 
-                      1])
-                    tr$node.label[j] <- TRANS[ind, 2]
-                  }
-                }
-                trees[[i]] <- tr
-            }
-            translation <- FALSE
-        }
+        stop("MAS.clado.build is not yet implemented.\n")
+        trees <- lapply(STRING, MAS.clado.build)
+    } else if (length(colon) == Ntree) {
+#        trees <- if (translation) {
+#            browser()
+#            stop("treeBuildWithTokens is not yet implemented.\n")
+#            lapply(STRING, .treeBuildWithTokens)
+#        }
+#        else lapply(STRING, MAS.tree.build)
+        trees <- lapply(STRING, MAS.tree.build)
+#        browser()
+    } else {
+#        trees <- vector("list", Ntree)
+#        trees[colon] <- lapply(STRING[colon], MAS.tree.build)
+#        nocolon <- (1:Ntree)[!1:Ntree %in% colon]
+#        trees[nocolon] <- lapply(STRING[nocolon], MAS.clado.build)
+#        if (translation) {
+#            for (i in 1:Ntree) {
+#                tr <- trees[[i]]
+#                for (j in 1:n) {
+#                  ind <- which(tr$tip.label[j] == TRANS[, 1])
+#                  tr$tip.label[j] <- TRANS[ind, 2]
+#                }
+#                if (!is.null(tr$node.label)) {
+#                  for (j in 1:length(tr$node.label)) {
+#                    ind <- which(tr$node.label[j] == TRANS[, 
+#                      1])
+#                    tr$node.label[j] <- TRANS[ind, 2]
+#                  }
+#                }
+#                trees[[i]] <- tr
+#            }
+#            translation <- FALSE
+#        }
+        stop("Unknown error in MAS.read.nexus.\n")
     }
     for (i in 1:Ntree) {
         tr <- trees[[i]]

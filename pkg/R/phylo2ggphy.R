@@ -1,15 +1,18 @@
-#
-# @author Anton Camacho
-#
-# A function to convert phylogenies from the class 'phylo' to the class 'ggphy'
-#
+#' Function to convert phylogenies from the class 'phylo' to the class 'ggphy'
+#'
+#' @param phylo an object of the class "phylo"
+#' @param tip_dates a vector containing the sample dates of the tip in "Date" format, the dates must be ordered like the tips
+#' @param branch_unit the unit of the branch. Either "year", "month", "day" or "subst". If a time unit is provided, together with tip_dates, then the x-axis of the phylogeny will be in the Date format 
+#' @author Anton Camacho
+#' @example see misc/plot_ggphy_test.R
 
-phylo2ggphy<-function(phylo,tip_dates=NULL,branch_unit=NULL){
+phylo2ggphy<-function(phylo,tip_dates=NULL,branch_unit="subst"){
 	
 	phy<-phylo
 	has_node_label<-(!is.null(phy$node.label))
 	
 	N_tips<-length(phy$tip.label)
+    if(length(tip_dates)!=N_tips){stop("tip_dates must be the same size as the number of tips if provided")}
     
 	edge<-as.data.frame(phy$edge)
 	names(edge)<-c("beg","end")
