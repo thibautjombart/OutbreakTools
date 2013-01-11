@@ -14,6 +14,10 @@
 
 setClass("obkClinicalEvent", representation(individual.ID="characterOrNULL", type="characterOrNULL", characteristic="characterOrNULL", start.date="DateOrNULL", end.date="DateOrNULL", duration="numericOrNULL", location="characterOrNULL"), prototype(individual.ID=NULL, type=NULL, characteristic=NULL, start.date=NULL, end.date=NULL, start.date=NULL, duration=NULL, location=NULL))
 
+setClassUnion("obkClinicalEventOrNULL", c("obkClinicalEvent", "NULL"))
+
+
+
 
 ######################
 ####  CONSTRUCTOR ####
@@ -71,7 +75,6 @@ setMethod("initialize", "obkClinicalEvent", function(.Object, individual.ID=NULL
 ## get.type ##
 ################
 setMethod("get.type","obkClinicalEvent", function(x, ...){
-    if(is.null(x@type)) return(NULL)
     return(x@type)
 })
 
@@ -79,7 +82,6 @@ setMethod("get.type","obkClinicalEvent", function(x, ...){
 ## get.ID ##
 ################
 setMethod("get.ID","obkClinicalEvent", function(x, ...){
-    if(is.null(x@individual.ID)) return(NULL)
     return(x@individual.ID)
 })
 
@@ -87,10 +89,26 @@ setMethod("get.ID","obkClinicalEvent", function(x, ...){
 ## get.characteristic ##
 ################
 setMethod("get.characteristic","obkClinicalEvent", function(x, ...){
-    if(is.null(x@characteristic)) return(NULL)
     return(x@characteristic)
 })
 
+######################
+####  SHOW METHOD ####
+######################
+
+setMethod ("show", "obkClinicalEvent", function(object){
+    ID <- get.ID(object)
+    type.event <- get.type(object)
+    start <- get.start.date(object)
+    end <- get.end.date(object)
+    duration <- get.duration(object)
+    
+    cat(paste("individual (ID) =", ID,"Type =", type.event))
+    if(!is.null(start)) cat(paste("Start date =",start))
+    if(!is.null(end)) cat(paste("End date =",end))
+    if(!is.null(duration)) cat(paste("Duration of event =",duration))
+    
+})
 
 ####################
 ## get.start.date ##

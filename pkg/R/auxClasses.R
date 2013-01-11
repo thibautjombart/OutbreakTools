@@ -5,6 +5,8 @@
 
 ## DNA SEQUENCES
 setOldClass("DNAbin")
+setOldClass("phylo")
+setOldClass("multiPhylo")
 
 ## DATES
 setOldClass("POSIXct")
@@ -26,4 +28,6 @@ setClassUnion("DNAbinOrNULL", c("DNAbin","NULL"))
 setClassUnion("POSIXctOrNULL", c("POSIXct","NULL"))
 setClassUnion("networkDynamicOrNetworkOrNULL",c("networkDynamicOrNetwork","NULL"))
 setClassUnion("DateOrNULL", c("Date", "NULL"))
+setClassUnion("dataframeOrNULL", c("data.frame", "NULL"))
+setClassUnion("multiPhyloOrNULL", c("multiPhylo", "NULL"))
 

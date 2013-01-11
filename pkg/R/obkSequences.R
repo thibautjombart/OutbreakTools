@@ -13,6 +13,7 @@
 
 setClass("obkSequences", representation(dna="listOrNULL"), prototype(dna=NULL))
 
+setClassUnion("obkSequencesOrNULL", c("obkSequences", "NULL"))
 
 
 
@@ -36,6 +37,9 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, locus=NULL) 
 
 
     ## PROCESS ARGUMENTS ##
+    ## set locus to NULL if all NAs ##
+    if(!is.null(locus) && all(is.na(locus))) locus <- NULL
+
     ## convert matrices of characters into DNAbin ##
     if(is.matrix(dna) && is.character(dna)) dna <- as.DNAbin(dna)
 
@@ -60,6 +64,8 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, locus=NULL) 
     ## check length consistency
     if(length(dna) != length(locus)) stop(paste("Length mismatch (dna:", length(dna), "items; locus:", length(locus),"items)"))
 
+    ## check for NAs in locus
+    if(any(is.na(locus))) stop("NAs detected in locus information \n(if provided, locus information must be given for every sequence)")
     x@dna <- lapply(unique(locus), function(loc) as.matrix(dna[locus==loc]))
     names(x@dna) <- unique(locus)
 

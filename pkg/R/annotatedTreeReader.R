@@ -22,28 +22,61 @@ strip.annotations = function(text) {
     return(list(annotations=annotations,tree=text))
 }
 
-split.tree.names = function(text, header=FALSE) {
-    if (header) {
-      text = gsub(pattern="\\{",x=text,replacement="\\[")
-      text = gsub(pattern="\\}",x=text,replacement="\\]")
-    }
+split.tree.names = function(text) {
     text = gsub(pattern="\\[.*?\\]=",x=text,replacement="")
     text = gsub(pattern="^tree",x=text,replacement="")
     return(text)
 }
 
-split.tree.traits = function(text, header=FALSE) {
-
-    if (header) {
-      text = gsub(pattern="\\{",x=text,replacement="\\[")
-      text = gsub(pattern="\\}",x=text,replacement="\\]")
-    }
+split.tree.traits = function(text) {
 
   # Pull out annotation
   text = regmatches(text,regexpr(pattern="\\[.*?\\]",text))
   # Remove leading and trailing delimitors
   text = substring(text,3,nchar(text)-1)  
   return(text)
+}
+
+parse.value = function(text) {
+    value = text
+    if (length(grep("^\\{",value))) { # starts with {
+        save = value
+        value = substring(value, 2, nchar(value)-1)
+        
+        depth = 0               
+        r = regexpr(pattern="\\{+",value,perl=TRUE)
+        match.length = attr(r, "match.length")
+        
+        if (match.length > 0) {
+            depth = match.length
+        }
+        
+        if (depth == 0) {
+            split = ","
+        } else {            
+            split = paste(
+                "(?<=",rep("\\}",depth),")",
+                ",",
+                "(?=" ,rep("\\{",depth),")",                
+                sep="")
+        }
+        
+        if (depth >= 1) {
+            return(save) # TODO Still error in recursion
+        }
+        
+        part = strsplit(value, split, perl=TRUE)[[1]]
+        value = list()
+        for (i in 1:length(part)) {
+            value[[i]] = parse.value(part[i])
+        }
+        # TODO Unlist when simple array?            
+    } else {
+        if (!is.na(suppressWarnings(as.numeric(value)))) { # is a number
+            value = as.numeric(value)
+        }
+    }
+    return(value)
 }
 
 parse.traits = function(text, header=FALSE) {
@@ -64,36 +97,22 @@ parse.traits = function(text, header=FALSE) {
   for (i in 1:n) {
     s = start[i,3]
     e = s + length[i,3] - 1
-#    if (substring(text,e,e) == ",") {
-#        e = e - 1
-#    }
     value = substring(text,s,e)    
     
     s = start[i,1]
-    e = s + length[i,1]
-    if (substring(text,e,e) == "=") {
-        e = e - 1
-    }
+    e = s + length[i,1] - 1
     key = substring(text,s,e)
-    
-    ### TODO: Delegate below to a more generic parser
-    ### TODO: Need arrays, boolean
-    if (!is.na(as.numeric(value))) {
-        value = as.numeric(value)
-    }
-    traits[[key]] = value
+
+    traits[[key]] = parse.value(value)
   }
 
-#  browser() 
-#  print(traits)
     return(traits)
 }
-
 
 # THE CODE BELOW COMES FROM 'ape'. MY GOAL IS TO DERIVE FROM THIS TO READ IN BEAST-STYLE ANNOTATIONS
 
 
-MAS.tree.build =
+annotated.tree.build =
 function (tp) {
     
     add.internal <- function() {
@@ -137,9 +156,7 @@ function (tp) {
     annotations = result$annotations
     new.tp.stripped = result$tree
     
-    annotations = lapply(annotations, parse.traits, header=TRUE)
-    
-#    browser()
+    annotations = lapply(annotations, parse.traits, header=TRUE)    
     
     tp.stripped = gsub("\\[.*?\\]","",tp)
     tpc <- unlist(strsplit(tp.stripped, "[\\(\\),;]"))
@@ -151,8 +168,6 @@ function (tp) {
     nb.node <- sum(skeleton == ")")
     nb.tip <- sum(skeleton == ",") + 1
     nb.edge <- nb.node + nb.tip
-    
-#    browser()
     
     node.label <- character(nb.node)
     tip.label <- character(nb.tip)
@@ -194,13 +209,11 @@ function (tp) {
     class(obj) <- "phylo"
     attr(obj, "order") <- "cladewise"
     
-    obj$annotations = annotations
-#    obj$tmp = new.tp.stripped
-    
+    obj$annotations = annotations    
     obj
 }
 
-MAS.read.tree = function (file = "", text = NULL, tree.names = NULL, skip = 0, 
+read.annontated.tree = function (file = "", text = NULL, tree.names = NULL, skip = 0, 
     comment.char = "#", keep.multi = FALSE, ...) 
 {
     unname <- function(treetext) {
@@ -248,26 +261,21 @@ MAS.read.tree = function (file = "", text = NULL, tree.names = NULL, skip = 0,
     colon <- grep(":", STRING)   
     
     if (!is.null(tree.names)) {
-        traits.text = lapply(tree.names, split.tree.traits, header=T)
-        tree.names = lapply(tree.names, split.tree.names, header=T)
+        traits.text = lapply(tree.names, split.tree.traits)
+        tree.names = lapply(tree.names, split.tree.names)
         tree.traits = lapply(traits.text, parse.traits)
     }
-    
-    lapply(STRING, check.magic.character, magic.character="\\|")
-    lapply(STRING, convert.to.magic.character, magic.character="\\|")
-    
-#        browser()
-    
+        
     if (!length(colon)) {
         stop(paste("Annotated clado.build is not yet implemented.\n"))
-        obj <- lapply(STRING, MAS.clado.build)
+        obj <- lapply(STRING, annotated.clado.build)
     }
     else if (length(colon) == Ntree) {
-        obj <- lapply(STRING, MAS.tree.build)
+        obj <- lapply(STRING, annotated.tree.build)
     }
     else {
         obj <- vector("list", Ntree)
-        obj[colon] <- lapply(STRING[colon], MAS.tree.build)
+        obj[colon] <- lapply(STRING[colon], annotated.tree.build)
         nocolon <- (1:Ntree)[!1:Ntree %in% colon]
         obj[nocolon] <- lapply(STRING[nocolon], clado.build)
     }
@@ -288,3 +296,168 @@ MAS.read.tree = function (file = "", text = NULL, tree.names = NULL, skip = 0,
     }
     obj
 }
+
+read.annotated.nexus = function (file, tree.names = NULL) {
+    X <- scan(file = file, what = "", sep = "\n", quiet = TRUE)
+    LEFT <- grep("\\[", X)
+    RIGHT <- grep("\\]", X)
+    
+#    browser()
+#    
+#    if (length(LEFT)) {
+#        w <- LEFT == RIGHT
+#        if (any(w)) {
+#            s <- LEFT[w]
+#            X[s] <- gsub("\\[[^]]*\\]", "", X[s])
+#        }
+#        w <- !w
+#        if (any(w)) {
+#            s <- LEFT[w]
+#            X[s] <- gsub("\\[.*", "", X[s])
+#            sb <- RIGHT[w]
+#            X[sb] <- gsub(".*\\]", "", X[sb])
+#            if (any(s < sb - 1)) 
+#                X <- X[-unlist(mapply(":", (s + 1), (sb - 1)))]
+#        }
+#    }
+    
+    endblock <- grep("END;|ENDBLOCK;", X, ignore.case = TRUE)
+    semico <- grep(";", X)
+    i1 <- grep("BEGIN TREES;", X, ignore.case = TRUE)
+    i2 <- grep("TRANSLATE", X, ignore.case = TRUE)
+    translation <- if (length(i2) == 1 && i2 > i1) 
+        TRUE
+    else FALSE
+    if (translation) {
+        end <- semico[semico > i2][1]
+        x <- X[(i2 + 1):end]
+        x <- unlist(strsplit(x, "[,; \t]"))
+        x <- x[nzchar(x)]
+        TRANS <- matrix(x, ncol = 2, byrow = TRUE)
+        TRANS[, 2] <- gsub("['\"]", "", TRANS[, 2])
+        n <- dim(TRANS)[1]
+    }
+    start <- if (translation) 
+        semico[semico > i2][1] + 1
+    else semico[semico > i1][1]
+    end <- endblock[endblock > i1][1] - 1
+    tree <- X[start:end]
+   
+#    browser()
+    
+    rm(X)
+    tree <- tree[tree != ""]
+    semico <- grep(";", tree)
+    Ntree <- length(semico)
+    if (Ntree == 1 && length(tree) > 1) 
+        STRING <- paste(tree, collapse = "")
+    else {
+        if (any(diff(semico) != 1)) {
+            STRING <- character(Ntree)
+            s <- c(1, semico[-Ntree] + 1)
+            j <- mapply(":", s, semico)
+            if (is.list(j)) {
+                for (i in 1:Ntree) STRING[i] <- paste(tree[j[[i]]], 
+                  collapse = "")
+            }
+            else {
+                for (i in 1:Ntree) STRING[i] <- paste(tree[j[, 
+                  i]], collapse = "")
+            }
+        }
+        else STRING <- tree
+    }
+    rm(tree)
+    
+#    browser()
+    
+    STRING <- STRING[grep("^[[:blank:]]*tree.*= *", STRING, ignore.case = TRUE)]
+    Ntree <- length(STRING)
+    
+    STRING <- gsub("\\[&R\\]", "", STRING)
+
+    # TODO Parse out tree-level traits
+    nms.trees <- sub(" *= *.*", "", STRING)
+    nms.trees <- sub("^ *tree *", "", nms.trees, ignore.case = TRUE)
+            
+    STRING <- sub("^.*?= *", "", STRING)
+    STRING <- gsub("\\s", "", STRING)
+        
+#    browser()
+    
+    colon <- grep(":", STRING)
+    if (!length(colon)) {
+        stop("annotated.clado.build is not yet implemented.\n")
+        trees <- lapply(STRING, annotated.clado.build)
+    } else if (length(colon) == Ntree) {
+#        trees <- if (translation) {
+#            browser()
+#            stop("treeBuildWithTokens is not yet implemented.\n")
+#            lapply(STRING, .treeBuildWithTokens)
+#        }
+#        else lapply(STRING, annotated.tree.build)
+        trees <- lapply(STRING, annotated.tree.build)
+#        browser()
+    } else {
+#        trees <- vector("list", Ntree)
+#        trees[colon] <- lapply(STRING[colon], annotated.tree.build)
+#        nocolon <- (1:Ntree)[!1:Ntree %in% colon]
+#        trees[nocolon] <- lapply(STRING[nocolon], annotated.clado.build)
+#        if (translation) {
+#            for (i in 1:Ntree) {
+#                tr <- trees[[i]]
+#                for (j in 1:n) {
+#                  ind <- which(tr$tip.label[j] == TRANS[, 1])
+#                  tr$tip.label[j] <- TRANS[ind, 2]
+#                }
+#                if (!is.null(tr$node.label)) {
+#                  for (j in 1:length(tr$node.label)) {
+#                    ind <- which(tr$node.label[j] == TRANS[, 
+#                      1])
+#                    tr$node.label[j] <- TRANS[ind, 2]
+#                  }
+#                }
+#                trees[[i]] <- tr
+#            }
+#            translation <- FALSE
+#        }
+        stop("Unknown error in read.annotated.nexus.\n")
+    }
+    for (i in 1:Ntree) {
+        tr <- trees[[i]]
+        if (!translation) 
+            n <- length(tr$tip.label)
+        ROOT <- n + 1
+        if (sum(tr$edge[, 1] == ROOT) == 1 && dim(tr$edge)[1] > 
+            1) {
+            stop(paste("The tree has apparently singleton node(s): cannot read tree file.\n  Reading NEXUS file aborted at tree no.", 
+                i, sep = ""))
+        }
+    }
+    if (Ntree == 1) {
+        trees <- trees[[1]]
+        if (translation) {
+            trees$tip.label <- if (length(colon)) 
+                TRANS[, 2]
+            else TRANS[, 2][as.numeric(trees$tip.label)]
+        }
+    }
+    else {
+        if (!is.null(tree.names)) 
+            names(trees) <- tree.names
+        if (translation) {
+            if (length(colon) == Ntree) 
+                attr(trees, "TipLabel") <- TRANS[, 2]
+            else {
+                for (i in 1:Ntree) trees[[i]]$tip.label <- TRANS[, 
+                  2][as.numeric(trees[[i]]$tip.label)]
+                trees <- .compressTipLabel(trees)
+            }
+        }
+        class(trees) <- "multiPhylo"
+        if (!all(nms.trees == "")) 
+            names(trees) <- nms.trees
+    }
+    trees
+}
+

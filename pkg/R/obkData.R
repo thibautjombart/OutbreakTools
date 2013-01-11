@@ -1,0 +1,262 @@
+
+############################
+####  CLASSE DEFINITION ####
+############################
+
+## CLASS DESCRIPTION:
+## Instance of obkData store outbreak data; its content includes:
+## - @data: data about samples, stored as a data.frame
+## - @meta: meta-information on the individuals (group, etc.), stored as a data.frame
+## - @clinical: information about interventions and events, stored as obkClinicalEvent
+## - @dna: dna data, stored as a list of DNA sequences (list of DNAbin)
+## - @contacts: contact information as obkContacts
+setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataframeOrNULL", clinical="listOrNULL", dna="listOrNULL", contacts="obkContactsOrNULL", trees="multiPhyloOrNULL"),
+         prototype(individuals=NULL, samples=NULL, dna=NULL, clinical=NULL, contacts=NULL, trees=NULL))
+
+
+
+
+
+
+
+######################
+####  CONSTRUCTOR ####
+######################
+
+## INPUT DESCRIPTION:
+## 'individuals': a data.frame with any information on the individuals, each row being an individual, with the following columns:
+## - "individualID"
+## - any other named column
+##
+## 'samples': a data.frame where each row is an observation made on a sample, and the following mandatory columns:
+## - "individualID"
+## - "sampleID"
+## - "date"
+## - any optional, named column
+## - "sequenceID": optional but particular processing by the constructor, a sequence ID existing in 'dna'
+## - "locus": optional but particular processing by the constructor, the locus of a sequence
+##
+## 'dna': a DNAbin list with named sequences
+##
+## 'clinical': list of clinical datasets, each stored as a data.frame
+##
+## 'contacts': whatever Simon Frost has in mind
+##
+setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=NULL, clinical=NULL, dna=NULL, contacts=NULL, trees=NULL,
+                                            date.format=""){
+
+    ## RETRIEVE PROTOTYPED OBJECT ##
+    x <- .Object
+
+    ## store old option ##
+    o.opt <- options("stringsAsFactors")
+    options("stringsAsFactors"=FALSE)
+    on.exit(options(o.opt))
+
+
+    ## PROCESS INFORMATION TO CREATE INDIVIDUALS ('data') ##
+    ## coerce to data.frames, force to NULL if nrow=0
+    if(!is.null(individuals)) {
+        individuals <- as.data.frame(individuals)
+        if(nrow(individuals)==0 || ncol(individuals)==1) individuals <- NULL
+    }
+    if(!is.null(samples)){
+        samples <- as.data.frame(samples)
+        if(nrow(samples)==0) samples <- NULL
+    }
+    if(!is.null(clinical)) {
+      if(is.data.frame(clinical))
+        clinical = list(clinical)
+      else clinical <- as.list(clinical)
+      if(length(clinical)==0) clinical <- NULL
+    }
+    if(!is.null(dna) && (inherits(dna, "DNAbin") && is.matrix(dna))) dna <- as.list(dna)
+    if(!is.null(dna) && (!is.list(dna) || !inherits(dna, "DNAbin"))) stop("dna is not a list of DNAbin objects.")
+
+     ## escape if no info provided ##
+    if(is.null(individuals) && is.null(samples) && is.null(clinical) && is.null(dna) && is.null(contacts)) return(x)
+
+    ## check that relevant fields are here ##
+    if(!is.null(individuals)){
+        if(!"individualID" %in% names(individuals)) stop("no field 'individualID' in the individuals data.frame ('individuals')")
+    }
+    if(!is.null(samples)){
+        if(!"individualID" %in% names(samples)) stop("no field 'individualID' in the sample data.frame ('samples')")
+        if(!"sampleID" %in% names(samples)) stop("no field 'sampleID' in the sample data.frame ('samples')")
+        if(!"date" %in% names(samples)) stop("no field 'date' in the sample data.frame ('samples')")
+    }
+
+
+    ## PROCESS INFORMATION ABOUT INDIVIDUALS ('individuals') ##
+    if(!is.null(individuals)){
+        lab <- as.character(individuals[,"individualID"])
+        x@individuals <- individuals[, names(individuals)!="individualID", drop=FALSE]
+        row.names(x@individuals) <- lab
+    }
+
+
+    ## PROCESS INFORMATION ABOUT SAMPLES ('samples') ##
+    if(!is.null(samples)){
+        ## reorder columns - mandatory fields come first
+        nameOrder <- c(c("individualID","sampleID","date"), setdiff(names(samples), c("individualID","sampleID","date")))
+        x@samples <- samples[,nameOrder]
+        x@samples[,"individualID"] <- as.character(x@samples[,"individualID"])
+        x@samples[,"sampleID"] <- as.character(x@samples[,"sampleID"])
+        x@samples[,"date"] <- as.Date(x@samples[,"date"], format=date.format)
+
+        ## make sure that all individualIDs are in 'individuals', if the slot is not NULL
+        if(!is.null(x@individuals)){
+            unknownIDs <- unique(x@samples$individualID)[!unique(x@samples$individualID) %in% row.names(x@individuals)]
+            if(length(unknownIDs)>0) {
+                unknownIDs.txt <- paste(unknownIDs, collapse=", ")
+                warning(paste("the following sampled individuals have no individual information:\n", unknownIDs.txt))
+            }
+        }
+    }
+
+    ## PROCESS INFORMATION ABOUT CLINICAL ('clinicals') ##
+    ## to be filled in by Paul & Marc
+    if(!is.null(clinical)){
+      x@clinical <- list()
+      ## reorder the columns within each data frame.
+      nameOrder <- c(c("individualID","date"), setdiff(names(clinical), c("individualID","date")))
+      for(i in 1:length(clinical))
+        {
+          x@clinical[[i]] <- clinical[[i]][, nameOrder]
+          x@clinical[[i]][,"individualID"] <- as.character(x@clinical[[i]][,"individualID"])
+          x@clinical[[i]][,"date"] <- as.Date(x@clinical[[i]][,"date"], format=date.format)
+        }
+
+      ## make sure that all the individualIDs are in 'individuals', if the slot is NULL
+      ## if(!is.null(x@individuals)){
+      ##   unknownIDs <- unique(
+      
+    }
+    
+    ## PROCESS INFORMATION ABOUT CONTACTS ('contacts') ##
+    ## need to make sure that contact input is consisten with constructor
+    if(!is.null(contacts)){
+        x@contacts <- new("obkContacts", contacts)
+    }
+
+
+    ## PROCESS INFORMATION ABOUT DNA SEQUENCES ('sequenceID') ##
+    seqPos <- which(names(samples) %in% c("sequenceID"))
+    if(length(seqPos)==0 || is.null(dna)){
+        x@dna <- NULL
+    } else {
+        if(is.character(samples$sequenceID) && !all(samples$sequenceID %in% names(dna))) {
+            err.txt <- samples$sequenceID[!samples$sequenceID %in% names(dna)]
+            err.txt <- paste(unique(err.txt), collapse=", ")
+            stop(paste("The following sequence ID were not found in the dna list:\n", err.txt))
+        }
+        temp <- split(samples, samples$sampleID)
+
+        ## small auxiliary function to pass relevant data to the constructor, and nothing otherwise
+        ## (can't be using dna[NA])
+        ## vecID: vector of sequence IDs (including possible NAs, can be NAs only)
+        f1 <- function(vecID, locus){
+            if(all(is.na(vecID))) return(NULL)
+            toRemove <- is.na(vecID)
+            vecID <- vecID[!toRemove]
+            locus <- locus[!toRemove]
+            return(new("obkSequences", dna=dna[vecID], locus=locus))
+        }
+        x@dna <- lapply(temp, function(e) f1(e$sequenceID, e$locus))
+    }
+
+
+    ## PROCESS INFORMATION ABOUT PHYLOGENIES ('trees') ##
+    if(!is.null(trees)){
+        ## check class
+        if(!inherits(trees, "multiPhylo")) stop("trees must be a multiPhylo object")
+
+        ## check label consistency (to be added)
+
+        x@trees <- trees
+    }
+
+
+    ## RETURN OBJECT ##
+    return(x)
+}) # end obkData constructor
+
+
+
+
+
+
+
+
+####################
+####  ACCESSORS ####
+####################
+
+
+
+
+
+
+##################
+####  TESTING ####
+##################
+## NOTE: THIS MUST BE COMMENTED WHEN COMPILING/INSTALLING THE PACKAGE
+
+## ## EMPTY OBJECT ##
+## new("obkData")
+
+## ## INDIVIDUAL INFO ONLY ##
+## new("obkData", individuals=data.frame("individualID"=letters))
+## new("obkData", individuals=data.frame("individualID"=letters, age=1:26, 1:26))
+
+
+## samp <- data.frame(individualID=c('toto','toto','titi'), sampleID=c(1,3,2), date=c("2001-02-13","2001-03-01","2001-05-25"), swab=c("+","-","+"))
+
+
+## ## SAMPLE INFO ONLY ##
+## new("obkData", sample=samp)
+## new("obkData", sample=samp[,c(1:3)] )
+## new("obkData", sample=samp[,c(1:3,4,4,4)] )
+
+## ## SAMPLE & INDIV INFO - MISSING INDIV ##
+## new("obkData", sample=samp[,c(1:3,4,4,4)] , individuals=data.frame("individualID"=letters, age=1:26))
+
+## ## SAMPLE & INDIV INFO ##
+## ind <- data.frame("individualID"=c("toto","John Doe", "titi"), age=c(20,18,67), sex=c("m","m","?"))
+## new("obkData", sample=samp, ind=ind)
+
+
+## ## DNA INFO, NOTHING ELSE ##
+## library(ape)
+## data(woodmouse)
+## dat.dna <- as.list(woodmouse)
+
+## new("obkData", dna=dat.dna) # should be empty
+
+## ## SAMP + DNA INFO ##
+## samp <- data.frame(individualID=c('toto','toto','titi'), sampleID=c(1,3,2), date=c("2001-02-13","2001-03-01","2001-05-25"), swab=c("+","-","+"))
+
+## samp <- cbind.data.frame(samp, sequenceID=c(1,2,3))
+
+## ## sequences given as indices
+## new("obkData", samples=samp, dna=dat.dna) # (note the nice sample ordering)
+
+## ## sequences given as IDs
+## samp$sequenceID <- c("No304","No306","No305")
+## new("obkData", samples=samp, dna=dat.dna) # (note the nice sample ordering)
+
+## ## sequences given as IDs, with wrong IDs
+## samp$sequenceID <- c("No304","No306","Arrrhhh")
+## new("obkData", samples=samp, dna=dat.dna) # (note the nice sample ordering)
+
+
+## ## multiple sequences per individual
+## samp$sequenceID <- c("No304","No306","No305")
+## samp <- samp[c(1,1,2,2,2,3),]
+## samp$sequenceID <- 1:6
+## new("obkData", samples=samp, dna=dat.dna)
+
+
+## ## multiple sequences per individual, locus information
+## samp$locus <- c("gene1","gene2")[c(1,1,1,2,1,2)]
+## new("obkData", samples=samp, dna=dat.dna)
