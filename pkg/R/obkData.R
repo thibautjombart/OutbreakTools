@@ -60,10 +60,14 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     if(!is.null(dna) && (!is.list(dna) || !inherits(dna, "DNAbin"))) stop("dna is not a list of DNAbin objects.")
 
     ## check that relevant fields are here ##
-    if("individualID" %in% names(individuals)) stop("no field 'individualID' in the individuals data.frame ('individuals')")
-    if("individualID" %in% names(samples)) stop("no field 'individualID' in the sample data.frame ('samples')")
-    if("sampleID" %in% names(samples)) stop("no field 'sampleID' in the sample data.frame ('samples')")
-    if("date" %in% names(samples)) stop("no field 'date' in the sample data.frame ('samples')")
+    if(!is.null(individuals)){
+        if(!"individualID" %in% names(individuals)) stop("no field 'individualID' in the individuals data.frame ('individuals')")
+    }
+    if(!is.null(samples)){
+        if(!"individualID" %in% names(samples)) stop("no field 'individualID' in the sample data.frame ('samples')")
+        if(!"sampleID" %in% names(samples)) stop("no field 'sampleID' in the sample data.frame ('samples')")
+        if(!"date" %in% names(samples)) stop("no field 'date' in the sample data.frame ('samples')")
+    }
 
 
     ## PROCESS INFORMATION ABOUT INDIVIDUALS ('individuals') ##
