@@ -1,69 +1,83 @@
-## ################################
-## #### ACCESSORS  FOR OBKDATA ####
-## ################################
+################################
+#### ACCESSORS  FOR OBKDATA ####
+################################
 
-## ###############
-## ## get.locus ##
-## ###############
-## setMethod("get.locus", "obkData", function(x, ...){
-##   if(is.null(x@dna)) return(NULL)
-##   return(unique(unlist(lapply(x@dna, get.locus))))
-## })
-
-
-## ################
-## ## get.nlocus ##
-## ################
-## setMethod("get.nlocus", "obkData", function(x, ...){
-##   if(is.null(x@dna)) return(0)
-##   return(length(unique(get.locus(x))))
-## })
+###############
+## get.locus ##
+###############
+setMethod("get.locus", "obkData", function(x, ...){
+  if(is.null(x@dna)) return(NULL)
+  return(unique(unlist(lapply(x@dna, get.locus))))
+})
 
 
-## ####################
-## ## get.nsequences ##
-## ####################
-## setMethod("get.nsequences", "obkData", function(x, ...){
-##   if(is.null(x@dna)) return(0)
-##   return(sum(sapply(x@dna, get.nsequences)))
-## })
 
-## #############
-## ## get.dna ##
-## #############
-## ## setMethod("get.dna", "obkData", function(x, ...){
-## ##   if(is.null(x@dna)) return(0)
-## ##   return()
-## ## })
+################
+## get.nlocus ##
+################
+setMethod("get.nlocus", "obkData", function(x, ...){
+  if(is.null(x@dna)) return(0)
+  return(length(unique(get.locus(x))))
+})
 
 
-## ##################### INDIVIDUAL LEVEL
 
-## ######################
-## ## get.nindividuals ##
-## ######################
-## setMethod("get.nindividuals", "obkData", function(x, ...){
-##   if(is.null(x@individuals)) return(0)
-##   return(nrow(x@individuals))
-## })
+####################
+## get.nsequences ##
+####################
+setMethod("get.nsequences", "obkData", function(x, ...){
+    if(is.null(x@dna)) return(0)
+    return(sum(unlist(lapply(x@dna, get.nsequences))))
+})
 
-## #####################
-## ## get.individuals ##
-## #####################
-## setMethod("get.individuals", "obkData", function(x, individual = NULL, ...){
 
-##   ## return NA if no info
-##   if(is.null(x@individuals)) return(NA)
 
-##   nInd <- get.nindividuals(x)
-##   ## return only individual if
-##   if(!is.null(individual)){
-##    return(x)
+#############
+## get.dna ##
+#############
+setMethod("get.dna", "obkData", function(x, locus=NULL, ...){
+    ## checks and escapes ##
+    if(is.null(x@dna)) return(NULL)
+    if(get.nlocus(x)==0) return(NULL)
+    if(get.nlocus(x)>1 && is.null(locus)) stop("there are several loci in the data - locus must be provided")
 
-##    ## otherwise use information attached to each individual
-##    if(is.null(individual)) stop("individual must be specified (data contain more than one individual)")
+    ## get all sequences of the locus
+    out <- lapply(x@dna, get.dna, locus=locus)
+    ## remove NULL data
+    out <- out[!sapply(out, is.null)]
+    out <- Reduce(rbind, out)
+    return(out)
+})
 
-##    ## return new obkData object subsetted according to the individual ID
-##    ## return(new("obkData"))?
 
-## })
+
+######################
+## get.nindividuals ##
+######################
+setMethod("get.nindividuals", "obkData", function(x, ...){
+  if(is.null(x@individuals)) return(0)
+  return(nrow(x@individuals))
+})
+
+
+
+#####################
+## get.individuals ##
+#####################
+setMethod("get.individuals", "obkData", function(x, individual = NULL, ...){
+
+  ## return NA if no info
+  if(is.null(x@individuals)) return(NA)
+
+  nInd <- get.nindividuals(x)
+  ## return only individual if
+  if(!is.null(individual)){
+   return(x)
+
+   ## otherwise use information attached to each individual
+   if(is.null(individual)) stop("individual must be specified (data contain more than one individual)")
+
+   ## return new obkData object subsetted according to the individual ID
+   ## return(new("obkData"))?
+
+})
