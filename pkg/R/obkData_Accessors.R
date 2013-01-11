@@ -51,33 +51,33 @@ setMethod("get.dna", "obkData", function(x, locus=NULL, ...){
 
 
 
-######################
-## get.nindividuals ##
-######################
-setMethod("get.nindividuals", "obkData", function(x, ...){
-  if(is.null(x@individuals)) return(0)
-  return(nrow(x@individuals))
-})
+## ######################
+## ## get.nindividuals ##
+## ######################
+## setMethod("get.nindividuals", "obkData", function(x, ...){
+##   if(is.null(x@individuals)) return(0)
+##   return(nrow(x@individuals))
+## })
 
 
 
-#####################
-## get.individuals ##
-#####################
-setMethod("get.individuals", "obkData", function(x, individual = NULL, ...){
+## #####################
+## ## get.individuals ##
+## #####################
+## setMethod("get.individuals", "obkData", function(x, individual = NULL, ...){
 
-  ## return NA if no info
-  if(is.null(x@individuals)) return(NA)
+##   ## return NA if no info
+##   if(is.null(x@individuals)) return(NA)
 
-  nInd <- get.nindividuals(x)
-  ## return only individual if
-  if(!is.null(individual)){
-   return(x)
+##   nInd <- get.nindividuals(x)
+##   ## return only individual if
+##   if(!is.null(individual)){
+##    return(x)
 
-   ## otherwise use information attached to each individual
-   if(is.null(individual)) stop("individual must be specified (data contain more than one individual)")
+##    ## otherwise use information attached to each individual
+##    if(is.null(individual)) stop("individual must be specified (data contain more than one individual)")
 
-   ## return new obkData object subsetted according to the individual ID
-   ## return(new("obkData"))?
+##    ## return new obkData object subsetted according to the individual ID
+##    ## return(new("obkData"))?
 
-})
+## })
