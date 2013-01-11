@@ -21,9 +21,9 @@
   Function to convert phylogenies from the class 'phylo' to
   the class 'ggphy'
 }
-\examples{
-see misc/plot_ggphy_test.R
-}
+%\examples{
+%see misc/plot_ggphy_test.R
+%}
 \author{
   Anton Camacho
 }
