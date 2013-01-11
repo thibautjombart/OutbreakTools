@@ -72,6 +72,18 @@ setMethod("get.individuals", "obkData", function(x, data=c("samples", "individua
 
 
 
+
+#####################
+## get.nindividuals ##
+#####################
+setMethod("get.nindividuals", "obkData", function(x, data=c("samples", "individuals"), ...){
+    data <- match.arg(data)
+
+    return(length(get.individuals(x, data=data)))
+})
+
+
+
 ## #####################
 ## ## get.individuals ##
 ## #####################
