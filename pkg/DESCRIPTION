@@ -1,5 +1,5 @@
 Package: epibase
-Version: 1.0-0
+Version: 0.1-0
 Date: 2013/01/11
 Title: basic tools for the analysis of disease outbreaks.
 Author: {The Hackout team (In alphabetic order: David Aanensen, Marc Baguelin,
@@ -25,20 +25,3 @@ Depends:
 Description: basic tools for the analysis of disease outbreaks.
 License: GPL (>=2)
 LazyLoad: yes
-Collate:
-    'annotatedTreeReader.R'
-    'auxClasses.R'
-    'generics.R'
-    'ISOdate_format.R'
-    'obkClinicalEvent.R'
-    'obkContacts.R'
-    'obkData.R'
-    'obkSequences.R'
-    'phylo2ggphy.R'
-    'plot_ggphy.R'
-    'plotGraphviz.R'
-    'sheddingPlot.R'
-    'simSIRmodel.R'
-    'simuEpi.R'
-    'utils.R'
-    'zzz.R'

@@ -1,41 +1,55 @@
-###################
-#### ACCESSORS ####
-###################
+################################
+#### ACCESSORS  FOR OBKDATA ####
+################################
+
+###############
+## get.locus ##
+###############
+setMethod("get.locus", "obkData", function(x, ...){
+  if(is.null(x@dna)) return(NULL)
+  return(unique(unlist(lapply(x@dna, get.locus))))
+})
+
+
 
 ################
 ## get.nlocus ##
 ################
 setMethod("get.nlocus", "obkData", function(x, ...){
   if(is.null(x@dna)) return(0)
-  sum(sapply(x@dna, get.nlocus))  
+  return(length(unique(get.locus(x))))
 })
 
-###############
-## get.locus ##
-###############
-setMethod("get.locus", "obkData", function(x, ...){
-  if(is.null(x@dna)) return(0)
-  return(lapply(x@dna, get.locus))
-})
+
 
 ####################
 ## get.nsequences ##
 ####################
 setMethod("get.nsequences", "obkData", function(x, ...){
-  if(is.null(x@dna)) return(0)
-  return(sum(sapply(x@dna, get.nsequences)))
+    if(is.null(x@dna)) return(0)
+    return(sum(unlist(lapply(x@dna, get.nsequences))))
 })
+
+
 
 #############
 ## get.dna ##
 #############
-## setMethod("get.dna", "obkData", function(x, ...){
-##   if(is.null(x@dna)) return(0)
-##   return()
-## })
+setMethod("get.dna", "obkData", function(x, locus=NULL, ...){
+    ## checks and escapes ##
+    if(is.null(x@dna)) return(NULL)
+    if(get.nlocus(x)==0) return(NULL)
+    if(get.nlocus(x)>1 && is.null(locus)) stop("there are several loci in the data - locus must be provided")
+
+    ## get all sequences of the locus
+    out <- lapply(x@dna, get.dna, locus=locus)
+    ## remove NULL data
+    out <- out[!sapply(out, is.null)]
+    out <- Reduce(rbind, out)
+    return(out)
+})
 
 
-##################### INDIVIDUAL LEVEL
 
 ######################
 ## get.nindividuals ##
@@ -44,6 +58,8 @@ setMethod("get.nindividuals", "obkData", function(x, ...){
   if(is.null(x@individuals)) return(0)
   return(nrow(x@individuals))
 })
+
+
 
 #####################
 ## get.individuals ##
@@ -54,7 +70,7 @@ setMethod("get.individuals", "obkData", function(x, individual = NULL, ...){
   if(is.null(x@individuals)) return(NA)
 
   nInd <- get.nindividuals(x)
-  ## return only individual if 
+  ## return only individual if
   if(!is.null(individual)){
    return(x)
 
@@ -63,5 +79,5 @@ setMethod("get.individuals", "obkData", function(x, individual = NULL, ...){
 
    ## return new obkData object subsetted according to the individual ID
    ## return(new("obkData"))?
-   
+
 })

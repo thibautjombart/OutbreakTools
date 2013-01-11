@@ -126,12 +126,13 @@ setMethod("get.dna","obkSequences", function(x, locus=NULL, ...){
     ## return NULL if no info ##
     if(nLoc==0) return(NULL)
 
-    ## return only locus if nLoc==1 ##
-    if(nLoc==1) return(x@dna[[1]])
+    ## return only locus if nLoc==1 and no info on locus ##
+    if(nLoc==1 && is.null(locus)) return(x@dna[[1]])
 
     ## otherwise use locus info ##
-    if(is.null(locus)) stop("locus must be specified (data contain more than one locus)")
+    if(nLoc>1 && is.null(locus)) stop("locus must be specified (data contain more than one locus)")
 
+    locus <- as.character(locus)
     return(x@dna[[locus]])
 })
 
