@@ -13,7 +13,7 @@ phylo2ggphy<-function(phylo,tip_dates=NULL,branch_unit="subst"){
 	has_node_label<-(!is.null(phy$node.label))
 	
 	N_tips<-length(phy$tip.label)
-    if(length(tip_dates)!=N_tips){stop("tip_dates must be the same size as the number of tips if provided")}
+    if(!is.null(tip_dates) & length(tip_dates)!=N_tips){stop("tip_dates must be the same size as the number of tips if provided")}
     
 	edge<-as.data.frame(phy$edge)
 	names(edge)<-c("beg","end")
