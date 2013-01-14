@@ -72,10 +72,9 @@ setMethod("get.individuals", "obkData", function(x, data=c("samples", "individua
 
 
 
-
-#####################
+######################
 ## get.nindividuals ##
-#####################
+######################
 setMethod("get.nindividuals", "obkData", function(x, data=c("samples", "individuals"), ...){
     data <- match.arg(data)
 
@@ -84,23 +83,37 @@ setMethod("get.nindividuals", "obkData", function(x, data=c("samples", "individu
 
 
 
-## #####################
-## ## get.individuals ##
-## #####################
-## setMethod("get.individuals", "obkData", function(x, individual = NULL, ...){
+##############
+## get.data ##
+##############
+##
+## Universal accessor:
+## tries to find any type of data within the obkData object
+##
+setMethod("get.data", "obkData", function(x, data, drop=TRUE, ...){
+    data <- as.character(data)
 
-##   ## return NA if no info
-##   if(is.null(x@individuals)) return(NA)
+    ## LOOK FOR SLOT NAMES ##
+    if(data[1] %in% slotNames(x)) return(slot(x, data))
 
-##   nInd <- get.nindividuals(x)
-##   ## return only individual if
-##   if(!is.null(individual)){
-##    return(x)
+    ## LOOK FOR 'DATA' IN INDIVIDUALS ##
+    if(!is.null(x@individuals)){
+        if(any(data %in% names(x@individuals))){
+            return(x@individuals[,data,drop=drop])
+        }
+    }
 
-##    ## otherwise use information attached to each individual
-##    if(is.null(individual)) stop("individual must be specified (data contain more than one individual)")
+    ## LOOK FOR 'DATA' IN SAMPLES ##
+    if(!is.null(x@samples)){
+        if(any(data %in% names(x@samples))){
+            return(x@samples[,data,drop=drop])
+        }
+    }
 
-##    ## return new obkData object subsetted according to the individual ID
-##    ## return(new("obkData"))?
+    ## DEFAULT IF WE DON'T KNOW WHAT TO RETURN ##
+    warning(paste("data '", data, "'was not found in the object"))
+    return(NULL)
+})
 
-## })
+
+
