@@ -1,3 +1,7 @@
+#source("/Users/tonton/Documents/Project/Rfiles/Utils.R")
+#library(ggplot2)
+#library(scales)
+
 test<-function(){
 
 dir<-"."
@@ -10,9 +14,14 @@ file<-"H3_WD_n1000_GTRGI_E_skyline.trees_time_MCC.txt"
 	
 	tip_attributes<-data.frame(tip_id=phylo$tip.label,tip_colour=as.factor(sample(1:5,size=length(tip_dates),replace=T)))
 	
+	p<-plot_ggphy(my_ggphy,tip_labels=F)
+	
+	
 	p<-plot_ggphy(my_ggphy,tip_labels=F,tip_attribute=tip_attributes,var_tip_labels="tip_id",var_tip_colour="tip_colour")
 	
-	p<-plot_ggphy(my_ggphy,tip_labels=F,tip_attribute=NULL,var_tip_labels=NULL,var_tip_colour=NULL)
+load("../pkg/data/singapore.Rdata")	
+	my_ggphy2<-phylo2ggphy(trees)
+	p<-plot_ggphy(my_ggphy2,tip_labels=T)
 	
 	
 }
