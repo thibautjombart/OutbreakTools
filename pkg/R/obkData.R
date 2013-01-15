@@ -158,8 +158,8 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     if(length(seqPos)==0 || is.null(dna)){
         x@dna <- NULL
     } else {
-        if(is.character(samples$sequenceID) && !all(samples$sequenceID %in% names(dna))) {
-            err.txt <- samples$sequenceID[!samples$sequenceID %in% names(dna)]
+        if(is.character(samples$sequenceID) && !all(na.omit(samples$sequenceID) %in% names(dna))) {
+            err.txt <- na.omit(samples$sequenceID[!samples$sequenceID %in% names(dna)])
             err.txt <- paste(unique(err.txt), collapse=", ")
             stop(paste("The following sequence ID were not found in the dna list:\n", err.txt))
         }
