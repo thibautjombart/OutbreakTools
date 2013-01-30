@@ -7,9 +7,8 @@
 ## - @uniqID: data about the identical sequences, stored as a list of vectors of sequenceID
 ## - @uniqdna: unique dna sequences, stored as a DNAbin
 
-setClass("listOrNULL")
 setOldClass("DNAbin")
-setClass("uniqSequences", representation(uniqID="listOrNULL", uniqdna="DNAbin"),prototype(uniqID=NULL, uniqdna=NULL))
+setClass("uniqSequences", representation(uniqID="list", uniqdna="DNAbin"),prototype(uniqID=NULL, uniqdna=NULL))
 
 
 ######################
