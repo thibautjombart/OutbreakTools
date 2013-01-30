@@ -13,16 +13,17 @@
   the class 'uniqSequences'
 }
 \examples{
-# Might want to write a get.dnasubset accessor for this
-# get uniq sequences
-# Extracting sequenceIDs from the samples table
+### Might want to write a get.dnasubset accessor for this
+### get uniq sequences
+### Extracting sequenceIDs from the samples table
+data(HorseFluOutbreak)
 seqids<-na.omit(samples[samples$sampleID=="904","sequenceID"])
-# get the index of the sequenceIDs in the DNAbin
-seqindex<-which(labels(dna) %in% seqids)
-# create a subset DNAbin
+### get the index of the sequenceIDs in the DNAbin
+seqindex<-match(seqids,labels(dna))
+### create a subset DNAbin
 subsetdna<-dna[seqindex, ]
-# get a particular sequence id with summary.seq$uniqseqID4[5]
-# get number of sequences length(summary.seq$uniqseqID4)
+### get a particular sequence id with summary.seq$uniqseqID4[5]
+### get number of sequences length(summary.seq$uniqseqID4)
 uniqsubset<-dna2uniqSequences(subsetdna)
 }
 \author{
