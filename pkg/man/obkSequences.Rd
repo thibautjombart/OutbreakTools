@@ -7,10 +7,12 @@
 \alias{get.nlocus}
 \alias{get.nsequences}
 \alias{get.locus}
+\alias{get.id}
 \alias{get.dna}
 \alias{get.nlocus,obkSequences-method}
 \alias{get.nsequences,obkSequences-method}
 \alias{get.locus,obkSequences-method}
+\alias{get.id,obkSequences-method}
 \alias{get.dna,obkSequences-method}
 % \alias{[,obkSequences-method}
 % \alias{[,obkSequences,ANY,ANY-method}
@@ -63,9 +65,11 @@
     or "bylocus", in which case the number of sequences per locus is returned.}
     \item{get.locus}{\code{signature(x = "obkSequences")}: returns the names
       of the loci in the sample.}
-    \item{get.dna}{\code{signature(x = "obkSequences")}: returns the dna
-      sequences in the sample for a given locus (\code{locus} argument),
-      indicated by index or by name (use \code{get.locus} to know available loci).}
+    \item{get.dna}{\code{signature(x = "obkSequences")}: returns dna
+      sequences, which can be optionally specified by locus (argument
+    \code{locus}) or by sequence identifier (argument \code{id}); loci
+    can be indicated by index or by name (use \code{get.locus} to know
+    available loci); sequence IDs must be characters.}
   }
 }
 \author{Thibaut Jombart (\email{t.jombart@imperial.ac.uk})}
@@ -81,14 +85,25 @@ new("obkSequences", woodmouse) # no locus info
 new("obkSequences", as.matrix(woodmouse), locus=rep(c('loc1', 'loc2', 'locXX'), c(10,4,1)))
 
 
-## test accessors
+## test accessors ##
 x <- new("obkSequences", as.matrix(woodmouse), locus=rep(c('loc1', 'loc2', 'locXX'), c(10,4,1)))
+
+## access raw content
+get.dna(x)
+
+## access data by locus
+get.nlocus(x)
+get.locus(x)
 get.dna(x, locus=1)
 get.dna(x, locus="locXX")
 get.dna(x, locus=1:2)
-get.nlocus(x)
 get.nsequences(x)
 get.nsequences(x, "bylocus")
+
+## access data by sequence ID
+get.dna(x, id=c("No305"))
+get.dna(x, id=c("No305","CthulhuDNA"))
+get.dna(x, id=c("No305","CthulhuDNA","No306", "No1114S"))
 
 }
 \keyword{classes}

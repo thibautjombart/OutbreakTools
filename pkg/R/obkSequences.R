@@ -52,6 +52,8 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, locus=NULL) 
     ## check that dna is now a DNAbin list ##
     if(!is.list(dna) || !inherits(dna, "DNAbin")) stop("dna input could not be processed into a DNAbin list")
 
+    ## force labels ##
+    if(is.null(names(dna))) names(dna) <- 1:length(dna)
 
     ## SHAPE OUTPUT ##
     ## no locus info => unnamed list of length 1
@@ -93,6 +95,16 @@ setMethod("get.nlocus","obkSequences", function(x, ...){
 
 
 
+################
+## get.id ##
+################
+setMethod("get.id","obkSequences", function(x, ...){
+    if(is.null(x)) return(NULL)
+    return(unlist(lapply(x@dna, rownames)))
+})
+
+
+
 ####################
 ## get.nsequences ##
 ####################
@@ -118,23 +130,42 @@ setMethod("get.locus","obkSequences", function(x, ...){
 
 
 
+
+
+
 #############
 ## get.dna ##
 #############
 ## returns a matrix of dna sequences for a given locus
-setMethod("get.dna","obkSequences", function(x, locus=NULL, ...){
-    nLoc <- get.nlocus(x)
-
+setMethod("get.dna","obkSequences", function(x, locus=NULL, id=NULL, ...){
     ## return NULL if no info ##
+    nLoc <- get.nlocus(x)
     if(nLoc==0) return(NULL)
 
-    ## return only locus if nLoc==1 and no info on locus ##
-    if(nLoc==1 && is.null(locus)) return(x@dna[[1]])
+    ## RETURN SLOT CONTENT AS IS IF NOTHING ELSE ASKED ##
+    if(is.null(locus) && is.null(id)) return(x@dna)
 
-    ## otherwise use locus info ##
-    if(nLoc>1 && is.null(locus)) stop("locus must be specified (data contain more than one locus)")
-    if(length(locus)>1) return(x@dna[locus])
-    return(x@dna[[locus]])
+    ## INFO REQUESTED PER LOCUS ##
+    if(is.null(id)){
+        ## return only locus if nLoc==1 and no info on locus ##
+        if(nLoc==1 && is.null(locus)) return(x@dna[[1]])
+
+        ## otherwise use locus info ##
+        if(nLoc>1 && is.null(locus)) stop("locus must be specified (data contain more than one locus)")
+        if(length(locus)>1) return(x@dna[locus])
+        return(x@dna[[locus]])
+    }
+
+    ## INFO REQUESTED PER SEQUENCE ID ##
+    id <- as.character(id)
+    if(!all(id %in% get.id(x))) {
+        temp <- paste(id[!id %in% get.id(x)], collapse=", ")
+        warning(paste("The following sequence IDs are not in the dataset:", temp))
+        id <- id[id %in% get.id(x)]
+    }
+    out <- lapply(x@dna, function(e) e[id[id %in% rownames(e)],,drop=FALSE])
+    out <- out[sapply(out, nrow)>0]
+    return(out)
 })
 
 
