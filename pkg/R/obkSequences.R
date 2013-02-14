@@ -96,12 +96,14 @@ setMethod("get.nlocus","obkSequences", function(x, ...){
 ####################
 ## get.nsequences ##
 ####################
-setMethod("get.nsequences","obkSequences", function(x, ...){
+setMethod("get.nsequences","obkSequences", function(x, what=c("total","bylocus"), ...){
+    what <- match.arg(what)
     nLoc <- get.nlocus(x)
     if(nLoc==0) return(0)
 
-    out <- sum(sapply(x@dna, nrow))
-    return(out)
+    temp <- sapply(x@dna, nrow)
+    if(what=="bylocus") return(temp)
+    return(sum(temp))
 })
 
 
@@ -131,8 +133,7 @@ setMethod("get.dna","obkSequences", function(x, locus=NULL, ...){
 
     ## otherwise use locus info ##
     if(nLoc>1 && is.null(locus)) stop("locus must be specified (data contain more than one locus)")
-
-    locus <- as.character(locus)
+    if(length(locus)>1) return(x@dna[locus])
     return(x@dna[[locus]])
 })
 

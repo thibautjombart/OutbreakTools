@@ -3,10 +3,15 @@
 \alias{obkSequences}
 \alias{obkSequences-class}
 \alias{initialize,obkSequences-method}
-\alias{show,obkSequences-method}
+\alias{show}
+\alias{get.nlocus}
+\alias{get.nsequences}
+\alias{get.locus}
+\alias{get.dna}
 \alias{get.nlocus,obkSequences-method}
 \alias{get.nsequences,obkSequences-method}
 \alias{get.locus,obkSequences-method}
+\alias{get.dna,obkSequences-method}
 % \alias{[,obkSequences-method}
 % \alias{[,obkSequences,ANY,ANY-method}
 %%%%
@@ -42,21 +47,25 @@
 \section{Methods}{
   Here is a list of methods available for \code{obkSequences} objects. Most of
   these methods are accessors, that is, functions which are used to
-  retrieve the content of the object. Specific manpages can exist for
-  accessors with more than one argument. These are indicated by a '*'
-  symbol next to the method's name. This list also contains methods
-  for conversion from \code{obkSequences} to other classes.
+  retrieve the content of the object. Accessors with more than one
+  argument are indicated by a '*' symbol next to the method's
+  name. This list also contains methods for conversion from
+  \code{obkSequences} to other classes.
+  
   \describe{
     \item{show}{\code{signature(x = "obkSequences")}: printing of the
       object.}
     \item{get.nlocus}{\code{signature(x = "obkSequences")}: returns the number of
       loci in the sample.}
     \item{get.nsequences}{\code{signature(x = "obkSequences")}: returns the number of
-      sequences in the sample.}
+      sequences in the sample; the argument \code{what} can be "total"
+    (default), in which case the total number of sequences is returned,
+    or "bylocus", in which case the number of sequences per locus is returned.}
     \item{get.locus}{\code{signature(x = "obkSequences")}: returns the names
       of the loci in the sample.}
-    \item{get.dna*}{\code{signature(x = "obkSequences")}: returns the dna
-      sequences in the sample for a given locus (\code{locus} argument).}
+    \item{get.dna}{\code{signature(x = "obkSequences")}: returns the dna
+      sequences in the sample for a given locus (\code{locus} argument),
+      indicated by index or by name (use \code{get.locus} to know available loci).}
   }
 }
 \author{Thibaut Jombart (\email{t.jombart@imperial.ac.uk})}
@@ -76,8 +85,10 @@ new("obkSequences", as.matrix(woodmouse), locus=rep(c('loc1', 'loc2', 'locXX'), 
 x <- new("obkSequences", as.matrix(woodmouse), locus=rep(c('loc1', 'loc2', 'locXX'), c(10,4,1)))
 get.dna(x, locus=1)
 get.dna(x, locus="locXX")
+get.dna(x, locus=1:2)
 get.nlocus(x)
 get.nsequences(x)
+get.nsequences(x, "bylocus")
 
 }
 \keyword{classes}
