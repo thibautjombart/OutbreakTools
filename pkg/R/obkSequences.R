@@ -157,6 +157,10 @@ setMethod("get.dna","obkSequences", function(x, locus=NULL, id=NULL, ...){
     }
 
     ## INFO REQUESTED PER SEQUENCE ID ##
+    ## if logicals or integers, find corresponding names
+    if(is.logical(id) | is.numeric(id) | is.integer(id)){
+        id <- get.id(x)[id]
+    }
     id <- as.character(id)
     if(!all(id %in% get.id(x))) {
         temp <- paste(id[!id %in% get.id(x)], collapse=", ")

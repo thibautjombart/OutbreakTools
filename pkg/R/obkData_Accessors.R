@@ -1,13 +1,14 @@
-################################
-#### ACCESSORS  FOR OBKDATA ####
-################################
+
+###############################
+#### ACCESSORS FOR OBKDATA ####
+###############################
 
 ###############
 ## get.locus ##
 ###############
 setMethod("get.locus", "obkData", function(x, ...){
-  if(is.null(x@dna)) return(NULL)
-  return(unique(unlist(lapply(x@dna, get.locus))))
+    if(is.null(x@dna)) return(NULL)
+    return(get.locus(x@dna))
 })
 
 
@@ -16,8 +17,8 @@ setMethod("get.locus", "obkData", function(x, ...){
 ## get.nlocus ##
 ################
 setMethod("get.nlocus", "obkData", function(x, ...){
-  if(is.null(x@dna)) return(0)
-  return(length(unique(get.locus(x))))
+    if(is.null(x@dna)) return(0)
+    return(get.nlocus(x@dna))
 })
 
 
@@ -27,7 +28,7 @@ setMethod("get.nlocus", "obkData", function(x, ...){
 ####################
 setMethod("get.nsequences", "obkData", function(x, ...){
     if(is.null(x@dna)) return(0)
-    return(sum(unlist(lapply(x@dna, get.nsequences))))
+    return(get.nsequences(x@dna))
 })
 
 
@@ -35,18 +36,10 @@ setMethod("get.nsequences", "obkData", function(x, ...){
 #############
 ## get.dna ##
 #############
-setMethod("get.dna", "obkData", function(x, locus=NULL, ...){
+setMethod("get.dna", "obkData", function(x, locus=NULL, id=NULL, ...){
     ## checks and escapes ##
     if(is.null(x@dna)) return(NULL)
-    if(get.nlocus(x)==0) return(NULL)
-    if(get.nlocus(x)>1 && is.null(locus)) stop("there are several loci in the data - locus must be provided")
-
-    ## get all sequences of the locus
-    out <- lapply(x@dna, get.dna, locus=locus)
-    ## remove NULL data
-    out <- out[!sapply(out, is.null)]
-    out <- Reduce(rbind, out)
-    return(out)
+    return(get.dna(x, locus=locus, id=id, ...))
 })
 
 
@@ -114,6 +107,92 @@ setMethod("get.data", "obkData", function(x, data, drop=TRUE, ...){
     warning(paste("data '", data, "'was not found in the object"))
     return(NULL)
 })
+
+
+
+
+
+
+
+
+
+###############################
+#### SUBSETTING PROCEDURES ####
+###############################
+
+###################
+## subset method ##
+###################
+setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, ...){
+    ## CHECK THAT REQUESTED INFOR IS THERE ##
+    if(is.null(x@individuals)) individuals <- NULL
+    if(is.null(x@samples)) samples <- NULL
+
+    ## TRIVIAL SUBSET: ALL KEPT ###
+    if(is.null(individuals) && is.null(samples)) return(x)
+
+    ## SUBSET BY INDIVIDUALS ##
+    if(!is.null(individuals)){
+        ## check that indicated indiv are known
+        if(!all(individuals %in% get.individuals(x))){
+            temp <- paste(individuals[!individuals %in% get.individuals(x)], collapse=", ")
+            warning(paste("The following individuals were not found in the data:", temp))
+            individuals <- individuals[individuals %in% get.individuals(x)]
+        }
+
+        ## subset @individuals
+        x@individuals <- x@individuals[individuals, ,drop=FALSE]
+
+        ## subset @samples
+        x@samples <- x@samples[x@samples$individualID %in% individuals, ,drop=FALSE]
+
+        ## subset @dna
+        x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
+
+        ## subset @contacts
+        ## (TODO)
+
+        ## subset @clinicals
+        ## (TODO)
+
+        ## subset @trees
+        ## (TODO)
+
+        return(x)
+    }
+
+
+    ## SUBSET BY SAMPLE ##
+    if(!is.null(samples)){
+        ## check that indicated indiv are known
+        if(!all(samples %in% x@samples$sampleID)){
+            temp <- paste(samples[!samples %in% x@samples$sampleID], collapse=", ")
+            warning(paste("The following samples were not found in the data:", temp))
+            samples <- samples[samples %in% x@samples$sampleID]
+        }
+
+        ## subset @samples
+        x@samples <-x@samples[x@samples$sampleID %in% samples, ,drop=FALSE]
+
+        ## subset @individuals
+        x@individuals <-x@individuals[rownames(x@individuals) %in% x@samples$individualID,,drop=FALSE]
+
+        ## subset @dna
+        x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
+
+        ## subset @contacts
+        ## (TODO)
+
+        ## subset @clinicals
+        ## (TODO)
+
+        ## subset @trees
+        ## (TODO)
+
+        return(x)
+    }
+})
+
 
 
 

@@ -103,7 +103,7 @@ get.nsequences(x, "bylocus")
 ## access data by sequence ID
 get.dna(x, id=c("No305"))
 get.dna(x, id=c("No305","CthulhuDNA"))
-get.dna(x, id=c("No305","CthulhuDNA","No306", "No1114S"))
+get.dna(x, id=c("No305", "No306", "No1114S"))
 
 }
 \keyword{classes}

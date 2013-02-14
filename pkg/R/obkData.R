@@ -11,7 +11,7 @@
 ## - @dna: dna data, stored as a obkSequences object
 ## - @contacts: contact information as obkContacts
 setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataframeOrNULL",
-                                   clinical="listOrNULL", dna="listOrNULL", contacts="obkContactsOrNULL",
+                                   clinical="listOrNULL", dna="obkSequencesOrNULL", contacts="obkContactsOrNULL",
                                    trees="multiPhyloOrNULL"),
          prototype(individuals=NULL, samples=NULL, dna=NULL, clinical=NULL, contacts=NULL, trees=NULL))
 
