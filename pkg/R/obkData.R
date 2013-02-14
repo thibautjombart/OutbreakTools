@@ -5,12 +5,14 @@
 
 ## CLASS DESCRIPTION:
 ## Instance of obkData store outbreak data; its content includes:
-## - @data: data about samples, stored as a data.frame
-## - @meta: meta-information on the individuals (group, etc.), stored as a data.frame
+## - @individuals: meta-information on the individuals (group, etc.), stored as a data.frame
+## - @samples: data about samples, stored as a data.frame
 ## - @clinical: information about interventions and events, stored as obkClinicalEvent
-## - @dna: dna data, stored as a list of DNA sequences (list of DNAbin)
+## - @dna: dna data, stored as a obkSequences object
 ## - @contacts: contact information as obkContacts
-setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataframeOrNULL", clinical="listOrNULL", dna="listOrNULL", contacts="obkContactsOrNULL", trees="multiPhyloOrNULL"),
+setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataframeOrNULL",
+                                   clinical="listOrNULL", dna="listOrNULL", contacts="obkContactsOrNULL",
+                                   trees="multiPhyloOrNULL"),
          prototype(individuals=NULL, samples=NULL, dna=NULL, clinical=NULL, contacts=NULL, trees=NULL))
 
 
@@ -54,7 +56,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     on.exit(options(o.opt))
 
 
-    ## PROCESS INFORMATION TO CREATE INDIVIDUALS ('data') ##
+    ## PROCESS PROVIDED INFORMATION ##
     ## coerce to data.frames, force to NULL if nrow=0
     if(!is.null(individuals)) {
         individuals <- as.data.frame(individuals)
@@ -118,7 +120,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         }
     }
 
-    ## PROCESS INFORMATION ABOUT CLINICAL ('clinicals') ##
+    ## PROCESS INFORMATION ABOUT CLINICAL EVENTS ('clinicals') ##
     ## to be filled in by Paul & Marc
     if(!is.null(clinical)){
       x@clinical <- list()
@@ -135,8 +137,8 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         }
 
       names(x@clinical) <- names(clinical)
-      
-      ## make sure that all the individualIDs are in 'individuals', if the slot is NULL
+
+      ## make sure that all the individualIDs are in 'individuals', if the slot is not NULL
       if(!is.null(x@individuals)){
         unknownIDs <- unique(all.clinical.ID)[!unique(all.clinical.ID) %in% row.names(x@individuals)]
         if(length(unknownIDs)>0) {
@@ -145,7 +147,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         }
       }
     }
-    
+
     ## PROCESS INFORMATION ABOUT CONTACTS ('contacts') ##
     ## need to make sure that contact input is consisten with constructor
     if(!is.null(contacts)){
@@ -163,19 +165,9 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
             err.txt <- paste(unique(err.txt), collapse=", ")
             stop(paste("The following sequence ID were not found in the dna list:\n", err.txt))
         }
-        temp <- split(samples, samples$sampleID)
 
-        ## small auxiliary function to pass relevant data to the constructor, and nothing otherwise
-        ## (can't be using dna[NA])
-        ## vecID: vector of sequence IDs (including possible NAs, can be NAs only)
-        f1 <- function(vecID, locus){
-            if(all(is.na(vecID))) return(NULL)
-            toRemove <- is.na(vecID)
-            vecID <- vecID[!toRemove]
-            locus <- locus[!toRemove]
-            return(new("obkSequences", dna=dna[vecID], locus=locus))
-        }
-        x@dna <- lapply(temp, function(e) f1(e$sequenceID, e$locus))
+        ## pass information to constructor
+        x@dna <- new("obkSequences", dna[x@samples$sequenceID], x@samples$locus)
     }
 
 
@@ -185,7 +177,6 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         if(!inherits(trees, "multiPhylo")) stop("trees must be a multiPhylo object")
 
         ## check label consistency (to be added)
-
         x@trees <- trees
     }
 

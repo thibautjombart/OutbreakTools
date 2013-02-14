@@ -4,7 +4,7 @@
 ############################
 
 ## CLASS DESCRIPTION:
-## - instance of obkSequences store DNA sequences for a given sample
+## - instance of obkSequences store list of DNA alignments
 ## - sequences are stored as a (possibly named) list
 ## - each element of the list corresponds to a locus
 ## - names of the list are locus names
