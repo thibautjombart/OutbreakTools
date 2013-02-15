@@ -8,10 +8,10 @@
 ## only generic functions are defined here, and possibly default methods
 ## specific methods are defined in relevant files
 
-##################
-## get.ID ##
-##################
-## return the ID of the object
+############
+## get.id ##
+############
+## return the id of the object
 setGeneric("get.id", function(x, ...) standardGeneric("get.id"))
 
 ##############
@@ -54,7 +54,7 @@ setGeneric("get.duration", function(x, ...) standardGeneric("get.duration"))
 #############
 ## get.dna ##
 #############
-## return a matrix of DNA sequences
+## return DNA sequence alignments
 setGeneric("get.dna", function(x, ...) standardGeneric("get.dna"))
 
 
@@ -70,6 +70,13 @@ setGeneric("get.locus", function(x, ...) standardGeneric("get.locus"))
 ################
 ## return the number of loci in the object
 setGeneric("get.nlocus", function(x, ...) standardGeneric("get.nlocus"))
+
+
+####################
+## get.sequences ##
+####################
+## return the id of DNA sequences in the object
+setGeneric("get.sequences", function(x, ...) standardGeneric("get.sequences"))
 
 
 ####################
@@ -98,6 +105,13 @@ setGeneric("get.samples", function(x, ...) standardGeneric("get.samples"))
 setGeneric("get.sampletype",function(x, ...) standardGeneric("get.sampletype"))
 
 
+#####################
+## get.individuals ##
+#####################
+## return the number of individuals in the object
+setGeneric("get.individuals", function(x, ...) standardGeneric("get.individuals"))
+
+
 
 ######################
 ## get.nindividuals ##
@@ -106,11 +120,28 @@ setGeneric("get.sampletype",function(x, ...) standardGeneric("get.sampletype"))
 setGeneric("get.nindividuals", function(x, ...) standardGeneric("get.nindividuals"))
 
 
-#####################
-## get.individuals ##
-#####################
-## return the number of individuals in the object
-setGeneric("get.individuals", function(x, ...) standardGeneric("get.individuals"))
+
+#################
+## get.samples ##
+#################
+## return the number of samples in the object
+setGeneric("get.samples", function(x, ...) standardGeneric("get.samples"))
+
+
+
+##################
+## get.nsamples ##
+##################
+## return the number of samples in the object
+setGeneric("get.nsamples", function(x, ...) standardGeneric("get.nsamples"))
+
+
+
+##################
+## get.contacts ##
+##################
+## return the number of contacts in the object
+setGeneric("get.contacts", function(x, ...) standardGeneric("get.contacts"))
 
 
 
@@ -121,18 +152,22 @@ setGeneric("get.individuals", function(x, ...) standardGeneric("get.individuals"
 setGeneric("get.ncontacts", function(x, ...) standardGeneric("get.ncontacts"))
 
 
-##################
-## get.contacts ##
-##################
-## return the number of contacts in the object
-setGeneric("get.contacts", function(x, ...) standardGeneric("get.contacts"))
-
 
 ##############
 ## get.data ##
 ##############
 ## return the number of contacts in the object
 setGeneric("get.data", function(x, ...) standardGeneric("get.data"))
+
+
+
+
+
+############
+## subset ##
+############
+## return the number of contacts in the object
+setGeneric("subset", function(x, ...) standardGeneric("subset"))
 
 
 

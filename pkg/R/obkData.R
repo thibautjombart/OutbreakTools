@@ -67,15 +67,15 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         if(nrow(samples)==0) samples <- NULL
     }
     if(!is.null(clinical)) {
-      if(is.data.frame(clinical))
-        clinical = list(clinical)
-      else clinical <- as.list(clinical)
-      if(length(clinical)==0) clinical <- NULL
+        if(is.data.frame(clinical))
+            clinical = list(clinical)
+        else clinical <- as.list(clinical)
+        if(length(clinical)==0) clinical <- NULL
     }
     if(!is.null(dna) && (inherits(dna, "DNAbin") && is.matrix(dna))) dna <- as.list(dna)
     if(!is.null(dna) && (!is.list(dna) || !inherits(dna, "DNAbin"))) stop("dna is not a list of DNAbin objects.")
 
-     ## escape if no info provided ##
+    ## escape if no info provided ##
     if(is.null(individuals) && is.null(samples) && is.null(clinical) && is.null(dna) && is.null(contacts)) return(x)
 
     ## check that relevant fields are here ##
@@ -88,11 +88,11 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         if(!"date" %in% names(samples)) stop("no field 'date' in the sample data.frame ('samples')")
     }
     for(i in 1:length(clinical)){
-      if(!is.null(clinical[[i]])){
-        if(!"individualID" %in% names(clinical[[i]])) stop(paste("no field 'individualID' in the clinical data.frame", names(clinical)[i], ")"))
-        if(!"date" %in% names(clinical[[i]])) stop(paste("no field 'date' in the clinical data.frame", names(clinical)[i], ")"))
-      }
-}
+        if(!is.null(clinical[[i]])){
+            if(!"individualID" %in% names(clinical[[i]])) stop(paste("no field 'individualID' in the clinical data.frame", names(clinical)[i], ")"))
+            if(!"date" %in% names(clinical[[i]])) stop(paste("no field 'date' in the clinical data.frame", names(clinical)[i], ")"))
+        }
+    }
     ## PROCESS INFORMATION ABOUT INDIVIDUALS ('individuals') ##
     if(!is.null(individuals)){
         lab <- as.character(individuals[,"individualID"])
@@ -123,29 +123,29 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     ## PROCESS INFORMATION ABOUT CLINICAL EVENTS ('clinicals') ##
     ## to be filled in by Paul & Marc
     if(!is.null(clinical)){
-      x@clinical <- list()
-      ## reorder the columns within each data frame.
-      all.clinical.ID <- NULL
-      for(i in 1:length(clinical))
+        x@clinical <- list()
+        ## reorder the columns within each data frame.
+        all.clinical.ID <- NULL
+        for(i in 1:length(clinical))
         {
-          nameOrder <- c(c("individualID","date"), setdiff(names(clinical[[i]]), c("individualID","date")))
-          x@clinical[[i]] <- clinical[[i]][, nameOrder]
-          x@clinical[[i]][,"individualID"] <- as.character(x@clinical[[i]][,"individualID"])
-          x@clinical[[i]][,"date"] <- as.Date(x@clinical[[i]][,"date"], format=date.format)
+            nameOrder <- c(c("individualID","date"), setdiff(names(clinical[[i]]), c("individualID","date")))
+            x@clinical[[i]] <- clinical[[i]][, nameOrder]
+            x@clinical[[i]][,"individualID"] <- as.character(x@clinical[[i]][,"individualID"])
+            x@clinical[[i]][,"date"] <- as.Date(x@clinical[[i]][,"date"], format=date.format)
 
-          all.clinical.ID <- c(all.clinical.ID, x@clinical[[i]][, "individualID"])
+            all.clinical.ID <- c(all.clinical.ID, x@clinical[[i]][, "individualID"])
         }
 
-      names(x@clinical) <- names(clinical)
+        names(x@clinical) <- names(clinical)
 
-      ## make sure that all the individualIDs are in 'individuals', if the slot is not NULL
-      if(!is.null(x@individuals)){
-        unknownIDs <- unique(all.clinical.ID)[!unique(all.clinical.ID) %in% row.names(x@individuals)]
-        if(length(unknownIDs)>0) {
-          unknownIDs.txt <- paste(unknownIDs, collapse = ", ")
+        ## make sure that all the individualIDs are in 'individuals', if the slot is not NULL
+        if(!is.null(x@individuals)){
+            unknownIDs <- unique(all.clinical.ID)[!unique(all.clinical.ID) %in% row.names(x@individuals)]
+            if(length(unknownIDs)>0) {
+                unknownIDs.txt <- paste(unknownIDs, collapse = ", ")
                 warning(paste("the following individuals with clinical observations have no individual information:\n", unknownIDs.txt))
+            }
         }
-      }
     }
 
     ## PROCESS INFORMATION ABOUT CONTACTS ('contacts') ##
@@ -168,6 +168,9 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 
         ## pass information to constructor
         x@dna <- new("obkSequences", dna[x@samples$sequenceID], x@samples$locus)
+
+        ## set labels in @samples
+        if(is.integer(x@samples$sequencesID) || is.numeric(x@samples$sequencesID)) x@samples$sequencesID <- names(dna)[x@samples$sequencesID]
     }
 
 

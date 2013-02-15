@@ -15,6 +15,7 @@ Depends:
     methods,
     MASS,
     ape,
+    adegenet,
     networkDynamic,
     ggplot2,
     proto,

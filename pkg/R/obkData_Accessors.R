@@ -23,6 +23,17 @@ setMethod("get.nlocus", "obkData", function(x, ...){
 
 
 
+
+###################
+## get.sequences ## (get sequence ID)
+###################
+setMethod("get.sequences","obkData", function(x, ...){
+    return(get.id(x@dna))
+})
+
+
+
+
 ####################
 ## get.nsequences ##
 ####################
@@ -76,6 +87,26 @@ setMethod("get.nindividuals", "obkData", function(x, data=c("samples", "individu
 
 
 
+#################
+## get.samples ##
+#################
+setMethod("get.samples", "obkData", function(x, ...){
+    if(is.null(x@samples)) return(NULL)
+    return(unique(x@samples$sampleID))
+})
+
+
+
+#################
+## get.nsamples ##
+#################
+setMethod("get.nsamples", "obkData", function(x, ...){
+    if(is.null(x@samples)) return(0)
+    return(length(unique(x@samples$sampleID)))
+})
+
+
+
 ##############
 ## get.data ##
 ##############
@@ -106,93 +137,8 @@ setMethod("get.data", "obkData", function(x, data, drop=TRUE, ...){
     ## DEFAULT IF WE DON'T KNOW WHAT TO RETURN ##
     warning(paste("data '", data, "'was not found in the object"))
     return(NULL)
-})
+}) # end get.data
 
-
-
-
-
-
-
-
-
-###############################
-#### SUBSETTING PROCEDURES ####
-###############################
-
-###################
-## subset method ##
-###################
-setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, ...){
-    ## CHECK THAT REQUESTED INFOR IS THERE ##
-    if(is.null(x@individuals)) individuals <- NULL
-    if(is.null(x@samples)) samples <- NULL
-
-    ## TRIVIAL SUBSET: ALL KEPT ###
-    if(is.null(individuals) && is.null(samples)) return(x)
-
-    ## SUBSET BY INDIVIDUALS ##
-    if(!is.null(individuals)){
-        ## check that indicated indiv are known
-        if(!all(individuals %in% get.individuals(x))){
-            temp <- paste(individuals[!individuals %in% get.individuals(x)], collapse=", ")
-            warning(paste("The following individuals were not found in the data:", temp))
-            individuals <- individuals[individuals %in% get.individuals(x)]
-        }
-
-        ## subset @individuals
-        x@individuals <- x@individuals[individuals, ,drop=FALSE]
-
-        ## subset @samples
-        x@samples <- x@samples[x@samples$individualID %in% individuals, ,drop=FALSE]
-
-        ## subset @dna
-        x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
-
-        ## subset @contacts
-        ## (TODO)
-
-        ## subset @clinicals
-        ## (TODO)
-
-        ## subset @trees
-        ## (TODO)
-
-    } # end processing 'individuals' argument
-
-
-    ## SUBSET BY SAMPLE ##
-    if(!is.null(samples)){
-        ## check that indicated indiv are known
-        if(!all(samples %in% x@samples$sampleID)){
-            temp <- paste(samples[!samples %in% x@samples$sampleID], collapse=", ")
-            warning(paste("The following samples were not found in the data:", temp))
-            samples <- samples[samples %in% x@samples$sampleID]
-        }
-
-        ## subset @samples
-        x@samples <-x@samples[x@samples$sampleID %in% samples, ,drop=FALSE]
-
-        ## subset @individuals
-        x@individuals <-x@individuals[rownames(x@individuals) %in% x@samples$individualID,,drop=FALSE]
-
-        ## subset @dna
-        x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
-
-        ## subset @contacts
-        ## (TODO)
-
-        ## subset @clinicals
-        ## (TODO)
-
-        ## subset @trees
-        ## (TODO)
-
-    } # end processing 'samples' argument
-
-
-    return(x)
-}) # end subset method
 
 
 

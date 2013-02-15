@@ -95,14 +95,21 @@ setMethod("get.nlocus","obkSequences", function(x, ...){
 
 
 
-################
+############
 ## get.id ##
-################
+############
 setMethod("get.id","obkSequences", function(x, ...){
     if(is.null(x)) return(NULL)
     return(unlist(lapply(x@dna, rownames)))
 })
 
+
+###################
+## get.sequences ## (alias for get.id)
+###################
+setMethod("get.sequences","obkSequences", function(x, ...){
+    return(get.id(x))
+})
 
 
 ####################
@@ -152,8 +159,7 @@ setMethod("get.dna","obkSequences", function(x, locus=NULL, id=NULL, ...){
 
         ## otherwise use locus info ##
         if(nLoc>1 && is.null(locus)) stop("locus must be specified (data contain more than one locus)")
-        if(length(locus)>1) return(x@dna[locus])
-        return(x@dna[[locus]])
+        return(x@dna[locus])
     }
 
     ## INFO REQUESTED PER SEQUENCE ID ##
