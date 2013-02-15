@@ -39,7 +39,7 @@ setMethod("get.nsequences", "obkData", function(x, ...){
 setMethod("get.dna", "obkData", function(x, locus=NULL, id=NULL, ...){
     ## checks and escapes ##
     if(is.null(x@dna)) return(NULL)
-    return(get.dna(x, locus=locus, id=id, ...))
+    return(get.dna(x@dna, locus=locus, id=id, ...))
 })
 
 
@@ -158,8 +158,7 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, ...){
         ## subset @trees
         ## (TODO)
 
-        return(x)
-    }
+    } # end processing 'individuals' argument
 
 
     ## SUBSET BY SAMPLE ##
@@ -189,9 +188,11 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, ...){
         ## subset @trees
         ## (TODO)
 
-        return(x)
-    }
-})
+    } # end processing 'samples' argument
+
+
+    return(x)
+}) # end subset method
 
 
 

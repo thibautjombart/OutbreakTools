@@ -186,9 +186,9 @@ setMethod("get.dna","obkSequences", function(x, locus=NULL, id=NULL, ...){
 setMethod ("show", "obkSequences", function(object){
     nLoc <- get.nlocus(object)
     nSeq <- get.nsequences(object)
-    seqword <- ifelse(nLoc>1, "sequences", "sequence")
+    seqword <- ifelse(nSeq>1, "sequences", "sequence")
     locword <- ifelse(nLoc>1, "loci", "locus")
-    cat(paste("\n =", nSeq,"DNA", seqword, "in", nLoc, "loci =\n\n"))
+    cat(paste("\n =", nSeq,"DNA", seqword, "in", nLoc, locword," =\n\n"))
     if(nLoc>0) print(object@dna)
 })
 
