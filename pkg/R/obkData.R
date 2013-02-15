@@ -170,7 +170,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         x@dna <- new("obkSequences", dna[x@samples$sequenceID], x@samples$locus)
 
         ## set labels in @samples
-        if(is.integer(x@samples$sequencesID) || is.numeric(x@samples$sequencesID)) x@samples$sequencesID <- names(dna)[x@samples$sequencesID]
+        if(is.integer(x@samples$sequenceID) || is.numeric(x@samples$sequenceID)) x@samples$sequenceID <- names(dna)[x@samples$sequenceID]
     }
 
 
