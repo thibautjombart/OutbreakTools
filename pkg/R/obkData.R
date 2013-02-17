@@ -157,20 +157,21 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 
     ## PROCESS INFORMATION ABOUT DNA SEQUENCES ('sequenceID') ##
     seqPos <- which(names(samples) %in% c("sequenceID"))
+    isNA <- is.na(samples$sequenceID)
     if(length(seqPos)==0 || is.null(dna)){
         x@dna <- NULL
     } else {
-        if(is.character(samples$sequenceID) && !all(na.omit(samples$sequenceID) %in% names(dna))) {
+        if(is.character(samples$sequenceID) && !all(samples$sequenceID[!isNA] %in% names(dna))) {
             err.txt <- na.omit(samples$sequenceID[!samples$sequenceID %in% names(dna)])
             err.txt <- paste(unique(err.txt), collapse=", ")
             stop(paste("The following sequence ID were not found in the dna list:\n", err.txt))
         }
 
         ## pass information to constructor
-        x@dna <- new("obkSequences", dna[x@samples$sequenceID], x@samples$locus)
+        x@dna <- new("obkSequences", dna[x@samples$sequenceID[!isNA]], x@samples$locus[!isNA])
 
         ## set labels in @samples
-        if(is.integer(x@samples$sequenceID) || is.numeric(x@samples$sequenceID)) x@samples$sequenceID <- names(dna)[x@samples$sequenceID]
+        if(is.integer(x@samples$sequenceID) || is.numeric(x@samples$sequenceID)) x@samples$sequenceID[!isNA] <- names(dna)[x@samples$sequenceID[!isNA]]
     }
 
 
