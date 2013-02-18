@@ -157,10 +157,13 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 
     ## PROCESS INFORMATION ABOUT DNA SEQUENCES ('sequenceID') ##
     seqPos <- which(names(samples) %in% c("sequenceID"))
-    isNA <- is.na(samples$sequenceID)
     if(length(seqPos)==0 || is.null(dna)){
         x@dna <- NULL
     } else {
+        ## identify NAs
+        isNA <- is.na(samples$sequenceID)
+
+        ## check unknown labels
         if(is.character(samples$sequenceID) && !all(samples$sequenceID[!isNA] %in% names(dna))) {
             err.txt <- na.omit(samples$sequenceID[!samples$sequenceID %in% names(dna)])
             err.txt <- paste(unique(err.txt), collapse=", ")
