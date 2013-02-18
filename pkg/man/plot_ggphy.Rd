@@ -25,7 +25,6 @@
   Function to plot phylogenies of the class 'ggphy'
 }
 \examples{
-see misc/plot_ggphy_test.R
 }
 \author{
   Anton Camacho

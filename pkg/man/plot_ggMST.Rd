@@ -12,20 +12,22 @@
   and positioning the nodes according to the fruchtermanreingold in sna
 }
 \examples{
-## Extracting sequenceIDs from the samples table
-seqids<-na.omit(samples[samples$sampleID=="904","sequenceID"])
-## get the index of the sequenceIDs in the DNAbin
-seqindex<-which(labels(dna) %in% seqids)
-## create a subset DNAbin
-subsetdna<-dna[seqindex, ]
-## get a particular sequence id with summary.seq$uniqseqID4[5]
-## get number of sequences length(summary.seq$uniqseqID4)
-uniq904<-dna2uniqSequences(subsetdna)
-plot_ggMST(uniq904)
+## THIS NEEDS TO BE FIXED ##
 
-##this below will take a long time
-uniqdna<-dna2uniqSequences(dna)
-plot_ggMST(uniqdna)
+% ## Extracting sequenceIDs from the samples table
+% seqids<-na.omit(samples[samples$sampleID=="904","sequenceID"])
+% ## get the index of the sequenceIDs in the DNAbin
+% seqindex<-which(labels(dna) %in% seqids)
+% ## create a subset DNAbin
+% subsetdna<-dna[seqindex, ]
+% ## get a particular sequence id with summary.seq$uniqseqID4[5]
+% ## get number of sequences length(summary.seq$uniqseqID4)
+% uniq904<-dna2uniqSequences(subsetdna)
+% plot_ggMST(uniq904)
+
+% ##this below will take a long time
+% uniqdna<-dna2uniqSequences(dna)
+% plot_ggMST(uniqdna)
 
 }
 \author{

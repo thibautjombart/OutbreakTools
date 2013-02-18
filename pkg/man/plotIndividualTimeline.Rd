@@ -1,8 +1,8 @@
-\name{plot.individualTimeline}
-\alias{plot.individualTimeline}
+\name{plotIndividualTimeline}
+\alias{plotIndividualTimeline}
 \title{Function to plot a timeline for individuals involved in an outbreak in one plot}
 \usage{
-  plot.individualTimeline(data,selection=1:dim(data)[1],ordering=1:length(selection),orderBy=NULL,colorBy=NULL,events=NULL,clinicalEvents=NULL,periods=NULL)
+  plotIndividualTimeline(data,selection=1:dim(data)[1],ordering=1:length(selection),orderBy=NULL,colorBy=NULL,events=NULL,clinicalEvents=NULL,periods=NULL)
 
 }
 \arguments{
@@ -23,7 +23,8 @@
    Function to plot a timeline for individuals involved in an outbreak in one plot
 }
 \examples{
-plot.individualTimeline(individualData,orderBy="exposure.code",selection=1:20,clinicalEvents = 1:4,colorBy="exposure.code")
+## THIS NEEDS TO BE FIXED ##
+##plotIndividualTimeline(individualData,orderBy="exposure.code",selection=1:20,clinicalEvents = 1:4,colorBy="exposure.code")
 
 }
 \author{

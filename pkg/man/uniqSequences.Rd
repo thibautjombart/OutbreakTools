@@ -27,18 +27,20 @@
   Joseph Hughes... add your name/email here}
 \examples{
 
-## EMPTY OBJECT ##
-new("uniqSequences")
+## THIS EXAMPLE NEEDS TO BE FIXED ##
 
-data(HorseFluOutbreak)
-# get some sequence IDs from sample
-seqids<-na.omit(samples[samples$sampleID=="904","sequenceID"])
-# get the index of the sequenceIDs in the DNAbin
-seqindex<-which(labels(dna) %in% seqids)
-# create a subset DNAbin
-subsetdna<-dna[seqindex, ]
-# see the function dna2uniqSequences
-uniqsubset<-dna2uniqSequences(subsetdna)
+% ## EMPTY OBJECT ##
+% new("uniqSequences")
+
+% data(HorseFluOutbreak)
+% # get some sequence IDs from sample
+% seqids<-na.omit(samples[samples$sampleID=="904","sequenceID"])
+% # get the index of the sequenceIDs in the DNAbin
+% seqindex<-which(labels(dna) %in% seqids)
+% # create a subset DNAbin
+% subsetdna<-dna[seqindex, ]
+% # see the function dna2uniqSequences
+% uniqsubset<-dna2uniqSequences(subsetdna)
 
 }
 \keyword{classes}
