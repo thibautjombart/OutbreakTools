@@ -161,8 +161,6 @@ setGeneric("get.data", function(x, ...) standardGeneric("get.data"))
 
 
 
-
-
 ############
 ## subset ##
 ############
@@ -171,3 +169,8 @@ setGeneric("subset", function(x, ...) standardGeneric("subset"))
 
 
 
+###############
+## get.phylo ##
+###############
+## return DNA sequence alignments
+setGeneric("get.phylo", function(x, ...) standardGeneric("get.phylo"))
