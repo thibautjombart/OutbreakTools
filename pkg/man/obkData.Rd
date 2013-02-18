@@ -8,9 +8,16 @@
 \alias{get.nlocus,obkData-method}
 \alias{get.dna,obkData-method}
 \alias{get.nsequences,obkData-method}
+\alias{get.individuals}
 \alias{get.individuals,obkData-method}
+\alias{get.nindividuals}
 \alias{get.nindividuals,obkData-method}
+\alias{get.samples}
+\alias{get.samples,obkData-method}
+\alias{get.data}
 \alias{get.data,obkData-method}
+\alias{subset,obkData-method}
+\alias{subset.obkData}
 % \alias{[,obkData-method}
 % \alias{[,obkData,ANY,ANY-method}
 %%%%
