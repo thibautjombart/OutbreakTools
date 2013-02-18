@@ -9,13 +9,12 @@ Author: {The Hackout team (In alphabetic order: David Aanensen, Marc Baguelin,
     Soubeyrand, Marc Suchard, Jacco Wallinga, Rolf Ypma)}
 Maintainer: Thibaut Jombart <t.jombart@imperial.ac.uk>
 Suggests:
-    EpiEstim
+    EpiEstim, adegenet
 Depends:
     R (>= 2.10),
     methods,
     MASS,
     ape,
-    adegenet,
     networkDynamic,
     ggplot2,
     proto,
