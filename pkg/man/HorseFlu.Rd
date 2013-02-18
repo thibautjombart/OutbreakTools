@@ -27,7 +27,7 @@
 \dontrun{
 ## LOAD DATA ##
 data(HorseFlu)
-
+attach(HorseFlu)
 
 ## EXAMINE CONTENT ##
 
@@ -74,6 +74,9 @@ table(x.max@samples$sampleID)
 D <- dist.dna(get.dna(x.max)[[1]], model="N")
 tre <- nj(D)
 plot(tre, type="fan")
+
+
+detach(HorseFlu)
 
 
 }
