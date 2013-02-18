@@ -5,8 +5,9 @@
 ###############
 
 setMethod("get.phylo", "obkData", function(x, locus=NULL, model = "N", pairwise.deletion = FALSE, method=nj,
-                                           color.by=c("sample","individual","date"), palette=funky, ...){
-    if(is.null(get.dna(x))){
+                                           color.by=c("sample","individual","date"), palette=funky,
+                                           plot=TRUE, ask=TRUE, ...){
+    if(get.nlocus(x)==0){
         warning("No DNA sequences in the data.")
         return(NULL)
     }
@@ -16,19 +17,23 @@ setMethod("get.phylo", "obkData", function(x, locus=NULL, model = "N", pairwise.
     N <- length(locus)
 
     ## GET DISTANCES ##
-    D <- lapply(1:N, function(i) dist.dna(get.dna(x, locus=i), model=model, pairwise.deletion = pairwise.deletion))
+    D <- lapply(get.dna(x, locus=locus), function(e) dist.dna(e, model=model, pairwise.deletion = pairwise.deletion))
 
     ## GET TREES ##
-    tre <- lapply(D, method)
+    tre <- lapply(D, function(e) ladderize(method(e)))
 
     ## SET COLORS ##
     if(!is.null(x@samples)){
         ## get color info ##
+        color.by <- color.by[1]
         if(color.by=="sample") col.name <- "sampleID"
         if(color.by=="individual") col.name <- "individualID"
         if(color.by=="date") col.name <- "date"
         col.var <- x@samples[, col.name]
         names(col.var) <- x@samples$sequenceID
+        if(color.by=="date"){
+            col.var <- difftime(col.var, min(colvar))
+        }
 
         ## get colors ##
         if(is.factor(col.var) || is.character(col.var)) {
@@ -55,10 +60,21 @@ setMethod("get.phylo", "obkData", function(x, locus=NULL, model = "N", pairwise.
     }
 
 
+    ## PLOT (OPTIONAL) ##
+    if(plot){
+        par(ask=ask, xpd=TRUE)
+        for(i in 1:N){
+            plot(tre[[i]], tip.color=tre[[i]]$tip.col, ...)
+            legend("topright", fill=leg.col, legend=leg.txt, title=col.name)
+            title(paste("locus:", locus[i]))
+        }
+    }
+
+
     ## RETURN OBJECT ##
     out <- tre
     out$legend <- list(col=leg.col, txt=leg.txt)
     return(out)
 
-})
+}) # end get.phylo
 
