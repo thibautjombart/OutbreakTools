@@ -1,0 +1,164 @@
+\documentclass{article}
+% \VignettePackage{epibase}
+% \VignetteIndexEntry{Analysis of disease outbreak data}
+
+\usepackage{graphicx}
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+\usepackage{array}
+\usepackage{color}
+
+\usepackage[utf8]{inputenc} % for UTF-8/single quotes from sQuote()
+\newcommand{\code}[1]{{{\tt #1}}}
+\title{An introduction to analysing disease outbreak data using \textit{epibase} \Sexpr{packageDescription("epibase", fields = "Version")}}
+\author{Thibaut Jombart, Addyour Namehere}
+\date{\today}
+
+
+
+
+\sloppy
+\hyphenpenalty 10000
+
+
+\begin{document}
+
+\SweaveOpts{prefix.string = genomics, echo=TRUE, eval=TRUE, fig = FALSE, eps = FALSE, pdf = TRUE}
+
+
+
+\definecolor{Soutput}{rgb}{0,0,0.56}
+\definecolor{Sinput}{rgb}{0.56,0,0}
+\DefineVerbatimEnvironment{Sinput}{Verbatim}
+{formatcom={\color{Sinput}},fontsize=\footnotesize, baselinestretch=0.75}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}
+{formatcom={\color{Soutput}},fontsize=\footnotesize, baselinestretch=0.75}
+
+\color{black}
+
+\maketitle
+
+\begin{abstract}
+  This vignette introduces the main functionalities of \textit{epibase}, a package implementing
+  basic tools for the analysis of outbreak data. Disease outbreak data can be varied and complex,
+  and one of the core features of \textit{epibase} lies in the formal (S4) class \texttt{obkData},
+  which allows for storing and handling a variety of data about individuals, samples, contact
+  structures, or even clinical events. This tutorial will introduces this data structure and
+  illustrates how these objects can be handled and analyzed in R.
+\end{abstract}
+
+\newpage
+
+\tableofcontents
+
+
+\newpage
+%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%
+\section{Introduction}
+%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%
+
+
+
+
+
+%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%
+\section{Classes of objects}
+%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%
+\subsection{\code{obkData}: }
+%%%%%%%%%%%%%%%%
+The class \texttt{ObkData} is ...
+\\
+
+<<>>=
+library(epibase)
+getClassDef("obkData")
+@
+
+The slots respectively contain:
+\begin{itemize}
+  \item \texttt{samples}:
+  \item \texttt{individuals}:
+  \item \texttt{clinical}:
+  \item \texttt{dna}:
+  \item \texttt{contacts}:
+  \item \texttt{trees}:
+\end{itemize}
+
+New objects are created using \texttt{new}, with these slots as arguments.
+If no argument is provided, an empty object is created:
+
+
+
+
+
+%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%
+\section{Data handling using \texttt{obkData} objects}
+%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%
+\subsection{Using accessors}
+%%%%%%%%%%%%%%%%
+
+The phylosophy underlying formal (S4) classes is that the internal representation of the data can be
+complex as long as accessing this information is simple.
+This is made possible by decoupling storage and accession: the user is not meant to access the
+content of the object directly, but has to use \texttt{accessors} to retrieve or modify the information.
+\\
+
+Available accessors are documented in \code{?obkData}.
+\begin{itemize}
+  \item \texttt{}: returns ...
+  \item \texttt{}: returns ...
+\end{itemize}
+
+
+
+
+%%%%%%%%%%%%%%%%
+\subsection{Subsetting the data}
+%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%
+\subsection{Data conversions}
+%%%%%%%%%%%%%%%%
+
+
+
+
+
+%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%
+\section{Data analysis using \texttt{obkData} objects}
+%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%
+
+In the following, we illustrate some methods for the analysis of \texttt{genlight} objects, ranging
+from simple tools for diagnosing allele frequencies or missing data to recently developed multivariate approaches.
+Some examples below are illustrated using toy datasets generated using the function \texttt{glSim}.
+This simple simulation tool allows for simulating large SNPs data with possibly contrasted
+structures between two groups of individuals or patterns of linkage disequilibrium (LD).
+See \texttt{?glSim} for more details on this tool.
+
+
+%%%%%%%%%%%%%%%%
+\subsection{Basic analyses}
+%%%%%%%%%%%%%%%%
+
+
+% % % % % % % % % %
+\subsubsection{Plotting \texttt{obkData} objects}
+% % % % % % % % % %
+
+
+
+
+
+\end{document}
