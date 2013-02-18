@@ -2,9 +2,9 @@
 \docType{data}
 \alias{HorseFlu}
 
-\title{Dataset from the Newmarket 2003 equine Influenza outbreak}
+\title{Dataset from the Newmarket 2003 equine influenza outbreak}
 \description{
-  These are the different datasets for the outbreak:
+  This dataset is a list containing the following components:
   \itemize{
     \item{
       \code{individuals}: a dataframe which contains all static information relating to a horse (individualID), training yard the horse belongs to (yardID), date of birth, sex, latitude, longitude.
@@ -73,7 +73,7 @@ table(x.max@samples$sampleID)
 ## Build a phylogeny for this individual
 D <- dist.dna(get.dna(x.max)[[1]], model="N")
 tre <- nj(D)
-
+plot(tre, type="fan")
 
 
 }
