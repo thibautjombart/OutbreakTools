@@ -72,7 +72,7 @@
     \item{\code{dna}:}{an object of the class
       \linkS4class{obkSequences} storing DNA sequences.}
     \item{\code{trees}:}{an object of the class
-      \linkS4class{multiPhylo} storing list of trees.}
+      \code{\link{multiphylo}} storing list of trees.}
   }
 }
 \section{Methods}{

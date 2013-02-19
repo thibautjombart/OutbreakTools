@@ -2,11 +2,13 @@
 \alias{plot.ggphy}
 \title{Function to plot phylogenies of the class 'ggphy'}
 \usage{
-  plot.ggphy(ggphy, tip.labels = FALSE, tip.attribute = NULL,
-    var.tip.labels = NULL, var.tip.colour = NULL)
+  plot.ggphy(x, y=NULL, tip.labels = FALSE, tip.attribute = NULL,
+    var.tip.labels = NULL, var.tip.colour = NULL, \dots)
 }
 \arguments{
-  \item{ggphy}{An object of the class "ggphy"}
+  \item{x}{An object of the class "ggphy"}
+
+  \item{y}{not used - only for compatibility with plot generic}
 
   \item{tip.labels}{Logical.Should tip labels be plotted?}
 

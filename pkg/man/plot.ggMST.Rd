@@ -2,10 +2,11 @@
 \alias{plot.ggMST}
 \title{Function to plot a minimum spanning tree of the class 'uniqSequences'}
 \usage{
-  plot.ggMST(uniqSequences)
+  plot.ggMST(x, y=NULL, \dots)
 }
 \arguments{
-  \item{uniqSequences}{An object of the class "uniqSequences"}
+  \item{x}{An object of the class "uniqSequences"}
+  \item{y}{not used - only for compatibility with plot generic}
 }
 \description{
   Function to plot a minimum spanning tree of a set of unique sequences from \code{uniqSequences} using the mst function from ape 

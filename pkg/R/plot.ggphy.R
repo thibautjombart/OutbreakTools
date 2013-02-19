@@ -10,13 +10,13 @@
 #' @examples see misc/plot.ggphy.test.R
 
 
-plot.ggphy<-function(ggphy, tip.labels=FALSE, tip.attribute=NULL, var.tip.labels=NULL, var.tip.colour=NULL){
+plot.ggphy<-function(x, y=NULL, tip.labels=FALSE, tip.attribute=NULL, var.tip.labels=NULL, var.tip.colour=NULL, ...){
 
 #TODO: allow edge and node attributes and merge with df.edge and df.node
 
-	df.tip<-ggphy[[1]]
-	df.node<-ggphy[[2]]
-	df.edge<-ggphy[[3]]
+	df.tip<-x[[1]]
+	df.node<-x[[2]]
+	df.edge<-x[[3]]
 
 	is.x.date<-inherits(df.edge$x.beg,"Date")
 
