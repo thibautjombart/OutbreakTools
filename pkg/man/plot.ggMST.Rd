@@ -1,8 +1,8 @@
-\name{plot_ggMST}
-\alias{plot_ggMST}
+\name{plot.ggMST}
+\alias{plot.ggMST}
 \title{Function to plot a minimum spanning tree of the class 'uniqSequences'}
 \usage{
-  plot_ggMST(uniqSequences)
+  plot.ggMST(uniqSequences)
 }
 \arguments{
   \item{uniqSequences}{An object of the class "uniqSequences"}

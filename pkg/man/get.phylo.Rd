@@ -1,3 +1,4 @@
+% \encoding{UTF-8}
 \name{get.phylo}
 \alias{get.phylo}
 \alias{get.phylo,obkData-method}

@@ -1,3 +1,4 @@
+\encoding{UTF-8}
 \name{sciencegallery}
 \docType{data}
 \alias{sciencegallery}
