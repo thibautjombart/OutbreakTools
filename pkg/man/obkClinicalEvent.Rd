@@ -4,6 +4,7 @@
 \alias{obkClinicalEventOrNULL}
 \alias{obkClinicalEvent-class}
 \alias{initialize,obkClinicalEvent-method}
+\alias{get.characteristic}
 \alias{get.characteristic,obkClinicalEvent-method}
 \alias{get.duration}
 \alias{get.duration,obkClinicalEvent-method}

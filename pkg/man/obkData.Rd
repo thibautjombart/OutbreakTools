@@ -8,6 +8,7 @@
 \alias{get.locus,obkData-method}
 \alias{get.nlocus,obkData-method}
 \alias{get.dna,obkData-method}
+\alias{get.sequences,obkData-method}
 \alias{get.nsequences,obkData-method}
 \alias{get.individuals}
 \alias{get.individuals,obkData-method}
@@ -15,6 +16,8 @@
 \alias{get.nindividuals,obkData-method}
 \alias{get.samples}
 \alias{get.samples,obkData-method}
+\alias{get.nsamples}
+\alias{get.nsamples,obkData-method}
 \alias{get.data}
 \alias{get.data,obkData-method}
 \alias{subset,obkData-method}
