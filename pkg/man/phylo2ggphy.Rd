@@ -2,8 +2,8 @@
 \alias{phylo2ggphy}
 \title{Function to convert phylogenies from the class 'phylo' to the class 'ggphy'}
 \usage{
-  phylo2ggphy(phylo, tip_dates = NULL,
-    branch_unit = "subst")
+  phylo2ggphy(phylo, tip.dates = NULL,
+    branch.unit = "subst")
 }
 \arguments{
   \item{phylo}{an object of the class "phylo"}

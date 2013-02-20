@@ -17,7 +17,7 @@
 \usage{
 get.phylo(x, \dots)
 
-\method{get.phylo}{obkData}(x, locus=NULL, model = "N", pairwise.deletion = FALSE,
+\S4method{get.phylo}{obkData}(x, locus=NULL, model = "N", pairwise.deletion = FALSE,
            method=nj, color.by=c("sample","individual","date"),
            palette=funky, plot=TRUE, ask=TRUE,\dots)
 }

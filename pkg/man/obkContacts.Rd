@@ -18,10 +18,10 @@
 \alias{get.ncontacts}
 \alias{get.ncontacts,obkContacts-method}
 
-\alias{network}
-\alias{networkDynamic}
-\alias{networkDynamicOrNetwork}
-\alias{networkDynamicOrNetworkOrNULL}
+\alias{network-class}
+\alias{networkDynamic-class}
+\alias{networkDynamicOrNetwork-class}
+\alias{networkDynamicOrNetworkOrNULL-class}
 
 % \alias{[,obkContacts-method}
 % \alias{[,obkContacts,ANY,ANY-method}

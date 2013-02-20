@@ -2,7 +2,9 @@
 \alias{plotIndividualTimeline}
 \title{Function to plot a timeline for individuals involved in an outbreak in one plot}
 \usage{
-  plotIndividualTimeline(data,selection=1:dim(data)[1],ordering=1:length(selection),orderBy=NULL,colorBy=NULL,events=NULL,clinicalEvents=NULL,periods=NULL)
+  plotIndividualTimeline(data, selection=1:dim(data)[1], ordering=1:length(selection),
+                         orderBy=NULL, colorBy=NULL, events=NULL,
+                         clinicalEvents=NULL, periods=NULL, drawSamples = FALSE)
 
 }
 \arguments{
@@ -17,7 +19,9 @@
   \item{colorBy}{string giving the name of the column by which individuals should be coloured}
   \item{events}{vector of strings giving the names of the columns that hold data values, to be marked on the time line}
   \item{clinicalEvents}{vector of integers giving the indices of the list clinicalData that should be plotted}
-  \item{periods}{n X 2 matrix of strings giving the pairs of names for Date columns that should be plotted as periods on the time line}
+  \item{periods}{n X 2 matrix of strings giving the pairs of names for
+    Date columns that should be plotted as periods on the time line}
+  \item{drawSamples}{ TO BE DOCUMENTED }
 }
 \description{
    Function to plot a timeline for individuals involved in an outbreak in one plot

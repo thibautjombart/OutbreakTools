@@ -2,7 +2,9 @@
 \docType{class}
 \alias{obkSequences}
 \alias{obkSequences-class}
+\alias{obkSequencesOrNULL-class}
 \alias{initialize,obkSequences-method}
+\alias{show,obkSequences-method}
 
 \alias{get.id}
 \alias{get.id,obkSequences-method}
