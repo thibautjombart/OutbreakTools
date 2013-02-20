@@ -1,6 +1,7 @@
 \name{obkContacts-class}
 \docType{class}
 \alias{obkContacts}
+\alias{obkContactsOrNULL}
 \alias{obkContacts-class}
 \alias{initialize,obkContacts-method}
 \alias{show,obkContacts-method}
@@ -8,6 +9,11 @@
 \alias{get.individuals,obkContacts-method}
 \alias{get.ncontacts,obkContacts-method}
 \alias{get.contacts,obkContacts-method}
+\alias{network}
+\alias{networkDynamic}
+\alias{networkDynamicOrNetwork}
+\alias{networkDynamicOrNetworkOrNULL}
+
 % \alias{[,obkContacts-method}
 % \alias{[,obkContacts,ANY,ANY-method}
 %%%%

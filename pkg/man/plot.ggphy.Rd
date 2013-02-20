@@ -26,8 +26,8 @@
 \description{
   Function to plot phylogenies of the class 'ggphy'
 }
-\examples{
-}
+% \examples{
+% }
 \author{
   Anton Camacho
 }

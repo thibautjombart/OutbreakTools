@@ -21,8 +21,8 @@
   Function to convert phylogenies from the class 'phylo' to
   the class 'ggphy'
 }
-\examples{
-}
+% \examples{
+% }
 \author{
   Anton Camacho
 }

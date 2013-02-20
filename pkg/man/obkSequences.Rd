@@ -14,6 +14,23 @@
 \alias{get.locus,obkSequences-method}
 \alias{get.id,obkSequences-method}
 \alias{get.dna,obkSequences-method}
+
+\alias{DNAbin}
+\alias{DNAbinOrNULL}
+\alias{phylo}
+\alias{multiPhylo}
+\alias{multiPhyloOrNULL}
+
+\alias{characterOrNULL}
+\alias{numericOrNULL}
+\alias{factorNULL}
+\alias{integerOrNULL}
+\alias{matrixOrNULL}
+\alias{dataframeOrNULL}
+
+\alias{DateOrNULL}
+\alias{POSIXctOrNULL}
+
 % \alias{[,obkSequences-method}
 % \alias{[,obkSequences,ANY,ANY-method}
 %%%%
