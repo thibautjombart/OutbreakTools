@@ -1,20 +1,20 @@
 #' Function to plot a minimum spanning tree using ggplot from a the class 'uniqSequences'
 #'
-#' @param uniqdna an object of the class "uniqSequences"
+#' @param x an object of the class "uniqSequences"
 #' @export
 #' @author Joseph Hughes
 #' @examples see below
 
-plot.ggMST<-function(uniqdna){
-  if (!is.null(uniqdna) && inherits(uniqdna,"uniqSequences")){
+plot.ggMST<-function(x, y=NULL, ...){
+  if (!is.null(x) && inherits(x,"uniqSequences")){
     # get the counts for each sequence
-    IDcounts<-do.call(rbind, lapply(uniqdna@uniqID, function(x) length(x)))
+    IDcounts<-do.call(rbind, lapply(x@uniqID, function(x) length(x)))
     IDcounts<-as.data.frame(IDcounts[order(-IDcounts[,1]),])
     colnames(IDcounts) <- c( 'count')
     # print(IDcounts)
-    seqindex<-match(rownames(IDcounts), labels(uniqdna@uniqdna))
+    seqindex<-match(rownames(IDcounts), labels(x@x))
     # reorder the DNAbin accordingly
-    ordereddna<-uniqdna@uniqdna[seqindex, ]
+    ordereddna<-x@x[seqindex, ]
     # print(ordereddna)
     uniqdist<-dist.dna(ordereddna,model="raw", as.matrix=TRUE)
     mstdist<-mst(uniqdist)
@@ -84,6 +84,6 @@ plot.ggMST<-function(uniqdna){
 ## plot.ggMST(uniq904)
 
 ##this below will take a long time
-## uniqdna<-dna2uniqSequences(dna)
-## plot.ggMST(uniqdna)
+## x<-dna2uniqSequences(dna)
+## plot.ggMST(x)
 

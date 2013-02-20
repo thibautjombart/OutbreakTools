@@ -2,18 +2,28 @@
 \docType{class}
 \alias{obkSequences}
 \alias{obkSequences-class}
+\alias{obkSequencesOrNULL-class}
 \alias{initialize,obkSequences-method}
-\alias{show}
-\alias{get.nlocus}
-\alias{get.nsequences}
-\alias{get.locus}
+\alias{show,obkSequences-method}
+
 \alias{get.id}
-\alias{get.dna}
-\alias{get.nlocus,obkSequences-method}
-\alias{get.nsequences,obkSequences-method}
-\alias{get.locus,obkSequences-method}
 \alias{get.id,obkSequences-method}
+
+\alias{get.locus}
+\alias{get.locus,obkSequences-method}
+
+\alias{get.nlocus}
+\alias{get.nlocus,obkSequences-method}
+
+\alias{get.sequences}
+\alias{get.sequences,obkSequences-method}
+
+\alias{get.nsequences}
+\alias{get.nsequences,obkSequences-method}
+
+\alias{get.dna}
 \alias{get.dna,obkSequences-method}
+
 % \alias{[,obkSequences-method}
 % \alias{[,obkSequences,ANY,ANY-method}
 %%%%

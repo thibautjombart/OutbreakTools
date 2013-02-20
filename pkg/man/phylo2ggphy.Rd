@@ -2,17 +2,17 @@
 \alias{phylo2ggphy}
 \title{Function to convert phylogenies from the class 'phylo' to the class 'ggphy'}
 \usage{
-  phylo2ggphy(phylo, tip_dates = NULL,
-    branch_unit = "subst")
+  phylo2ggphy(phylo, tip.dates = NULL,
+    branch.unit = "subst")
 }
 \arguments{
   \item{phylo}{an object of the class "phylo"}
 
-  \item{tip_dates}{a vector containing the sample dates of
+  \item{tip.dates}{a vector containing the sample dates of
   the tip in "Date" format, the dates must be ordered like
   the tips}
 
-  \item{branch_unit}{the unit of the branch. Either "year",
+  \item{branch.unit}{the unit of the branch. Either "year",
   "month", "day" or "subst". If a time unit is provided,
   together with tip_dates, then the x-axis of the phylogeny
   will be in the Date format}
@@ -21,8 +21,8 @@
   Function to convert phylogenies from the class 'phylo' to
   the class 'ggphy'
 }
-\examples{
-}
+% \examples{
+% }
 \author{
   Anton Camacho
 }

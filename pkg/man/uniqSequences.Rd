@@ -2,6 +2,7 @@
 \docType{class}
 \alias{uniqSequences}
 \alias{uniqSequences-class}
+\alias{initialize,uniqSequences-method}
 \title{Formal class "uniqSequences"}
 \description{
   The class \code{uniqSequences} is a formal (S4) class for storing unique sequences in the form

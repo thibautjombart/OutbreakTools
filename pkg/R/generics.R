@@ -38,11 +38,11 @@ setGeneric("get.start.date", function(x, ...) standardGeneric("get.start.date"))
 ## return the end.date of the object
 setGeneric("get.end.date", function(x, ...) standardGeneric("get.end.date"))
 
-##################
-## get.date ##
-##################
-## return the date of the object
-setGeneric("get.date", function(x, ...) standardGeneric("get.date"))
+## ##################
+## ## get.date ##
+## ##################
+## ## return the date of the object
+## setGeneric("get.date", function(x, ...) standardGeneric("get.date"))
 
 
 ##################
@@ -99,10 +99,10 @@ setGeneric("get.nsamples", function(x, ...) standardGeneric("get.nsamples"))
 ## return the number of samples in the object
 setGeneric("get.samples", function(x, ...) standardGeneric("get.samples"))
 
-####################
-## get.sampletype ##
-####################
-setGeneric("get.sampletype",function(x, ...) standardGeneric("get.sampletype"))
+## ####################
+## ## get.sampletype ##
+## ####################
+## setGeneric("get.sampletype",function(x, ...) standardGeneric("get.sampletype"))
 
 
 #####################

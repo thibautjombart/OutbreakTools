@@ -2,11 +2,12 @@
 \alias{read.annotated.nexus}
 \title{Read annotated tree file in NEXUS format}
 \usage{
-  read.annotated.nexus(file)
+  read.annotated.nexus(file, tree.names = NULL)
 }
 \arguments{
   \item{file}{a file name specificed by either a variable 
-   of mode character or a double-quoted string}  
+    of mode character or a double-quoted string}
+  \item{tree.names}{ TO BE DOCUMENTED}
 }
 \description{
   This function reads one or more annotated trees from a NEXUS formatted file.

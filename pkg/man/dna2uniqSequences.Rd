@@ -2,10 +2,10 @@
 \alias{dna2uniqSequences}
 \title{Function to convert a DNAbin with duplicated sequences to the class 'uniqSequences'}
 \usage{
-  dna2uniqSequences(DNAbin)
+  dna2uniqSequences(dna)
 }
 \arguments{
-  \item{DNAbin}{an object of the class "DNAbin"}
+  \item{dna}{an object of the class "DNAbin"}
 
 }
 \description{
