@@ -12,6 +12,7 @@ import(
        adegenet,
        networkDynamic,
        ggplot2,
+       ggmap,
        proto,
        sna,
        grImport,
@@ -19,5 +20,6 @@ import(
        plyr,
        RCurl,
        bitops,
-       reshape
+       reshape2,
+       mapproj
        )

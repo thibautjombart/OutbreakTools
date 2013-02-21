@@ -18,6 +18,7 @@ Depends:
     adegenet,
     networkDynamic,
     ggplot2,
+    ggmap,
     proto,
     sna,
     grImport,
@@ -25,7 +26,8 @@ Depends:
     plyr,
     RCurl,
     bitops,
-    reshape
+    reshape2,
+    mapproj
 Description: basic tools for the analysis of disease outbreaks.
 License: GPL (>=2)
 LazyLoad: yes

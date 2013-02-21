@@ -5,7 +5,7 @@
  plotIndividualTimeline(x, selection=1:dim(get.data(x,'individuals'))[1],
                         ordering=1:length(selection), orderBy=NULL, colorBy=NULL,
                         events=NULL, clinicalEvents=NULL, periods=NULL,
-                        plotSamples=TRUE, plotNames=length(selection)<50, \dots)
+                        plotSamples=TRUE, plotNames=length(selection)<50)
 }
 \arguments{
   \item{x}{the main obkData object}

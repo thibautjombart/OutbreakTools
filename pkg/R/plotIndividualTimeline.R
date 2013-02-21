@@ -48,7 +48,7 @@ meltDateProof <- function(data,id.vars,measure.vars,variable.name){
 plotIndividualTimeline <- function(x, selection=1:dim(get.data(x,'individuals'))[1],
                                     ordering=1:length(selection), orderBy=NULL, colorBy=NULL,
                                     events=NULL, clinicalEvents=NULL,periods=NULL,
-                                    plotSamples=TRUE, plotNames=length(selection)<50, ...){
+                                    plotSamples=TRUE, plotNames=length(selection)<50){
 	#plot selection of the individuals in data as a line, ordered by ordering
 	#color by colorby
 	#make lines for periods, an Nx2 matrix of column names
