@@ -186,8 +186,8 @@ samp$locus <- c("gene1","gene2")[c(1,1,1,2,1,2)]
 new("obkData", samples=samp, dna=dat.dna)
 
 ## incorporating data on sample and clinical data
-data(fakefludata)
-new("obkData", individuals = Patientsdata, samples = samplefludata, clinical = clinicalfludata, date.format = "\%d/\%m/\%Y")
+data(FakeInfluenza)
+new("obkData", individuals = FakeInfluenza$Patients, samples = FakeInfluenza$Samples, clinical = FakeInfluenza$Clinical, date.format = "\%d/\%m/\%Y")
 
 
 ## TEST ACCESSORS ##

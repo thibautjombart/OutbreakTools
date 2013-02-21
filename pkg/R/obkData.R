@@ -273,6 +273,6 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 ## new("obkData", samples=samp, dna=dat.dna)
 
 ## ## clinical data
-## data(fakefludata)
+## data(FakeInfluenza)
 ## inds <- data.frame(individualID = c("Lulla", "Paul"), gender = c("F", "M"))
-## x <- new("obkData", individuals = inds, clinical = clinicalfludata, date.format = "%d/%m/%Y") ## should give a warning that an individual record for Anne is missing
+## x <- new("obkData", individuals = inds, clinical = FakeInfluenza$Clinical, date.format = "%d/%m/%Y") ## should give a warning that an individual record for Anne is missing
