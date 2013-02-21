@@ -28,30 +28,30 @@ plot.ggphy<-function(x, y=NULL, tip.labels=FALSE, tip.attribute=NULL, var.tip.la
 
 
 #theme.set(theme.grey())
-	theme.old<-theme.update(
-                            axis.ticks.y = element.blank(),
-                            axis.title.y = element.blank(),	panel.grid.major.y = element.blank(),
-                            panel.grid.minor.y = element.blank())
+	theme.old<-theme_update(
+                            axis.ticks.y = element_blank(),
+                            axis.title.y = element_blank(),	panel.grid.major.y = element_blank(),
+                            panel.grid.minor.y = element_blank())
 
 	p<-ggplot(df.edge)
-	p<-p+geom.segment(data=df.edge,aes(x=x.beg,xend=x.end,y=y.beg,yend=y.end),lineend="round")
-	p<-p+scale.y.continuous("",labels=NULL)
+	p<-p+geom_segment(data=df.edge,aes(x=x.beg,xend=x.end,y=y.beg,yend=y.end),lineend="round")
+	p<-p+scale_y_continuous("",labels=NULL)
 	if(is.x.date)
-        p<-p+scale.x.date("Time",labels=date.format("%Y"),minor.breaks="1 year")
+        p<-p+scale_x_date("Time",labels=date.format("%Y"),minor.breaks="1 year")
         else
-            p<-p+scale.x.continuous("Time")
+            p<-p+scale_x_continuous("Time")
 
             if(tip.labels){
-                p<-p+geom.text(data=df.tip,aes(x=x,y=y,label=label),hjust=0)
+                p<-p+geom_text(data=df.tip,aes(x=x,y=y,label=label),hjust=0)
             }
 
 	if(!is.null(var.tip.colour)){
-		p<-p+geom.point(data=df.tip,aes.string(x="x",y="y",colour=var.tip.colour))
+		p<-p+geom_point(data=df.tip,aes.string(x="x",y="y",colour=var.tip.colour))
 	}
 
 	print(p)
 
-	theme.set(theme.old)
+	theme_set(theme.old)
 
 	return(p)
 }
