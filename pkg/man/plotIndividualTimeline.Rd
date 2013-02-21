@@ -39,23 +39,26 @@
 \examples{
 ## THIS EXAMPLE NEEDS TO BE FIXED ##
 
-% ## load equine influenza data and convert it to obkData
-% data(HorseFlu)
-% data <- new("obkData",individuals=HorseFlu$individuals,samples=HorseFlu$samples,clinical=HorseFlu$clinics)
+## load equine influenza data and convert it to obkData
+data(HorseFlu)
+data <- new("obkData",individuals=HorseFlu$individuals,samples=HorseFlu$samples,
+clinical=HorseFlu$clinics, date.format="\%d/\%m/\%Y")
 
-% ## plot the horses over time, coloring by yard
-% plotIndividualTimeline(data,colorBy='yardID')
+## plot the horses over time, coloring by yard
+plotIndividualTimeline(data,colorBy='yardID')
 
-% ## also sort on yard
-% plotIndividualTimeline(data,orderBy='yardID',colorBy='yardID')
+## also sort on yard
+plotIndividualTimeline(data,orderBy='yardID',colorBy='yardID')
 
-% ## just plot the first 15
-% plotIndividualTimeline(data,selection=1:15,orderBy='yardID',colorBy='yardID')
+## just plot the first 15
+plotIndividualTimeline(data,selection=1:15,orderBy='yardID',colorBy='yardID')
 
-% ## do a simple plot for some influenza data
-% data(fakefludata)
-% data <- new("obkData", individuals=Patientsdata,samples=samplefludata,clinical=clinicalfludata)
-% plotIndividualTimeline(data,colorBy='gender')
+## do a simple plot for some influenza data
+data(FakeInfluenza)
+attach(FakeInfluenza)
+data <- new("obkData", individuals=Patients, samples=Samples, clinical=Clinical, date.format="\%d/\%m/\%Y")
+plotIndividualTimeline(data,colorBy='gender')
+detach(FakeInfluenza)
 }
 \author{
 	Rolf Ypma

@@ -12,7 +12,7 @@
 #' @param plotNames should the individualIDs be shown at the y-axis?
 #' @export
 #' @author Rolf Ypma
-#' 
+#'
 #' @examples #load equine influenza data and convert it to obkData
 #' @examples data(HorseFlu)
 #' @examples data <- new("obkData", individuals=HorseFlu$individuals,samples=HorseFlu$samples,clinical=HorseFlu$clinics)
@@ -22,7 +22,7 @@
 #' @examples plot.individualTimeline(data,orderBy='yardID',colorBy='yardID')
 #' @examples #just plot the first 15
 #' @examples plot.individualTimeline(data,selection=1:15,orderBy='yardID',colorBy='yardID')
-#' @examples 
+#' @examples
 #' @examples #do a simple plot for some influenza data
 #' @examples data(fakefludata)
 #' @examples data <- new("obkData", individuals=Patientsdata,samples=samplefludata,clinical=clinicalfludata)
@@ -49,41 +49,41 @@ plotIndividualTimeline <- function(x, selection=1:dim(get.data(x,'individuals'))
                                     ordering=1:length(selection), orderBy=NULL, colorBy=NULL,
                                     events=NULL, clinicalEvents=NULL,periods=NULL,
                                     plotSamples=TRUE, plotNames=length(selection)<50){
-	#plot selection of the individuals in data as a line, ordered by ordering
-	#color by colorby
-	#make lines for periods, an Nx2 matrix of column names
-	#clinical Events is a vector specifying which of the dataframes in the clinicalData list to plot
-	
+	## plot selection of the individuals in data as a line, ordered by ordering
+	## color by colorby
+	## make lines for periods, an Nx2 matrix of column names
+	## clinical Events is a vector specifying which of the dataframes in the clinicalData list to plot
+
 	if(length(selection)>length(get.individuals(x))){
 		warning("selection is longer than the number of individuals. Selecting all.")
 		selection=1:length(get.individuals(x))
 	}
-	
+
 	if(!is.null(orderBy)){
-		#alternatively, order by this character
-		ordering <- sapply(1:length(selection),function(x) which(order(get.data(x,orderBy)[selection])==x))
+		## alternatively, order by this character
+		ordering <- sapply(1:length(selection), function(i) which(order(get.data(x,orderBy)[selection])==i))
 	}
 
 	df <- x@individuals[selection,,drop=FALSE]#TODO subset() should do this, but gave an error (21-2-2013)
-		#add the ordering with an outrageous name so we don't override
+		## add the ordering with an outrageous name so we don't override
 	df$yITL <- ordering
-	
-	#the plot itself
+
+	## the plot itself
 	if(plotNames)
 		plotIndTL <- ggplot(data=df)+scale_y_discrete(name="Individuals",breaks=1:length(ordering),labels=get.individuals(x)[selection][ordering])
 	else
 		plotIndTL <- ggplot(data=df)+scale_y_discrete(name="Individuals",breaks=NULL)
-		
-	#with coloring if wanted
+
+	## with coloring if wanted
 	if(is.null(colorBy)){
-		#first, plot a weak background line
+		## first, plot a weak background line
 		plotIndTL <- plotIndTL+geom_hline(aes(yintercept=yITL),alpha=.3)
 	}
 	else{
-		#first, plot a weak background line
+		## first, plot a weak background line
 		plotIndTL <- plotIndTL+geom_hline(aes_string(yintercept="yITL",colour=colorBy),alpha=I(.3))
 	}
-	
+
 	if(!is.null(periods)){
 		if(class(periods)!="matrix"){
 			warning("periods should be nx2 matrix of colnames")
@@ -94,14 +94,14 @@ plotIndividualTimeline <- function(x, selection=1:dim(get.data(x,'individuals'))
 					plotIndTL <- plotIndTL+geom_segment(aes_string(y="yITL",yend="yITL",x=periods[i,1],xend=periods[i,2]),size=1,lineend="round",alpha=.5)
 				else
 					plotIndTL <- plotIndTL+geom_segment2(aes_string(y="yITL",yend="yITL",x=periods[i,1],xend=periods[i,2],colour=colorBy),size=I(1),alpha=.5,lineend="round")
-					
+
 			}
 		}
 	}
-	
-	#plot events
+
+	## plot events
 	if(plotSamples){
-		#make the data frame with sample dates
+		## make the data frame with sample dates
 		dfSample=get.data(x,'samples')
 		if(!is.null(dfSample)){
 			yVals=rep(0,length(dfSample[,1]))
@@ -109,7 +109,7 @@ plotIndividualTimeline <- function(x, selection=1:dim(get.data(x,'individuals'))
 				yVals[i]=ordering[which(get.individuals(x)==dfSample$individualID[i])]#TODO this matching should be a standard method
 			}
 			dfSample$yITL=yVals
-			#make a new df using melt as an input for ggplot, so we can show the different types of events
+			## make a new df using melt as an input for ggplot, so we can show the different types of events
 			fulldf <- meltDateProof(dfSample,id.vars='yITL',measure.vars='date',variable.name="type")
 		}
 	}
@@ -117,19 +117,19 @@ plotIndividualTimeline <- function(x, selection=1:dim(get.data(x,'individuals'))
 		fulldf=c()
 	}
 	if(!is.null(events)){
-		#TODO how to get attributes from different dataframes when columns have the same name? e.g. 'date' from samples and clinical
-		#add more events from 'individuals' to be drawn to the dataframe fulldf		
+		## TODO how to get attributes from different dataframes when columns have the same name? e.g. 'date' from samples and clinical
+		## add more events from 'individuals' to be drawn to the dataframe fulldf
 		fulldf <- rbind(fulldf,meltDateProof(df,id.vars='yITL',measure.vars=events,variable.name="type"))
 	}
 	if(!is.null(clinicalEvents)){
-		#add clinical events to be drawn to the dataframe fulldf		
-#		clinicalDF <- data@clinical[selection,,drop=FALSE]
-#		clinicalDF$yITL <- ordering
-#		fulldf <- rbind(fulldf,meltDateProof(clinicalDF,id.vars='yITL',measure.vars=clinicalEvents,variable.name="type"))
-	#TODO 21-2-2013: for this to work we need an accessor for clinicals, that can hande duplicate column names and can subset
+		## add clinical events to be drawn to the dataframe fulldf
+## 		clinicalDF <- data@clinical[selection,,drop=FALSE]
+## 		clinicalDF$yITL <- ordering
+## 		fulldf <- rbind(fulldf,meltDateProof(clinicalDF,id.vars='yITL',measure.vars=clinicalEvents,variable.name="type"))
+	## TODO 21-2-2013: for this to work we need an accessor for clinicals, that can hande duplicate column names and can subset
 	}
 	if(!is.null(fulldf)){
-		#draw the events
+		## draw the events
 		plotIndTL <- plotIndTL+geom_point(data=fulldf,aes(y=yITL,x=value,colour=c(),shape=type))
 	}
 	plotIndTL
