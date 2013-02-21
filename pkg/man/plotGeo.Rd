@@ -39,12 +39,16 @@ plotGeo(x,location=c('lon','lat'),TRUE,colorBy='sex',zoom=12,center='9')
 
 ## another example
 data(rabies)
+attach(rabies)
 data <- new('obkData',individuals=data.frame(individualID=1:177,transmissions))
 plotGeo(data,location=c('xinf','yinf'),isLonLat=TRUE)
 plotGeo(data,location=c('xinf','yinf'),isLonLat=TRUE,zoom=7,colorBy='pr')
 
 ## not functional, but pretty
 plotGeo(data,location=c('xinf','yinf'),isLonLat=TRUE,zoom=7,colorBy='source')
+
+detach(rabies)
+
 }
 }
 \author{
