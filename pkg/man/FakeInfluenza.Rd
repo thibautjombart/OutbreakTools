@@ -1,14 +1,14 @@
-\name{fakefludata}
+\name{FakeInfluenza}
 \docType{data}
-\alias{fakefludata}
+\alias{FakeInfluenza}
 
-\title{Fake flu dataset}
+\title{Fake influenza dataset}
 \description{
-  This data set is a fake small flu data set. It contains three objects.
+  This data set is a fake small flu data set. It contains a list (called FakeInfluenza) of three objects.
 	
-	\code{Patientsdata} is a dataframe containing patients names and gender. 
+	\code{Patients} is a dataframe containing patients names and gender. 
 	
-	\code{samplefludata} is a datafram containing 
+	\code{Samples} is a dataframe containing 
 	\itemize{
 		\item{\code{patient}: the patient names,}
 		\item{\code{SampleID}: the samples ID,}
@@ -20,7 +20,7 @@
 		\item{\code{Drug.Resistance.gene}: yes or no when a resistance test was performed.}
 	}
 	
-	\code{clinicalfludata} is a list of the following dataframes: 
+	\code{Clinical} is a list of the following dataframes: 
 	\itemize{
 		\item{\code{RespiratorySymptoms} contains individuals names, the severity characteristics of symptoms and the date of the symptoms,}
 		\item{\code{Temperature} contains individuals names, the date (and am or pm) their temperature was measured and the temperature measured,}
