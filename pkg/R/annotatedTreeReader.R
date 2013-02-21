@@ -109,8 +109,11 @@ parse.traits = function(text, header=FALSE) {
     return(traits)
 }
 
-# THE CODE BELOW COMES FROM 'ape'. MY GOAL IS TO DERIVE FROM THIS TO READ IN BEAST-STYLE ANNOTATIONS
+annotated.clado.build = function(tp) {
+	stop(paste("Annotated clado.build is not yet implemented.\n"))
+}
 
+# THE CODE BELOW COMES FROM 'ape'. MY GOAL IS TO DERIVE FROM THIS TO READ IN BEAST-STYLE ANNOTATIONS
 
 annotated.tree.build =
 function (tp) {

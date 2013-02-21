@@ -1,13 +1,14 @@
-################################
-#### ACCESSORS  FOR OBKDATA ####
-################################
+
+###############################
+#### ACCESSORS FOR OBKDATA ####
+###############################
 
 ###############
 ## get.locus ##
 ###############
 setMethod("get.locus", "obkData", function(x, ...){
-  if(is.null(x@dna)) return(NULL)
-  return(unique(unlist(lapply(x@dna, get.locus))))
+    if(is.null(x@dna)) return(NULL)
+    return(get.locus(x@dna))
 })
 
 
@@ -16,9 +17,20 @@ setMethod("get.locus", "obkData", function(x, ...){
 ## get.nlocus ##
 ################
 setMethod("get.nlocus", "obkData", function(x, ...){
-  if(is.null(x@dna)) return(0)
-  return(length(unique(get.locus(x))))
+    if(is.null(x@dna)) return(0)
+    return(get.nlocus(x@dna))
 })
+
+
+
+
+###################
+## get.sequences ## (get sequence ID)
+###################
+setMethod("get.sequences","obkData", function(x, ...){
+    return(get.id(x@dna))
+})
+
 
 
 
@@ -27,7 +39,7 @@ setMethod("get.nlocus", "obkData", function(x, ...){
 ####################
 setMethod("get.nsequences", "obkData", function(x, ...){
     if(is.null(x@dna)) return(0)
-    return(sum(unlist(lapply(x@dna, get.nsequences))))
+    return(get.nsequences(x@dna))
 })
 
 
@@ -35,18 +47,10 @@ setMethod("get.nsequences", "obkData", function(x, ...){
 #############
 ## get.dna ##
 #############
-setMethod("get.dna", "obkData", function(x, locus=NULL, ...){
+setMethod("get.dna", "obkData", function(x, locus=NULL, id=NULL, ...){
     ## checks and escapes ##
     if(is.null(x@dna)) return(NULL)
-    if(get.nlocus(x)==0) return(NULL)
-    if(get.nlocus(x)>1 && is.null(locus)) stop("there are several loci in the data - locus must be provided")
-
-    ## get all sequences of the locus
-    out <- lapply(x@dna, get.dna, locus=locus)
-    ## remove NULL data
-    out <- out[!sapply(out, is.null)]
-    out <- Reduce(rbind, out)
-    return(out)
+    return(get.dna(x@dna, locus=locus, id=id, ...))
 })
 
 
@@ -83,6 +87,26 @@ setMethod("get.nindividuals", "obkData", function(x, data=c("samples", "individu
 
 
 
+#################
+## get.samples ##
+#################
+setMethod("get.samples", "obkData", function(x, ...){
+    if(is.null(x@samples)) return(NULL)
+    return(unique(x@samples$sampleID))
+})
+
+
+
+#################
+## get.nsamples ##
+#################
+setMethod("get.nsamples", "obkData", function(x, ...){
+    if(is.null(x@samples)) return(0)
+    return(length(unique(x@samples$sampleID)))
+})
+
+
+
 ##############
 ## get.data ##
 ##############
@@ -113,7 +137,9 @@ setMethod("get.data", "obkData", function(x, data, drop=TRUE, ...){
     ## DEFAULT IF WE DON'T KNOW WHAT TO RETURN ##
     warning(paste("data '", data, "'was not found in the object"))
     return(NULL)
-})
+}) # end get.data
+
+
 
 
 

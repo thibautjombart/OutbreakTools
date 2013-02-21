@@ -5,12 +5,14 @@
 
 ## CLASS DESCRIPTION:
 ## Instance of obkData store outbreak data; its content includes:
-## - @data: data about samples, stored as a data.frame
-## - @meta: meta-information on the individuals (group, etc.), stored as a data.frame
+## - @individuals: meta-information on the individuals (group, etc.), stored as a data.frame
+## - @samples: data about samples, stored as a data.frame
 ## - @clinical: information about interventions and events, stored as obkClinicalEvent
-## - @dna: dna data, stored as a list of DNA sequences (list of DNAbin)
+## - @dna: dna data, stored as a obkSequences object
 ## - @contacts: contact information as obkContacts
-setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataframeOrNULL", clinical="listOrNULL", dna="listOrNULL", contacts="obkContactsOrNULL", trees="multiPhyloOrNULL"),
+setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataframeOrNULL",
+                                   clinical="listOrNULL", dna="obkSequencesOrNULL", contacts="obkContactsOrNULL",
+                                   trees="multiPhyloOrNULL"),
          prototype(individuals=NULL, samples=NULL, dna=NULL, clinical=NULL, contacts=NULL, trees=NULL))
 
 
@@ -54,7 +56,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     on.exit(options(o.opt))
 
 
-    ## PROCESS INFORMATION TO CREATE INDIVIDUALS ('data') ##
+    ## PROCESS PROVIDED INFORMATION ##
     ## coerce to data.frames, force to NULL if nrow=0
     if(!is.null(individuals)) {
         individuals <- as.data.frame(individuals)
@@ -65,15 +67,15 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         if(nrow(samples)==0) samples <- NULL
     }
     if(!is.null(clinical)) {
-      if(is.data.frame(clinical))
-        clinical = list(clinical)
-      else clinical <- as.list(clinical)
-      if(length(clinical)==0) clinical <- NULL
+        if(is.data.frame(clinical))
+            clinical = list(clinical)
+        else clinical <- as.list(clinical)
+        if(length(clinical)==0) clinical <- NULL
     }
     if(!is.null(dna) && (inherits(dna, "DNAbin") && is.matrix(dna))) dna <- as.list(dna)
     if(!is.null(dna) && (!is.list(dna) || !inherits(dna, "DNAbin"))) stop("dna is not a list of DNAbin objects.")
 
-     ## escape if no info provided ##
+    ## escape if no info provided ##
     if(is.null(individuals) && is.null(samples) && is.null(clinical) && is.null(dna) && is.null(contacts)) return(x)
 
     ## check that relevant fields are here ##
@@ -86,11 +88,11 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         if(!"date" %in% names(samples)) stop("no field 'date' in the sample data.frame ('samples')")
     }
     for(i in 1:length(clinical)){
-      if(!is.null(clinical[[i]])){
-        if(!"individualID" %in% names(clinical[[i]])) stop(paste("no field 'individualID' in the clinical data.frame", names(clinical)[i], ")"))
-        if(!"date" %in% names(clinical[[i]])) stop(paste("no field 'date' in the clinical data.frame", names(clinical)[i], ")"))
-      }
-}
+        if(!is.null(clinical[[i]])){
+            if(!"individualID" %in% names(clinical[[i]])) stop(paste("no field 'individualID' in the clinical data.frame", names(clinical)[i], ")"))
+            if(!"date" %in% names(clinical[[i]])) stop(paste("no field 'date' in the clinical data.frame", names(clinical)[i], ")"))
+        }
+    }
     ## PROCESS INFORMATION ABOUT INDIVIDUALS ('individuals') ##
     if(!is.null(individuals)){
         lab <- as.character(individuals[,"individualID"])
@@ -118,34 +120,34 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         }
     }
 
-    ## PROCESS INFORMATION ABOUT CLINICAL ('clinicals') ##
+    ## PROCESS INFORMATION ABOUT CLINICAL EVENTS ('clinicals') ##
     ## to be filled in by Paul & Marc
     if(!is.null(clinical)){
-      x@clinical <- list()
-      ## reorder the columns within each data frame.
-      all.clinical.ID <- NULL
-      for(i in 1:length(clinical))
+        x@clinical <- list()
+        ## reorder the columns within each data frame.
+        all.clinical.ID <- NULL
+        for(i in 1:length(clinical))
         {
-          nameOrder <- c(c("individualID","date"), setdiff(names(clinical[[i]]), c("individualID","date")))
-          x@clinical[[i]] <- clinical[[i]][, nameOrder]
-          x@clinical[[i]][,"individualID"] <- as.character(x@clinical[[i]][,"individualID"])
-          x@clinical[[i]][,"date"] <- as.Date(x@clinical[[i]][,"date"], format=date.format)
+            nameOrder <- c(c("individualID","date"), setdiff(names(clinical[[i]]), c("individualID","date")))
+            x@clinical[[i]] <- clinical[[i]][, nameOrder]
+            x@clinical[[i]][,"individualID"] <- as.character(x@clinical[[i]][,"individualID"])
+            x@clinical[[i]][,"date"] <- as.Date(x@clinical[[i]][,"date"], format=date.format)
 
-          all.clinical.ID <- c(all.clinical.ID, x@clinical[[i]][, "individualID"])
+            all.clinical.ID <- c(all.clinical.ID, x@clinical[[i]][, "individualID"])
         }
 
-      names(x@clinical) <- names(clinical)
-      
-      ## make sure that all the individualIDs are in 'individuals', if the slot is NULL
-      if(!is.null(x@individuals)){
-        unknownIDs <- unique(all.clinical.ID)[!unique(all.clinical.ID) %in% row.names(x@individuals)]
-        if(length(unknownIDs)>0) {
-          unknownIDs.txt <- paste(unknownIDs, collapse = ", ")
+        names(x@clinical) <- names(clinical)
+
+        ## make sure that all the individualIDs are in 'individuals', if the slot is not NULL
+        if(!is.null(x@individuals)){
+            unknownIDs <- unique(all.clinical.ID)[!unique(all.clinical.ID) %in% row.names(x@individuals)]
+            if(length(unknownIDs)>0) {
+                unknownIDs.txt <- paste(unknownIDs, collapse = ", ")
                 warning(paste("the following individuals with clinical observations have no individual information:\n", unknownIDs.txt))
+            }
         }
-      }
     }
-    
+
     ## PROCESS INFORMATION ABOUT CONTACTS ('contacts') ##
     ## need to make sure that contact input is consisten with constructor
     if(!is.null(contacts)){
@@ -158,24 +160,21 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     if(length(seqPos)==0 || is.null(dna)){
         x@dna <- NULL
     } else {
-        if(is.character(samples$sequenceID) && !all(samples$sequenceID %in% names(dna))) {
-            err.txt <- samples$sequenceID[!samples$sequenceID %in% names(dna)]
+        ## identify NAs
+        isNA <- is.na(samples$sequenceID)
+
+        ## check unknown labels
+        if(is.character(samples$sequenceID) && !all(samples$sequenceID[!isNA] %in% names(dna))) {
+            err.txt <- na.omit(samples$sequenceID[!samples$sequenceID %in% names(dna)])
             err.txt <- paste(unique(err.txt), collapse=", ")
             stop(paste("The following sequence ID were not found in the dna list:\n", err.txt))
         }
-        temp <- split(samples, samples$sampleID)
 
-        ## small auxiliary function to pass relevant data to the constructor, and nothing otherwise
-        ## (can't be using dna[NA])
-        ## vecID: vector of sequence IDs (including possible NAs, can be NAs only)
-        f1 <- function(vecID, locus){
-            if(all(is.na(vecID))) return(NULL)
-            toRemove <- is.na(vecID)
-            vecID <- vecID[!toRemove]
-            locus <- locus[!toRemove]
-            return(new("obkSequences", dna=dna[vecID], locus=locus))
-        }
-        x@dna <- lapply(temp, function(e) f1(e$sequenceID, e$locus))
+        ## pass information to constructor
+        x@dna <- new("obkSequences", dna[x@samples$sequenceID[!isNA]], x@samples$locus[!isNA])
+
+        ## set labels in @samples
+        if(is.integer(x@samples$sequenceID) || is.numeric(x@samples$sequenceID)) x@samples$sequenceID[!isNA] <- names(dna)[x@samples$sequenceID[!isNA]]
     }
 
 
@@ -185,7 +184,6 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         if(!inherits(trees, "multiPhylo")) stop("trees must be a multiPhylo object")
 
         ## check label consistency (to be added)
-
         x@trees <- trees
     }
 

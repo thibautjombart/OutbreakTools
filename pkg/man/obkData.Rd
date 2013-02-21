@@ -1,16 +1,34 @@
+% \encoding{UTF-8}
 \name{obkData-class}
 \docType{class}
 \alias{obkData}
 \alias{obkData-class}
 \alias{initialize,obkData-method}
+\alias{summary,obkData-method}
+
 %\alias{show,obkData-method}
 \alias{get.locus,obkData-method}
 \alias{get.nlocus,obkData-method}
+
 \alias{get.dna,obkData-method}
+\alias{get.sequences,obkData-method}
 \alias{get.nsequences,obkData-method}
+
+\alias{get.individuals}
 \alias{get.individuals,obkData-method}
+\alias{get.nindividuals}
 \alias{get.nindividuals,obkData-method}
+
+\alias{get.samples}
+\alias{get.samples,obkData-method}
+\alias{get.nsamples}
+\alias{get.nsamples,obkData-method}
+
+\alias{get.data}
 \alias{get.data,obkData-method}
+
+\alias{subset,obkData-method}
+\alias{subset.obkData}
 % \alias{[,obkData-method}
 % \alias{[,obkData,ANY,ANY-method}
 %%%%
@@ -64,7 +82,7 @@
     \item{\code{dna}:}{an object of the class
       \linkS4class{obkSequences} storing DNA sequences.}
     \item{\code{trees}:}{an object of the class
-      \linkS4class{multiPhylo} storing list of trees.}
+      \code{\link{multiphylo}} storing list of trees.}
   }
 }
 \section{Methods}{
@@ -186,5 +204,12 @@ get.data(x, c("date","swab"))
 table(get.data(x, c("swab", "locus")))
 
 
+## TEST SUBSETTING ##
+subset(x, individuals=1)
+subset(x, individuals="titi")
+subset(x, sample=2)
+subset(x, locus=2)
+subset(x, sample="2")
+subset(x, sequences=c("No0909S", "No305"))
 }
 \keyword{classes}

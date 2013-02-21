@@ -41,7 +41,7 @@ setMethod("initialize", "obkClinicalEvent", function(.Object, individual.ID=NULL
 
 
     ## PROCESS ARGUMENTS ##
-    
+
     ## force character type if the ID is not NULL
     x@type <- as.character(type)
 
@@ -53,18 +53,18 @@ setMethod("initialize", "obkClinicalEvent", function(.Object, individual.ID=NULL
 
     ## force start.date in the standard date format
     if(!is.null(start.date)) x@start.date <- as.Date(start.date, format=format.Date)
-    
+
     ## force start.date in the standard date format
     if(!is.null(end.date)) x@end.date <- as.Date(end.date, format=format.Date)
-    
+
     ## force duration in the numeric format
     if(!is.null(duration)) x@duration <- as.numeric(duration)
 
     ## force character type if the location is not NULL
     if(!is.null(location)) x@location <- as.character(location)
-    
+
     return(x)
-    
+
 }) # end obkClinicalEvent constructor
 
 ####################
@@ -79,10 +79,10 @@ setMethod("get.type","obkClinicalEvent", function(x, ...){
 })
 
 ################
-## get.ID ##
+## get.id ##
 ################
-setMethod("get.ID","obkClinicalEvent", function(x, ...){
-    return(x@individual.ID)
+setMethod("get.id","obkClinicalEvent", function(x, ...){
+    return(x@individual.id)
 })
 
 ################
@@ -97,17 +97,17 @@ setMethod("get.characteristic","obkClinicalEvent", function(x, ...){
 ######################
 
 setMethod ("show", "obkClinicalEvent", function(object){
-    ID <- get.ID(object)
+    ID <- get.id(object)
     type.event <- get.type(object)
     start <- get.start.date(object)
     end <- get.end.date(object)
     duration <- get.duration(object)
-    
+
     cat(paste("individual (ID) =", ID,"Type =", type.event))
     if(!is.null(start)) cat(paste("Start date =",start))
     if(!is.null(end)) cat(paste("End date =",end))
     if(!is.null(duration)) cat(paste("Duration of event =",duration))
-    
+
 })
 
 ####################

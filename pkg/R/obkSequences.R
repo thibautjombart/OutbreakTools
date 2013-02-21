@@ -4,7 +4,7 @@
 ############################
 
 ## CLASS DESCRIPTION:
-## - instance of obkSequences store DNA sequences for a given sample
+## - instance of obkSequences store list of DNA alignments
 ## - sequences are stored as a (possibly named) list
 ## - each element of the list corresponds to a locus
 ## - names of the list are locus names
@@ -52,6 +52,8 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, locus=NULL) 
     ## check that dna is now a DNAbin list ##
     if(!is.list(dna) || !inherits(dna, "DNAbin")) stop("dna input could not be processed into a DNAbin list")
 
+    ## force labels ##
+    if(is.null(names(dna))) names(dna) <- 1:length(dna)
 
     ## SHAPE OUTPUT ##
     ## no locus info => unnamed list of length 1
@@ -93,15 +95,34 @@ setMethod("get.nlocus","obkSequences", function(x, ...){
 
 
 
+############
+## get.id ##
+############
+setMethod("get.id","obkSequences", function(x, ...){
+    if(is.null(x)) return(NULL)
+    return(unlist(lapply(x@dna, rownames)))
+})
+
+
+###################
+## get.sequences ## (alias for get.id)
+###################
+setMethod("get.sequences","obkSequences", function(x, ...){
+    return(get.id(x))
+})
+
+
 ####################
 ## get.nsequences ##
 ####################
-setMethod("get.nsequences","obkSequences", function(x, ...){
+setMethod("get.nsequences","obkSequences", function(x, what=c("total","bylocus"), ...){
+    what <- match.arg(what)
     nLoc <- get.nlocus(x)
     if(nLoc==0) return(0)
 
-    out <- sum(sapply(x@dna, nrow))
-    return(out)
+    temp <- sapply(x@dna, nrow)
+    if(what=="bylocus") return(temp)
+    return(sum(temp))
 })
 
 
@@ -116,24 +137,45 @@ setMethod("get.locus","obkSequences", function(x, ...){
 
 
 
+
+
+
 #############
 ## get.dna ##
 #############
 ## returns a matrix of dna sequences for a given locus
-setMethod("get.dna","obkSequences", function(x, locus=NULL, ...){
-    nLoc <- get.nlocus(x)
-
+setMethod("get.dna","obkSequences", function(x, locus=NULL, id=NULL, ...){
     ## return NULL if no info ##
+    nLoc <- get.nlocus(x)
     if(nLoc==0) return(NULL)
 
-    ## return only locus if nLoc==1 and no info on locus ##
-    if(nLoc==1 && is.null(locus)) return(x@dna[[1]])
+    ## RETURN SLOT CONTENT AS IS IF NOTHING ELSE ASKED ##
+    if(is.null(locus) && is.null(id)) return(x@dna)
 
-    ## otherwise use locus info ##
-    if(nLoc>1 && is.null(locus)) stop("locus must be specified (data contain more than one locus)")
+    ## INFO REQUESTED PER LOCUS ##
+    if(is.null(id)){
+        ## return only locus if nLoc==1 and no info on locus ##
+        if(nLoc==1 && is.null(locus)) return(x@dna[[1]])
 
-    locus <- as.character(locus)
-    return(x@dna[[locus]])
+        ## otherwise use locus info ##
+        if(nLoc>1 && is.null(locus)) stop("locus must be specified (data contain more than one locus)")
+        return(x@dna[locus])
+    }
+
+    ## INFO REQUESTED PER SEQUENCE ID ##
+    ## if logicals or integers, find corresponding names
+    if(is.logical(id) | is.numeric(id) | is.integer(id)){
+        id <- get.id(x)[id]
+    }
+    id <- as.character(id)
+    if(!all(id %in% get.id(x))) {
+        temp <- paste(id[!id %in% get.id(x)], collapse=", ")
+        warning(paste("The following sequence IDs are not in the dataset:", temp))
+        id <- id[id %in% get.id(x)]
+    }
+    out <- lapply(x@dna, function(e) e[id[id %in% rownames(e)],,drop=FALSE])
+    out <- out[sapply(out, nrow)>0]
+    return(out)
 })
 
 
@@ -150,9 +192,9 @@ setMethod("get.dna","obkSequences", function(x, locus=NULL, ...){
 setMethod ("show", "obkSequences", function(object){
     nLoc <- get.nlocus(object)
     nSeq <- get.nsequences(object)
-    seqword <- ifelse(nLoc>1, "sequences", "sequence")
+    seqword <- ifelse(nSeq>1, "sequences", "sequence")
     locword <- ifelse(nLoc>1, "loci", "locus")
-    cat(paste("\n =", nSeq,"DNA", seqword, "in", nLoc, "loci =\n\n"))
+    cat(paste("\n =", nSeq,"DNA", seqword, "in", nLoc, locword," =\n\n"))
     if(nLoc>0) print(object@dna)
 })
 

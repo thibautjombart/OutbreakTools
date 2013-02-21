@@ -2,12 +2,27 @@
 \docType{class}
 \alias{obkContacts}
 \alias{obkContacts-class}
+\alias{obkContactsOrNULL}
+\alias{obkContactsOrNULL-class}
+
 \alias{initialize,obkContacts-method}
 \alias{show,obkContacts-method}
+
 \alias{get.nindividuals,obkContacts-method}
 \alias{get.individuals,obkContacts-method}
+
 \alias{get.ncontacts,obkContacts-method}
+\alias{get.contacts}
 \alias{get.contacts,obkContacts-method}
+
+\alias{get.ncontacts}
+\alias{get.ncontacts,obkContacts-method}
+
+\alias{network-class}
+\alias{networkDynamic-class}
+\alias{networkDynamicOrNetwork-class}
+\alias{networkDynamicOrNetworkOrNULL-class}
+
 % \alias{[,obkContacts-method}
 % \alias{[,obkContacts,ANY,ANY-method}
 %%%%
