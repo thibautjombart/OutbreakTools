@@ -6,17 +6,18 @@ exportPattern(".")
 
 # Import all packages listed as Imports or Depends
 import(
-  methods,
-  MASS,
-  ape,
-  adegenet,
-  networkDynamic,
-  ggplot2,
-  proto,
-  sna,
-  grImport,
-  scales,
-  plyr,
-  RCurl,
-  bitops
-)
+       methods,
+       MASS,
+       ape,
+       adegenet,
+       networkDynamic,
+       ggplot2,
+       proto,
+       sna,
+       grImport,
+       scales,
+       plyr,
+       RCurl,
+       bitops,
+       reshape
+       )

@@ -24,7 +24,8 @@ Depends:
     scales,
     plyr,
     RCurl,
-    bitops
+    bitops,
+    reshape
 Description: basic tools for the analysis of disease outbreaks.
 License: GPL (>=2)
 LazyLoad: yes

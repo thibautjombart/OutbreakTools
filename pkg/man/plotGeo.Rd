@@ -22,26 +22,30 @@
    Function to plot a timeline for individuals involved in an outbreak in one plot
 }
 \examples{
- #load equine influenza data and convert it to obkData
-data(HorseFlu)
-data <- new("obkData", individuals=HorseFlu$individuals)
-#plot the individuals on a map
-plot.geo(x,location=c('lon','lat'),T,zoom=8)
+## THIS EXAMPLE NEEDS TO BE FIXED ##
 
-#color by sex
-plot.geo(x,location=c('lon','lat'),T,zoom=8,colorBy='sex')
+% ## load equine influenza data and convert it to obkData
+% data(HorseFlu)
+% x <- new("obkData", individuals=HorseFlu$individuals)
 
-#zoom in on the small cluster, by centering on individual '9'
-plot.geo(x,location=c('lon','lat'),T,colorBy='sex',zoom=12,center='9')
+% ## plot the individuals on a map
+% plotGeo(x,location=c('lon','lat'),T,zoom=8)
+
+% ## color by sex
+% plotGeo(x,location=c('lon','lat'),T,zoom=8,colorBy='sex')
+
+% ## zoom in on the small cluster, by centering on individual '9'
+% plotGeo(x,location=c('lon','lat'),T,colorBy='sex',zoom=12,center='9')
 
 
-#another example
-data(rabies)
-data=new('obkData',individuals=data.frame(individualID=1:177,transmissions))
-plot.geo(data,location=c('xinf','yinf'),isLonLat=T)
-plot.geo(data,location=c('xinf','yinf'),isLonLat=T,zoom=7,colorBy='pr')
-#not functional, but pretty
-plot.geo(data,location=c('xinf','yinf'),isLonLat=T,zoom=7,colorBy='source')
+% ## another example
+% data(rabies)
+% data=new('obkData',individuals=data.frame(individualID=1:177,transmissions))
+% plotGeo(data,location=c('xinf','yinf'),isLonLat=T)
+% plotGeo(data,location=c('xinf','yinf'),isLonLat=T,zoom=7,colorBy='pr')
+
+% ## not functional, but pretty
+% plotGeo(data,location=c('xinf','yinf'),isLonLat=T,zoom=7,colorBy='source')
 
 }
 \author{
