@@ -10,7 +10,7 @@
 #' @examples see misc/plot.ggphy.test.R
 
 
-plot.ggphy<-function(x, y=NULL, tip.labels=FALSE, tip.attribute=NULL, var.tip.labels=NULL, var.tip.colour=NULL, ...){
+plotggphy<-function(x, tip.labels=FALSE, tip.attribute=NULL, var.tip.labels=NULL, var.tip.colour=NULL){
 
 #TODO: allow edge and node attributes and merge with df.edge and df.node
 

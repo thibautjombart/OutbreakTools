@@ -1,14 +1,12 @@
-\name{plot.ggphy}
-\alias{plot.ggphy}
+\name{plotggphy}
+\alias{plotggphy}
 \title{Function to plot phylogenies of the class 'ggphy'}
 \usage{
-  \method{plot}{ggphy}(x, y=NULL, tip.labels = FALSE, tip.attribute = NULL,
-    var.tip.labels = NULL, var.tip.colour = NULL, \dots)
+  plotggphy(x, tip.labels = FALSE, tip.attribute = NULL,
+    var.tip.labels = NULL, var.tip.colour = NULL)
 }
 \arguments{
   \item{x}{An object of the class "ggphy"}
-
-  \item{y}{not used - only for compatibility with plot generic}
 
   \item{tip.labels}{Logical.Should tip labels be plotted?}
 
@@ -22,8 +20,6 @@
   \item{var.tip.colour}{Character. The name of the column
     of tip.attribute that contains the attribute to be
     colour-codded.}
-
-  \item{\dots}{further arguments to be passed to other functions.}
 }
 \description{
   Function to plot phylogenies of the class 'ggphy'
