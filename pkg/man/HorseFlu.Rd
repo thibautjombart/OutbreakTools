@@ -71,10 +71,7 @@ get.samples(x.max)
 table(x.max@samples$sampleID)
 
 ## Build a phylogeny for this individual
-D <- dist.dna(get.dna(x.max)[[1]], model="N")
-tre <- nj(D)
-plot(tre, type="fan")
-
+get.phylo(x.max, type="fan")
 
 detach(HorseFlu)
 
