@@ -2,10 +2,10 @@
 \alias{plotggMST}
 \title{Function to plot a minimum spanning tree of the class 'uniqSequences'}
 \usage{
-  plotggMST}(uniquedna)
+  plotggMST(uniqdna)
 }
 \arguments{
-  \item{uniquedna}{An object of the class "uniqSequences"}
+  \item{uniqdna}{An object of the class "uniqSequences"}
 }
 \description{
   Function to plot a minimum spanning tree of a set of unique sequences from \code{uniqSequences} using the mst function from ape 
@@ -20,7 +20,7 @@ attach(HorseFlu)
 seqids<-na.omit(samples[samples$sampleID=="904","sequenceID"])
 
 ## get the index of the sequenceIDs in the DNAbin
-seqindex<-which(labels(dna) %in% seqids)
+seqindex<-which(labels(dna) \%in\% seqids)
 
 ## create a subset DNAbin
 subsetdna<-dna[seqindex, ]
