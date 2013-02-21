@@ -16,15 +16,22 @@
 ### Might want to write a get.dnasubset accessor for this
 ### get uniq sequences
 ### Extracting sequenceIDs from the samples table
-data(HorseFluOutbreak)
-seqids<-na.omit(samples[samples$sampleID=="904","sequenceID"])
+data(HorseFlu)
+attach(HorseFlu)
+
+seqids <- na.omit(samples[samples$sampleID=="904","sequenceID"])
+
 ### get the index of the sequenceIDs in the DNAbin
-seqindex<-match(seqids,labels(dna))
+seqindex <- match(seqids,labels(dna))
+
 ### create a subset DNAbin
-subsetdna<-dna[seqindex, ]
+subsetdna <- dna[seqindex, ]
+
 ### get a particular sequence id with summary.seq$uniqseqID4[5]
 ### get number of sequences length(summary.seq$uniqseqID4)
-uniqsubset<-dna2uniqSequences(subsetdna)
+uniqsubset <- dna2uniqSequences(subsetdna)
+
+detach(HorseFlu)
 }
 \author{
   Joseph Hughes
