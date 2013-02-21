@@ -108,6 +108,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         x@samples <- samples[,nameOrder]
         x@samples[,"individualID"] <- as.character(x@samples[,"individualID"])
         x@samples[,"sampleID"] <- as.character(x@samples[,"sampleID"])
+        if(is.factor(x@samples[,"date"])) x@samples[,"date"] <- as.character(x@samples[,"date"])
         x@samples[,"date"] <- as.Date(x@samples[,"date"], format=date.format)
 
         ## make sure that all individualIDs are in 'individuals', if the slot is not NULL
@@ -131,6 +132,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
             nameOrder <- c(c("individualID","date"), setdiff(names(clinical[[i]]), c("individualID","date")))
             x@clinical[[i]] <- clinical[[i]][, nameOrder]
             x@clinical[[i]][,"individualID"] <- as.character(x@clinical[[i]][,"individualID"])
+            if(is.factor(x@clinical[[i]][,"date"])) x@clinical[[i]][,"date"] <- as.character(x@clinical[[i]][,"date"])
             x@clinical[[i]][,"date"] <- as.Date(x@clinical[[i]][,"date"], format=date.format)
 
             all.clinical.ID <- c(all.clinical.ID, x@clinical[[i]][, "individualID"])
