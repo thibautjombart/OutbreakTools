@@ -1,24 +1,48 @@
-#' Function to plot a minimum spanning tree using ggplot from a the class 'uniqSequences'
+#' Function to plot a minimum spanning tree using ggplot from a the class 'obkData'
 #'
-#' @param uniqdna an object of the class "uniqSequences"
+#' @param x an object of the class "obkData"
 #' @export
 #' @author Joseph Hughes
 #' @examples see below
 
-plotggMST<-function(uniqdna){
-  if (!is.null(uniqdna) && inherits(uniqdna,"uniqSequences")){
+plotggMST<-function(x,individualID=NULL,locus=NULL){
+  if(get.nlocus(x)==0){
+    warning("No DNA sequences in the data.")
+    return(NULL)
+  }
+  ## GET DNA SEQUENCES ##
+  if(!is.null(locus) && get.nlocus(x)>1){
+    warning("You need to provide the locus name")
+    return(NULL)
+  }
+  if(is.null(locus) && get.nlocus(x)==1) locus <- 1
+  print (locus)
+  
+  if (!is.null(locus)){
+    subx<-subset(x, locus=locus)
+    subx<-subset(subx, individuals=individualID)
+    subdna<-get.dna(subx)[[1]]
+    seqmatrix <- as.character(subdna)
+    seqstring<-apply(format(seqmatrix), 1, paste, collapse="")
+    uniqList<-tapply(names(seqstring),list(seqstring),I)
+    splitseqstr<-strsplit(names(uniqList),"")
+    uniqmat<-do.call(rbind, splitseqstr)
+    uniqnames<-paste("uniqseqID",seq(1:length(uniqList)),sep="")
+    rownames(uniqmat)<-uniqnames
+    names(uniqList)<-uniqnames
+    uniqdna<-as.DNAbin(uniqmat)
     # get the counts for each sequence
-    IDcounts<-do.call(rbind, lapply(uniqdna@uniqID, function(x) length(x)))
+    IDcounts<-do.call(rbind, lapply(uniqList, function(x) length(x)))
     IDcounts<-as.data.frame(IDcounts[order(-IDcounts[,1]),])
     colnames(IDcounts) <- c( 'count') 
-    # print(IDcounts)
-    seqindex<-match(rownames(IDcounts), labels(uniqdna@uniqdna))
+    seqindex<-match(rownames(IDcounts), labels(uniqdna))
     # reorder the DNAbin accordingly
-    ordereddna<-uniqdna@uniqdna[seqindex, ]
+    ordereddna<-uniqdna[seqindex, ]
     # print(ordereddna)
     uniqdist<-dist.dna(ordereddna,model="raw", as.matrix=TRUE)
     mstdist<-mst(uniqdist)
     plotcord <- data.frame(gplot.layout.fruchtermanreingold(mstdist, NULL))
+    X1=X2=Y1=Y2=NULL
     colnames(plotcord) = c("X1","X2")
     rownames(plotcord) = rownames(uniqdist)
     # print((plotcord))
@@ -39,7 +63,7 @@ plotggMST<-function(uniqdna){
         }
       }
     }
-    eList
+    #eList
     # print(eList)
     # edges of zero are removed
     #emst<-subset(eList,eList[,3]>0)
@@ -61,7 +85,7 @@ plotggMST<-function(uniqdna){
     pmst<-pmst+scale_y_continuous("",labels=NULL)+scale_x_continuous("",labels=NULL)
     pmst<-pmst+geom_point(aes(X1, X2, size=count, colour="red"), data=plotcord)
   }
- # print(pmst)
+  #print(pmst)
   return(pmst)
 }
 
@@ -70,20 +94,11 @@ plotggMST<-function(uniqdna){
 ##################
 ## NOTE: THIS MUST BE COMMENTED WHEN COMPILING/INSTALLING THE PACKAGE
 
-## Might want to write a get.dnasubset accessor for this
-## get uniq sequences
-## Extracting sequenceIDs from the samples table
-## seqids<-na.omit(samples[samples$sampleID=="904","sequenceID"])
-## get the index of the sequenceIDs in the DNAbin
-## seqindex<-which(labels(dna) %in% seqids)
-## create a subset DNAbin
-## subsetdna<-dna[seqindex, ]
-## get a particular sequence id with summary.seq$uniqseqID4[5]
-## get number of sequences length(summary.seq$uniqseqID4)
-## uniq904<-dna2uniqSequences(subsetdna)
-## plot_ggMST(uniq904)
 
-##this below will take a long time
-## uniqdna<-dna2uniqSequences(dna)
-## plot_ggMST(uniqdna)
-
+# data(HorseFlu)
+# attach(HorseFlu)
+# x <- new("obkData", individuals=individuals, samples=samples, dna=dna, clinical=clinics)
+# plotggMST(x,individualID=42)
+# plot huge minimum spanning tree
+# plotggMST(x)
+# detach(HorseFlu)
