@@ -7,7 +7,7 @@
 ## Instance of obkData store outbreak data; its content includes:
 ## - @individuals: meta-information on the individuals (group, etc.), stored as a data.frame
 ## - @samples: data about samples, stored as a data.frame
-## - @clinical: information about interventions and events, stored as obkClinicalEvent
+## - @clinical:list of clinical datasets, each stored as a data.frame information about interventions and events
 ## - @dna: dna data, stored as a obkSequences object
 ## - @contacts: contact information as obkContacts
 setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataframeOrNULL",

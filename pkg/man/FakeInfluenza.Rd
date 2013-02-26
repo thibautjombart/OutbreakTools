@@ -20,7 +20,7 @@
 		\item{\code{Drug.Resistance.gene}: yes or no when a resistance test was performed.}
 	}
 	
-	\code{Clinical} is a list of the following dataframes: 
+	\code{Clinical} is a list of the following \code{data.frame}: 
 	\itemize{
 		\item{\code{RespiratorySymptoms} contains individuals names, the severity characteristics of symptoms and the date of the symptoms,}
 		\item{\code{Temperature} contains individuals names, the date (and am or pm) their temperature was measured and the temperature measured,}
