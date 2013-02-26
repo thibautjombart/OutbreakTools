@@ -49,7 +49,7 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, date.
         ## (TODO)
 
         ## subset @clinicals
-        ## (TODO)
+         ## (TODO)
 
         ## subset @trees
         ## (TODO)

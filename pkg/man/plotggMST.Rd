@@ -2,16 +2,21 @@
 \alias{plotggMST}
 \title{Function to plot a minimum spanning tree of the class 'uniqSequences'}
 \usage{
-  plotggMST(uniqdna)
+  plotggMST(x, individualID = NULL, locus = NULL)
 }
 \arguments{
-  \item{uniqdna}{An object of the class "uniqSequences"}
+  \item{x}{TO BE DOCUMENTED}
+  \item{individualID}{TO BE DOCUMENTED}
+  \item{locus}{TO BE DOCUMENTED}
 }
 \description{
   Function to plot a minimum spanning tree of a set of unique sequences from \code{uniqSequences} using the mst function from ape 
   and positioning the nodes according to the fruchtermanreingold in sna
 }
 \examples{
+\dontrun{
+
+#### THIS EXAMPLE NEEDS TO BE FIXED ####
 ## load data
 data(HorseFlu)
 attach(HorseFlu)
@@ -30,14 +35,13 @@ subsetdna<-dna[seqindex, ]
 uniq904<-dna2uniqSequences(subsetdna)
 plotggMST(uniq904)
 
-\dontrun{
 ##this below will take a long time
 uniqdna<-dna2uniqSequences(dna)
 plotggMST(uniqdna)
-}
+
 
 detach(HorseFlu)
-
+}
 }
 \author{
   Joseph Hughes
