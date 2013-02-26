@@ -49,9 +49,6 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, date.
         ## (TODO)
 
         ## subset @clinicals
-         ## (TODO)
-
-        ## subset @trees
         ## (TODO)
 
     } # end processing 'individuals' argument
@@ -84,9 +81,6 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, date.
         ## (TODO)
 
         ## subset @clinicals
-        ## (TODO)
-
-        ## subset @trees
         ## (TODO)
 
     } # end processing 'samples' argument
@@ -130,8 +124,6 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, date.
         ## subset @clinicals
         ## (TODO)
 
-        ## subset @trees
-        ## (TODO)
     }
 
 
@@ -157,11 +149,16 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, date.
         ## subset @clinicals
         ## (TODO)
 
-        ## subset @trees
-        ## (TODO)
-
     }
 
+    ## SUBSET @TREES ##
+    ## these only depend on @sample, so only one code is useful here
+    if(!is.null(x@trees)){
+        for(i in 1:length(x@trees)){
+            toDrop <- x@trees[[i]]$tip.label[! x@trees[[i]]$tip.label %in% get.sequences(x)]
+            x@trees[[i]] <- drop.tip(x@trees[[i]], tip=toDrop, trim.internal=TRUE, subtree=FALSE)
+        }
+    }
 
     return(x)
 }) # end obkData method
