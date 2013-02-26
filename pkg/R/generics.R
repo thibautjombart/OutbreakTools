@@ -58,6 +58,13 @@ setGeneric("get.duration", function(x, ...) standardGeneric("get.duration"))
 setGeneric("get.dna", function(x, ...) standardGeneric("get.dna"))
 
 
+#############
+## get.trees ##
+#############
+## return multiPhylo object (list of trees)
+setGeneric("get.trees", function(x, ...) standardGeneric("get.trees"))
+
+
 ###############
 ## get.locus ##
 ###############

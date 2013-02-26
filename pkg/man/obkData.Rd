@@ -27,6 +27,9 @@
 \alias{get.data}
 \alias{get.data,obkData-method}
 
+\alias{get.trees}
+\alias{get.trees,obkData-method}
+
 \alias{subset,obkData-method}
 \alias{subset.obkData}
 % \alias{[,obkData-method}
@@ -112,6 +115,9 @@
     \item{get.nindividuals*}{\code{signature(x = "obkData")}: returns the
       number of individuals in a given source of data (argument
       \code{data}, can be 'samples' (default) or 'individuals').}
+    \item{get.trees}{\code{signature(x = "obkData")}: return a list of
+      trees of the class \code{multiPhylo}, if present, and \code{NULL}
+      otherwise.}
     \item{get.data*}{\code{signature(x = "obkData")}: search for a
       matching fields in the object and returns the corresponding
       values; in the absence of match, \code{NULL} is returned. Several

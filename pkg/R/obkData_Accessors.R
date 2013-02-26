@@ -107,6 +107,15 @@ setMethod("get.nsamples", "obkData", function(x, ...){
 
 
 
+#################
+## get.trees ##
+#################
+setMethod("get.trees", "obkData", function(x, ...){
+    return(x@trees)
+})
+
+
+
 ##############
 ## get.data ##
 ##############
