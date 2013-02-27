@@ -103,9 +103,9 @@ The slots respectively contain:
   of observations/interventions).
   \item \texttt{@dna}: DNA sequences of one or more genes, stored as an \texttt{obkSequences}
     object. See section below for details on \texttt{obkSequences} objects.
-  \item \texttt{contacts}: dynamic contact network between the individuals, stored as an
-    \texttt{@obkContacts} object. See section below for details on \texttt{obkContacts} objects.
-  \item \texttt{trees}: a list of phylogenetic trees with the class \texttt{multiPhylo} (from the
+  \item \texttt{@contacts}: dynamic contact network between the individuals, stored as an
+    \texttt{obkContacts} object. See section below for details on \texttt{obkContacts} objects.
+  \item \texttt{@trees}: a list of phylogenetic trees with the class \texttt{multiPhylo} (from the
     \textit{ape} package); can be used to store posterior distribution of trees from Bayesian
     software such as BEAST.
 \end{itemize}
@@ -223,7 +223,64 @@ If no argument is provided, an empty object is created, as seen before:
 new("obkData")
 @
 
+\noindent This function accepts the following arguments, which mirror to some extent the structure
+of the object (see \texttt{?obkData} for more information):
+\begin{itemize}
+  \item \texttt{individuals}: a \texttt{data.frame} with a mandatory column named 'individualID', providing unique identifiers for the individuals.
+    \item \texttt{samples}: a \texttt{data.frame} with 3 mandatory columns named 'individualID', 'sampleID', and 'date', providing identifiers for
+      the individuals, for the samples, and dates. Dates must be provided in a way convertible to
+      \texttt{Date} (see \texttt{?as.Date}). Default format for dates provided as characters  is
+      "\%Y-\%m-\%d" (e.g. 1984-09-23). Alternative format can be specified via the argument \texttt{date.format}.
+    \item \texttt{clinical}: a list of \texttt{data.frame}s, each of which has 2 mandatory fields,
+      individualID' and 'date' (specified as before).
+    \item \texttt{dna}: a list of DNA sequences in \texttt{DNAbin} or \texttt{character} format, as
+      read by \texttt{read.dna}.
+    \item \texttt{contacts}: to be filled.
+    \item \texttt{trees}: a list of phylogenetic trees in the class \texttt{multiPhylo} (from the
+      ape package); this is basically a list of \texttt{phylo} objects, with the class ``\texttt{multiPhylo}''.
+\end{itemize}
 
+\noindent We can now show how the toy example previously used was created.
+Arguments \texttt{ind} and \texttt{samp} are \texttt{data.frame}s with some of the required fields:
+<<>>=
+ind
+samp
+samp$date
+@
+Note that dates are in the right format, but are actually mis-specified as they are stored as a
+\texttt{factor}. As this is frequent (characters are stored as factors in \texttt{data.frame}s
+unless \texttt{options("stringsAsFactors")} is set to \texttt{FALSE}), the constructor is designed
+to accommodate this issue.
+
+DNA sequences have been taken from \texttt{data(woodmouse)} for the sake of merely have sequences to
+play with:
+<<>>=
+data(woodmouse)
+dat.dna <- as.list(woodmouse)
+dat.dna
+@
+
+\noindent And then \texttt{obkData} object was simply created using:
+<<>>=
+x <- new("obkData", individuals=ind, samples=samp, dna=dat.dna)
+@
+Note some slight differences from the inputs.
+Individuals labels are now used to name the rows of \texttt{@individuals}:
+<<>>=
+x@individuals
+@
+And dates are stored as proper dates, supporting basic mathematical operations:
+<<>>=
+class(x@samples$date)
+x@samples$date
+x@samples$date + 1
+x@samples$date + 365
+@
+Some other, invisible checks have also been made when creating the object.
+For instance, it has been checked that every sampled individual is documented in
+\texttt{@individuals} (otherwise, a warning would have been issued), and that every sequence
+referred in \texttt{x@samples\$sequenceID} was indeed in the list of DNA sequences in \texttt{@dna}
+(an error would have been issued otherwise, along with a list of faulty accession numbers).
 
 
 % % % % % % % % % % % % % % % % %
@@ -296,6 +353,15 @@ Available accessors are documented in \code{?obkData}.
 
 
 
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Graphics for \texttt{obkData} objects}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
