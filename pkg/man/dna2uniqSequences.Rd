@@ -13,23 +13,18 @@
   the class 'uniqSequences'
 }
 \examples{
-### Might want to write a get.dnasubset accessor for this
-### get uniq sequences
-### Extracting sequenceIDs from the samples table
+### get uniq sequences for individual 49
+
 data(HorseFlu)
 attach(HorseFlu)
-
-seqids <- na.omit(samples[samples$sampleID=="904","sequenceID"])
-
-### get the index of the sequenceIDs in the DNAbin
-seqindex <- match(seqids,labels(dna))
-
+x <- new("obkData", individuals=individuals, samples=samples, dna=dna, clinical=clinics)
 ### create a subset DNAbin
-subsetdna <- dna[seqindex, ]
+id49<-subset(x,individuals="49")
+dna49<-get.dna(id49)[[1]]
 
 ### get a particular sequence id with summary.seq$uniqseqID4[5]
 ### get number of sequences length(summary.seq$uniqseqID4)
-uniqsubset <- dna2uniqSequences(subsetdna)
+uniqdna49 <- dna2uniqSequences(dna49)
 
 detach(HorseFlu)
 }

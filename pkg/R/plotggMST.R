@@ -22,56 +22,38 @@ plotggMST<-function(x,individualID=NULL,locus=NULL){
     subx<-subset(x, locus=locus)
     subx<-subset(subx, individuals=individualID)
     subdna<-get.dna(subx)[[1]]
-    seqmatrix <- as.character(subdna)
-    seqstring<-apply(format(seqmatrix), 1, paste, collapse="")
-    uniqList<-tapply(names(seqstring),list(seqstring),I)
-    splitseqstr<-strsplit(names(uniqList),"")
-    uniqmat<-do.call(rbind, splitseqstr)
-    uniqnames<-paste("uniqseqID",seq(1:length(uniqList)),sep="")
-    rownames(uniqmat)<-uniqnames
-    names(uniqList)<-uniqnames
-    uniqdna<-as.DNAbin(uniqmat)
+    uniqseq <- dna2uniqSequences(subdna)
     # get the counts for each sequence
-    IDcounts<-do.call(rbind, lapply(uniqList, function(x) length(x)))
+    IDcounts<-do.call(rbind, lapply(uniqseq@uniqID, function(x) length(x)))
     IDcounts<-as.data.frame(IDcounts[order(-IDcounts[,1]),])
     colnames(IDcounts) <- c( 'count') 
-    seqindex<-match(rownames(IDcounts), labels(uniqdna))
+    seqindex<-match(rownames(IDcounts), labels(uniqseq@uniqdna))
     # reorder the DNAbin accordingly
-    ordereddna<-uniqdna[seqindex, ]
-    # print(ordereddna)
+    ordereddna<-uniqseq@uniqdna[seqindex, ]
     uniqdist<-dist.dna(ordereddna,model="raw", as.matrix=TRUE)
     mstdist<-mst(uniqdist)
     plotcord <- data.frame(gplot.layout.fruchtermanreingold(mstdist, NULL))
     X1=X2=Y1=Y2=NULL
     colnames(plotcord) = c("X1","X2")
     rownames(plotcord) = rownames(uniqdist)
-    # print((plotcord))
-    # print((IDcounts))
     plotcord<-cbind(plotcord,IDcounts)
 
-    # print((plotcord))
     mstdist[lower.tri(mstdist,diag=TRUE)]<-NA
     eList <- NULL
     for ( i in 1:nrow(mstdist) ){
       for ( j in 1:ncol(mstdist)) {
         if (!is.na(mstdist[i,j])){
           if (mstdist[i,j]>0){
-          # print(uniqdist[i,j])
-          # print(mstdist[i,j])
           eList <- rbind(eList,c( rownames(mstdist)[i], colnames(mstdist)[j]))
           }
         }
       }
     }
     #eList
-    # print(eList)
     # edges of zero are removed
     #emst<-subset(eList,eList[,3]>0)
     edges <- data.frame(plotcord[eList[,1],1:2], plotcord[eList[,2],1:2])
-    
     colnames(edges) <-  c("X1","Y1","X2","Y2")
-    # print(edges)
-    
     old <- theme_set(theme_bw())
     old<-theme_update(
                axis.ticks.y = element_blank(), axis.ticks.x = element_blank(),
@@ -85,7 +67,6 @@ plotggMST<-function(x,individualID=NULL,locus=NULL){
     pmst<-pmst+scale_y_continuous("",labels=NULL)+scale_x_continuous("",labels=NULL)
     pmst<-pmst+geom_point(aes(X1, X2, size=count, colour="red"), data=plotcord)
   }
-  #print(pmst)
   return(pmst)
 }
 
