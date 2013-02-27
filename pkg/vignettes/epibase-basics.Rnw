@@ -42,7 +42,7 @@
   basic tools for the analysis of outbreak data. Disease outbreak data can be varied and complex,
   and one of the core features of \textit{epibase} lies in the formal (S4) class \texttt{obkData},
   which allows for storing and handling a variety of data about individuals, samples, contact
-  structures, or even clinical events. This tutorial will introduces this data structure and
+  structures, or even clinical events. Beyond introducing this data structure, this tutorial
   illustrates how these objects can be handled and analyzed in R.
 \end{abstract}
 
@@ -52,65 +52,116 @@
 
 
 \newpage
-%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%
-\section{Introduction}
-%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Storing outbreak data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Class definitions}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
-%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%
-\section{Classes of objects}
-%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%
-\subsection{\code{obkData}: }
-%%%%%%%%%%%%%%%%
-The class \texttt{ObkData} is ...
-\\
-
+% % % % % % % % % % % % % % % % %
+\subsubsection{\code{obkData}: storage of outbreak data}
+% % % % % % % % % % % % % % % % %
+The class \texttt{ObkData} is used to store various types of information.
+The definition of the class in terms of R objects can be obtained by:
 <<>>=
 library(epibase)
 getClassDef("obkData")
 @
 
+Each slot of an \texttt{ObkData} object is optional. By convention, empty slots are always \texttt{NULL}.
 The slots respectively contain:
 \begin{itemize}
-  \item \texttt{samples}:
-  \item \texttt{individuals}:
-  \item \texttt{clinical}:
-  \item \texttt{dna}:
-  \item \texttt{contacts}:
-  \item \texttt{trees}:
+\item \texttt{individuals}: a \texttt{data.frame} storing individual data, such as age, sex,
+  or onset of symptoms. If not \texttt{NULL}, this \texttt{data.frame} must contain a column named
+  \texttt{individualID} which contains unique identifiers for individuals. Data for a given
+  individual must be stored on exactly one row.
+\item \texttt{samples}: a \texttt{data.frame} storing sample data, typically swab results or
+  accession numbers of DNA sequences. If not \texttt{NULL}, this \texttt{data.frame} must contain
+  the three following columns: \texttt{individualID} (unique identifiers for individuals),
+  \texttt{sampleID} (unique identifiers for samples), and \texttt{date} (collection dates for the samples).
+\item \texttt{clinical}: a list of \texttt{data.frame}s storing any additional clinical information;
+  there is no constraint on the number of \texttt{data.frame}s stored, but each one must contain
+  columns named \texttt{individualID} (unique identifiers for individuals) and \texttt{date} (date
+  of observations/interventions).
+  \item \texttt{dna}: DNA sequences of one or more genes, stored as an \texttt{obkSequences}
+    object. See subsection below for details on \texttt{obkSequences} objects.
+  \item \texttt{contacts}: dynamic contact network between the individuals, stored as an
+    \texttt{obkContacts} object. See subsection below for details on \texttt{obkContacts} objects.
+  \item \texttt{trees}: a list of phylogenetic trees with the class \texttt{multiPhylo} (from the
+    \textit{ape} package); can be used to store posterior distribution of trees from Bayesian
+    software such as BEAST.
 \end{itemize}
+
+
+
+% % % % % % % % % % % % % % % % %
+\subsubsection{\code{obkSequences}: storage of various DNA sequences}
+% % % % % % % % % % % % % % % % %
+
+% % % % % % % % % % % % % % % % %
+\subsubsection{\code{obkContacts}: storage of dynamics contact networks}
+% % % % % % % % % % % % % % % % %
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Getting data into \textit{epibase}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 New objects are created using \texttt{new}, with these slots as arguments.
 If no argument is provided, an empty object is created:
 
 
 
+% % % % % % % % % % % % % % % % %
+\subsubsection{The \code{obkData} constructor}
+% % % % % % % % % % % % % % % % %
 
 
-%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%
+% % % % % % % % % % % % % % % % %
+\subsubsection{The \code{obkSequences} constructor}
+% % % % % % % % % % % % % % % % %
+
+
+% % % % % % % % % % % % % % % % %
+\subsubsection{The \code{obkContacts} constructor}
+% % % % % % % % % % % % % % % % %
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Data handling using \texttt{obkData} objects}
-%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%
-\subsection{Using accessors}
-%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Accessors}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 The phylosophy underlying formal (S4) classes is that the internal representation of the data can be
 complex as long as accessing this information is simple.
 This is made possible by decoupling storage and accession: the user is not meant to access the
 content of the object directly, but has to use \texttt{accessors} to retrieve or modify the information.
 \\
+
+
+% % % % % % % % % % % % % % % % %
+\subsubsection{Accessors for \code{obkData} objects}
+% % % % % % % % % % % % % % % % %
 
 Available accessors are documented in \code{?obkData}.
 \begin{itemize}
@@ -121,41 +172,26 @@ Available accessors are documented in \code{?obkData}.
 
 
 
-%%%%%%%%%%%%%%%%
+% % % % % % % % % % % % % % % % %
+\subsubsection{Accessors for \code{obkSequences} objects}
+% % % % % % % % % % % % % % % % %
+
+
+
+% % % % % % % % % % % % % % % % %
+\subsubsection{Accessors for \code{obkContacts} objects}
+% % % % % % % % % % % % % % % % %
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Subsetting the data}
-%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%%%%%%%%%%%%%%%%
-\subsection{Data conversions}
-%%%%%%%%%%%%%%%%
-
-
-
-
-
-%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%
-\section{Data analysis using \texttt{obkData} objects}
-%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%
-
-In the following, we illustrate some methods for the analysis of \texttt{genlight} objects, ranging
-from simple tools for diagnosing allele frequencies or missing data to recently developed multivariate approaches.
-Some examples below are illustrated using toy datasets generated using the function \texttt{glSim}.
-This simple simulation tool allows for simulating large SNPs data with possibly contrasted
-structures between two groups of individuals or patterns of linkage disequilibrium (LD).
-See \texttt{?glSim} for more details on this tool.
-
-
-%%%%%%%%%%%%%%%%
-\subsection{Basic analyses}
-%%%%%%%%%%%%%%%%
-
-
-% % % % % % % % % %
-\subsubsection{Plotting \texttt{obkData} objects}
-% % % % % % % % % %
 
 
 
