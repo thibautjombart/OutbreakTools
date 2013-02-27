@@ -123,11 +123,35 @@ setMethod("get.trees", "obkData", function(x, ...){
 ## Universal accessor:
 ## tries to find any type of data within the obkData object
 ##
-setMethod("get.data", "obkData", function(x, data, drop=TRUE, ...){
+setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, ...){
     data <- as.character(data)
 
     ## LOOK FOR SLOT NAMES ##
     if(data[1] %in% slotNames(x)) return(slot(x, data))
+
+    ## HANDLE 'WHERE'
+    if(!is.null(where)){
+    where <- as.character(where)
+        if(where=="individuals" && !is.null(x@individuals)){
+            if(any(data %in% names(x@individuals))){
+                return(x@individuals[,data,drop=drop])
+            }
+        } # end where==individuals
+
+        if(where=="samples" && !is.null(x@samples)){
+            if(any(data %in% names(x@samples))){
+                return(x@samples[,data,drop=drop])
+            }
+        } # end where==samples
+
+        if(where=="clinical" && !is.null(x@clinical)){
+            for(i in 1:length(x@clinical)){
+                if(any(data %in% names(x@clinical[[i]]))){
+                    return(x@clinical[[i]][,data,drop=drop])
+                }
+            }
+        } # end where==clinical
+    } # end if 'where' provided
 
     ## LOOK FOR 'DATA' IN INDIVIDUALS ##
     if(!is.null(x@individuals)){
@@ -142,6 +166,16 @@ setMethod("get.data", "obkData", function(x, data, drop=TRUE, ...){
             return(x@samples[,data,drop=drop])
         }
     }
+
+    ## LOOK FOR 'DATA' IN CLINICAL ##
+    if(!is.null(x@clinical)){
+        for(i in 1:length(x@clinical)){
+            if(any(data %in% names(x@clinical[[i]]))){
+                return(x@clinical[[i]][,data,drop=drop])
+            }
+        }
+    }
+
 
     ## DEFAULT IF WE DON'T KNOW WHAT TO RETURN ##
     warning(paste("data '", data, "'was not found in the object"))

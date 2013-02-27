@@ -24,8 +24,8 @@
 \alias{get.nsamples}
 \alias{get.nsamples,obkData-method}
 
-\alias{get.data}
-\alias{get.data,obkData-method}
+% \alias{get.data}
+% \alias{get.data,obkData-method}
 
 \alias{get.trees}
 \alias{get.trees,obkData-method}
@@ -79,7 +79,9 @@
     \item{\code{samples}:}{a \code{data.frame} containing sample
       information; the first three columns are 'individualID',
       'sampleID', and 'date'.}
-    \item{\code{clinical}:}{a \code{list} of \code{data.frame}, each member of the list containing clinical information of a particular type; the first two columns are 'individualID' and 'date'.}
+    \item{\code{clinical}:}{a \code{list} of \code{data.frame}, each
+      member of the list containing clinical information of a particular
+      type; the first two columns are 'individualID'and 'date'.}
     \item{\code{contacts}:}{an object of the class
       \linkS4class{obkContacts} storing contact information.}
     \item{\code{dna}:}{an object of the class
@@ -89,12 +91,10 @@
   }
 }
 \section{Methods}{
-  Here is a list of methods available for \code{obkData} objects. Most of
-  these methods are accessors, that is, functions which are used to
-  retrieve the content of the object. Specific manpages can exist for
-  more complex functions. These are indicated by a '*' symbol next to
-  the method's name. This list also contains methods for conversion from
-  \code{obkData} to other classes.
+  Here is a list of accessors available for \code{obkData}
+  objects. These functions are used to retrieve the content of the
+  object. Specific manpages can exist for the more complex functions.
+  These are indicated by a '*' symbol next to the method's name.
   \describe{
     \item{show}{\code{signature(x = "obkData")}: printing of the
       object.}
