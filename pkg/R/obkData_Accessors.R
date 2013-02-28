@@ -131,25 +131,45 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, ...){
 
     ## HANDLE 'WHERE'
     if(!is.null(where)){
-    where <- as.character(where)
-        if(where=="individuals" && !is.null(x@individuals)){
+        where <- match.arg(as.character(where), c("individuals","samples","clinical"))
+        if(where=="individuals"){
+            if(is.null(x@individuals)) { # return NULL if empty
+                warning("x@individuals is NULL")
+                return(NULL)
+            }
             if(any(data %in% names(x@individuals))){
                 return(x@individuals[,data,drop=drop])
+            } else {
+                warning(paste("data '", data, "'was not found in @individuals"))
+                return(NULL)
             }
         } # end where==individuals
 
-        if(where=="samples" && !is.null(x@samples)){
+        if(where=="samples"){
+            if(is.null(x@samples)) { # return NULL if empty
+                warning("x@samples is NULL")
+                return(NULL)
+            }
             if(any(data %in% names(x@samples))){
                 return(x@samples[,data,drop=drop])
+            } else {
+                warning(paste("data '", data, "'was not found in @samples"))
+                return(NULL)
             }
         } # end where==samples
 
-        if(where=="clinical" && !is.null(x@clinical)){
+        if(where=="clinical"){
+            if(is.null(x@clinical)) { # return NULL if empty
+                warning("x@clinical is NULL")
+                return(NULL)
+            }
             for(i in 1:length(x@clinical)){
                 if(any(data %in% names(x@clinical[[i]]))){
                     return(x@clinical[[i]][,data,drop=drop])
                 }
             }
+            warning(paste("data '", data, "'was not found in @clinical"))
+            return(NULL)
         } # end where==clinical
     } # end if 'where' provided
 
