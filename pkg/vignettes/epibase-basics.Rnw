@@ -508,10 +508,20 @@ get.data(x, "date", where="clinical")
 
 
 
-
 % % % % % % % % % % % % % % % % %
 \subsubsection{Accessors for \texttt{obkSequences} objects}
 % % % % % % % % % % % % % % % % %
+
+Accessors of \texttt{obkSequences} objects are basically a subset of what is available for \texttt{obkData}.
+They work in the same way, and use the same arguments; they include:
+\begin{itemize}
+  \item \texttt{get.locus}
+  \item \texttt{get.nlocus}
+  \item \texttt{get.sequences}
+  \item \texttt{get.nsequences}
+  \item \texttt{get.dna}
+\end{itemize}
+
 
 
 
@@ -528,8 +538,31 @@ get.data(x, "date", where="clinical")
 \subsection{Subsetting the data}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
+A lot of data handling lies in creating subsets of the data based on some given criteria.
+The method \texttt{subset} for \texttt{obkData} objects allows for a range of manipulations.
+The syntax is as follows:
+<<eval=FALSE, keep.source=TRUE>>=
+subset(x, individuals=NULL, samples=NULL, date.from=NULL, date.to=NULL,
+       date.format="", locus=NULL, sequences=NULL, ...)
+@
+See \texttt{?subset.obkData} for the details of these arguments.
+The function works in a fairly intuitive way.
+The arguments \texttt{individuals}, \texttt{samples}, \texttt{locus} and \texttt{sequences} are
+vectors of characters indicating items to be kept.
+If integers or logicals are provided, these are assumed to match the output of
+\texttt{get.[\textit{...}]}.
+For instance:
+<<>>=
+get.individuals(x)
+subset(x, individual="titi")
+identical(subset(x, ind="titi"),subset(x, ind=2))
+identical(subset(x, ind="titi"),subset(x, ind=c(FALSE,TRUE)))
+@
+Note that several filters can be specified at the same time.
+For instance, we can retain only the first individual and data of the second gene:
+<<>>=
+subset(x, indiv=1, locus=2)
+@
 
 
 
