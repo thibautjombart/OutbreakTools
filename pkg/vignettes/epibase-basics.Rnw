@@ -339,6 +339,15 @@ x
 \noindent Note that sequences do not have to be ordered by locus; the only thing that matters is
 that the argument \texttt{locus} matches the sequences provided in \texttt{dna}.
 
+Replacing the \texttt{@dna} slot of an \texttt{obkData} object is as simple as:
+<<>>=
+obj <- new("obkData")
+obj@dna
+obj@dna <- x
+obj
+@
+Note however, that this operation does not ensure matching of sequences IDs in \texttt{@dna} with
+the information provided in \texttt{@sample}.
 
 
 
@@ -365,23 +374,71 @@ that the argument \texttt{locus} matches the sequences provided in \texttt{dna}.
 \subsection{Accessors}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
 The phylosophy underlying formal (S4) classes is that the internal representation of the data can be
-complex as long as accessing this information is simple.
+complex as long as accessing the information is simple.
 This is made possible by decoupling storage and accession: the user is not meant to access the
-content of the object directly, but has to use \texttt{accessors} to retrieve or modify the information.
-\\
+content of the object directly, but has to use \textit{accessors} to retrieve the information.
+In this section, we detail the existing accessors for object classes implemented in \textit{epibase}.
+We use the notation ``\texttt{[\textit{possible-values}]}'' to list or describe possible values of an argument;
+the symbols ``\texttt{[]}'' should be omitted from the actual command line. For instance:\\
+
+\texttt{myFunction(x, y=[\textit{"foo" or "bar"}])}\\
+
+\noindent means that the argument \texttt{y} of function \texttt{myFunction} can be either \texttt{"foo"}
+or \texttt{"bar"}, and proper calls would be:
+<<eval=FALSE>>=
+myFunction(x, y="foo")
+@
+\noindent or:
+<<eval=FALSE>>=
+myFunction(x, y="bar")
+@
 
 
 % % % % % % % % % % % % % % % % %
 \subsubsection{Accessors for \texttt{obkData} objects}
 % % % % % % % % % % % % % % % % %
 
-Available accessors are documented in \texttt{?obkData}.
+Available accessors are also documented in \texttt{?obkData}.
+These functions are meant to retrieve information that is not trivially accessible.
+To simply access slots, use the \texttt{@} operator, e.g. \texttt{x@samples},
+\texttt{x@individuals}, etc.
+
+All accessors return \texttt{NULL} when information is missing, except for functions returning
+number of items, which will return \texttt{0}.
 \begin{itemize}
-  \item \texttt{}: returns ...
-  \item \texttt{}: returns ...
+\item \texttt{get.individuals(x, data=[\textit{"samples" or "individuals"}])}: returns the
+  individual IDs in \texttt{@samples} (default) or in \texttt{individuals}.
+
+\item  \texttt{get.nindividuals(x, data=[\textit{"samples" or "individuals"}])}: returns the number of individuals in \texttt{@samples} (default) or in  \texttt{individuals}.
+
+\item \texttt{get.samples(x)}: returns the unique IDs of the samples in the data.
+
+\item \texttt{get.nsamples(x)}: returns the number of sample.
+
+\item \texttt{get.locus(x)}: returns the names of the loci in the data.
+
+\item \texttt{get.nlocus(x)}: returns the number of loci.
+
+\item \texttt{get.sequences(x)}: returns the IDs of the sequences in \texttt{@dna}.
+
+\item \texttt{get.nsequences(x)}: returns the number of sequences in \texttt{@dna}.
+
+\item \texttt{get.trees(x)}: returns the content of \texttt{x@trees}.
+
+\item \texttt{get.dna(x, locus=[\textit{loci ID}], id=[\textit{sequences ID}])}: returns a list of
+  matrices of DNA sequences; the arguments \texttt{locus} and \texttt{id} are optional; if provided,
+  they should be character strings corresponding to the name of the loci and/or sequences to be
+  retained. Integers or logical will be treated as indicators based on the results of
+  \texttt{get.locus} or \texttt{get.sequences}.
+
+\item \texttt{get.data(x, data=[\textit{name of data seeked}], where=NULL, drop=[\textit{TRUE/FALSE}])}: multi-purpose accessor
+  seeking a data field with a given name in the entire dataset; \texttt{data} can be the name of a
+  slot, or the name of a column in \texttt{x@individuals}, \texttt{x@samples}, or
+  \texttt{x@clinical}. The optional argument \texttt{where} allows one to specify in which slot the
+  information should be looked for. The argument \texttt{drop} states whether to return a vector
+  (\texttt{TRUE}), or a one-column \texttt{data.frame} (\texttt{FALSE}).
+
 \end{itemize}
 
 
