@@ -283,13 +283,68 @@ referred in \texttt{x@samples\$sequenceID} was indeed in the list of DNA sequenc
 (an error would have been issued otherwise, along with a list of faulty accession numbers).
 
 
-% % % % % % % % % % % % % % % % %
-\subsubsection{The \code{obkSequences} constructor}
-% % % % % % % % % % % % % % % % %
 
 
 % % % % % % % % % % % % % % % % %
-\subsubsection{The \code{obkContacts} constructor}
+\subsubsection{The \texttt{obkSequences} constructor}
+% % % % % % % % % % % % % % % % %
+
+In most cases, one will not need to construct \texttt{obkSequences} directly, this task being done
+implicitly will creating \texttt{obkData} objects.
+However, one might want to modify the DNA sequences stored in an existing \texttt{obkData}, thus
+needing to build a new \texttt{obkSequences}.
+As for \texttt{obkData}, \texttt{obkSequences} objects can be created using the constructor
+\texttt{new("obkSequences", \ldots)}, where ``\ldots'' can be the following arguments:
+
+\begin{itemize}
+\item \texttt{dna}: a list of DNA sequences (not necessarily from the same gene) in \texttt{DNAbin}
+  or \texttt{character} format; matrices will be accepted too if only one locus is
+  provided. Sequences must be named using unique identifiers, typically accession
+  numbers. Typically, this information will be obtained by reading sequence data into R using
+  \textit{ape}'s \texttt{read.dna} function.
+\item \texttt{locus}: an optional vector indicating the locus of each sequences; its length must match that of the list of sequences.
+\end{itemize}
+
+\noindent Using these inputs, the \texttt{obkSequences} constructor will sort out sequences per gene and store
+them as matrices, using one matrix per gene and checking that sequences from the same gene are
+actually of the same length.
+
+Here, we illustrate the creation of \texttt{obkSequences} objects using a dataset of influenza
+sequences from \textit{adegenet}, first read using \texttt{read.dna}:
+<<>>=
+path.file <- system.file("files/usflu.fasta",package="adegenet")
+path.file
+flu <- read.dna(path.file, format="fasta")
+flu
+@
+The object is simply created using:
+<<>>=
+x <- new("obkSequences", dna=flu)
+x
+@
+As locus information is not provided, the constructor assumed (rightfully so) that all sequences are
+from the same (unnamed) locus.
+Here, the sequenced segment is actually hemagglutinin (HA), so we can add this information:
+<<>>=
+x <- new("obkSequences", dna=flu, locus=rep("HA",80))
+x
+@
+Now, if we assume that for instance, the first 70 sequences were HA, followed by 8 neuraminidase
+(NA) and 2 nucleoprotein (NP), then we would use:
+<<>>=
+x <- new("obkSequences", dna=flu, locus=rep(c("HA","NA","NP"), c(70,8,2)))
+x
+@
+
+\noindent Note that sequences do not have to be ordered by locus; the only thing that matters is
+that the argument \texttt{locus} matches the sequences provided in \texttt{dna}.
+
+
+
+
+
+% % % % % % % % % % % % % % % % %
+\subsubsection{The \texttt{obkContacts} constructor}
 % % % % % % % % % % % % % % % % %
 
 
@@ -320,10 +375,10 @@ content of the object directly, but has to use \texttt{accessors} to retrieve or
 
 
 % % % % % % % % % % % % % % % % %
-\subsubsection{Accessors for \code{obkData} objects}
+\subsubsection{Accessors for \texttt{obkData} objects}
 % % % % % % % % % % % % % % % % %
 
-Available accessors are documented in \code{?obkData}.
+Available accessors are documented in \texttt{?obkData}.
 \begin{itemize}
   \item \texttt{}: returns ...
   \item \texttt{}: returns ...
@@ -333,13 +388,13 @@ Available accessors are documented in \code{?obkData}.
 
 
 % % % % % % % % % % % % % % % % %
-\subsubsection{Accessors for \code{obkSequences} objects}
+\subsubsection{Accessors for \texttt{obkSequences} objects}
 % % % % % % % % % % % % % % % % %
 
 
 
 % % % % % % % % % % % % % % % % %
-\subsubsection{Accessors for \code{obkContacts} objects}
+\subsubsection{Accessors for \texttt{obkContacts} objects}
 % % % % % % % % % % % % % % % % %
 
 
