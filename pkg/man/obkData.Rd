@@ -6,7 +6,7 @@
 \alias{initialize,obkData-method}
 \alias{summary,obkData-method}
 
-%\alias{show,obkData-method}
+\alias{show,obkData-method}
 \alias{get.locus,obkData-method}
 \alias{get.nlocus,obkData-method}
 
