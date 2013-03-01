@@ -45,7 +45,7 @@ setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataf
 ## 'contacts': whatever Simon Frost has in mind
 ##
 setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=NULL, clinical=NULL, dna=NULL, contacts=NULL, trees=NULL,
-                                            date.format=""){
+                                            date.format=NULL){
 
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
@@ -109,6 +109,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         x@samples[,"individualID"] <- as.character(x@samples[,"individualID"])
         x@samples[,"sampleID"] <- as.character(x@samples[,"sampleID"])
         if(is.factor(x@samples[,"date"])) x@samples[,"date"] <- as.character(x@samples[,"date"])
+        if(is.null(date.format)) date.format <- .findDateFormat(x@samples[1,"date"]) # detect date format
         x@samples[,"date"] <- as.Date(x@samples[,"date"], format=date.format)
 
         ## make sure that all individualIDs are in 'individuals', if the slot is not NULL
@@ -133,6 +134,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
             x@clinical[[i]] <- clinical[[i]][, nameOrder]
             x@clinical[[i]][,"individualID"] <- as.character(x@clinical[[i]][,"individualID"])
             if(is.factor(x@clinical[[i]][,"date"])) x@clinical[[i]][,"date"] <- as.character(x@clinical[[i]][,"date"])
+            if(is.null(date.format)) date.format <- .findDateFormat(x@clinical[[i]][1,"date"]) # detect date format
             x@clinical[[i]][,"date"] <- as.Date(x@clinical[[i]][,"date"], format=date.format)
 
             all.clinical.ID <- c(all.clinical.ID, x@clinical[[i]][, "individualID"])

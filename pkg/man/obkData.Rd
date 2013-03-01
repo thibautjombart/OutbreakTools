@@ -57,8 +57,9 @@
       'individualID', 'sampleID', and 'date', providing identifiers for
       the individuals, for the samples, and dates. Dates must be
       provided in a way convertible to \code{Date} (see
-      \code{?as.Date}). Default format for dates if in character strings
-      is "%Y-%m-%d". Alternative format can be specified via the
+      \code{?as.Date}). The format of the dates is detected
+      automatically as long as numbers are used, and year is provided
+      first or last. Alternative formats can be specified via the
       argument date.format}
     \item{\code{clinical}}{a list of data.frames, each of which has 2 mandatory fields, 'individualID' and 'date'. Dates are specified as in the case of the samples data.frame. Each item of the list should be named according to the type of clinical event, e.g. 'hospitalisation', 'vaccination' or 'symptoms'. The 'date' field should be utilised as a start or onset date where the clinical event spans a period of time.}
     \item{\code{dna}}{a list of DNA sequences in \code{DNAbin} or
