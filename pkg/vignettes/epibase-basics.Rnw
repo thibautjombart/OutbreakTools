@@ -542,8 +542,9 @@ A lot of data handling lies in creating subsets of the data based on some given 
 The method \texttt{subset} for \texttt{obkData} objects allows for a range of manipulations.
 The syntax is as follows:
 <<eval=FALSE, keep.source=TRUE>>=
-subset(x, individuals=NULL, samples=NULL, date.from=NULL, date.to=NULL,
-       date.format="", locus=NULL, sequences=NULL, ...)
+subset(x, individuals=NULL, samples=NULL, locus=NULL, sequences=NULL,
+       date.from=NULL, date.to=NULL, date.format=NULL,
+       row.individuals=NULL, row.samples=NULL,...)
 @
 See \texttt{?subset.obkData} for the details of these arguments.
 The function works in a fairly intuitive way.
@@ -558,10 +559,43 @@ subset(x, individual="titi")
 identical(subset(x, ind="titi"),subset(x, ind=2))
 identical(subset(x, ind="titi"),subset(x, ind=c(FALSE,TRUE)))
 @
-Note that several filters can be specified at the same time.
-For instance, we can retain only the first individual and data of the second gene:
+
+Another, non-exclusive way of subsetting the data is using collection dates of the samples.
+The arguments \texttt{date.from} and \texttt{date.to} are used for indicating the range of dates of
+samples to be retained.
+For instance, the range of data in \texttt{x} is:
 <<>>=
-subset(x, indiv=1, locus=2)
+get.data(x, "date", where="samples")
+@
+We can retain data collected before March using:
+<<>>=
+subset(x, date.to="28/02/2001")
+@
+Note that we have specified dates using a different format from what is used in the data.
+This is no issue, as date format is detected automatically by \texttt{subset}.
+
+A third way of specifying subsets of data is using indexing of the rows of \texttt{@individuals} or
+\texttt{@samples}, using the arguments \texttt{row.individuals} and \texttt{row.samples}, respectively.
+This is particularly useful for e.g. retaining only certain type of test results, or patients within
+a given age class, or of a given sex.
+For instance, to retain only positive swabs:
+<<>>=
+x@samples
+get.data(x, "swab")=="+"
+subset(x, row.samples=get.data(x, "swab")=="+")
+@
+Or to retain male patients only:
+<<>>=
+x@individuals
+get.data(x, "sex")=="m"
+subset(x, row.individuals=get.data(x, "sex")=="m")
+@
+
+Finally, note that several filters can be specified at the same time.
+For instance, we can extract data of the first individual and first locus, sampled in March or
+later, using:
+<<>>=
+subset(x, indiv=1, locus=1, date.from="01 03 2001")
 @
 
 
