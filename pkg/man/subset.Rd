@@ -20,20 +20,20 @@
   \item{x}{an \linkS4class{obkData} object.}
   \item{individuals}{labels of retained individuals; if integer, numeric
     or logical are provided, they are assumed to indicate individuals as
-    returned by \texttt{get.individuals}.}
+    returned by \code{get.individuals}.}
   \item{samples}{labels of retained samples; if integer, numeric
     or logical are provided, they are assumed to indicate samples as
-    returned by \texttt{get.samples}.}
+    returned by \code{get.samples}.}
   \item{locus}{labels of retained loci; if integer, numeric
     or logical are provided, they are assumed to indicate locus as
-    returned by \texttt{get.locus}.}
+    returned by \code{get.locus}.}
   \item{sequences}{labels of retained loci; if integer, numeric
     or logical are provided, they are assumed to indicate sequences as
-    returned by \texttt{get.sequences}.}
+    returned by \code{get.sequences}.}
   \item{date.from, date.to}{the range of dates (in Date format) of
     retained samples.}
   \item{date.format}{the format for dates if in character strings;
-    defaults to "%Y-%m-%d" (see \code{?as.Date}).}
+    defaults to "\%Y-\%m-\%d" (see \code{?as.Date}).}
   \item{row.individuals}{rows of \code{x@individuals} to be retained;
     any usual subsetting of a matrix is accepted.}
   \item{row.samples}{rows of \code{x@samples} to be retained;
