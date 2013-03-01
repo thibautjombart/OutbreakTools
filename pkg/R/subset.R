@@ -150,7 +150,7 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
         if(is.null(date.format)) date.format <- .findDateFormat(date.from[1]) # detect date format
         date.from <- as.Date(date.from, format=date.format)
         samples.tokeep <- x@samples$date >= date.from
-        x <- subset(x, samples=samples.tokeep)
+        x <- subset(x, row.samples=samples.tokeep)
     }
 
     ## dates to ... ##
@@ -158,7 +158,7 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
         if(is.null(date.format)) date.format <- .findDateFormat(date.to[1]) # detect date format
         date.to <- as.Date(date.to, format=date.format)
         samples.tokeep <- x@samples$date <= date.to
-        x <- subset(x, samples=samples.tokeep)
+        x <- subset(x, row.samples=samples.tokeep)
     }
 
 
