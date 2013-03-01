@@ -129,7 +129,7 @@
 }
 \author{
   Thibaut Jombart, Simon Frost, Lulla Opatowski, Paul Birrell, Anne
-  Cori, Marc Baguelin, Caroline Colijn... add your name/email here}
+  Cori, Marc Baguelin, Caroline Colijn... add your name here}
 \examples{
 
 ## EMPTY OBJECT ##
@@ -193,7 +193,7 @@ new("obkData", samples=samp, dna=dat.dna)
 
 ## incorporating data on sample and clinical data
 data(FakeInfluenza)
-new("obkData", individuals = FakeInfluenza$Patients, samples = FakeInfluenza$Samples, clinical = FakeInfluenza$Clinical, date.format = "\%d/\%m/\%Y")
+new("obkData", individuals = FakeInfluenza$Patients, samples = FakeInfluenza$Samples, clinical = FakeInfluenza$Clinical)
 
 
 ## TEST ACCESSORS ##

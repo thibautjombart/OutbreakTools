@@ -8,7 +8,7 @@
 ## obkData method ##
 ###################
 setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus=NULL, sequences=NULL,
-                                        date.from=NULL, date.to=NULL, date.format="",
+                                        date.from=NULL, date.to=NULL, date.format=NULL,
                                         row.individuals=NULL, row.samples=NULL,...){
     ## CHECK THAT REQUESTED INFOR IS THERE ##
     if(is.null(x@individuals)) {
@@ -26,51 +26,49 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
 
     ## SUBSET BY ROWS IN @INDIVIDUALS ##
     if(!is.null(row.individuals)){
-        ## check that subset info has right length
-        if(length(row.individuals)!=nrow(x@individuals)){
-            stop(paste("row.individuals has a wrong length (provided: ",
-                       length(row.individuals), " expected: ", nrow(x@individuals),")",sep=""))
-        }
-
         ## subset @individuals
         x@individuals <- x@individuals[row.individuals, ,drop=FALSE]
 
         ## subset @samples
-        x@samples <- x@samples[x@samples$individualID %in% rownames(x@individuals), ,drop=FALSE]
+        if(!is.null(x@samples)) x@samples <- x@samples[x@samples$individualID %in% rownames(x@individuals), ,drop=FALSE]
 
         ## subset @dna
-        x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
+        if(!is.null(x@dna)) x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
+
+        ## subset @clinical
+        if(!is.null(x@clinical)){
+            for(i in 1:length(x@clinical)){
+                x@clinical[[i]] <- x@clinical[[i]][x@clinical[[i]]$"individualID" %in% rownames(x@individuals), ,drop=FALSE]
+            }
+        }
 
         ## subset @contacts
         ## (TODO)
 
-        ## subset @clinicals
-        ## (TODO)
     } # end subset by row.individuals
 
 
     ## SUBSET BY ROWS IN @SAMPLES ##
     if(!is.null(row.samples)){
-        ## check that subset info has right length
-        if(length(row.samples)!=nrow(x@samples)){
-            stop(paste("row.samples has a wrong length (provided: ",
-                       length(row.samples), " expected: ", nrow(x@samples),")",sep=""))
-        }
-
         ## subset @samples
-        x@samples <- x@samples[row.samples, ,drop=FALSE]
+        if(!is.null(x@samples)) x@samples <- x@samples[row.samples, ,drop=FALSE]
 
         ## subset @individuals
-        x@individuals <-x@individuals[rownames(x@individuals) %in% x@samples$individualID,,drop=FALSE]
+       if(!is.null(x@individuals))  x@individuals <-x@individuals[rownames(x@individuals) %in% x@samples$individualID,,drop=FALSE]
 
         ## subset @dna
-        x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
+        if(!is.null(x@dna)) x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
+
+        ## subset @clinical
+        if(!is.null(x@clinical)){
+            for(i in 1:length(x@clinical)){
+                x@clinical[[i]] <- x@clinical[[i]][x@clinical[[i]]$"individualID" %in% x@samples$"individualID", ,drop=FALSE]
+            }
+        }
 
         ## subset @contacts
         ## (TODO)
 
-        ## subset @clinicals
-        ## (TODO)
     } # end subset by row.individuals
 
 
@@ -89,18 +87,22 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
         }
 
         ## subset @individuals
-        x@individuals <- x@individuals[individuals, ,drop=FALSE]
+        if(!is.null(x@individuals)) x@individuals <- x@individuals[individuals, ,drop=FALSE]
 
         ## subset @samples
-        x@samples <- x@samples[x@samples$individualID %in% individuals, ,drop=FALSE]
+        if(!is.null(x@samples)) x@samples <- x@samples[x@samples$individualID %in% individuals, ,drop=FALSE]
 
         ## subset @dna
-        x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
+        if(!is.null(x@dna)) x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
+
+        ## subset @clinical
+        if(!is.null(x@clinical)){
+            for(i in 1:length(x@clinical)){
+                x@clinical[[i]] <- x@clinical[[i]][x@clinical[[i]]$"individualID" %in% rownames(x@individuals), ,drop=FALSE]
+            }
+        }
 
         ## subset @contacts
-        ## (TODO)
-
-        ## subset @clinicals
         ## (TODO)
 
     } # end processing 'individuals' argument
@@ -121,18 +123,22 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
         }
 
         ## subset @samples
-        x@samples <-x@samples[x@samples$sampleID %in% samples, ,drop=FALSE]
+        if(!is.null(x@samples)) x@samples <-x@samples[x@samples$sampleID %in% samples, ,drop=FALSE]
 
         ## subset @individuals
-        x@individuals <-x@individuals[rownames(x@individuals) %in% x@samples$individualID,,drop=FALSE]
+       if(!is.null(x@individuals))  x@individuals <-x@individuals[rownames(x@individuals) %in% x@samples$individualID,,drop=FALSE]
 
         ## subset @dna
-        x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
+       if(!is.null(x@dna))  x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
+
+        ## subset @clinical
+        if(!is.null(x@clinical)){
+            for(i in 1:length(x@clinical)){
+                x@clinical[[i]] <- x@clinical[[i]][x@clinical[[i]]$"individualID" %in% x@samples$"individualID", ,drop=FALSE]
+            }
+        }
 
         ## subset @contacts
-        ## (TODO)
-
-        ## subset @clinicals
         ## (TODO)
 
     } # end processing 'samples' argument
@@ -141,6 +147,7 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
     ## SUBSET BY DATES ##
     ## dates from ... ##
     if(!is.null(date.from)){
+        if(is.null(date.format)) date.format <- .findDateFormat(date.from[1]) # detect date format
         date.from <- as.Date(date.from, format=date.format)
         samples.tokeep <- x@samples$date >= date.from
         x <- subset(x, samples=samples.tokeep)
@@ -148,6 +155,7 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
 
     ## dates to ... ##
     if(!is.null(date.to)){
+        if(is.null(date.format)) date.format <- .findDateFormat(date.to[1]) # detect date format
         date.to <- as.Date(date.to, format=date.format)
         samples.tokeep <- x@samples$date <= date.to
         x <- subset(x, samples=samples.tokeep)
@@ -162,18 +170,22 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
         }
 
         ## subset @samples
-        x@samples <- x@samples[x@samples$locus %in% locus,,drop=FALSE]
+        if(!is.null(x@samples)) x@samples <- x@samples[x@samples$locus %in% locus,,drop=FALSE]
 
         ## subset @individuals
-        x@individuals <-x@individuals[rownames(x@individuals) %in% x@samples$individualID,,drop=FALSE]
+        if(!is.null(x@individuals)) x@individuals <-x@individuals[rownames(x@individuals) %in% x@samples$individualID,,drop=FALSE]
 
         ## subset @dna
-        x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
+        if(!is.null(x@dna)) x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
+
+        ## subset @clinical
+        if(!is.null(x@clinical)){
+            for(i in 1:length(x@clinical)){
+                x@clinical[[i]] <- x@clinical[[i]][x@clinical[[i]]$"individualID" %in% x@samples$"individualID", ,drop=FALSE]
+            }
+        }
 
         ## subset @contacts
-        ## (TODO)
-
-        ## subset @clinicals
         ## (TODO)
 
     }
@@ -187,18 +199,22 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
         }
 
         ## subset @samples
-        x@samples <- x@samples[x@samples$sequenceID %in% sequences,,drop=FALSE]
+        if(!is.null(x@samples)) x@samples <- x@samples[x@samples$sequenceID %in% sequences,,drop=FALSE]
 
         ## subset @individuals
-        x@individuals <-x@individuals[rownames(x@individuals) %in% x@samples$individualID,,drop=FALSE]
+        if(!is.null(x@individuals)) x@individuals <-x@individuals[rownames(x@individuals) %in% x@samples$individualID,,drop=FALSE]
 
         ## subset @dna
-        x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
+        if(!is.null(x@dna)) x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
+
+        ## subset @clinical
+        if(!is.null(x@clinical)){
+            for(i in 1:length(x@clinical)){
+                x@clinical[[i]] <- x@clinical[[i]][x@clinical[[i]]$"individualID" %in% x@samples$"individualID", ,drop=FALSE]
+            }
+        }
 
         ## subset @contacts
-        ## (TODO)
-
-        ## subset @clinicals
         ## (TODO)
 
     }
