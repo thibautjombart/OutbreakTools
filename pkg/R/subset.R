@@ -7,12 +7,15 @@
 ###################
 ## obkData method ##
 ###################
-setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, date.from=NULL, date.to=NULL, date.format="",
-                                        locus=NULL, sequences=NULL, ...){
+setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus=NULL, sequences=NULL,
+                                        date.from=NULL, date.to=NULL, date.format="",
+                                        row.individuals=NULL, row.samples=NULL,...){
     ## CHECK THAT REQUESTED INFOR IS THERE ##
-    if(is.null(x@individuals)) individuals <- NULL
+    if(is.null(x@individuals)) {
+        individuals <- row.individuals <- NULL
+    }
     if(is.null(x@samples)) {
-        samples <- date.from <- date.to <- NULL
+        samples <- date.from <- date.to <- row.samples <- NULL
         locus <- sequences <- NULL
     } else {
         if(is.null(x@samples$locus)) locus <- NULL
@@ -20,6 +23,55 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, date.
     if(is.null(x@dna)){
         locus <- sequences <- NULL
     }
+
+    ## SUBSET BY ROWS IN @INDIVIDUALS ##
+    if(!is.null(row.individuals)){
+        ## check that subset info has right length
+        if(length(row.individuals)!=nrow(x@individuals)){
+            stop(paste("row.individuals has a wrong length (provided: ",
+                       length(row.individuals), " expected: ", nrow(x@individuals),")",sep=""))
+        }
+
+        ## subset @individuals
+        x@individuals <- x@individuals[row.individuals, ,drop=FALSE]
+
+        ## subset @samples
+        x@samples <- x@samples[x@samples$individualID %in% rownames(x@individuals), ,drop=FALSE]
+
+        ## subset @dna
+        x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
+
+        ## subset @contacts
+        ## (TODO)
+
+        ## subset @clinicals
+        ## (TODO)
+    } # end subset by row.individuals
+
+
+    ## SUBSET BY ROWS IN @SAMPLES ##
+    if(!is.null(row.samples)){
+        ## check that subset info has right length
+        if(length(row.samples)!=nrow(x@samples)){
+            stop(paste("row.samples has a wrong length (provided: ",
+                       length(row.samples), " expected: ", nrow(x@samples),")",sep=""))
+        }
+
+        ## subset @samples
+        x@samples <- x@samples[row.samples, ,drop=FALSE]
+
+        ## subset @individuals
+        x@individuals <-x@individuals[rownames(x@individuals) %in% x@samples$individualID,,drop=FALSE]
+
+        ## subset @dna
+        x@dna@dna <- get.dna(x@dna, id=x@samples$sequenceID)
+
+        ## subset @contacts
+        ## (TODO)
+
+        ## subset @clinicals
+        ## (TODO)
+    } # end subset by row.individuals
 
 
     ## SUBSET BY INDIVIDUALS ##

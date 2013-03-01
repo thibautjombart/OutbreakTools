@@ -30,8 +30,7 @@
 \alias{get.trees}
 \alias{get.trees,obkData-method}
 
-\alias{subset,obkData-method}
-\alias{subset.obkData}
+
 % \alias{[,obkData-method}
 % \alias{[,obkData,ANY,ANY-method}
 %%%%
@@ -209,13 +208,5 @@ get.data(x, "individuals")
 get.data(x, c("date","swab"))
 table(get.data(x, c("swab", "locus")))
 
-
-## TEST SUBSETTING ##
-subset(x, individuals=1)
-subset(x, individuals="titi")
-subset(x, sample=2)
-subset(x, locus=2)
-subset(x, sample="2")
-subset(x, sequences=c("No0909S", "No305"))
 }
 \keyword{classes}
