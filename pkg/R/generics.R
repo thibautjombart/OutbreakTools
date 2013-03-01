@@ -14,42 +14,6 @@
 ## return the id of the object
 setGeneric("get.id", function(x, ...) standardGeneric("get.id"))
 
-##############
-## get.type ##
-##############
-## return the type of the object
-setGeneric("get.type", function(x, ...) standardGeneric("get.type"))
-
-##################
-## get.characteristic ##
-##################
-## return the characteristic of the object
-setGeneric("get.characteristic", function(x, ...) standardGeneric("get.characteristic"))
-
-##################
-## get.start.date ##
-##################
-## return the start.date of the object
-setGeneric("get.start.date", function(x, ...) standardGeneric("get.start.date"))
-
-##################
-## get.end.date ##
-##################
-## return the end.date of the object
-setGeneric("get.end.date", function(x, ...) standardGeneric("get.end.date"))
-
-## ##################
-## ## get.date ##
-## ##################
-## ## return the date of the object
-## setGeneric("get.date", function(x, ...) standardGeneric("get.date"))
-
-
-##################
-## get.duration ##
-##################
-## return the duration of the object
-setGeneric("get.duration", function(x, ...) standardGeneric("get.duration"))
 
 #############
 ## get.dna ##
