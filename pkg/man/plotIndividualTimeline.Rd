@@ -37,12 +37,11 @@
    Function to plot a timeline for individuals involved in an outbreak in one plot
 }
 \examples{
-## THIS EXAMPLE NEEDS TO BE FIXED ##
 
 ## load equine influenza data and convert it to obkData
 data(HorseFlu)
 data <- new("obkData",individuals=HorseFlu$individuals,samples=HorseFlu$samples,
-clinical=HorseFlu$clinics, date.format="\%d/\%m/\%Y")
+clinical=HorseFlu$clinics)
 
 ## plot the horses over time, coloring by yard
 plotIndividualTimeline(data,colorBy='yardID')
@@ -56,11 +55,11 @@ plotIndividualTimeline(data,selection=1:15,orderBy='yardID',colorBy='yardID')
 ## do a simple plot for some influenza data
 data(FakeInfluenza)
 attach(FakeInfluenza)
-data <- new("obkData", individuals=Patients, samples=Samples, clinical=Clinical, date.format="\%d/\%m/\%Y")
+data <- new("obkData", individuals=Patients, samples=Samples, clinical=Clinical)
 plotIndividualTimeline(data,colorBy='gender')
 detach(FakeInfluenza)
 }
 \author{
-	Rolf Ypma
+  Rolf Ypma
 }
 

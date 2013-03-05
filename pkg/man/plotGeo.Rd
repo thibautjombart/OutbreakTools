@@ -22,7 +22,6 @@
    Function to plot a timeline for individuals involved in an outbreak in one plot
 }
 \examples{
-\dontrun{
 ## load equine influenza data and convert it to obkData
 data(HorseFlu)
 x <- new("obkData", individuals=HorseFlu$individuals)
@@ -36,6 +35,7 @@ plotGeo(x,location=c('lon','lat'),TRUE,zoom=8,colorBy='sex')
 ## zoom in on the small cluster, by centering on individual '9'
 plotGeo(x,location=c('lon','lat'),TRUE,colorBy='sex',zoom=12,center='9')
 
+\dontrun{
 
 ## another example
 data(rabies)
@@ -48,7 +48,6 @@ plotGeo(data,location=c('xinf','yinf'),isLonLat=TRUE,zoom=7,colorBy='pr')
 plotGeo(data,location=c('xinf','yinf'),isLonLat=TRUE,zoom=7,colorBy='source')
 
 detach(rabies)
-
 }
 }
 \author{
