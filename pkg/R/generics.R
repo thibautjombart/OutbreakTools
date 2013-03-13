@@ -79,7 +79,7 @@ setGeneric("get.samples", function(x, ...) standardGeneric("get.samples"))
 #####################
 ## get.individuals ##
 #####################
-## return the number of individuals in the object
+## return the individuals in the object
 setGeneric("get.individuals", function(x, ...) standardGeneric("get.individuals"))
 
 
@@ -95,7 +95,7 @@ setGeneric("get.nindividuals", function(x, ...) standardGeneric("get.nindividual
 #################
 ## get.samples ##
 #################
-## return the number of samples in the object
+## return the samples in the object
 setGeneric("get.samples", function(x, ...) standardGeneric("get.samples"))
 
 
