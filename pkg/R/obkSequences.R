@@ -95,20 +95,22 @@ setMethod("get.nlocus","obkSequences", function(x, ...){
 
 
 
-############
-## get.id ##
-############
-setMethod("get.id","obkSequences", function(x, ...){
+## ############
+## ## get.id ##
+## ############
+## setMethod("get.id","obkSequences", function(x, ...){
+##     if(is.null(x)) return(NULL)
+##     return(unlist(lapply(x@dna, rownames)))
+## })
+
+
+###################
+## get.sequences ##
+###################
+##  (get sequence IDs)
+setMethod("get.sequences","obkSequences", function(x, ...){
     if(is.null(x)) return(NULL)
     return(unlist(lapply(x@dna, rownames)))
-})
-
-
-###################
-## get.sequences ## (alias for get.id)
-###################
-setMethod("get.sequences","obkSequences", function(x, ...){
-    return(get.id(x))
 })
 
 
@@ -165,13 +167,13 @@ setMethod("get.dna","obkSequences", function(x, locus=NULL, id=NULL, ...){
     ## INFO REQUESTED PER SEQUENCE ID ##
     ## if logicals or integers, find corresponding names
     if(is.logical(id) | is.numeric(id) | is.integer(id)){
-        id <- get.id(x)[id]
+        id <- get.sequences(x)[id]
     }
     id <- as.character(id)
-    if(!all(id %in% get.id(x))) {
-        temp <- paste(id[!id %in% get.id(x)], collapse=", ")
+    if(!all(id %in% get.sequences(x))) {
+        temp <- paste(id[!id %in% get.sequences(x)], collapse=", ")
         warning(paste("The following sequence IDs are not in the dataset:", temp))
-        id <- id[id %in% get.id(x)]
+        id <- id[id %in% get.sequences(x)]
     }
     out <- lapply(x@dna, function(e) e[id[id %in% rownames(e)],,drop=FALSE])
     out <- out[sapply(out, nrow)>0]

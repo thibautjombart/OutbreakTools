@@ -12,7 +12,7 @@
 ## get.id ##
 ############
 ## return the id of the object
-setGeneric("get.id", function(x, ...) standardGeneric("get.id"))
+## setGeneric("get.id", function(x, ...) standardGeneric("get.id"))
 
 
 #############

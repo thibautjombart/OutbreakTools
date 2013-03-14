@@ -28,7 +28,7 @@ setMethod("get.nlocus", "obkData", function(x, ...){
 ## get.sequences ## (get sequence ID)
 ###################
 setMethod("get.sequences","obkData", function(x, ...){
-    return(get.id(x@dna))
+    return(get.sequences(x@dna))
 })
 
 

@@ -6,8 +6,8 @@
 \alias{initialize,obkSequences-method}
 \alias{show,obkSequences-method}
 
-\alias{get.id}
-\alias{get.id,obkSequences-method}
+% \alias{get.id}
+% \alias{get.id,obkSequences-method}
 
 \alias{get.locus}
 \alias{get.locus,obkSequences-method}
