@@ -1,0 +1,613 @@
+\documentclass{article}
+% \VignettePackage{epibase}
+% \VignetteIndexEntry{Analysis of disease outbreak data}
+
+\usepackage{graphicx}
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+\usepackage{array}
+\usepackage{color}
+
+\usepackage[utf8]{inputenc} % for UTF-8/single quotes from sQuote()
+\newcommand{\code}[1]{{{\tt #1}}}
+\title{An introduction to analysing disease outbreak data using \textit{epibase} \Sexpr{packageDescription("epibase", fields = "Version")}}
+\author{Thibaut Jombart, Addyour Namehere}
+\date{\today}
+
+
+
+
+\sloppy
+\hyphenpenalty 10000
+
+
+\begin{document}
+
+\SweaveOpts{prefix.string = genomics, echo=TRUE, eval=TRUE, fig = FALSE, eps = FALSE, pdf = TRUE}
+
+
+
+\definecolor{Soutput}{rgb}{0,0,0.56}
+\definecolor{Sinput}{rgb}{0.56,0,0}
+\DefineVerbatimEnvironment{Sinput}{Verbatim}
+{formatcom={\color{Sinput}},fontsize=\footnotesize, baselinestretch=0.75}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}
+{formatcom={\color{Soutput}},fontsize=\footnotesize, baselinestretch=0.75}
+
+\color{black}
+
+\maketitle
+
+\begin{abstract}
+  This vignette introduces the main functionalities of \textit{epibase}, a package implementing
+  basic tools for the analysis of outbreak data.
+  Disease outbreak data can be varied and complex, and one of the core features of \textit{epibase} lies in the formal (S4) class \texttt{obkData}, which allows for storing and handling a variety of data about individuals, samples, contact structures, or even clinical events.
+  Beyond introducing this data structure, this tutorial illustrates how these objects can be handled and analyzed in R.
+\end{abstract}
+
+\newpage
+
+\tableofcontents
+
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Storing outbreak data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In this section, we first detail the structure of the core classes used for storing information in
+\textit{epibase}, and then explain how to import data into the package, and how to handle data once imported.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Class definitions}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Data collected during outbreaks can be hugely diverse and complex.
+In \textit{epibase}, our purpose is to have a general class of objects which can store virtually any
+information sampled during outbreak, without the user worrying about storage issues.
+For most purposes, the core class \texttt{obkData} will be treated as a black box, with which the
+user can interact using specific functions called \textit{accessors}, without having to worry about
+the internal structure of the object.
+
+
+% % % % % % % % % % % % % % % % %
+\subsubsection{\code{obkData}: storage of outbreak data}
+% % % % % % % % % % % % % % % % %
+The class \texttt{ObkData} is used to store various types of information.
+The definition of the class in terms of R objects can be obtained by:
+<<>>=
+library(epibase)
+getClassDef("obkData")
+@
+One can also examine a structure using an empty object:
+<<>>=
+new("obkData")
+@
+
+Each slot of an \texttt{obkData} object is optional. By convention, empty slots are always \texttt{NULL}.
+The slots respectively contain:
+\begin{itemize}
+\item \texttt{@individuals}: a \texttt{data.frame} storing individual data, such as age, sex,
+  or onset of symptoms. If not \texttt{NULL}, this \texttt{data.frame} will have exactly one row per
+  individual, with row names providing unique identifiers for individuals.
+\item \texttt{@samples}: a \texttt{data.frame} storing sample data, typically swab results or
+  accession numbers of DNA sequences. If not \texttt{NULL}, this \texttt{data.frame} must contain
+  the three following columns: \texttt{individualID} (unique identifiers for individuals),
+  \texttt{sampleID} (unique identifiers for samples), and \texttt{date} (collection dates for the samples).
+\item \texttt{@clinical}: a list of \texttt{data.frame}s storing any additional clinical information;
+  there is no constraint on the number of \texttt{data.frame}s stored, but each one must contain
+  columns named \texttt{individualID} (unique identifiers for individuals) and \texttt{date} (date
+  of observations/interventions).
+  \item \texttt{@dna}: DNA sequences of one or more genes, stored as an \texttt{obkSequences}
+    object. See section below for details on \texttt{obkSequences} objects.
+  \item \texttt{@contacts}: dynamic contact network between the individuals, stored as an
+    \texttt{obkContacts} object. See section below for details on \texttt{obkContacts} objects.
+  \item \texttt{@trees}: a list of phylogenetic trees with the class \texttt{multiPhylo} (from the
+    \textit{ape} package); can be used to store posterior distribution of trees from Bayesian
+    software such as BEAST.
+\end{itemize}
+
+The slots of an object \texttt{foo} can be accessed using \texttt{foo@[name-of-the-slot]}.
+Let us use a toy dataset created taken from the \texttt{obkData} documentation; for now, we
+overlook the data creation process, and just focus on the content of the object \texttt{x}:
+<<echo=FALSE>>=
+ind <- data.frame("individualID"=c("toto","John Doe", "titi"), age=c(20,18,67), sex=c("m","m","?"))
+samp <- data.frame(individualID=c('toto','toto','titi'), sampleID=c(1,3,2),
+                   date=c("2001-02-13","2001-03-01","2001-05-25"), swab=c("+","-","+"),
+                   sequenceID=c("No304","No306","No305"))
+data(woodmouse)
+dat.dna <- as.list(woodmouse)
+x <- new("obkData", individuals=ind, samples=samp, dna=dat.dna)
+@
+<<>>=
+class(x)
+slotNames(x)
+x
+@
+
+\noindent \texttt{x} is an \texttt{obkData} object containing information on individuals (three
+people, with unique identifier for each row), samples (the same sample could be appearing multiple
+times), and some DNA sequences.
+Note the presence of the mandatory columns in \texttt{@samples}: \texttt{individualID},
+\texttt{sampleID}, and \texttt{date}.
+As DNA sequences are also present, \texttt{@samples} also contains a column \texttt{sequenceID} with
+unique sequence identifier, matching labels used in \texttt{@dna}.
+As no locus information is provided in \texttt{@samples}, it is assumed that all sequences are of
+the same gene.
+Otherwise, there should be a column \texttt{locus} in \texttt{@samples} containing this information.
+Accessing a given slot is as easy as:
+<<>>=
+x@individuals
+x@samples
+@
+
+
+
+
+% % % % % % % % % % % % % % % % %
+\subsubsection{\texttt{obkSequences}: storage of DNA sequences for different genes}
+% % % % % % % % % % % % % % % % %
+
+Pathogen sequence data can typically be obtained for a range of different genes, making the handling of such information not entirely trivial.
+The class \texttt{obkSequences} stores such information.
+It consists in a list of matrices of aligned DNA sequences (in rows), stored using \textit{ape}'s class
+\texttt{DNAbin} for efficiency, with each item of the list corresponding to a gene.
+If provided, gene names are the names of the list.
+The row names for each matrix contain unique identifiers for the sequences, typically accession numbers.
+Matching of samples and sequences in made in the \texttt{obkData} objects through the field
+\texttt{sequenceID} in the \texttt{@sample} slot.
+When several loci have been sequenced, the locus information must also be provided for each
+accession number using a column \texttt{locus} in the \texttt{@sample} slot.
+
+Again, let us look at a toy example without paying attention to how data are created:
+<<echo=FALSE>>=
+x <- new("obkSequences", dna=woodmouse, locus=rep(c("gene1", "HighGene", "Phage foobar"), c(10,1,4)))
+@
+<<>>=
+class(x)
+slotNames(x)
+x
+class(x@dna$"gene1")
+@
+
+\noindent \texttt{x} is an \texttt{obkSequences} object containing three genes.
+Data are stored in the unique slot \texttt{@dna}, which is a list of \texttt{DNAbin} matrices.
+
+
+
+
+% % % % % % % % % % % % % % % % %
+\subsubsection{\code{obkContacts}: storage of dynamics contact networks}
+% % % % % % % % % % % % % % % % %
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Getting data into \textit{epibase}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Storing data in \textit{epibase} requires the following, fairly simple steps:
+\begin{enumerate}
+\item read data into R
+  \begin{enumerate}
+  \item read \texttt{data.frame}s storing individuals, samples, and clinical information in R from a
+    text file, typically using \texttt{read.table} or \texttt{read.csv} for comma-separated
+    files. Every standard spreadsheet software can export data to these formats.
+  \item read DNA sequences from a single file, typically using \texttt{read.dna} from the ape
+    package; this ``master'' file must contain all DNA sequences of all genes, with unique
+    identifiers for the sequences as labels
+  \end{enumerate}
+\item use this information as input to the \texttt{obkData} constructor (\texttt{new("obkData",\ldots)}) to create an
+  \texttt{obkData} object.
+\end{enumerate}
+
+In the following, we assume that step 1 is sorted and focus on step 2: using the constructor.
+
+
+
+% % % % % % % % % % % % % % % % %
+\subsubsection{The \code{obkData} constructor}
+% % % % % % % % % % % % % % % % %
+
+New objects are created using \texttt{new}, with these slots as arguments.
+If no argument is provided, an empty object is created, as seen before:
+<<>>=
+new("obkData")
+@
+
+\noindent This function accepts the following arguments, which mirror to some extent the structure
+of the object (see \texttt{?obkData} for more information):
+\begin{itemize}
+  \item \texttt{individuals}: a \texttt{data.frame} with a mandatory column named 'individualID', providing unique identifiers for the individuals.
+    \item \texttt{samples}: a \texttt{data.frame} with 3 mandatory columns named 'individualID', 'sampleID', and 'date', providing identifiers for
+      the individuals, for the samples, and dates. Dates must be provided in a way convertible to
+      \texttt{Date} (see \texttt{?as.Date}). Default format for dates provided as characters  is
+      "\%Y-\%m-\%d" (e.g. 1984-09-23). Alternative format can be specified via the argument \texttt{date.format}.
+    \item \texttt{clinical}: a list of \texttt{data.frame}s, each of which has 2 mandatory fields,
+      individualID' and 'date' (specified as before).
+    \item \texttt{dna}: a list of DNA sequences in \texttt{DNAbin} or \texttt{character} format, as
+      read by \texttt{read.dna}.
+    \item \texttt{contacts}: to be filled.
+    \item \texttt{trees}: a list of phylogenetic trees in the class \texttt{multiPhylo} (from the
+      ape package); this is basically a list of \texttt{phylo} objects, with the class ``\texttt{multiPhylo}''.
+\end{itemize}
+
+\noindent We can now show how the toy example previously used was created.
+Arguments \texttt{ind} and \texttt{samp} are \texttt{data.frame}s with some of the required fields:
+<<>>=
+ind
+samp
+samp$date
+@
+Note that dates are in the right format, but are actually mis-specified as they are stored as a
+\texttt{factor}. As this is frequent (characters are stored as factors in \texttt{data.frame}s
+unless \texttt{options("stringsAsFactors")} is set to \texttt{FALSE}), the constructor is designed
+to accommodate this issue.
+
+DNA sequences have been taken from \texttt{data(woodmouse)} for the sake of merely have sequences to
+play with:
+<<>>=
+data(woodmouse)
+dat.dna <- as.list(woodmouse)
+dat.dna
+@
+
+\noindent And then \texttt{obkData} object was simply created using:
+<<>>=
+x <- new("obkData", individuals=ind, samples=samp, dna=dat.dna)
+@
+Note some slight differences from the inputs.
+Individuals labels are now used to name the rows of \texttt{@individuals}:
+<<>>=
+x@individuals
+@
+And dates are stored as proper dates, supporting basic mathematical operations:
+<<>>=
+class(x@samples$date)
+x@samples$date
+x@samples$date + 1
+x@samples$date + 365
+@
+Some other, invisible checks have also been made when creating the object.
+For instance, it has been checked that every sampled individual is documented in
+\texttt{@individuals} (otherwise, a warning would have been issued), and that every sequence
+referred in \texttt{x@samples\$sequenceID} was indeed in the list of DNA sequences in \texttt{@dna}
+(an error would have been issued otherwise, along with a list of faulty accession numbers).
+
+
+
+
+% % % % % % % % % % % % % % % % %
+\subsubsection{The \texttt{obkSequences} constructor}
+% % % % % % % % % % % % % % % % %
+
+In most cases, one will not need to construct \texttt{obkSequences} directly, this task being done
+implicitly will creating \texttt{obkData} objects.
+However, one might want to modify the DNA sequences stored in an existing \texttt{obkData}, thus
+needing to build a new \texttt{obkSequences}.
+As for \texttt{obkData}, \texttt{obkSequences} objects can be created using the constructor
+\texttt{new("obkSequences", \ldots)}, where ``\ldots'' can be the following arguments:
+
+\begin{itemize}
+\item \texttt{dna}: a list of DNA sequences (not necessarily from the same gene) in \texttt{DNAbin}
+  or \texttt{character} format; matrices will be accepted too if only one locus is
+  provided. Sequences must be named using unique identifiers, typically accession
+  numbers. Typically, this information will be obtained by reading sequence data into R using
+  \textit{ape}'s \texttt{read.dna} function.
+\item \texttt{locus}: an optional vector indicating the locus of each sequences; its length must match that of the list of sequences.
+\end{itemize}
+
+\noindent Using these inputs, the \texttt{obkSequences} constructor will sort out sequences per gene and store
+them as matrices, using one matrix per gene and checking that sequences from the same gene are
+actually of the same length.
+
+Here, we illustrate the creation of \texttt{obkSequences} objects using a dataset of influenza
+sequences from \textit{adegenet}, first read using \texttt{read.dna}:
+<<>>=
+path.file <- system.file("files/usflu.fasta",package="adegenet")
+path.file
+flu <- read.dna(path.file, format="fasta")
+flu
+@
+The object is simply created using:
+<<>>=
+x <- new("obkSequences", dna=flu)
+x
+@
+As locus information is not provided, the constructor assumed (rightfully so) that all sequences are
+from the same (unnamed) locus.
+Here, the sequenced segment is actually hemagglutinin (HA), so we can add this information:
+<<>>=
+x <- new("obkSequences", dna=flu, locus=rep("HA",80))
+x
+@
+Now, if we assume that for instance, the first 70 sequences were HA, followed by 8 neuraminidase
+(NA) and 2 nucleoprotein (NP), then we would use:
+<<>>=
+x <- new("obkSequences", dna=flu, locus=rep(c("HA","NA","NP"), c(70,8,2)))
+x
+@
+
+\noindent Note that sequences do not have to be ordered by locus; the only thing that matters is
+that the argument \texttt{locus} matches the sequences provided in \texttt{dna}.
+
+Replacing the \texttt{@dna} slot of an \texttt{obkData} object is as simple as:
+<<>>=
+obj <- new("obkData")
+obj@dna
+obj@dna <- x
+obj
+@
+Note however, that this operation does not ensure matching of sequences IDs in \texttt{@dna} with
+the information provided in \texttt{@sample}.
+
+
+
+
+% % % % % % % % % % % % % % % % %
+\subsubsection{The \texttt{obkContacts} constructor}
+% % % % % % % % % % % % % % % % %
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Data handling using \texttt{obkData} objects}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Accessors}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The phylosophy underlying formal (S4) classes is that the internal representation of the data can be
+complex as long as accessing the information is simple.
+This is made possible by decoupling storage and accession: the user is not meant to access the
+content of the object directly, but has to use \textit{accessors} to retrieve the information.
+In this section, we detail the existing accessors for object classes implemented in \textit{epibase}.
+We use the notation ``\texttt{[\textit{possible-values}]}'' to list or describe possible values of an argument;
+the symbols ``\texttt{[]}'' should be omitted from the actual command line. For instance:\\
+
+\texttt{myFunction(x, y=[\textit{"foo" or "bar"}])}\\
+
+\noindent means that the argument \texttt{y} of function \texttt{myFunction} can be either \texttt{"foo"}
+or \texttt{"bar"}, and proper calls would be:
+<<eval=FALSE>>=
+myFunction(x, y="foo")
+@
+\noindent or:
+<<eval=FALSE>>=
+myFunction(x, y="bar")
+@
+
+
+% % % % % % % % % % % % % % % % %
+\subsubsection{Accessors for \texttt{obkData} objects}
+% % % % % % % % % % % % % % % % %
+
+Available accessors are also documented in \texttt{?obkData}.
+These functions are meant to retrieve information that is not trivially accessible.
+To simply access slots, use the \texttt{@} operator, e.g. \texttt{x@samples},
+\texttt{x@individuals}, etc.
+
+All accessors return \texttt{NULL} when information is missing, except for functions returning
+number of items, which will return \texttt{0}.
+In the following, we illustrate accessors using the toy dataset \texttt{x} generated by running:
+<<results=hide>>=
+example(obkData)
+x
+@
+
+\begin{itemize}
+\item \texttt{get.individuals(x, data=[\textit{"samples" or "individuals"}])}: returns the
+  individual IDs in \texttt{@samples} (default) or in \texttt{individuals}.
+
+\item  \texttt{get.nindividuals(x, data=[\textit{"samples" or "individuals"}])}: returns the number of individuals in \texttt{@samples} (default) or in  \texttt{individuals}.
+<<>>=
+get.individuals(x)
+get.individuals(x, data="indiv")
+@
+There are three individuals documented in individual data (\texttt{@individuals}), but samples for
+only two of them.
+
+\item \texttt{get.samples(x)}: returns the unique IDs of the samples in the data.
+<<>>=
+get.samples(x)
+@
+\item \texttt{get.nsamples(x)}: returns the number of sample.
+<<>>=
+get.nsamples(x)
+@
+
+\item \texttt{get.locus(x)}: returns the names of the loci in the data.
+<<>>=
+get.locus(x)
+@
+\item \texttt{get.nlocus(x)}: returns the number of loci.
+<<>>=
+get.nlocus(x)
+@
+
+\item \texttt{get.sequences(x)}: returns the IDs of the sequences in \texttt{@dna}.
+<<>>=
+get.sequences(x)
+@
+
+\item \texttt{get.nsequences(x)}: returns the number of sequences in \texttt{@dna}.
+<<>>=
+get.nsequences(x)
+@
+
+\item \texttt{get.trees(x)}: returns the content of \texttt{x@trees}.
+<<>>=
+get.trees(x)
+@
+There is no tree in this object.
+
+\item \texttt{get.dna(x, locus=[\textit{locus IDs}], id=[\textit{sequence IDs}])}: returns a list of
+  matrices of DNA sequences; the arguments \texttt{locus} and \texttt{id} are optional; if provided,
+  they should be character strings corresponding to the name of the loci and/or sequences to be
+  retained. Integers or logical will be treated as indicators based on the results of
+  \texttt{get.locus} or \texttt{get.sequences}.
+<<>>=
+get.dna(x)
+@
+returns all the DNA sequences, in two matrices corresponding to different genes.
+We can request e.g. only the second gene:
+<<>>=
+get.dna(x, locus=2)
+@
+or even just specific sequences, say ("No305" and "No0906S"):
+<<>>=
+get.dna(x, id=c("No305","No0909S"))
+@
+Note that we could also refer to sequences by their index in \texttt{get.sequences}:
+<<>>=
+get.sequences(x)
+identical(get.dna(x, id=c(1,6)), get.dna(x, id=c("No305","No0909S")))
+@
+
+\item \texttt{get.data(x, data=[\textit{name of data seeked}], where=NULL, drop=[\textit{TRUE/FALSE}])}: multi-purpose accessor
+  seeking a data field with a given name in the entire dataset; \texttt{data} can be the name of a
+  slot, or the name of a column in \texttt{x@individuals}, \texttt{x@samples}, or
+  \texttt{x@clinical}. The optional argument \texttt{where} allows one to specify in which slot the
+  information should be looked for. The argument \texttt{drop} states whether to return a vector
+  (\texttt{TRUE}), or a one-column \texttt{data.frame} (\texttt{FALSE}).
+
+\noindent For instance, we can retrieve swab results using:
+<<>>=
+get.data(x,"swab")
+@
+or the sex of the different individuals:
+<<>>=
+get.data(x, "sex", drop=FALSE)
+@
+But searching for ``sugarman'' will return NULL as there is no such field in the data:
+<<>>=
+get.data(x, "sugarman")
+@
+And the same happens when looking for information in an empty slot:
+<<>>=
+get.data(x, "date", where="clinical")
+@
+\end{itemize}
+
+
+
+% % % % % % % % % % % % % % % % %
+\subsubsection{Accessors for \texttt{obkSequences} objects}
+% % % % % % % % % % % % % % % % %
+
+Accessors of \texttt{obkSequences} objects are basically a subset of what is available for \texttt{obkData}.
+They work in the same way, and use the same arguments; they include:
+\begin{itemize}
+  \item \texttt{get.locus}
+  \item \texttt{get.nlocus}
+  \item \texttt{get.sequences}
+  \item \texttt{get.nsequences}
+  \item \texttt{get.dna}
+\end{itemize}
+
+
+
+
+% % % % % % % % % % % % % % % % %
+\subsubsection{Accessors for \texttt{obkContacts} objects}
+% % % % % % % % % % % % % % % % %
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Subsetting the data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+A lot of data handling lies in creating subsets of the data based on some given criteria.
+The method \texttt{subset} for \texttt{obkData} objects allows for a range of manipulations.
+The syntax is as follows:
+<<eval=FALSE, keep.source=TRUE>>=
+subset(x, individuals=NULL, samples=NULL, locus=NULL, sequences=NULL,
+       date.from=NULL, date.to=NULL, date.format=NULL,
+       row.individuals=NULL, row.samples=NULL,...)
+@
+See \texttt{?subset.obkData} for the details of these arguments.
+The function works in a fairly intuitive way.
+The arguments \texttt{individuals}, \texttt{samples}, \texttt{locus} and \texttt{sequences} are
+vectors of characters indicating items to be kept.
+If integers or logicals are provided, these are assumed to match the output of
+\texttt{get.[\textit{...}]}.
+For instance:
+<<>>=
+get.individuals(x)
+subset(x, individual="titi")
+identical(subset(x, ind="titi"),subset(x, ind=2))
+identical(subset(x, ind="titi"),subset(x, ind=c(FALSE,TRUE)))
+@
+
+Another, non-exclusive way of subsetting the data is using collection dates of the samples.
+The arguments \texttt{date.from} and \texttt{date.to} are used for indicating the range of dates of
+samples to be retained.
+For instance, the range of data in \texttt{x} is:
+<<>>=
+get.data(x, "date", where="samples")
+@
+We can retain data collected before March using:
+<<>>=
+subset(x, date.to="28/02/2001")
+@
+Note that we have specified dates using a different format from what is used in the data.
+This is no issue, as date format is detected automatically by \texttt{subset}.
+
+A third way of specifying subsets of data is using indexing of the rows of \texttt{@individuals} or
+\texttt{@samples}, using the arguments \texttt{row.individuals} and \texttt{row.samples}, respectively.
+This is particularly useful for e.g. retaining only certain type of test results, or patients within
+a given age class, or of a given sex.
+For instance, to retain only positive swabs:
+<<>>=
+x@samples
+get.data(x, "swab")=="+"
+subset(x, row.samples=get.data(x, "swab")=="+")
+@
+Or to retain male patients only:
+<<>>=
+x@individuals
+get.data(x, "sex")=="m"
+subset(x, row.individuals=get.data(x, "sex")=="m")
+@
+
+Finally, note that several filters can be specified at the same time.
+For instance, we can extract data of the first individual and first locus, sampled in March or
+later, using:
+<<>>=
+subset(x, indiv=1, locus=1, date.from="01 03 2001")
+@
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Graphics for \texttt{obkData} objects}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+\end{document}
