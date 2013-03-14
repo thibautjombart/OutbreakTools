@@ -58,7 +58,7 @@ setMethod("get.dna", "obkData", function(x, locus=NULL, id=NULL, ...){
 #####################
 ## get.individuals ##
 #####################
-setMethod("get.individuals", "obkData", function(x, data=c("samples", "individuals"), ...){
+setMethod("get.individuals", "obkData", function(x, data=c("samples", "individuals", "clinical"), ...){
     data <- match.arg(data)
 
     ## list individuals in @samples
@@ -72,6 +72,16 @@ setMethod("get.individuals", "obkData", function(x, data=c("samples", "individua
         if(is.null(x@individuals)) return(NULL)
         return(row.names(x@individuals))
     }
+
+    ## list individuals in @clinical
+    if(data=="clinical"){
+      if(is.null(x@clinical)) return(NULL)
+      v_ind<-c()
+      for(i in 1:length(x@clinical)){
+        v_ind<-c(v_ind,x@clinical[[i]]$individualID)
+      }
+      return(unique(v_ind))
+    }
 })
 
 
@@ -79,7 +89,7 @@ setMethod("get.individuals", "obkData", function(x, data=c("samples", "individua
 ######################
 ## get.nindividuals ##
 ######################
-setMethod("get.nindividuals", "obkData", function(x, data=c("samples", "individuals"), ...){
+setMethod("get.nindividuals", "obkData", function(x, data=c("samples", "individuals", "clinical"), ...){
     data <- match.arg(data)
 
     return(length(get.individuals(x, data=data)))
@@ -108,7 +118,7 @@ setMethod("get.nsamples", "obkData", function(x, ...){
 
 
 #################
-## get.clinicals ##
+## get.clinical ##
 #################
 setMethod("get.clinical", "obkData", function(x, ...){
   if(is.null(x@clinical)) return(NULL)

@@ -278,9 +278,12 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 ## new("obkData", samples=samp, dna=dat.dna)
 
 ## ## clinical data
-#load("C:/Users/Lulla/Documents/PROJETS/HACKOUT/hackout-code/pkg/data/FakeInfluenza.RData")
-data(FakeInfluenza)
-inds <- data.frame(individualID = c("Lulla", "Paul"), gender = c("F", "M"))
-x <- new("obkData", individuals =  FakeInfluenza$Patients, clinical = FakeInfluenza$Clinical, date.format = "%d/%m/%Y")
-x <- new("obkData", individuals = inds, clinical = FakeInfluenza$Clinical, date.format = "%d/%m/%Y") ## should give a warning that an individual record for Anne is missing
-x <- new("obkData", individuals =  FakeInfluenza$Patients, sample=FakeInfluenza$Samples, clinical = FakeInfluenza$Clinical, date.format = "%d/%m/%Y") ## adding the sample part
+# data(FakeInfluenza)
+# inds <- data.frame(individualID = c("Lulla", "Paul"), gender = c("F", "M"))
+# x <- new("obkData", individuals =  FakeInfluenza$Patients, clinical = FakeInfluenza$Clinical, date.format = "%d/%m/%Y")
+# x <- new("obkData", individuals = inds, clinical = FakeInfluenza$Clinical, date.format = "%d/%m/%Y") ## should give a warning that an individual record for Anne is missing
+# x <- new("obkData", individuals =  FakeInfluenza$Patients, sample=FakeInfluenza$Samples, clinical = FakeInfluenza$Clinical, date.format = "%d/%m/%Y") ## adding the sample part
+# get.nclinicals(x)
+# get.clinical(x)
+# get.individuals(x,"clinical")
+# get.nindividuals(x,"clinical")
