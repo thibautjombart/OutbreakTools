@@ -113,18 +113,17 @@ setGeneric("get.nsamples", function(x, ...) standardGeneric("get.nsamples"))
 setGeneric("get.clinical", function(x, ...) standardGeneric("get.clinical"))
 
 
-#################
-## get.dates ##
-#################
-## return the dates in the object
-setGeneric("get.dates", function(x, ...) standardGeneric("get.dates"))
-
-
 ##################
 ## get.nclinicals ##
 ##################
 ## return the number of clinical tables in the object
 setGeneric("get.nclinicals", function(x, ...) standardGeneric("get.nclinicals"))
+
+#################
+## get.dates ##
+#################
+## return the dates in the object
+setGeneric("get.dates", function(x, ...) standardGeneric("get.dates"))
 
 
 ##################

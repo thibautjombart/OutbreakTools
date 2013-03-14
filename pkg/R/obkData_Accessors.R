@@ -150,18 +150,17 @@ setMethod("get.dates", "obkData", function(x, data=c("samples", "individuals", "
     return(unique(x@samples$date))
   }
   
-  ## list individuals in @individuals
+  ## list dates in @individuals
   if(data=="individuals"){
     if(is.null(x@individuals$date)) return(NULL)
     return(x@individuals$date)
   }
   
-  ## list individuals in @clinical
+  ## list dates in @clinical
   if(data=="clinical"){
     if(is.null(x@clinical)) return(NULL)
     v_dates<-c()
     for(i in 1:length(x@clinical)){
-      #, date.format = "%d/%m/%Y")
       v_dates<-c(v_dates,as.character(x@clinical[[i]]$date))
     }
     v_dates<-as.Date(v_dates,date.format= "%Y-%m-%d")

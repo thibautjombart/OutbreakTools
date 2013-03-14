@@ -24,6 +24,15 @@
 \alias{get.nsamples}
 \alias{get.nsamples,obkData-method}
 
+\alias{get.clinical}
+\alias{get.clinical,obkData-method}
+\alias{get.nclinicals}
+\alias{get.nclinicals,obkData-method}
+
+\alias{get.dates}
+\alias{get.dates,obkData-method}
+
+
 % \alias{get.data}
 % \alias{get.data,obkData-method}
 
@@ -107,15 +116,23 @@
       more than one locus was sequenced).}
     \item{get.nsequences}{\code{signature(x = "obkData")}: returns the number of
       sequences in the data.}
-    \item{get.locus}{\code{signature(x = "obkData")}: returns the names
-      of the loci in the sample.}
+ %   \item{get.locus}{\code{signature(x = "obkData")}: returns the names
+  %    of the loci in the sample.}
     \item{get.individuals*}{\code{signature(x = "obkData")}: returns the
       IDs of individuals in a given source of data (argument
       \code{data}, can be 'samples' (default) or 'individuals').}
     \item{get.nindividuals*}{\code{signature(x = "obkData")}: returns the
       number of individuals in a given source of data (argument
-      \code{data}, can be 'samples' (default) or 'individuals').}
-    \item{get.trees}{\code{signature(x = "obkData")}: return a list of
+      \code{data}, can be 'samples' (default), 'individuals' or 'clinical').}
+    \item{get.samples}{\code{signature(x = "obkData")}: returns the samples existing in the data.}
+    \item{get.nsamples}{\code{signature(x = "obkData")}: returns the number of
+      samples in the data.}
+    \item{get.clinical}{\code{signature(x = "obkData")}: returns the names of existing clinical tables in the data.}
+    \item{get.nclinicals}{\code{signature(x = "obkData")}: returns the number of clinical tables in the data.}
+     \item{get.dates*}{\code{signature(x = "obkData")}: returns the
+      dates in a given source of data (argument
+      \code{data}, can be 'samples' (default), 'individuals' or 'clinical').}
+   \item{get.trees}{\code{signature(x = "obkData")}: return a list of
       trees of the class \code{multiPhylo}, if present, and \code{NULL}
       otherwise.}
     \item{get.data*}{\code{signature(x = "obkData")}: search for a
@@ -208,6 +225,17 @@ get.data(x, "samples")
 get.data(x, "individuals")
 get.data(x, c("date","swab"))
 table(get.data(x, c("swab", "locus")))
+get.dates(x)
+get.dates(x,"samples")
+get.nclinicals(x)
+
+# based on data including clinical information
+x<- new("obkData", individuals = FakeInfluenza$Patients, samples = FakeInfluenza$Samples, clinical = FakeInfluenza$Clinical)
+
+get.clinical(x)
+get.individuals(x,"clinical")
+get.nindividuals(x,"clinical")
+
 
 }
 \keyword{classes}
