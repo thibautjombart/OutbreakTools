@@ -108,6 +108,27 @@ setMethod("get.nsamples", "obkData", function(x, ...){
 
 
 #################
+## get.clinicals ##
+#################
+setMethod("get.clinical", "obkData", function(x, ...){
+  if(is.null(x@clinical)) return(NULL)
+  # return the list of names of the different clinical tables
+  return(unique(names(x@clinical)))
+})
+
+
+
+#################
+## get.nclinicals ##
+#################
+setMethod("get.nclinicals", "obkData", function(x, ...){
+  if(is.null(x@clinical)) return(0)
+  # return the number of different clinical tables
+  return(length(names(x@clinical))) 
+})
+
+
+#################
 ## get.trees ##
 #################
 setMethod("get.trees", "obkData", function(x, ...){

@@ -106,6 +106,19 @@ setGeneric("get.samples", function(x, ...) standardGeneric("get.samples"))
 ## return the number of samples in the object
 setGeneric("get.nsamples", function(x, ...) standardGeneric("get.nsamples"))
 
+#################
+## get.clinicals ##
+#################
+## return the names of the clinical tables in the object
+setGeneric("get.clinicals", function(x, ...) standardGeneric("get.clinicals"))
+
+
+
+##################
+## get.nclinicals ##
+##################
+## return the number of clinical tables in the object
+setGeneric("get.nclinicals", function(x, ...) standardGeneric("get.nclinicals"))
 
 
 ##################
