@@ -46,7 +46,17 @@
 \examples{
 
 ## USE FAKE DATA IN OBKDATA EXAMPLE ##
-example(obkData)
+data(woodmouse)
+dat.dna <- as.list(woodmouse)
+ind <- data.frame("individualID"=c("toto","John Doe", "titi"), age=c(20,18,67), sex=c("m","m","?"))
+samp <- data.frame(individualID=c('toto','toto','titi'), sampleID=c(1,3,2), date=c("2001-02-13","2001-03-01","2001-05-25"), swab=c("+","-","+"))
+samp <- cbind.data.frame(samp, sequenceID=c(1,2,3))
+samp$sequenceID <- c("No304","No306","No305")
+samp <- samp[c(1,1,2,2,2,3),]
+samp$sequenceID <- 1:6
+samp$locus <- c("gene1","gene2")[c(1,1,1,2,1,2)]
+x <- new("obkData", samples=samp, dna=dat.dna, individuals=ind)
+
 
 ## TEST VARIOUS SUBSETTING ##
 ## by individual
