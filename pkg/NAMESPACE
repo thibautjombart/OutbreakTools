@@ -15,7 +15,6 @@ import(
        ggmap,
        proto,
        sna,
-       grImport,
        scales,
        plyr,
        RCurl,

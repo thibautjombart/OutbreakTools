@@ -7,14 +7,19 @@ library(network)
 #' @param D Duration of simulation
 #' @param beta Rate of infection
 #' @param nu Rate of recovery
+#' @param L Length of sequences
+#' @param mu Probability of mutation per base per transmission event
 #' @return simulated epidemic as an obkData object
 #' @author Xavier Didelot
-simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,showPlots=FALSE) {
+simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001,showPlots=FALSE) {
 	S<-matrix(0,D,3)
 	T<-matrix(0,N,3)
 	dates<-matrix("",N,1)
+	seqs<-matrix('c',N,L)
+	lets<-c('a','c','g','t')
 	S[1,1]=N-1;S[1,2]=1;S[1,3]=0
 	T[1,1]=1;T[1,2]=NA;T[1,3]=0
+	seqs[1,]=sample(lets,L,replace=TRUE)
 	dates[1,1]=as.character(as.Date(0,origin="2000-01-01"));
 	curinf=1;
 	ninf=1;
@@ -25,6 +30,10 @@ simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,showPlots=FALSE) {
 			T[ninf+1,1]=ninf+1;
 			T[ninf+1,2]=sample(curinf,1);
 			T[ninf+1,3]=i;
+			seqs[ninf+1,]=seqs[T[ninf+1,2],]
+			muts=runif(L)<mu
+			muts=seq(along=muts)[muts!=FALSE]
+			for (j in muts) seqs[ninf+1,j]=sample(setdiff(lets,seqs[ninf+1,j]),1)
 			dates[ninf+1,1]=as.character(as.Date(i-1,origin="2000-01-01"));
 			ninf=ninf+1;
 		}
@@ -36,9 +45,11 @@ simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,showPlots=FALSE) {
 	}
 	T=T[1:ninf,]
 	dates=dates[1:ninf,]
+	seqs=seqs[1:ninf,]
 	if (showPlots) {plotEpi(S);plot(infectorTableToNetwork(T));}
-	samp=data.frame("sampleID"=1:ninf,"individualID"=1:ninf,"date"=dates)
-	ret<-new("obkData",individuals=data.frame("individualID"=1:ninf),sample=samp)
+	samp=data.frame("sampleID"=1:ninf,"individualID"=1:ninf,"date"=dates,"sequenceID"=1:ninf)
+	rownames(seqs)<-1:ninf
+	ret<-new("obkData",individuals=data.frame("individualID"=1:ninf),sample=samp,dna=as.DNAbin(seqs))
 	return(ret)
 }
 
