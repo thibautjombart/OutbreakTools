@@ -2,7 +2,7 @@
 \alias{simuEpi}
 \title{Simulate an epidemic following a SIRS model}
 \usage{
-  simuEpi(N = 1000, D = 50, beta = 0.2, nu = 0.1, f = 0.5)
+  simuEpi(N = 1000, D = 10, beta = 0.001, nu = 0.1, L = 1000, mu = 0.001, showPlots = FALSE)
 }
 \arguments{
   \item{N}{Size of the population}
@@ -13,13 +13,15 @@
 
   \item{nu}{Rate of recovery}
 
-  \item{f}{Rate of loss of immunity}
+  \item{L}{Length of genetic sequences}
+
+  \item{mu}{Probability of mutation per base per transmission event}
 }
 \value{
-  simulated epidemic
+  Simulated epidemic as an obkData object
 }
 \description{
-  Simulate an epidemic following a SIRS model
+  Simulate an epidemic following a SIR model
 }
 \author{
   Xavier Didelot

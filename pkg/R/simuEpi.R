@@ -7,9 +7,9 @@ library(network)
 #' @param D Duration of simulation
 #' @param beta Rate of infection
 #' @param nu Rate of recovery
-#' @param L Length of sequences
+#' @param L Length of genetic sequences
 #' @param mu Probability of mutation per base per transmission event
-#' @return simulated epidemic as an obkData object
+#' @return Simulated epidemic as an obkData object
 #' @author Xavier Didelot
 simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001,showPlots=FALSE) {
 	S<-matrix(0,D,3)
