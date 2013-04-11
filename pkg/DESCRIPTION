@@ -22,8 +22,6 @@ Depends:
     sna,
     scales,
     plyr,
-    RCurl,
-    bitops,
     reshape2,
     mapproj
 Description: basic tools for the analysis of disease outbreaks.

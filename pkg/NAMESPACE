@@ -16,8 +16,6 @@ import(
        sna,
        scales,
        plyr,
-       RCurl,
-       bitops,
        reshape2,
        mapproj
        )
