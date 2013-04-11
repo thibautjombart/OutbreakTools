@@ -104,7 +104,4 @@ geom_segment2 <- function(mapping = NULL, data = NULL, stat =
   }
   
   return(as.Date(x,format=date.format))
-  
-  
-  return("")
 }
