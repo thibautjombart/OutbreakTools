@@ -90,7 +90,7 @@ geom_segment2 <- function(mapping = NULL, data = NULL, stat =
         date.format <- paste("%Y","%m","%d", sep=symb)
     }
     
-    if(nchar(temp)[3]==4){
+    else if(nchar(temp)[3]==4){
       if(bshape)
         date.format <- paste("%d","%b","%Y", sep=symb)
       else
