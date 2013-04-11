@@ -11,7 +11,7 @@ library(network)
 #' @param mu Probability of mutation per base per transmission event
 #' @return Simulated epidemic as an obkData object
 #' @author Xavier Didelot
-simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001,showPlots=FALSE) {
+simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001,showPlots=FALSE,makePhyloTree=FALSE) {
 	S<-matrix(0,D,3)
 	T<-matrix(0,N,3)
 	dates<-matrix("",N,1)
@@ -46,10 +46,29 @@ simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001,showPlots=FAL
 	T=T[1:ninf,]
 	dates=dates[1:ninf,]
 	seqs=seqs[1:ninf,]
-	if (showPlots) {plotEpi(S);plot(infectorTableToNetwork(T));}
+	
 	samp=data.frame("sampleID"=1:ninf,"individualID"=1:ninf,"date"=dates,"sequenceID"=1:ninf)
 	rownames(seqs)<-1:ninf
-	ret<-new("obkData",individuals=data.frame("individualID"=1:ninf),sample=samp,dna=as.DNAbin(seqs))
+	
+	if (makePhyloTree){
+		# make a simple phylogeny from the sequences
+		simplephylo=nj(dist.dna(as.DNAbin(seqs))) # quick and dirty but doesn't assume homochronous samples
+		simplephylo=root(simplephylo,1)
+		
+# make 3 plots in this case: the epidemic, the trans tree and the phylo tree
+if (showPlots) {par(mfrow=c(1,3)); plotEpi(S); plot(infectorTableToNetwork(T),main="Transmission tree"); plot(simplephylo,main="NJ phylogeny")}
+		
+		# convert to multiphylo 
+		simplephylo=list(simplephylo)
+		class(simplephylo)="multiPhylo"  # this class is required by the obkData structure
+
+		# include the NJ tree in the obkData object that will be returned
+		 ret<-new("obkData",individuals=data.frame("individualID"=1:ninf,"infector"=T[,2],"DateInfected"=dates),sample=samp,dna=as.DNAbin(seqs),trees=simplephylo)}
+	
+	# otherwise, just do 2 plots and don't make any phylogeny
+	else {  
+		if (showPlots) {par(mfrow=c(1,2)); plotEpi(S); plot(infectorTableToNetwork(T),main="Transmission tree");}
+	ret<-new("obkData",individuals=data.frame("individualID"=1:ninf,"infector"=T[,2],"DateInfected"=dates),sample=samp,dna=as.DNAbin(seqs))}
 	return(ret)
 }
 
@@ -57,7 +76,7 @@ simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001,showPlots=FAL
 #' @param S Matrix containing the numbers to be plotted
 #' @author Xavier Didelot
 plotEpi <- function(S) {
-	plot(c(0,dim(S)[1]),c(0,sum(S[1,])),type='n',xlab='Days',ylab='Individuals')
+	plot(c(0,dim(S)[1]),c(0,sum(S[1,])),type='n',xlab='Days',ylab='Individuals',main="Epidemic summary")
 	lines(S[,1],col='black')
 	lines(S[,2],col='red')
 	lines(S[,3],col='blue')
@@ -85,7 +104,15 @@ if (!is.na(v2)) add.edges(y,v2,v1)
 return(y)
 }
 
-#' Create phylogenetic tree from transmission tree
+
+
+
+
+
+
+#' Create phylogenetic tree from transmission tree only, just in case there is no sequence data
+#' This is not relevant; now we simulate sequence data and the phylo tree returned by simuEpi is 
+#' derived from these. 
 #' @param transmissiontreeData Matrix of who infected whom
 #' @return phylogenetic tree representing how samples of the infectious agents may be related
 #' @author Caroline Colijn
