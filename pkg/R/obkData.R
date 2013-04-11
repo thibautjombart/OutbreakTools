@@ -42,10 +42,21 @@ setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataf
 ##
 ## 'clinical': list of clinical datasets, each stored as a data.frame
 ##
-## 'contacts': whatever Simon Frost has in mind
+## 'contacts': a matrix of characters indicating edges using two columns; if contacts are directed,
+## the first column is 'from', the second is 'to'; values should match individual IDs (as returned
+## by get.individuals(x)); if numeric values are provided, these are converted as integers ## and
+## assumed to correspond to individuals returned by get.individuals(x).
 ##
-setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=NULL, clinical=NULL, dna=NULL, contacts=NULL, trees=NULL,
-                                            date.format=NULL){
+## 'contacts.start': a vector of dates indicating the beginning of each contact
+##
+## 'contacts.end': a vector of dates indicating the end of each contact
+##
+## 'contacts.duration': another way to specify contactEnd, as duration of contact
+##
+##
+setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=NULL, clinical=NULL, dna=NULL, trees=NULL,
+                                            contacts=NULL, contacts.start=NULL, contacts.end=NULL, contacts.duration=NULL,
+                                            contacts.directed=FALSE, date.format=NULL){
 
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
@@ -69,7 +80,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     }
     if(!is.null(clinical)) {
         if(is.data.frame(clinical))
-            clinical = list(clinical)
+            clinical <- list(clinical)
         else clinical <- as.list(clinical)
         if(length(clinical)==0) clinical <- NULL
     }
@@ -156,7 +167,29 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     ## PROCESS INFORMATION ABOUT CONTACTS ('contacts') ##
     ## need to make sure that contact input is consisten with constructor
     if(!is.null(contacts)){
-        x@contacts <- new("obkContacts", contacts)
+        ## process vertices indicated as numbers
+        if(is.numeric(contacts)){
+             if(!is.null(x@individuals)){
+                 ## replace with labels if available
+                 contacts <- matrix(row.names(x@individuals)[contacts], ncol=2)
+             } else {
+                 ## convert as characters otherwise
+                 contacts <- matrix(as.character(contacts), ncol=2)
+             }
+        }
+
+        ## check that all IDs match @individuals
+        if(!is.null(x@individuals)){
+             unknownIDs <- unique(contacts)[!unique(contacts) %in% row.names(x@individuals)]
+            if(length(unknownIDs)>0) {
+                unknownIDs.txt <- paste(unknownIDs, collapse = ", ")
+                warning(paste("the following individuals with contact matrix have no individual information:\n", unknownIDs.txt))
+            }
+        }
+        ## pass arguments to the obkContacts constructor
+        x@contacts <- new("obkContacts", contactFrom=contacts[,1,drop=TRUE], contactTo=contacts[,2,drop=TRUE],
+                          directed=contacts.directed, contactStart=contacts.start, contactEnd=contacts.end,
+                          duration=contacts.duration)
     }
 
 
