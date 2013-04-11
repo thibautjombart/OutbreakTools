@@ -78,7 +78,7 @@ setMethod("initialize", "obkContacts", function(.Object, contactFrom=NULL, conta
 ## get.nindividuals ##
 ######################
 setMethod("get.nindividuals","obkContacts", function(x, ...){
-    if(is.null(x@contacts)) return(0)
+	if(is.null(x@contacts)) return(0)
     return(x@contacts%n%"n")
 })
 
@@ -86,7 +86,7 @@ setMethod("get.nindividuals","obkContacts", function(x, ...){
 ## get.individuals ##
 ######################
 setMethod("get.individuals","obkContacts", function(x, ...){
-    if(is.null(x@contacts)) return(0)
+    if(is.null(x@contacts)) return(NULL)
     return(network.vertex.names(x@contacts))
 })
 
