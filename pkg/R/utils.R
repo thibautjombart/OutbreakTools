@@ -58,8 +58,10 @@ geom_segment2 <- function(mapping = NULL, data = NULL, stat =
     return("")
 }
 
-# some format issue when dates are provided in letters
-process.Date <- function(x, format=NULL){
+#####################
+## .process.Date ##
+#####################
+.process.Date <- function(x, format=NULL){
   
   date.format <- format
   
