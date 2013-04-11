@@ -106,6 +106,8 @@
   These are indicated by a '*' symbol next to the method's name.
   \describe{
     \item{show}{\code{signature(x = "obkData")}: printing of the
+      object's contents.}
+    \item{summary}{\code{signature(x = "obkData")}: printing a summary of the
       object.}
     \item{get.locus}{\code{signature(x = "obkData")}: returns the loci
       existing in the data.}
@@ -120,7 +122,7 @@
   %    of the loci in the sample.}
     \item{get.individuals*}{\code{signature(x = "obkData")}: returns the
       IDs of individuals in a given source of data (argument
-      \code{data}, can be 'samples' (default) or 'individuals').}
+      \code{data}, can be 'all' (default), 'samples', 'individuals', 'clinical', 'contacts').}
     \item{get.nindividuals*}{\code{signature(x = "obkData")}: returns the
       number of individuals in a given source of data (argument
       \code{data}, can be 'samples' (default), 'individuals' or 'clinical').}
