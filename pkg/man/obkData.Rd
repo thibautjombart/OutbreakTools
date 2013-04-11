@@ -122,10 +122,10 @@
   %    of the loci in the sample.}
     \item{get.individuals*}{\code{signature(x = "obkData")}: returns the
       IDs of individuals in a given source of data (argument
-      \code{data}, can be 'all' (default), 'samples', 'individuals', 'clinical', 'contacts').}
+      \code{data}, can be 'all' (default), 'samples', 'individuals', 'clinical', or 'contacts').}
     \item{get.nindividuals*}{\code{signature(x = "obkData")}: returns the
       number of individuals in a given source of data (argument
-      \code{data}, can be 'samples' (default), 'individuals' or 'clinical').}
+      \code{data}, can be 'all' (default), 'samples', 'individuals', 'clinical', or 'contacts').}
     \item{get.samples}{\code{signature(x = "obkData")}: returns the samples existing in the data.}
     \item{get.nsamples}{\code{signature(x = "obkData")}: returns the number of
       samples in the data.}
