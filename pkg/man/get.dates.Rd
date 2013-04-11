@@ -18,7 +18,7 @@ get.dates(x, \dots)
 \arguments{
   \item{x}{an \linkS4class{obkData} object.}
   \item{data}{a character string indicating the name of the data field
-    to look for. It can be 'samples' (default), 'individuals' or 'clinical'.}
+    to look for. It can be 'all'(default), 'samples', 'individuals' or 'clinical'.}
  \item{\dots}{currently not used.}
 }
 \author{

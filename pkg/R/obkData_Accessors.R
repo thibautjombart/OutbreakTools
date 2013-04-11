@@ -148,32 +148,38 @@ setMethod("get.nclinicals", "obkData", function(x, ...){
 #####################
 ## get.dates ##
 #####################
-setMethod("get.dates", "obkData", function(x, data=c("samples", "individuals", "clinical"), ...){
+setMethod("get.dates", "obkData", function(x, data=c("all","samples", "individuals", "clinical"),...){
+  
   data <- match.arg(data)
+    
+  result <- c()
   
   ## list dates in @samples
-  if(data=="samples"){
-    if(is.null(x@samples$date)) return(NULL)
-    return(unique(x@samples$date))
+  if(data=="all" || data=="samples"){
+    #if(is.null(x@samples$date)) return(NULL)
+    result<-c(result, as.character(x@samples$date))
   }
   
   ## list dates in @individuals
-  if(data=="individuals"){
-    if(is.null(x@individuals$date)) return(NULL)
-    return(x@individuals$date)
+  if(data=="all" || data=="individuals"){
+    #if(is.null(x@individuals$date)) return(NULL)
+    result<-c(result,as.character(x@individuals$date))
   }
   
   ## list dates in @clinical
-  if(data=="clinical"){
-    if(is.null(x@clinical)) return(NULL)
+  if(data=="all" || data=="clinical"){
+    #if(is.null(x@clinical)) return(NULL)
     v_dates<-c()
     for(i in 1:length(x@clinical)){
       v_dates<-c(v_dates,as.character(x@clinical[[i]]$date))
     }
-    v_dates<-as.Date(v_dates,date.format= "%Y-%m-%d")
-    return(unique(v_dates))
+    #v_dates<-as.Date(v_dates,date.format= "%Y-%m-%d")
+    result<-c(result,v_dates)
   }
-})
+  result<-as.Date(result,date.format= "%Y-%m-%d")
+  return(unique(result))
+  
+  })
 
 
 #################
@@ -192,8 +198,10 @@ setMethod("get.trees", "obkData", function(x, ...){
 ## Universal accessor:
 ## tries to find any type of data within the obkData object
 ##
-setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, ...){
+setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSource=FALSE, ...){
     data <- as.character(data)
+
+    result <- data.frame()  
 
     ## LOOK FOR SLOT NAMES ##
     if(data[1] %in% slotNames(x)) return(slot(x, data))
@@ -242,33 +250,41 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, ...){
         } # end where==clinical
     } # end if 'where' provided
 
-    ## LOOK FOR 'DATA' IN INDIVIDUALS ##
-    if(!is.null(x@individuals)){
-        if(any(data %in% names(x@individuals))){
-            return(x@individuals[,data,drop=drop])
-        }
+    ## else, look everywhere
+    
+      ## LOOK FOR 'DATA' IN INDIVIDUALS ##
+      if(!is.null(x@individuals)){
+          if(any(data %in% names(x@individuals))){
+              #return(x@individuals[,data,drop=drop])
+              result<-x@individuals[,data])
+          }
+      }
+
+      ## LOOK FOR 'DATA' IN SAMPLES ##
+      if(!is.null(x@samples)){
+          if(any(data %in% names(x@samples))){
+              #return(x@samples[,data,drop=drop])
+              result<-rbind(result,x@samples[,data])
+          }
+      }
+
+      ## LOOK FOR 'DATA' IN CLINICAL ##
+      if(!is.null(x@clinical)){
+          for(i in 1:length(x@clinical)){
+              if(any(data %in% names(x@clinical[[i]]))){
+                  #return(x@clinical[[i]][,data,drop=drop])
+                  result<-rbind(result,x@clinical[[i]][,data])
+              }
+          }
+      }
+
+    if(!is.null(result)) 
+      return(result[,drop=drop])
+    else{    
+      ## DEFAULT IF WE DON'T KNOW WHAT TO RETURN ##
+      warning(paste("data '", data, "'was not found in the object"))
+      return(NULL)
     }
-
-    ## LOOK FOR 'DATA' IN SAMPLES ##
-    if(!is.null(x@samples)){
-        if(any(data %in% names(x@samples))){
-            return(x@samples[,data,drop=drop])
-        }
-    }
-
-    ## LOOK FOR 'DATA' IN CLINICAL ##
-    if(!is.null(x@clinical)){
-        for(i in 1:length(x@clinical)){
-            if(any(data %in% names(x@clinical[[i]]))){
-                return(x@clinical[[i]][,data,drop=drop])
-            }
-        }
-    }
-
-
-    ## DEFAULT IF WE DON'T KNOW WHAT TO RETURN ##
-    warning(paste("data '", data, "'was not found in the object"))
-    return(NULL)
 }) # end get.data
 
 
