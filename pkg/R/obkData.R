@@ -71,7 +71,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     ## coerce to data.frames, force to NULL if nrow=0
     if(!is.null(individuals)) {
         individuals <- as.data.frame(individuals)
-    #    if(nrow(individuals)==0 || ncol(individuals)==1) individuals <- NULL
+                                        #    if(nrow(individuals)==0 || ncol(individuals)==1) individuals <- NULL
         if(nrow(individuals)==0 || ncol(individuals)==0) individuals <- NULL
     }
     if(!is.null(samples)){
@@ -169,18 +169,18 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     if(!is.null(contacts)){
         ## process vertices indicated as numbers
         if(is.numeric(contacts)){
-             if(!is.null(x@individuals)){
-                 ## replace with labels if available
-                 contacts <- matrix(row.names(x@individuals)[contacts], ncol=2)
-             } else {
-                 ## convert as characters otherwise
-                 contacts <- matrix(as.character(contacts), ncol=2)
-             }
+            if(!is.null(x@individuals)){
+                ## replace with labels if available
+                contacts <- matrix(row.names(x@individuals)[contacts], ncol=2)
+            } else {
+                ## convert as characters otherwise
+                contacts <- matrix(as.character(contacts), ncol=2)
+            }
         }
 
         ## check that all IDs match @individuals
         if(!is.null(x@individuals)){
-             unknownIDs <- unique(contacts)[!unique(contacts) %in% row.names(x@individuals)]
+            unknownIDs <- unique(contacts)[!unique(contacts) %in% row.names(x@individuals)]
             if(length(unknownIDs)>0) {
                 unknownIDs.txt <- paste(unknownIDs, collapse = ", ")
                 warning(paste("the following individuals with contact matrix have no individual information:\n", unknownIDs.txt))
@@ -194,25 +194,33 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 
 
     ## PROCESS INFORMATION ABOUT DNA SEQUENCES ('sequenceID') ##
-    seqPos <- which(names(samples) %in% c("sequenceID"))
-    if(length(seqPos)==0 || is.null(dna)){
-        x@dna <- NULL
-    } else {
-        ## identify NAs
-        isNA <- is.na(samples$sequenceID)
+    if(!is.null(dna)){ # if DNA provided
+        ## match labels with sample info
+        if(!is.null(x@samples)){
 
-        ## check unknown labels
-        if(is.character(samples$sequenceID) && !all(samples$sequenceID[!isNA] %in% names(dna))) {
-            err.txt <- na.omit(samples$sequenceID[!samples$sequenceID %in% names(dna)])
-            err.txt <- paste(unique(err.txt), collapse=", ")
-            stop(paste("The following sequence ID were not found in the dna list:\n", err.txt))
+            ## identify NAs
+            isNA <- is.na(samples$sequenceID)
+
+            ## check unknown labels
+            if(is.character(samples$sequenceID) && !all(samples$sequenceID[!isNA] %in% names(dna))) {
+                err.txt <- na.omit(samples$sequenceID[!samples$sequenceID %in% names(dna)])
+                err.txt <- paste(unique(err.txt), collapse=", ")
+                stop(paste("The following sequence ID were not found in the dna list:\n", err.txt))
+            }
+
+            ## pass information to constructor
+            x@dna <- new("obkSequences", dna[x@samples$sequenceID[!isNA]], x@samples$locus[!isNA])
+
+            ## set labels in @samples
+            if(is.integer(x@samples$sequenceID) || is.numeric(x@samples$sequenceID)) x@samples$sequenceID[!isNA] <- names(dna)[x@samples$sequenceID[!isNA]]
+        } else {
+            ## warning
+            warning("DNA sequences provided without sample information - no label matching, and assuming a single locus")
+            ## pass information to constructor
+            x@dna <- new("obkSequences", dna)
         }
-
-        ## pass information to constructor
-        x@dna <- new("obkSequences", dna[x@samples$sequenceID[!isNA]], x@samples$locus[!isNA])
-
-        ## set labels in @samples
-        if(is.integer(x@samples$sequenceID) || is.numeric(x@samples$sequenceID)) x@samples$sequenceID[!isNA] <- names(dna)[x@samples$sequenceID[!isNA]]
+    } else { # if no DNA
+        x@dna <- NULL
     }
 
 
