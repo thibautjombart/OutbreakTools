@@ -44,8 +44,8 @@ setMethod("show", "obkData", function(object){
 setMethod("summary", "obkData", function(object, ...){
 	#get.nindividuals(object,"all")
 	cat(paste("Dataset of ",get.nindividuals(object,"individuals")," individuals\n",sep=""))
-	#get.nindividuals(object,"samples")
-	#get.nindividuals(object,"clinical")
+	cat(paste("with sample data for ",get.nindividuals(object,"samples")," individuals\n",sep=""))
+	cat(paste("and clinical data for ",get.nindividuals(object,"clinical")," individuals\n",sep=""))
 	#get.nclinicals(object)
 	#get.nsamples(object)
 	#get.nsequences(object)
@@ -53,7 +53,10 @@ setMethod("summary", "obkData", function(object, ...){
 	return(invisible())
 })
 
-
+# test: 
+# library(epibase)
+# example(obkData)
+# summary(x)
 
 
 
