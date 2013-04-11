@@ -44,10 +44,10 @@ setMethod("show", "obkData", function(object){
 setMethod("summary", "obkData", function(object, ...){
 	#get.nindividuals(object,"all")
 	cat(paste("Dataset of ",get.nindividuals(object,"individuals")," individuals\n",sep=""))
-	cat(paste("with sample data for ",get.nindividuals(object,"samples")," individuals\n",sep=""))
-	cat(paste("and clinical data for ",get.nindividuals(object,"clinical")," individuals\n",sep=""))
+	cat("with...\n")
+	cat(paste("- ",get.nsamples(object)," samples coming from ",get.nindividuals(object,"samples")," individuals \n",sep=""))
+	cat(paste("- clinical data for ",get.nindividuals(object,"clinical")," individuals\n",sep=""))
 	#get.nclinicals(object)
-	#get.nsamples(object)
 	#get.nsequences(object)
 	#get.nlocus(object)		
 	return(invisible())
