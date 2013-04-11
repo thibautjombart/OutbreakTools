@@ -33,12 +33,24 @@ setMethod("show", "obkData", function(object){
 #############
 ## summary ##
 #############
+#setMethod("summary", "obkData", function(object, ...){
+#    for (n in 1:6){
+#        print(c("Summary of ", slotNames(object)[n]),quote=FALSE)
+#	print(summary(slot(object,slotNames(object)[n])))
+#    }
+#    return()
+#})
+
 setMethod("summary", "obkData", function(object, ...){
-    for (n in 1:6){
-        print(c("Summary of ", slotNames(object)[n]),quote=FALSE)
-	print(summary(slot(object,slotNames(object)[n])))
-    }
-    return()
+	#get.nindividuals(object,"all")
+	cat(paste("Dataset of ",get.nindividuals(object,"individuals")," individuals\n",sep=""))
+	#get.nindividuals(object,"samples")
+	#get.nindividuals(object,"clinical")
+	#get.nclinicals(object)
+	#get.nsamples(object)
+	#get.nsequences(object)
+	#get.nlocus(object)		
+	return(invisible())
 })
 
 
