@@ -133,10 +133,15 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         }
     }
 
-    ## PROCESS INFORMATION ABOUT CLINICAL EVENTS ('clinicals') ##
-    ## to be filled in by Paul & Marc
+    ## PROCESS INFORMATION ABOUT CLINICAL EVENTS ('clinicals') ##    
     if(!is.null(clinical)){
         x@clinical <- list()
+        
+        ##if clinical is a data-frame (one set of clinical data)
+        ##put it as a list
+        if(is.data.frame(clinical))
+          clinical=list(clinical)
+        
         ## reorder the columns within each data frame.
         all.clinical.ID <- NULL
         for(i in 1:length(clinical))
