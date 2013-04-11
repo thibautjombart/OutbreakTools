@@ -19,7 +19,6 @@ Depends:
     networkDynamic,
     ggplot2,
     ggmap,
-    proto,
     sna,
     scales,
     plyr,
