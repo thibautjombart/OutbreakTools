@@ -33,15 +33,30 @@ setMethod("show", "obkData", function(object){
 #############
 ## summary ##
 #############
+#setMethod("summary", "obkData", function(object, ...){
+#    for (n in 1:6){
+#        print(c("Summary of ", slotNames(object)[n]),quote=FALSE)
+#	print(summary(slot(object,slotNames(object)[n])))
+#    }
+#    return()
+#})
+
 setMethod("summary", "obkData", function(object, ...){
-    for (n in 1:6){
-        print(c("Summary of ", slotNames(object)[n]),quote=FALSE)
-	print(summary(slot(object,slotNames(object)[n])))
-    }
-    return()
+	#get.nindividuals(object,"all")
+	cat(paste("Dataset of ",get.nindividuals(object,"individuals")," individuals\n",sep=""))
+	cat("with...\n")
+	cat(paste("- ",get.nsamples(object)," samples coming from ",get.nindividuals(object,"samples")," individuals \n",sep=""))
+	cat(paste("- clinical data for ",get.nindividuals(object,"clinical")," individuals\n",sep=""))
+	#get.nclinicals(object)
+	#get.nsequences(object)
+	#get.nlocus(object)		
+	return(invisible())
 })
 
-
+# test: 
+# library(epibase)
+# example(obkData)
+# summary(x)
 
 
 

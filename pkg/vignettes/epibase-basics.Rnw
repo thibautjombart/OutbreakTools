@@ -156,8 +156,8 @@ It consists in a list of matrices of aligned DNA sequences (in rows), stored usi
 \texttt{DNAbin} for efficiency, with each item of the list corresponding to a gene.
 If provided, gene names are the names of the list.
 The row names for each matrix contain unique identifiers for the sequences, typically accession numbers.
-Matching of samples and sequences in made in the \texttt{obkData} objects through the field
-\texttt{sequenceID} in the \texttt{@sample} slot.
+Matching of samples and sequences made in the \texttt{obkData} objects
+through the field \texttt{sequenceID} in the \texttt{@sample} slot.
 When several loci have been sequenced, the locus information must also be provided for each
 accession number using a column \texttt{locus} in the \texttt{@sample} slot.
 
