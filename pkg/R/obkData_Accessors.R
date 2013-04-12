@@ -201,7 +201,7 @@ setMethod("get.trees", "obkData", function(x, ...){
 setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSource=FALSE, ...){
     data <- as.character(data)
 
-    result <- data.frame()  
+    result <- data.frame()
 
     ## LOOK FOR SLOT NAMES ##
     if(data[1] %in% slotNames(x)) return(slot(x, data))
@@ -215,7 +215,12 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                 return(NULL)
             }
             if(any(data %in% names(x@individuals))){
-                return(x@individuals[,data,drop=drop])
+                #temp<-x@individuals[,c(data,"individualID")]
+                temp<-x@individuals[,data,drop=F]
+                temp<-cbind(temp,rownames(x@individuals))
+                temp<-cbind(temp,rep("individuals",dim(temp)[1]))
+                result<-temp
+                names(result)<-c(data[1],"individualID","source")
             } else {
                 warning(paste("data '", data, "'was not found in @individuals"))
                 return(NULL)
@@ -228,7 +233,10 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                 return(NULL)
             }
             if(any(data %in% names(x@samples))){
-                return(x@samples[,data,drop=drop])
+              temp<-x@samples[,c(data,"individualID")]
+              temp<-cbind(temp,rep("samples",dim(temp)[1]))
+              result<-temp
+              names(result)<-c(data[1],"individualID","source")
             } else {
                 warning(paste("data '", data, "'was not found in @samples"))
                 return(NULL)
@@ -240,31 +248,43 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                 warning("x@clinical is NULL")
                 return(NULL)
             }
+            found=F
             for(i in 1:length(x@clinical)){
                 if(any(data %in% names(x@clinical[[i]]))){
-                    return(x@clinical[[i]][,data,drop=drop])
+                  found=T
+                  temp<-x@clinical[[i]][,c(data,"individualID")]
+                  temp<-cbind(temp,rep(names(x@clinical)[i],dim(temp)[1]))
+                  colnames(temp)<-c(data[1],"individualID","source")
                 }
+                result<-rbind(result,temp)
+            }            
+            if(!found){
+              warning(paste("data '", data, "'was not found in @clinical"))
+              return(NULL)
             }
-            warning(paste("data '", data, "'was not found in @clinical"))
-            return(NULL)
         } # end where==clinical
     } # end if 'where' provided
-
+    else{
     ## else, look everywhere
     
       ## LOOK FOR 'DATA' IN INDIVIDUALS ##
       if(!is.null(x@individuals)){
           if(any(data %in% names(x@individuals))){
-              #return(x@individuals[,data,drop=drop])
-              result<-x@individuals[,data])
+            #temp<-x@individuals[,c(data,"individualID")]
+            temp<-x@individuals[,data,drop=F]
+            temp<-cbind(temp,rownames(x@individuals))
+            temp<-cbind(temp,rep("individuals",dim(temp)[1]))
+            colnames(temp)<-c(data[1],"individualID","source")
+            result<-temp
           }
       }
-
       ## LOOK FOR 'DATA' IN SAMPLES ##
       if(!is.null(x@samples)){
           if(any(data %in% names(x@samples))){
-              #return(x@samples[,data,drop=drop])
-              result<-rbind(result,x@samples[,data])
+            temp<-x@samples[,c(data,"individualID")]
+            temp<-cbind(temp,rep("samples",dim(temp)[1]))
+            colnames(temp)<-c(data[1],"individualID","source")
+            result<-rbind(result,temp)
           }
       }
 
@@ -272,14 +292,20 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
       if(!is.null(x@clinical)){
           for(i in 1:length(x@clinical)){
               if(any(data %in% names(x@clinical[[i]]))){
-                  #return(x@clinical[[i]][,data,drop=drop])
-                  result<-rbind(result,x@clinical[[i]][,data])
+                temp<-x@clinical[[i]][,c(data,"individualID")]
+                temp<-cbind(temp,rep(names(x@clinical)[i],dim(temp)[1]))
+                colnames(temp)<-c(data[1],"individualID","source")
+                result<-rbind(result,temp)              
               }
           }
       }
-
-    if(!is.null(result)) 
-      return(result[,drop=drop])
+  }
+    if(length(result)>0){
+      if(showSource)
+        return(result)
+      else
+        return(result[,data,drop=drop])
+    }
     else{    
       ## DEFAULT IF WE DON'T KNOW WHAT TO RETURN ##
       warning(paste("data '", data, "'was not found in the object"))
