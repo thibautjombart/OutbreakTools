@@ -13,12 +13,9 @@ import(
        networkDynamic,
        ggplot2,
        ggmap,
-       proto,
        sna,
        scales,
        plyr,
-       RCurl,
-       bitops,
        reshape2,
        mapproj
        )
