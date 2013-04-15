@@ -14,7 +14,7 @@
 \usage{
 get.data(x, \dots)
 
-\S4method{get.data}{obkData}(x, data, where=NULL, drop=TRUE, \dots)
+\S4method{get.data}{obkData}(x, data, where=NULL, drop=TRUE, showSource=FALSE, \dots)
 }
 \arguments{
   \item{x}{an \linkS4class{obkData} object.}
@@ -27,7 +27,7 @@ get.data(x, \dots)
   \item{drop}{a logical indicating if a vector should be returned
     (TRUE), as opposed to a \code{data.frame} with on single column
     (FALSE).}
-  \item{showSource}{a logical indicating if information about individualIDs and slot sources should be returned (TRUE). If TRUE a dataframe with three columns will be returned, as opposed to a vector/single column if FALSE.}
+  \item{showSource}{a logical indicating if information about individualIDs and slot sources should be returned. If TRUE a dataframe with three columns will be returned, as opposed to a vector/single column if FALSE.}
   \item{\dots}{currently not used.}
 }
 \author{
