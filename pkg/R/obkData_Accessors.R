@@ -238,7 +238,8 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                 temp<-cbind(temp,rownames(x@individuals))
                 temp<-cbind(temp,rep("individuals",dim(temp)[1]))
                 result<-temp
-                names(result)<-c(data[1],"individualID","source")
+                names(result)<-c(data,"individualID","source")
+#                names(result)<-c(data[1],"individualID","source")
             } else {
                 warning(paste("data '", data, "'was not found in @individuals"))
                 return(NULL)
@@ -254,7 +255,8 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
               temp<-x@samples[,c(data,"individualID")]
               temp<-cbind(temp,rep("samples",dim(temp)[1]))
               result<-temp
-              names(result)<-c(data[1],"individualID","source")
+              names(result)<-c(data,"individualID","source")
+#              names(result)<-c(data[1],"individualID","source")
             } else {
                 warning(paste("data '", data, "'was not found in @samples"))
                 return(NULL)
@@ -272,7 +274,8 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                   found=T
                   temp<-x@clinical[[i]][,c(data,"individualID")]
                   temp<-cbind(temp,rep(names(x@clinical)[i],dim(temp)[1]))
-                  colnames(temp)<-c(data[1],"individualID","source")
+                  colnames(temp)<-c(data,"individualID","source")
+ #                 colnames(temp)<-c(data[1],"individualID","source")
                 }
                 result<-rbind(result,temp)
             }            
@@ -292,7 +295,8 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
             temp<-x@individuals[,data,drop=F]
             temp<-cbind(temp,rownames(x@individuals))
             temp<-cbind(temp,rep("individuals",dim(temp)[1]))
-            colnames(temp)<-c(data[1],"individualID","source")
+            colnames(temp)<-c(data,"individualID","source")
+#            colnames(temp)<-c(data[1],"individualID","source")
             result<-temp
           }
       }
@@ -301,7 +305,8 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
           if(any(data %in% names(x@samples))){
             temp<-x@samples[,c(data,"individualID")]
             temp<-cbind(temp,rep("samples",dim(temp)[1]))
-            colnames(temp)<-c(data[1],"individualID","source")
+            colnames(temp)<-c(data,"individualID","source")
+#            colnames(temp)<-c(data[1],"individualID","source")
             result<-rbind(result,temp)
           }
       }
@@ -312,7 +317,8 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
               if(any(data %in% names(x@clinical[[i]]))){
                 temp<-x@clinical[[i]][,c(data,"individualID")]
                 temp<-cbind(temp,rep(names(x@clinical)[i],dim(temp)[1]))
-                colnames(temp)<-c(data[1],"individualID","source")
+                colnames(temp)<-c(data,"individualID","source")
+#                colnames(temp)<-c(data[1],"individualID","source")
                 result<-rbind(result,temp)              
               }
           }
