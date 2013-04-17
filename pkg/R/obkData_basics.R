@@ -82,8 +82,7 @@ setMethod("summary", "obkData", function(object, ...){
 ##########
 ## head ##
 ##########
-
-setMethod("head", "obkData", function(x, n=6L, ...){
+setMethod("head", "obkData", function(x, n=4L, ...){
     Nslots <- length(slotNames(x))
     cat("\n=== obkData x ===")
     empty <- rep(TRUE, Nslots)
@@ -94,6 +93,37 @@ setMethod("head", "obkData", function(x, n=6L, ...){
                 lapply(slot(x, slotNames(x)[i]), function(e) print(head(e, n=n, ...)))
             } else {
                 print(head(slot(x, slotNames(x)[i]), n=n, ...))
+            }
+            empty[i] <- FALSE
+        }
+    }
+
+    if(any(empty)){
+        txt <- paste("@", slotNames(x)[empty], collapse=", ", sep="")
+        cat("\n== Empty slots == \n", txt)
+    }
+
+    cat("\n")
+})
+
+
+
+
+
+##########
+## tail ##
+##########
+setMethod("tail", "obkData", function(x, n=4L, ...){
+    Nslots <- length(slotNames(x))
+    cat("\n=== obkData x ===")
+    empty <- rep(TRUE, Nslots)
+    for(i in 1:Nslots){
+        if(!is.null(slot(x, slotNames(x)[i]))){
+            cat(paste("\n== @", slotNames(x)[i], "== \n",sep=""))
+            if(is.list(slot(x, slotNames(x)[i])) && !is.data.frame(slot(x, slotNames(x)[i]))){ # use custom 'tail' for lists
+                lapply(slot(x, slotNames(x)[i]), function(e) print(tail(e, n=n, ...)))
+            } else {
+                print(tail(slot(x, slotNames(x)[i]), n=n, ...))
             }
             empty[i] <- FALSE
         }
