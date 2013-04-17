@@ -32,6 +32,11 @@
 \alias{get.dates}
 \alias{get.dates,obkData-method}
 
+\alias{head.obkData}
+\alias{head,obkData-method}
+
+\alias{tail.obkData}
+\alias{tail,obkData-method}
 
 % \alias{get.data}
 % \alias{get.data,obkData-method}
@@ -107,6 +112,10 @@
   \describe{
     \item{show}{\code{signature(x = "obkData")}: printing of the
       object's contents.}
+    \item{head}{\code{signature(x = "obkData")}: printing of the
+      object's contents - showing only the firt lines of each record.}
+    \item{tail}{\code{signature(x = "obkData")}: printing of the
+      object's contents - showing only the last lines of each record.}
     \item{summary}{\code{signature(x = "obkData")}: printing a summary of the
       object.}
     \item{get.locus}{\code{signature(x = "obkData")}: returns the loci
