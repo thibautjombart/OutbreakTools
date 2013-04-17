@@ -37,9 +37,9 @@ setMethod("show", "obkData", function(object){
 setMethod("summary", "obkData", function(object, ...){
 
 	cat(paste("Dataset of ",get.nindividuals(object,"all")," individuals with...\n",sep=""))
-	
-	cat(paste("- ",get.nsamples(object)," samples, coming from ",get.nindividuals(object,"samples")," individuals",sep="")) 
-	
+
+	cat(paste("- ",get.nsamples(object)," samples, coming from ",get.nindividuals(object,"samples")," individuals",sep=""))
+
 	if(!is.null(object@samples) && dim(object@samples)[2] <=13 )
 	{
 		cat(paste(", collected between ",min(x@samples$date)," and ",max(x@samples$date),", regarding:\n",sep=""))
@@ -50,7 +50,7 @@ setMethod("summary", "obkData", function(object, ...){
 			cat("\n")
 		}
 	}else{cat("\n")}
-	
+
 	cat(paste("- ",get.nsequences(object)," corresponding sequences on ",get.nlocus(object)," loci (concacenated alignments: ",sum(sapply(x@dna@dna,ncol))," nucleotides)\n",sep=""))
 
 	cat(paste("- clinical data from ",get.nindividuals(object,"clinical")," individuals",sep=""))
@@ -62,21 +62,56 @@ setMethod("summary", "obkData", function(object, ...){
 			cat(paste("\t\t ",names(object@clinical)[i],"\n",sep=""))
 		}
 	}else{cat("\n")}
-	
+
 	if(!is.null(object@contacts))
 	{
 		cat(paste("- ",get.ncontacts(object,"contacts")," contacts recorded between ",get.nindividuals(object,"contacts")," individuals\n",sep=""))
 	}
-	
+
 	if(!is.null(object@trees))
 	{
 		cat(paste("- ",length(object@trees)," phylogenetic trees with ",length(object@trees$tip.label)," tips\n",sep=""))
 	}
-	
+
 	return(invisible())
 })
 
-# test: 
+
+
+
+##########
+## head ##
+##########
+
+setMethod("head", "obkData", function(x, n=6L, ...){
+    Nslots <- length(slotNames(x))
+    cat("\n=== obkData x ===")
+    empty <- rep(TRUE, Nslots)
+    for(i in 1:Nslots){
+        if(!is.null(slot(x, slotNames(x)[i]))){
+            cat(paste("\n== @", slotNames(x)[i], "== \n",sep=""))
+            if(is.list(slot(x, slotNames(x)[i])) && !is.data.frame(slot(x, slotNames(x)[i]))){ # use custom 'head' for lists
+                lapply(slot(x, slotNames(x)[i]), function(e) print(head(e, n=n, ...)))
+            } else {
+                print(head(slot(x, slotNames(x)[i]), n=n, ...))
+            }
+            empty[i] <- FALSE
+        }
+    }
+
+    if(any(empty)){
+        txt <- paste("@", slotNames(x)[empty], collapse=", ", sep="")
+        cat("\n== Empty slots == \n", txt)
+    }
+
+    cat("\n")
+})
+
+
+
+
+
+# test:
 # library(epibase)
 # data(HorseFlu)
 # names(HorseFlu)
