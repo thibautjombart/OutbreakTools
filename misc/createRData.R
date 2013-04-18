@@ -23,6 +23,8 @@ BeastRData <- function(dir_RData) {
 	dna <- fasta2DNAbin.github(github.fasta)
 
 	require(RCurl)
+	require(ape)
+	require(epibase)
 	urlPhylo <- getURL("https://raw.github.com/trvrb/influenza-dynamics-practical/master/output/pandemic_geo.mcc")
 	my.phylo <- read.nexus(textConnection(urlPhylo))
 
@@ -34,9 +36,9 @@ BeastRData <- function(dir_RData) {
 	samples <- data.frame(individualID = individuals$individualID, sampleID = individuals$individualID, date = seq.date, seqID = my.phylo$tip.label)
 	trees<-c(my.phylo)
 	
-	H1N1pdm2009<-list(individuals= individuals, samples= samples, dna=dna, trees= trees)
+	FluH1N1pdm2009<-list(individuals= individuals, samples= samples, dna=dna, trees= trees)
 	
-	save(H1N1pdm2009,file=paste(dir_RData,"H1N1pdm2009.RData",sep="/"))
+	save(FluH1N1pdm2009,file=paste(dir_RData,"FluH1N1pdm2009.RData",sep="/"))
 	
 }
 
@@ -44,10 +46,10 @@ main<-function(){
 	
 	dir_RData<-"/Users/tonton/Documents/GitProjects/epibase/code/pkg/data"
 	BeastRData(dir_RData)
-	load(paste(dir_RData,"H1N1pdm2009.RData",sep="/"))
+	load(paste(dir_RData,"FluH1N1pdm2009.RData",sep="/"))
 
 }
 
-main()
+#main()
 
 
