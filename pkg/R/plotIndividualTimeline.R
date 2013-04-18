@@ -14,19 +14,18 @@
 #' @author Rolf Ypma
 #'
 #' @examples #load equine influenza data and convert it to obkData
-#' @examples data(HorseFlu)
-#' @examples data <- new("obkData", individuals=HorseFlu$individuals,samples=HorseFlu$samples,clinical=HorseFlu$clinics)
-#' @examples #plot the horses over time, coloring by yard
-#' @examples plot.individualTimeline(data,colorBy='yardID')
-#' @examples #also sort on yard
-#' @examples plot.individualTimeline(data,orderBy='yardID',colorBy='yardID')
-#' @examples #just plot the first 15
-#' @examples plot.individualTimeline(data,selection=1:15,orderBy='yardID',colorBy='yardID')
-#' @examples
-#' @examples #do a simple plot for some influenza data
-#' @examples data(fakefludata)
-#' @examples data <- new("obkData", individuals=Patientsdata,samples=samplefludata,clinical=clinicalfludata)
-#' @examples plot.individualTimeline(data,colorBy='gender')
+#' data(HorseFlu)
+#' data <- new("obkData", individuals=HorseFlu$individuals,samples=HorseFlu$samples,clinical=HorseFlu$clinics)
+#' #plot the horses over time, coloring by yard
+#' plot.individualTimeline(data,colorBy='yardID')
+#' #also sort on yard
+#' plot.individualTimeline(data,orderBy='yardID',colorBy='yardID')
+#' #just plot the first 15
+#' plot.individualTimeline(data,selection=1:15,orderBy='yardID',colorBy='yardID')
+#' #do a simple plot for some influenza data
+#' data(fakefludata)
+#' data <- new("obkData", individuals=Patientsdata,samples=samplefludata,clinical=clinicalfludata)
+#' plot.individualTimeline(data,colorBy='gender')
 
 meltDateProof <- function(data,id.vars,measure.vars,variable.name){
 	# 'melt' in the reshape package looses the Date format, here is a hack around

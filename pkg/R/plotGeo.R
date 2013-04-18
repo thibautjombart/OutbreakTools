@@ -10,25 +10,21 @@
 #' @export
 #' @author Rolf Ypma
 #' @examples #load a dataset on equine influenza
-#' @examples data(HorseFlu)
-#' @examples x <- new("obkData", individuals=HorseFlu$individuals)
-#' @examples #plot the individuals on a map
-#' @examples plotGeo(x,location=c('lon','lat'),T,zoom=8)
-#' @examples 
-#' @examples #color by sex
-#' @examples plotGeo(x,location=c('lon','lat'),T,zoom=8,colorBy='sex')
-#' @examples 
-#' @examples #zoom in on the small cluster, by centering on individual '9'
-#' @examples plotGeo(x,location=c('lon','lat'),T,colorBy='sex',zoom=12,center='9')
-#' @examples 
-#' @examples 
-#' @examples #another example
-#' @examples data(rabies)
-#' @examples data=new('obkData',individuals=data.frame(individualID=1:177,transmissions))
-#' @examples plotGeo(data,location=c('xinf','yinf'),isLonLat=T)
-#' @examples plotGeo(data,location=c('xinf','yinf'),isLonLat=T,zoom=7,colorBy='pr')
-#' @examples #not functional, but pretty
-#' @examples plotGeo(data,location=c('xinf','yinf'),isLonLat=T,zoom=7,colorBy='source')
+#' data(HorseFlu)
+#' x <- new("obkData", individuals=HorseFlu$individuals)
+#' #plot the individuals on a map
+#' plotGeo(x,location=c('lon','lat'),T,zoom=8)
+#' #color by sex
+#' plotGeo(x,location=c('lon','lat'),T,zoom=8,colorBy='sex')
+#' #zoom in on the small cluster, by centering on individual '9'
+#' plotGeo(x,location=c('lon','lat'),T,colorBy='sex',zoom=12,center='9')
+#' #another example
+#' data(rabies)
+#' data=new('obkData',individuals=data.frame(individualID=1:177,transmissions))
+#' plotGeo(data,location=c('xinf','yinf'),isLonLat=T)
+#' plotGeo(data,location=c('xinf','yinf'),isLonLat=T,zoom=7,colorBy='pr')
+#' #not functional, but pretty
+#' plotGeo(data,location=c('xinf','yinf'),isLonLat=T,zoom=7,colorBy='source')
 
 plotGeo <- function(data,location='location',isLonLat=FALSE,zoom='auto',source='google',colorBy=c(),center=c()){
 	#function to plot cases on a map
