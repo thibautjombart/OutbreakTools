@@ -44,14 +44,14 @@ setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataf
 ##
 ## 'contacts': a matrix of characters indicating edges using two columns; if contacts are directed,
 ## the first column is 'from', the second is 'to'; values should match individual IDs (as returned
-## by get.individuals(x)); if numeric values are provided, these are converted as integers ## and
+## by get.individuals(x)); if numeric values are provided, these are converted as integers and
 ## assumed to correspond to individuals returned by get.individuals(x).
 ##
 ## 'contacts.start': a vector of dates indicating the beginning of each contact
 ##
 ## 'contacts.end': a vector of dates indicating the end of each contact
 ##
-## 'contacts.duration': another way to specify contactEnd, as duration of contact
+## 'contacts.duration': another way to specify contacts.end, as duration of contact
 ##
 ##
 setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=NULL, clinical=NULL, dna=NULL, trees=NULL,
@@ -133,15 +133,15 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         }
     }
 
-    ## PROCESS INFORMATION ABOUT CLINICAL EVENTS ('clinicals') ##    
+    ## PROCESS INFORMATION ABOUT CLINICAL EVENTS ('clinicals') ##
     if(!is.null(clinical)){
         x@clinical <- list()
-        
+
         ##if clinical is a data-frame (one set of clinical data)
         ##put it as a list
         if(is.data.frame(clinical))
           clinical=list(clinical)
-        
+
         ## reorder the columns within each data frame.
         all.clinical.ID <- NULL
         for(i in 1:length(clinical))

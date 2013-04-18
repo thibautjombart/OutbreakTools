@@ -13,7 +13,7 @@
 \usage{
 get.dates(x, \dots)
 
-\S4method{get.dates}{obkData}(x, data=c("samples", "individuals", "clinical"), \dots)
+\S4method{get.dates}{obkData}(x, data=c("all", "samples", "individuals", "clinical"), \dots)
 }
 \arguments{
   \item{x}{an \linkS4class{obkData} object.}

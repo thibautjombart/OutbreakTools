@@ -75,7 +75,7 @@ the internal structure of the object.
 % % % % % % % % % % % % % % % % %
 \subsubsection{\code{obkData}: storage of outbreak data}
 % % % % % % % % % % % % % % % % %
-The class \texttt{ObkData} is used to store various types of information.
+The class \texttt{obkData} is used to store various types of information.
 The definition of the class in terms of R objects can be obtained by:
 <<>>=
 library(epibase)
@@ -182,6 +182,53 @@ Data are stored in the unique slot \texttt{@dna}, which is a list of \texttt{DNA
 \subsubsection{\code{obkContacts}: storage of dynamics contact networks}
 % % % % % % % % % % % % % % % % %
 
+\textit{obkData} objects can also store contact data between individuals, in the slot \texttt{@contacts}.
+These contacts can be fixed or vary in time, in which case data are stored as a dynamic contact network.
+The slot \texttt{@contacts} is an instance of the class \texttt{obkContacts}, which currently
+contains either a \texttt{network} object (static graph, from the \textit{network} package), or a \texttt{networkDynamic} object, for
+contacts varying in time (from the \textit{networkDynamic} package).
+These objects are fully documented in their respective vignettes.
+Here, we detail a simple toy example from the documentation of \texttt{obkContacts}:
+<<>>=
+cf <- c("a", "b", "a", "c", "d")
+ct <- c("b", "c", "c", "d", "b")
+onset <- c(1, 2, 3, 4, 5)
+terminus <- c(1.2, 4, 3.5, 4.1, 6)
+oc.static <- new("obkContacts",cf,ct,FALSE) # static network
+oc.dynamic <- new("obkContacts",cf,ct,FALSE,onset,terminus)
+oc.static
+oc.dynamic
+@
+
+\texttt{oc.static} is a static, non-directed contact network (class \texttt{network}).
+It can be plotted easily using:
+<<fig=TRUE>>=
+plot(oc.static@contacts, displaylabels=TRUE, main="Static contact network")
+@
+\texttt{oc.dynamic} is a dynamic graph, i.e. a graph whose vertices and edges can change over time.
+By default, plotting the object collapses the graph so that all vertices and edges that exist at
+some point are displayed; however, sections of the graph for given time intervals can be obtained
+using \texttt{network.extract}.
+As a reminder, here is the input of the graph \texttt{oc.dynamic}:
+<<>>=
+data.frame(onset,terminus,ct,cf)
+@
+And here are various plots, first of the full (collapsed) contact network, then for different time
+intervals (0--2, 2--4, 4--6):
+<<dynNet, fig=TRUE>>=
+par(mfrow=c(2,2))
+plot(oc.dynamic@contacts,main="oc.dynamic - collapsed graph",
+     displaylabels=TRUE)
+plot(network.extract(oc.dynamic@contacts, onset=0, terminus=2),
+     main="oc.dynamic - time 0--2", displaylabels=TRUE)
+plot(network.extract(oc.dynamic@contacts, onset=2, terminus=4),
+     main="oc.dynamic - time 2--4", displaylabels=TRUE)
+plot(network.extract(oc.dynamic@contacts, onset=4, terminus=6),
+     main="oc.dynamic - time 4--6", displaylabels=TRUE)
+@
+
+\textit{networkDynamic} allows for extensive manipulation of dynamic networks.
+For more information, refer to the vignette distributed with the package (\texttt{vignette("networkDynamic")}).
 
 
 
@@ -234,7 +281,16 @@ of the object (see \texttt{?obkData} for more information):
       individualID' and 'date' (specified as before).
     \item \texttt{dna}: a list of DNA sequences in \texttt{DNAbin} or \texttt{character} format, as
       read by \texttt{read.dna}.
-    \item \texttt{contacts}: to be filled.
+    \item \texttt{contacts}:
+    \item \texttt{contacts}: a matrix of characters indicating edges using two columns; if contacts
+      are directed, the first column is 'from', the second is 'to'; values should match individual
+      IDs (as returned by get.individuals(x)); if numeric values are provided, these are converted
+      to integers and assumed to correspond to individuals returned by get.individuals(x).
+    \item \texttt{contacts.start}: a vector of dates indicating the beginning of each contact.
+    \item \texttt{contacts.end}: a vector of dates indicating the end of each contact.
+    \item \texttt{contacts.duration}: another way to specify contacts.end, as duration of contact.
+    \item \texttt{contacts.directed}: a logical indicating if contacts are
+      directed; defaults to FALSE.
     \item \texttt{trees}: a list of phylogenetic trees in the class \texttt{multiPhylo} (from the
       ape package); this is basically a list of \texttt{phylo} objects, with the class ``\texttt{multiPhylo}''.
 \end{itemize}
