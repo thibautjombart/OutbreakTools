@@ -29,8 +29,8 @@
 \alias{get.nclinicals}
 \alias{get.nclinicals,obkData-method}
 
-\alias{get.dates}
-\alias{get.dates,obkData-method}
+% \alias{get.dates}
+% \alias{get.dates,obkData-method}
 
 \alias{head.obkData}
 \alias{head,obkData-method}
