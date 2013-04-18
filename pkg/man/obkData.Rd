@@ -78,7 +78,16 @@
     \item{\code{clinical}}{a list of data.frames, each of which has 2 mandatory fields, 'individualID' and 'date'. Dates are specified as in the case of the samples data.frame. Each item of the list should be named according to the type of clinical event, e.g. 'hospitalisation', 'vaccination' or 'symptoms'. The 'date' field should be utilised as a start or onset date where the clinical event spans a period of time.}
     \item{\code{dna}}{a list of DNA sequences in \code{DNAbin} or
       \code{character} format.}
-    \item{\code{contacts}}{... - to be filled}
+    \item{\code{contacts}}{a matrix of characters indicating edges using
+      two columns; if contacts are directed, the first column is 'from',
+      the second is 'to'; values should match individual IDs (as
+      returned by get.individuals(x)); if numeric values are provided,
+      these are converted to integers and assumed to correspond to
+      individuals returned by get.individuals(x).}
+    \item{\code{contacts.start}}{a vector of dates indicating the beginning of each contact.}
+    \item{\code{contacts.end}}{a vector of dates indicating the end of each contact.}
+    \item{\code{contacts.duration}}{another way to specify contacts.end, as duration of contact.}
+    \item{\code{contacts.directed}}{; defaults to FALSE.}
     \item{\code{trees}}{a list of phylogenetic trees in the class
       \code{multiPhylo} (from the ape package)}
   }
