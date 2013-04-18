@@ -51,8 +51,14 @@ setMethod("summary", "obkData", function(object, ...){
         }
     }else{cat("\n")}
 
-    cat(paste("- ",get.nsequences(object)," corresponding sequences on ",get.nlocus(object)," loci (concacenated alignments: ",sum(sapply(object@dna@dna,ncol))," nucleotides)\n",sep=""))
-
+	if(!is.null(object@dna)) 
+	{
+		cat(paste("- ",get.nsequences(object)," corresponding sequences on ",get.nlocus(object)," loci (concacenated alignments: ",sum(sapply(object@dna@dna,ncol))," nucleotides)\n",sep=""))
+	}else
+	{
+		cat("- 0 sequences\n")
+	}
+	
     cat(paste("- clinical data from ",get.nindividuals(object,"clinical")," individuals",sep=""))
     if(!is.null(object@clinical) && length(object@clinical) <=10 )
     {
@@ -75,6 +81,18 @@ setMethod("summary", "obkData", function(object, ...){
 
     return(invisible())
 })
+
+
+# test:
+# library(epibase)
+# data(HorseFlu)
+# names(HorseFlu)
+# x <- new("obkData", dna=HorseFlu$dna, sample=HorseFlu$samples,individuals =  HorseFlu$individuals, clinical = HorseFlu$clinics)
+# summary(x)
+# summary(new("obkData"))
+
+
+
 
 
 
@@ -136,17 +154,6 @@ setMethod("tail", "obkData", function(x, n=4L, ...){
 
     cat("\n")
 })
-
-
-
-
-
-# test:
-# library(epibase)
-# data(HorseFlu)
-# names(HorseFlu)
-# x <- new("obkData", dna=HorseFlu$dna, sample=HorseFlu$samples,individuals =  HorseFlu$individuals, clinical = HorseFlu$clinics)
-# summary(x)
 
 
 
