@@ -7,13 +7,13 @@
 #' @author Anton Camacho
 #' @examples see misc/plot.ggphy.test.R
 
-phylo2ggphy<-function(phylo,tip.dates=NULL,branch.unit="subst"){
+phylo2ggphy<-function(phylo,tip.dates=NULL,branch.unit=NULL,verbose=F){
 
 	phy<-phylo
 	has.node.label<-(!is.null(phy$node.label))
 
 	N.tips<-length(phy$tip.label)
-    if(!is.null(tip.dates) & length(tip.dates)!=N.tips){stop("tip.dates must be the same size as the number of tips if provided")}
+    if(!is.null(tip.dates) & length(tip.dates)!=N.tips){stop("tip.dates must be the same length as the number of tips")}
 
 	edge<-as.data.frame(phy$edge)
 	names(edge)<-c("beg","end")
@@ -99,16 +99,20 @@ phylo2ggphy<-function(phylo,tip.dates=NULL,branch.unit="subst"){
 		visited<-c(visited,cur.node)
 	}
 
-
-    if(!is.null(tip.dates) & branch.unit%in%c("year","month","day")){
-        cat("X axis is converted into date\n")
-#tip.date<-as.Date(extract.string(phy$tip.label,".",2))
+	
+    if(!is.null(tip.dates) & !is.null(branch.unit))
+    	if(branch.unit%in%c("year","month","day")){
+#tip.date<-as.Date(extract.string(phy$tip.label,"_",2))
         df<-data.frame(tip,date=tip.dates,age=x[tip])
         time.unit=switch(branch.unit,year=365.25,month=30.5,day=1)
         root.date<-mean(df$date-df$age*time.unit)
 #check that the new tip dates do not vary much from sample dates
-#new.tip.date<-root.date+df$age*time.unit
-#print(range(new.tip.date-df$date))
+		if(verbose){
+	        cat("X axis is converted into date\n")
+			new.tip.date<-root.date+df$age*time.unit
+			print(paste("reconstruction of nodes ages in Date format led to change of the tip age ranging:",range(new.tip.date-df$date)))	
+		}	
+
 #x coord as date
         x<-root.date+x*time.unit
     }
@@ -144,7 +148,7 @@ phylo2ggphy<-function(phylo,tip.dates=NULL,branch.unit="subst"){
     df.edge<-rbind(edge.h,edge.v)
     df.edge<-df.edge[,-which(names(df.edge)=="length")]
 
-#if node.label!=NULL put label on edges
+#if has.node.label==T put label on edges
     if(has.node.label){
         tmp<-data.frame(end=node,label=phy$node.label)
         df.edge<-merge(df.edge,tmp,all.x=TRUE)
