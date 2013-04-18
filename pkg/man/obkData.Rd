@@ -87,7 +87,8 @@
     \item{\code{contacts.start}}{a vector of dates indicating the beginning of each contact.}
     \item{\code{contacts.end}}{a vector of dates indicating the end of each contact.}
     \item{\code{contacts.duration}}{another way to specify contacts.end, as duration of contact.}
-    \item{\code{contacts.directed}}{; defaults to FALSE.}
+    \item{\code{contacts.directed}}{a logical indicating if contacts are
+      directed; defaults to FALSE.}
     \item{\code{trees}}{a list of phylogenetic trees in the class
       \code{multiPhylo} (from the ape package)}
   }
