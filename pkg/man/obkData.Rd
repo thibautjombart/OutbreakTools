@@ -234,8 +234,12 @@ data(FakeInfluenza)
 new("obkData", individuals = FakeInfluenza$Patients, samples = FakeInfluenza$Samples, clinical = FakeInfluenza$Clinical)
 
 
+## incorporate contacts
+contacts <- cbind(c("toto","titi", "toto"), c("titi","John Doe","John Doe"))
+
+
 ## TEST ACCESSORS ##
-x <- new("obkData", samples=samp, dna=dat.dna, individuals=ind)
+x <- new("obkData", samples=samp, dna=dat.dna, individuals=ind, contacts=contacts)
 
 get.locus(x)
 get.individuals(x)
