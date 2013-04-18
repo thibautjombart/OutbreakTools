@@ -1,9 +1,13 @@
 ####################
 ## extract_string ##
 ####################
-extract_string <- function(v_string,my_split,position){
-	res<-sapply(v_string,function(x){
-        tmp<-strsplit(as.character(x),split=my_split,fixed=T)[[1]]
+.extract.string <- function(v.string,my.split,position,from="first"){
+	if(!from%in%c("first","last")){stop("incorrect \"from\" argument")}
+	res<-sapply(v.string,function(x){
+        tmp<-strsplit(as.character(x),split=my.split,fixed=T)[[1]]
+        if(from=="last"){
+        	position=length(tmp)-position+1
+        }
         return(tmp[position])})
 	return(res)
 }
