@@ -42,9 +42,6 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
             }
         }
 
-        ## subset @contacts
-        ## (TODO)
-
     } # end subset by row.individuals
 
 
@@ -65,9 +62,6 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
                 x@clinical[[i]] <- x@clinical[[i]][x@clinical[[i]]$"individualID" %in% x@samples$"individualID", ,drop=FALSE]
             }
         }
-
-        ## subset @contacts
-        ## (TODO)
 
     } # end subset by row.individuals
 
@@ -102,9 +96,6 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
             }
         }
 
-        ## subset @contacts
-        ## (TODO)
-
     } # end processing 'individuals' argument
 
 
@@ -138,9 +129,6 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
             }
         }
 
-        ## subset @contacts
-        ## (TODO)
-
     } # end processing 'samples' argument
 
 
@@ -150,6 +138,9 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
         date.from <- .process.Date(date.from, format=date.format)
         samples.tokeep <- x@samples$date >= date.from
         x <- subset(x, row.samples=samples.tokeep)
+        if(!is.null(x@contacts) && inherits(x@contacts@contacts, "networkDynamic")){
+            x@contacts@contacts <- network.extract(x@contacts@contacts, onset=date.from)
+        }
     }
 
     ## dates to ... ##
@@ -157,6 +148,9 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
         date.to <- .process.Date(date.to, format=date.format)
         samples.tokeep <- x@samples$date <= date.to
         x <- subset(x, row.samples=samples.tokeep)
+        if(!is.null(x@contacts) && inherits(x@contacts@contacts, "networkDynamic")){
+            x@contacts@contacts <- network.extract(x@contacts@contacts, terminus=date.to)
+        }
     }
 
 
@@ -182,9 +176,6 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
                 x@clinical[[i]] <- x@clinical[[i]][x@clinical[[i]]$"individualID" %in% x@samples$"individualID", ,drop=FALSE]
             }
         }
-
-        ## subset @contacts
-        ## (TODO)
 
     }
 
@@ -212,9 +203,14 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
             }
         }
 
-        ## subset @contacts
-        ## (TODO)
+    }
 
+
+    ## SUBSET CONTACTS
+    ## subset @contacts - static or dynamic network
+    if(!is.null(x@contacts)){
+        toRemove <- which(!network.vertex.names(x@contacts@contacts) %in%  rownames(x@individuals)) # individuals to remove
+        x@contacts@contacts <- delete.vertices(x@contacts@contacts, toRemove) # remove vertices
     }
 
     ## SUBSET @TREES ##
