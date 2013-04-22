@@ -25,7 +25,7 @@
 #' plotGeo(data,location=c('xinf','yinf'),isLonLat=T,zoom=7,colorBy='pr')
 #' #not functional, but pretty
 #' plotGeo(data,location=c('xinf','yinf'),isLonLat=T,zoom=7,colorBy='source')
-
+#'
 plotGeo <- function(data,location='location',isLonLat=FALSE,zoom='auto',source='google',colorBy=c(),center=c()){
 	#function to plot cases on a map
 	#names gives the name of the column with location information

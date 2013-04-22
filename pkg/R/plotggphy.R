@@ -21,8 +21,6 @@
 #' @export
 #' @author Anton Camacho
 #' @examples see misc/plot.ggphy.test.R
-
-
 plotggphy <- function(phylo, ladderize=FALSE, show.tip.label = FALSE, tip.label.size=3, tip.attribute = NULL, tip.colour = NULL, tip.alpha=NULL, tip.shape=NULL, tip.size=NULL, branch.unit = NULL, tip.dates = NULL, 
 	guess.tip.dates.from.labels = FALSE, set.guess = list(prefix = "_", order = 1,from="last"),axis.date.format=NULL, major.breaks=NULL ,minor.breaks=NULL,colour.palette="Spectral", legend.position="right") {
 

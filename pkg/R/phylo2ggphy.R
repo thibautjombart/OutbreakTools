@@ -6,7 +6,7 @@
 #' @export
 #' @author Anton Camacho
 #' @examples see misc/plot.ggphy.test.R
-
+#'
 phylo2ggphy<-function(phylo,tip.dates=NULL,branch.unit=NULL,verbose=F){
 
 	phy<-phylo

@@ -1,3 +1,20 @@
+meltDateProof <- function(data,id.vars,measure.vars,variable.name){
+	# 'melt' in the reshape package looses the Date format, here is a hack around
+	if(class(data[,measure.vars[1]])=="Date"){
+		for(e in measure.vars){
+			#convert all columns (which should be dates) to chars
+			data[,e] <- as.character(data[,e])
+		}
+		df <- melt(data,id.vars=id.vars,measure.vars=measure.vars,variable.name=variable.name)
+		#and convert back to Date
+		df$value <- as.Date(df$value)
+	}
+	else
+    df <- melt(data,id.vars=id.vars,measure.vars=measure.vars,variable.name=variable.name)
+	return(df)
+}
+
+
 #' Function to plot a timeline for individuals involved in an outbreak in one plot
 #'
 #' @param x the main obkData object
@@ -26,24 +43,7 @@
 #' data(fakefludata)
 #' data <- new("obkData", individuals=Patientsdata,samples=samplefludata,clinical=clinicalfludata)
 #' plot.individualTimeline(data,colorBy='gender')
-
-meltDateProof <- function(data,id.vars,measure.vars,variable.name){
-	# 'melt' in the reshape package looses the Date format, here is a hack around
-	if(class(data[,measure.vars[1]])=="Date"){
-		for(e in measure.vars){
-			#convert all columns (which should be dates) to chars
-			data[,e] <- as.character(data[,e])
-		}
-		df <- melt(data,id.vars=id.vars,measure.vars=measure.vars,variable.name=variable.name)
-		#and convert back to Date
-		df$value <- as.Date(df$value)
-	}
-	else
-		df <- melt(data,id.vars=id.vars,measure.vars=measure.vars,variable.name=variable.name)
-	return(df)
-}
-
-
+#'
 plotIndividualTimeline <- function(x, selection=1:dim(get.data(x,'individuals'))[1],
                                     ordering=1:length(selection), orderBy=NULL, colorBy=NULL,
                                     events=NULL, clinicalEvents=NULL,periods=NULL,
