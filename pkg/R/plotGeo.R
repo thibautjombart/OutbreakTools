@@ -1,31 +1,31 @@
-#' Function to plot cases on a map
-#'
-#' @param data the main obkData object
-#' @param location the name of the column holding strings representing geographical location, or two columns with lon/lat coordinates
-#' @param isLonLat specifies whether the data are already in lon/lat format
-#' @param zoom level of zooming. Higher number gives smaller scale. 
-#' @param source internet source to download maps
-#' @param colorBy attribute to color the nodes by
-#' @param center individualID of individual to put at the center of the map. If left empty, method will focus on center of all points
-#' @export
-#' @author Rolf Ypma
-#' @examples #load a dataset on equine influenza
-#' data(HorseFlu)
-#' x <- new("obkData", individuals=HorseFlu$individuals)
-#' #plot the individuals on a map
-#' plotGeo(x,location=c('lon','lat'),T,zoom=8)
-#' #color by sex
-#' plotGeo(x,location=c('lon','lat'),T,zoom=8,colorBy='sex')
-#' #zoom in on the small cluster, by centering on individual '9'
-#' plotGeo(x,location=c('lon','lat'),T,colorBy='sex',zoom=12,center='9')
-#' #another example
-#' data(rabies)
-#' data=new('obkData',individuals=data.frame(individualID=1:177,transmissions))
-#' plotGeo(data,location=c('xinf','yinf'),isLonLat=T)
-#' plotGeo(data,location=c('xinf','yinf'),isLonLat=T,zoom=7,colorBy='pr')
-#' #not functional, but pretty
-#' plotGeo(data,location=c('xinf','yinf'),isLonLat=T,zoom=7,colorBy='source')
-#'
+## Function to plot cases on a map
+##
+## param data the main obkData object
+## param location the name of the column holding strings representing geographical location, or two columns with lon/lat coordinates
+## param isLonLat specifies whether the data are already in lon/lat format
+## param zoom level of zooming. Higher number gives smaller scale. 
+## param source internet source to download maps
+## param colorBy attribute to color the nodes by
+## param center individualID of individual to put at the center of the map. If left empty, method will focus on center of all points
+## export
+## author Rolf Ypma
+## examples #load a dataset on equine influenza
+## data(HorseFlu)
+## x <- new("obkData", individuals=HorseFlu$individuals)
+## #plot the individuals on a map
+## plotGeo(x,location=c('lon','lat'),T,zoom=8)
+## #color by sex
+## plotGeo(x,location=c('lon','lat'),T,zoom=8,colorBy='sex')
+## #zoom in on the small cluster, by centering on individual '9'
+## plotGeo(x,location=c('lon','lat'),T,colorBy='sex',zoom=12,center='9')
+## #another example
+## data(rabies)
+## data=new('obkData',individuals=data.frame(individualID=1:177,transmissions))
+## plotGeo(data,location=c('xinf','yinf'),isLonLat=T)
+## plotGeo(data,location=c('xinf','yinf'),isLonLat=T,zoom=7,colorBy='pr')
+## #not functional, but pretty
+## plotGeo(data,location=c('xinf','yinf'),isLonLat=T,zoom=7,colorBy='source')
+##
 plotGeo <- function(data,location='location',isLonLat=FALSE,zoom='auto',source='google',colorBy=c(),center=c()){
 	#function to plot cases on a map
 	#names gives the name of the column with location information

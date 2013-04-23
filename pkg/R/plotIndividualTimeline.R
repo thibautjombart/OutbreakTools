@@ -15,35 +15,35 @@ meltDateProof <- function(data,id.vars,measure.vars,variable.name){
 }
 
 
-#' Function to plot a timeline for individuals involved in an outbreak in one plot
-#'
-#' @param x the main obkData object
-#' @param selection a vector of integers indicating the subset of individuals to plot
-#' @param ordering a vector of the same length as selection, which specifies the order of individuals on the plot. Overridden by orderBy
-#' @param orderBy string giving the name of the column that should be used to order the individuals. Overrides ordering
-#' @param colorBy string giving the name of the column by which individuals should be coloured
-#' @param events vector of strings giving the names of the columns that hold date values in 'individuals', to be marked on the time line
-#' @param clinicalEvents vector of strings giving the names of the columns that hold date values in 'clinical', to be marked on the time line
-#' @param periods an Nx2 matrix of strings, giving pairs of column names for periods to be plotted
-#' @param plotSamples should the samples (at sampling time) be plotted?
-#' @param plotNames should the individualIDs be shown at the y-axis?
-#' @export
-#' @author Rolf Ypma
-#'
-#' @examples #load equine influenza data and convert it to obkData
-#' data(HorseFlu)
-#' data <- new("obkData", individuals=HorseFlu$individuals,samples=HorseFlu$samples,clinical=HorseFlu$clinics)
-#' #plot the horses over time, coloring by yard
-#' plot.individualTimeline(data,colorBy='yardID')
-#' #also sort on yard
-#' plot.individualTimeline(data,orderBy='yardID',colorBy='yardID')
-#' #just plot the first 15
-#' plot.individualTimeline(data,selection=1:15,orderBy='yardID',colorBy='yardID')
-#' #do a simple plot for some influenza data
-#' data(fakefludata)
-#' data <- new("obkData", individuals=Patientsdata,samples=samplefludata,clinical=clinicalfludata)
-#' plot.individualTimeline(data,colorBy='gender')
-#'
+## Function to plot a timeline for individuals involved in an outbreak in one plot
+##
+## param x the main obkData object
+## param selection a vector of integers indicating the subset of individuals to plot
+## param ordering a vector of the same length as selection, which specifies the order of individuals on the plot. Overridden by orderBy
+## param orderBy string giving the name of the column that should be used to order the individuals. Overrides ordering
+## param colorBy string giving the name of the column by which individuals should be coloured
+## param events vector of strings giving the names of the columns that hold date values in 'individuals', to be marked on the time line
+## param clinicalEvents vector of strings giving the names of the columns that hold date values in 'clinical', to be marked on the time line
+## param periods an Nx2 matrix of strings, giving pairs of column names for periods to be plotted
+## param plotSamples should the samples (at sampling time) be plotted?
+## param plotNames should the individualIDs be shown at the y-axis?
+## export
+## author Rolf Ypma
+##
+## examples #load equine influenza data and convert it to obkData
+## data(HorseFlu)
+## data <- new("obkData", individuals=HorseFlu$individuals,samples=HorseFlu$samples,clinical=HorseFlu$clinics)
+## #plot the horses over time, coloring by yard
+## plot.individualTimeline(data,colorBy='yardID')
+## #also sort on yard
+## plot.individualTimeline(data,orderBy='yardID',colorBy='yardID')
+## #just plot the first 15
+## plot.individualTimeline(data,selection=1:15,orderBy='yardID',colorBy='yardID')
+## #do a simple plot for some influenza data
+## data(fakefludata)
+## data <- new("obkData", individuals=Patientsdata,samples=samplefludata,clinical=clinicalfludata)
+## plot.individualTimeline(data,colorBy='gender')
+##
 plotIndividualTimeline <- function(x, selection=1:dim(get.data(x,'individuals'))[1],
                                     ordering=1:length(selection), orderBy=NULL, colorBy=NULL,
                                     events=NULL, clinicalEvents=NULL,periods=NULL,
