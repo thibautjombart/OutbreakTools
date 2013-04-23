@@ -1,6 +1,6 @@
 \name{simuEpi}
 \alias{simuEpi}
-\title{Simulate an epidemic following a SIRS model}
+\title{Simulate an epidemic following a SIR model}
 \usage{
   simuEpi(N = 1000, D = 10, beta = 0.001, nu = 0.1, L = 1000, mu = 0.001, showPlots = FALSE,makePhyloTree=FALSE)
 }
