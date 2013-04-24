@@ -668,7 +668,41 @@ subset(x, indiv=1, locus=1, date.from="01 03 2001")
 @
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Simulating outbreak data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\textit{epibase} provides basic functionality for the simulation of outbreak data through the \texttt{simuEpi} function.
+A basic SIR (susceptible-infectious-removed) model is assumed, and the result is returned as an \texttt{obkData} object.
+The arguments are as following:
+\begin{itemize}
+\item \texttt{N}: the size of the population, which remains constant throughout. The simulation will start with one
+infectious individual, \texttt{N-1} susceptibles and zero removed. Default is \texttt{N=1000}.
+\item \texttt{D}: duration of the simulation, in days. Default is \texttt{D=10}.
+\item \texttt{beta}: probability that a susceptible individual becomes infected by a given infectious individual on a given day.
+Default is \texttt{beta=0.001}.
+\item \texttt{nu}: rate of recovery, ie the probability that an infectious individual becomes removed on a given day.
+Default is \texttt{nu=10}.
+\item \texttt{L}: length of genetic sequences to be generated. Default is \texttt{L=1000}.
+\item \texttt{mu}: rate of mutation per site per transmission event. Default is \texttt{mu=0.001}.
+\item \texttt{showPlots}: logical indicating whether to plot the SIR trajectory over time, the transmission tree,
+and the phylogenetic tree if created. Default is \texttt{showPlots=FALSE}.
+\item \texttt{makePhyloTree}: logical indicating whether to create a neighbor-joining tree from the simulated sequences.
+Default is \texttt{makePhyloTree=FALSE}.
+\end{itemize}
+
+Let us look at an example in a very small population of size \texttt{N=50} and with the infectious rate \texttt{beta}
+raised accordingly to generate a few transmission events:
+<<fig=TRUE>>=
+set.seed(1);simuEpi(N=50,beta=0.01,showPlots=TRUE,makePhylo=TRUE)
+@
+
+We can see that 11 individuals got infected over the default period of \texttt{D=10} days during which the outbreak
+was simulated. The panel on the left shows the trajectories for the number of susceptible, infectious and removed
+individuals over time. The panel in the middle shows the transmission tree. The panel on the right shows a Neighbor-Joining
+tree based on the simulated sequence data.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
