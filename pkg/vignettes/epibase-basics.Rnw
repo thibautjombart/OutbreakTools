@@ -675,8 +675,102 @@ subset(x, indiv=1, locus=1, date.from="01 03 2001")
 \section{Graphics for \texttt{obkData} objects}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Several plot functions are provided. These can be called by
+`plot(data,`type',...)' where `data' is an obkData object, `type' is a string giving the type of function to plot, and optional arguments can be given. `type' has to be one of
+\begin{itemize}
+\item `timeline': plots the timeline of the outbreak; the timeline of every case
+is plotted in a single window
+\item `geo' plots the cases on a map. Needs geographical information
+\item `mst': plots a minimal spanning tree of the genetic data
+\item `phylo': plots a phylogenetic tree of the genetic data
+\end{itemize}
+\subsection{Plotting the timeline}
+ 
+ 
 
 
+Let's plot an outbreak of equine influenza provided. First import the data and make an obkData object
+<<>>=
+data(HorseFlu)
+data <- new("obkData", individuals=HorseFlu$individuals,samples=HorseFlu$samples,clinical=HorseFlu$clinics)
+@ 
+then plot
+<<>>=
+plot(data,'timeline')
+@ 
+or equivalently
+<<>>=
+plot(data)
+@
+These are a lot of horses in one plot, let's restrict ourselves to a selection. We can do this by a vector specifying the indices of the individuals to plot. Lets plot the first twenty
+<<>>=
+plot(data,selection=1:20)
+@ 
+Notice that the names of the individuals are now plotted. The default behaviour is to plot these when less than fifty individuals are plotted, but we can manually override this by setting 'plotNames'
+<<>>=
+plot(data,selection=1:20,plotNames=FALSE)
+@
+The plotting of sampling times is toggled by 'plotSamples'. This defaults to TRUE, as an error will be generated when no 'date' fields can be found to plot, as would be the case for the equine dataset.
+
+We can colour the individuals by a characteristic provided in the obkData. In this case, let's colour the horses by the yard they were in, a column called 'yardID'
+<<>>=
+plot(data,selection=1:20,colorBy='yardID')
+@ 
+It might be useful to also order the individuals, use 'orderBy'
+<<>>=
+plot(data,selection=1:20,colorBy='yardID',orderBy='yardID')
+@ 
+Alternatively, we could manually specify an ordering
+<<>>=
+plot(data,selection=1:20,colorBy='yardID',ordering=20:1)
+@ 
+
+
+
+
+\subsection{Plotting geography on a map}
+If geographical information is available, this function can be used to plot the cases on a map (for example downloaded from googlemaps). Geographical information can be provided as longitude/latitudes, or as strings specifying locations (which are converted to lon/lat using googlemaps).
+
+
+Let's plot an outbreak of equine influenza provided. First import the data and make an obkData object
+<<>>=
+data(HorseFlu)
+data <- new("obkData", individuals=HorseFlu$individuals,samples=HorseFlu$samples,clinical=HorseFlu$clinics)
+@ 
+In this dataset, we already have longitudes and latitudes. We specify the
+columns holding these data with `location', and we have to tell the function that these are valid lon/lat with 'isLonLat' (which defaults to FALSE) <<>>=
+plot(data,'geo',location=c('lon','lat'),isLonLat=TRUE)
+@ 
+We can zoom in or out using `zoom', which is an integer (higher is zoomed in
+more) 
+<<>>=
+plot(data,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=8)
+@ 
+We can colour the individuals by a certain characteristic using 'colorBy'
+<<>>=
+plot(data,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=8,colorBy='sex')
+@ 
+To center the map on an individual, use `center'. We can use this to zoom in on
+a part of the map 
+<<>>=
+plot(data,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=12,colorBy='sex',center='9')
+@ 
+
+\subsection{Plotting a minimal spanning tree of the genetic sequences}
+It can be useful to plot a minimal spanning tree of the sequences, to  quickly visualize the genetic diversity and the relation between sequences. We can do this as follows
+<<>>=
+data(HorseFlu)
+attach(HorseFlu)
+data <- new("obkData", individuals=individuals, samples=samples, dna=dna, clinical=clinics)
+plot(data,'mst')
+@ 
+this is a large tree, we can also look at the diversity within one individual
+<<>>=
+plot(data,'mst',individualID=42)
+@ 
+
+\subsection{Plotting a phylogenetic tree of the sequences}
+This function will plot a phylogenetic tree of the sequences.
 
 
 \end{document}
