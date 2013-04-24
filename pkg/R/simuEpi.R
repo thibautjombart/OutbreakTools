@@ -33,7 +33,7 @@ simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001,showPlots=FAL
             dates[ninf+1,1]=as.character(as.Date(i-1,origin="2000-01-01"));
             ninf=ninf+1;
         }
-        curinf=sample(curinf,length(curinf)-rec)
+        curinf=resample(curinf, length(curinf)-rec)
         if (inf>0) curinf=c(curinf,(ninf-inf+1):ninf)
         S[i,1]=S[i-1,1]-inf
         S[i,2]=S[i-1,2]+inf-rec
@@ -67,6 +67,12 @@ simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001,showPlots=FAL
 	ret <- new("obkData",individuals=data.frame("individualID"=1:ninf,"infector"=T[,2],"DateInfected"=dates),sample=samp,dna=as.DNAbin(seqs))}
     return(ret)
 }
+
+resample <- function(x, ...) x[sample.int(length(x), ...)]
+# because sample can take an integer argument and then samples from 1:n, 
+# need this resampler to make simuEpi work in cases where length(curinf) is 1 and the value of curinf is an integer. 
+
+
 
 #Plot the number of susceptible, infected and recovered as a function of time
 #S Matrix containing the numbers to be plotted
