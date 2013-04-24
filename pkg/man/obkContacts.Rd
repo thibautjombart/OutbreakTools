@@ -7,6 +7,10 @@
 
 \alias{initialize,obkContacts-method}
 \alias{show,obkContacts-method}
+\alias{show.obkContacts}
+\alias{print.obkContacts}
+\alias{plot,obkContacts-method}
+\alias{plot.obkContacts}
 
 \alias{get.nindividuals,obkContacts-method}
 \alias{get.individuals,obkContacts-method}
@@ -74,6 +78,9 @@
   \describe{
     \item{show}{\code{signature(x = "obkContacts")}: printing of the
       object.}
+    \item{plot}{\code{signature(x = "obkContacts", y=NULL)}: plot the
+    contact network; relies on \code{\link[network]{plot.network}}, to
+    which arguments can be passed via \code{...}.}
     \item{get.nindividuals}{\code{signature(x = "obkContacts")}: returns the number of
       individuals in the sample.}
     \item{get.individuals}{\code{signature(x = "obkContacts")}: returns
@@ -96,6 +103,8 @@ oc.static <- new("obkContacts",cf,ct,FALSE) # static network
 oc.dynamic <- new("obkContacts",cf,ct,FALSE,onset,terminus)
 oc.static
 oc.dynamic
+
+plot(oc.static, main="Contact network")
 
 }
 \keyword{classes}
