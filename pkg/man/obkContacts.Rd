@@ -79,16 +79,16 @@
     \item{show}{\code{signature(x = "obkContacts")}: printing of the
       object.}
     \item{plot}{\code{signature(x = "obkContacts", y=NULL)}: plot the
-    contact network; relies on \code{\link[network]{plot.network}}, to
-    which arguments can be passed via \code{...}.}
+      contact network; relies on \code{\link[network]{plot.network}}, to
+      which arguments can be passed via \code{...}.}
     \item{get.nindividuals}{\code{signature(x = "obkContacts")}: returns the number of
       individuals in the sample.}
     \item{get.individuals}{\code{signature(x = "obkContacts")}: returns
-    the identifiers of individuals in the sample.}
+      the identifiers of individuals in the sample.}
     \item{get.ncontacts}{\code{signature(x = "obkContacts")}: returns
-    the number of contacts in the sample.}
+      the number of contacts in the sample.}
     \item{get.contacts}{\code{signature(x = "obkContacts")}: returns the
-    contacts (as \code{network} or \code{networkDynamic}).}
+      contacts (as \code{network} or \code{networkDynamic}).}
   }
 }
 \author{Simon Frost (\email{sdwfrost@gmail.com})}
