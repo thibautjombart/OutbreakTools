@@ -27,24 +27,4 @@ Depends:
 Description: basic tools for the analysis of disease outbreaks.
 License: GPL (>=2)
 LazyLoad: yes
-Collate:
-    'auxClasses.R'
-    'generics.R'
-    'obkContacts.R'
-    'obkSequences.R'
-    'obkData.R'
-    'obkData_Accessors.R'
-    'subset.R'
-    'obkData_basics.R'
-    'uniqSequences.R'
-    'annotatedTreeReader.R'
-    'dna2uniqSequences.R'
-    'get.phylo.R'
-    'phylo2ggphy.R'
-    'plotggMST.R'
-    'plotggphy.R'
-    'plotIndividualTimeline.R'
-    'simuEpi.R'
-    'utils.R'
-    'plotGeo.R'
-    'zzz.R'
+Collate: auxClasses.R generics.R obkContacts.R obkSequences.R obkData.R obkData_Accessors.R subset.R obkData_basics.R uniqSequences.R annotatedTreeReader.R dna2uniqSequences.R get.phylo.R phylo2ggphy.R plotggMST.R plotggphy.R plotIndividualTimeline.R simuEpi.R utils.R plot.R plotGeo.R zzz.R
