@@ -4,3 +4,6 @@
 .gitignore
 .Rhistory
 .project
+.Rapp.history
+.RData
+.DS_Store

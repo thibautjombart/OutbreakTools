@@ -1,9 +1,8 @@
-#' Function to plot a minimum spanning tree using ggplot from a the class 'obkData'
-#'
-#' @param x an object of the class "obkData"
-#' @export
-#' @author Joseph Hughes
-#' @examples see below
+## Function to plot a minimum spanning tree using ggplot from a the class 'obkData'
+##
+## param x an object of the class "obkData"
+## author Joseph Hughes
+## examples see below
 
 plotggMST<-function(x,individualID=NULL,locus=NULL){
   if(get.nlocus(x)==0){
