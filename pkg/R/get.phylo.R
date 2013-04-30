@@ -25,14 +25,15 @@ setMethod("get.phylo", "obkData", function(x, locus=NULL, model = "N", pairwise.
     ## SET COLORS ##
     if(!is.null(x@samples)){
         ## get color info ##
-        color.by <- color.by[1]
-        if(color.by=="sample") col.name <- "sampleID"
-        if(color.by=="individual") col.name <- "individualID"
-        if(color.by=="date") col.name <- "date"
-        col.var <- x@samples[, col.name]
+        ## color.by <- color.by[1]
+        ## if(color.by=="sample") col.name <- "sampleID"
+        ## if(color.by=="individual") col.name <- "individualID"
+        ## if(color.by=="date") col.name <- "date"
+        color.by <- match.arg(color.by[1], names(x@samples))
+        col.var <- x@samples[, color.by]
         names(col.var) <- x@samples$sequenceID
-        if(color.by=="date"){
-            col.var <- difftime(col.var, min(colvar))
+        if(inherits(col.var, "Date")){
+            col.var <- as.numeric(difftime(col.var, min(col.var), unit="days"))
         }
 
         ## get colors ##
@@ -65,7 +66,7 @@ setMethod("get.phylo", "obkData", function(x, locus=NULL, model = "N", pairwise.
         par(ask=ask, xpd=TRUE)
         for(i in 1:N){
             plot(tre[[i]], tip.color=tre[[i]]$tip.col, ...)
-            legend("topright", fill=leg.col, legend=leg.txt, title=col.name)
+            legend("topright", fill=leg.col, legend=leg.txt, title=color.by)
             title(paste("locus:", locus[i]))
         }
     }

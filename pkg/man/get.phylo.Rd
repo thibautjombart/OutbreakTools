@@ -53,7 +53,34 @@ get.phylo(x, \dots)
   }
 }
 \author{Thibaut Jombart \email{t.jombart@imperial.ac.uk}}
-% \examples{
+\examples{
+## simulate outbreak ##
+set.seed(3)
+x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002)
 
-% }
+## get tree info ##
+pal <- colorRampPalette(c("gold","red"))
+treInfo <- get.phylo(x, color.by="date", palette=pal, plot=FALSE)
+treInfo
+
+## root tree to first case ##
+tre <- root(treInfo[[1]], "1")
+
+## plot tree, use color for dates ##
+par(mar=c(1,1,4,1))
+plot(tre, edge.width=2, type="fan", show.tip.label=FALSE)
+title("NJ tree of a simulated outbreak")
+mtext("each disk indicates 1 mutation from the root")
+
+## add distance legend as bullseye ##
+for(i in 1:11)
+symbols(0,0, circles=i, inches=FALSE, add=TRUE, bg=transp("royalblue", .1), fg=NA)
+
+## color tips by dates ##
+tiplabels(col=tre$tip.col, pch=20)
+tiplabels(col=transp(tre$tip.col), pch=20, cex=2)
+legend("bottomleft", fill=treInfo$legend$col, legend=treInfo$legend$txt,title="Days after 1st sample")
+
+
+}
 \keyword{classes}
