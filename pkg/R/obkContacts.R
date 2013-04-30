@@ -126,6 +126,19 @@ setMethod ("show", "obkContacts", function(object){
     if(ncontacts>0) print(object@contacts)
 })
 
+
+
+######################
+####  PLOT METHOD ####
+######################
+
+setMethod ("plot", "obkContacts", function(x, y=NULL, labels=get.individuals(x), ...){
+    plot(x@contacts, label=labels, ...)
+    return(invisible())
+})
+
+
+
 ##################
 ####  TESTING ####
 ##################

@@ -2,7 +2,7 @@
 \alias{plotIndividualTimeline}
 \title{Function to plot a timeline for individuals involved in an outbreak in one plot}
 \usage{
- plotIndividualTimeline(x, selection=1:dim(get.data(x,'individuals'))[1],
+ plotIndividualTimeline(x, selection=1:length(get.individuals(x)),
                         ordering=1:length(selection), orderBy=NULL, colorBy=NULL,
                         events=NULL, clinicalEvents=NULL, periods=NULL,
                         plotSamples=TRUE, plotNames=length(selection)<50)

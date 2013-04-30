@@ -1,12 +1,12 @@
-#' Simulate an epidemic following a SIR model
-#' @param N Size of the population
-#' @param D Duration of simulation
-#' @param beta Rate of infection
-#' @param nu Rate of recovery
-#' @param L Length of genetic sequences
-#' @param mu Probability of mutation per base per transmission event
-#' @return Simulated epidemic as an obkData object
-#' @author Xavier Didelot
+#Simulate an epidemic following a SIR model
+#N Size of the population
+#D Duration of simulation
+#beta Rate of infection
+#nu Rate of recovery
+#L Length of genetic sequences
+#mu Probability of mutation per base per transmission event
+#Returns to simulated epidemic as an obkData object
+#Xavier Didelot
 simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001,showPlots=FALSE,makePhyloTree=FALSE) {
     S<-matrix(0,D,3)
     T<-matrix(0,N,3)
@@ -33,7 +33,7 @@ simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001,showPlots=FAL
             dates[ninf+1,1]=as.character(as.Date(i-1,origin="2000-01-01"));
             ninf=ninf+1;
         }
-        curinf=sample(curinf,length(curinf)-rec)
+        curinf=resample(curinf, length(curinf)-rec)
         if (inf>0) curinf=c(curinf,(ninf-inf+1):ninf)
         S[i,1]=S[i-1,1]-inf
         S[i,2]=S[i-1,2]+inf-rec
@@ -68,9 +68,15 @@ simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001,showPlots=FAL
     return(ret)
 }
 
-#' Plot the number of susceptible, infected and recovered as a function of time
-#' @param S Matrix containing the numbers to be plotted
-#' @author Xavier Didelot
+resample <- function(x, ...) x[sample.int(length(x), ...)]
+# because sample can take an integer argument and then samples from 1:n, 
+# need this resampler to make simuEpi work in cases where length(curinf) is 1 and the value of curinf is an integer. 
+
+
+
+#Plot the number of susceptible, infected and recovered as a function of time
+#S Matrix containing the numbers to be plotted
+#Xavier Didelot
 plotEpi <- function(S) {
     plot(c(0,dim(S)[1]),c(0,sum(S[1,])),type='n',xlab='Days',ylab='Individuals',main="Epidemic summary")
     lines(S[,1],col='black')
@@ -79,10 +85,10 @@ plotEpi <- function(S) {
     legend('right',lty=c(1,1),col=c('black','red','blue'),c('Susceptible','Infected','Recovered'))
 }
 
-#' Convert transmission tree to a network
-#' @param transmissiontreeData Matrix of who infected whom
-#' @return Network of who infected whom
-#' @author Caroline Colijn
+#Convert transmission tree to a network
+#transmissiontreeData Matrix of who infected whom
+#Network of who infected whom
+#Caroline Colijn
 infectorTableToNetwork <- function (transmissiontreeData)
 {
     uniqueIDs <- sort(c(unique(as.character(transmissiontreeData[,1]),as.character(transmissiontreeData[,2]))))
