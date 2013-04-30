@@ -2,22 +2,23 @@
 #'
 #' @param x An \linkS4class{obkData} object.
 #' @param which.tree Numeric. Specify the order of the tree to be plotted. Currently the function cannot plot multiple tree.
-#' @param ladderize If TRUE, the phylogeny is ladderized
-#' @param show.tip.label Logical. If TRUE, the labels of the tip are shown.
+#' @param ladderize If \code{TRUE}, the phylogeny is ladderized
+#' @param show.tip.label Logical. If \code{TRUE}, the labels of the tip are shown.
 #' @param tip.label.size Numeric. Size of the tip labels.
-#' @param build.tip.attribute Logical. If TRUE, then a data frame \code{tip.attribute} is constructed by merging the data frames \code{individuals} and \code{samples}.
+#' @param build.tip.attribute Logical. If \code{TRUE}, then a data frame \code{tip.attribute} is constructed by merging the data frames \code{individuals} and \code{samples}.
 #' @param tip.colour Character. Can be either the name of a color (e.g. "Black") or the name of a column of \code{tip.attribute}. In the first case, all tips have the specified color. In the second case, tips are color-codded according to the specified attribute.
 #' @param tip.alpha Character (or Numeric). Can be either the value of transparency (between 0 and 1) or the name of a column of \code{tip.attribute}. In the first case, all tips have the specified transparency. In the second case, tips are transparency-codded according to the specified attribute.
 #' @param tip.shape Character (or Numeric). Can be either the value of a shape (e.g. 16 correpond to filled circles) or the name of a column of \code{tip.attribute}. In the first case, all tips have the specified shape. In the second case, tips are shape-codded according to the specified attribute.
 #' @param tip.size Character (or Numeric). Can be either the value of tip size or the name of a column of \code{tip.attribute}. In the first case, all tips have the specified size. In the second case, tips are size-codded according to the specified attribute.
 #' @param branch.unit Character. The unit of the branch can be either "year", "month", "day" or "subst". If a time unit is provided, together with use.tip.dates, then the x-axis of the phylogeny is plotted in date format using standard POSIX specification.
 #' @param tip.dates Character. If branch.unit is in unit of time, tip.dates indicates the name of the column of tip.attribute that contains the sampling dates of the tip. See also guess.tip.dates.from.labels.
-#' @param guess.tip.dates.from.labels Logical. If TRUE then tip.dates are guessed from the tip labels using the information provided by set.guess. 
-#' @param set.guess List. A list of three elements: prefix, order and from. For instance, if labels are formated like this: A/Shenzhen/40/2009_China_2009-06-09 then set.guess=list(prefix="_",order=3,from="first") or set.guess=list(prefix="_",order=1,from="last").
+#' @param guess.tip.dates.from.labels Logical. If \code{TRUE} then tip.dates are guessed from the tip labels using the information provided by 'set.guess'. 
+#' @param set.guess List. A list of three elements: prefix, order and from. For instance, if labels are formated like this: A/Shenzhen/40/2009_China_2009-06-09 then
+#' set.guess = list(prefix="_",order=3,from="first") or set.guess = list(prefix="_",order=1,from="last").
 #' @param axis.date.format Character. When x-axis is in date format, this argument allow to change the format of the tick labels. See strptime for more details.  
 #' @param major.breaks Character. Major x-axis breaks (only when x is in date format). Ex: "weeks", "15days", "months", etc. 
 #' @param minor.breaks Character. Minor x-axis breaks (only when x is in date format). Ex: "weeks", "15days", "months", etc. 
-#' @param colour.palette Character. The palette for tip colors. Only palettes from the package RColorBrewer are available. See brewer.pal documentation for more details.
+#' @param colour.palette Character. The palette for tip colors. Only palettes from the package \code{\link{RColorBrewer}} are available. See \code{\link{brewer.pal}} documentation for more details.
 #' @param legend.position Character (or numeric). The position of legends. ("left", "right", "bottom", "top", or two-element numeric vector)
 #' @export
 #' @import ggplot2,RColorBrewer

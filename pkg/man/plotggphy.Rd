@@ -20,16 +20,18 @@
   to be plotted. Currently the function cannot plot
   multiple tree.}
 
-  \item{ladderize}{If TRUE, the phylogeny is ladderized}
+  \item{ladderize}{If \code{TRUE}, the phylogeny is
+  ladderized}
 
-  \item{show.tip.label}{Logical. If TRUE, the labels of the
-  tip are shown.}
+  \item{show.tip.label}{Logical. If \code{TRUE}, the labels
+  of the tip are shown.}
 
   \item{tip.label.size}{Numeric. Size of the tip labels.}
 
-  \item{build.tip.attribute}{Logical. If TRUE, then a data
-  frame \code{tip.attribute} is constructed by merging the
-  data frames \code{individuals} and \code{samples}.}
+  \item{build.tip.attribute}{Logical. If \code{TRUE}, then
+  a data frame \code{tip.attribute} is constructed by
+  merging the data frames \code{individuals} and
+  \code{samples}.}
 
   \item{tip.colour}{Character. Can be either the name of a
   color (e.g. "Black") or the name of a column of
@@ -68,15 +70,15 @@
   tip.attribute that contains the sampling dates of the
   tip. See also guess.tip.dates.from.labels.}
 
-  \item{guess.tip.dates.from.labels}{Logical. If TRUE then
-  tip.dates are guessed from the tip labels using the
-  information provided by set.guess.}
+  \item{guess.tip.dates.from.labels}{Logical. If
+  \code{TRUE} then tip.dates are guessed from the tip
+  labels using the information provided by 'set.guess'.}
 
   \item{set.guess}{List. A list of three elements: prefix,
   order and from. For instance, if labels are formated like
-  this: A/Shenzhen/40/2009_China_2009-06-09 then
-  set.guess=list(prefix="_",order=3,from="first") or
-  set.guess=list(prefix="_",order=1,from="last").}
+  this: A/Shenzhen/40/2009_China_2009-06-09 then set.guess
+  = list(prefix="_",order=3,from="first") or set.guess =
+  list(prefix="_",order=1,from="last").}
 
   \item{axis.date.format}{Character. When x-axis is in date
   format, this argument allow to change the format of the
@@ -91,9 +93,9 @@
   "months", etc.}
 
   \item{colour.palette}{Character. The palette for tip
-  colors. Only palettes from the package RColorBrewer are
-  available. See brewer.pal documentation for more
-  details.}
+  colors. Only palettes from the package
+  \code{\link{RColorBrewer}} are available. See
+  \code{\link{brewer.pal}} documentation for more details.}
 
   \item{legend.position}{Character (or numeric). The
   position of legends. ("left", "right", "bottom", "top",
@@ -106,29 +108,31 @@
 ## load the dataset
 data(FluH1N1pdm2009)
 ## create obkData object
-x <- new("obkData", individuals = FluH1N1pdm2009$individuals, samples = FluH1N1pdm2009$samples, dna = FluH1N1pdm2009$dna, 
-	trees = FluH1N1pdm2009$trees)
+x <- new("obkData", individuals = FluH1N1pdm2009$individuals, samples = FluH1N1pdm2009$samples,
+    dna = FluH1N1pdm2009$dna, trees = FluH1N1pdm2009$trees)
 
 ## first simple tree
 p <- plotggphy(x, ladderize = TRUE)
 
 ## build tip attribute and use sample dates to scale the x-axis as date time
-p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE, branch.unit = "year", tip.dates = "date")
+p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE, branch.unit = "year",
+    tip.dates = "date")
 
 ## alternatively extract sample dates from the tip labels
-p <- plotggphy(x, ladderize = TRUE, branch.unit = "year", guess.tip.dates.from.labels = TRUE, set.guess = list(prefix = "_", 
-	order = 1, from = "last"))
+p <- plotggphy(x, ladderize = TRUE, branch.unit = "year", guess.tip.dates.from.labels = TRUE,
+    set.guess = list(prefix = "_", order = 1, from = "last"))
 
 ## change x breaks and labels
-p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE, branch.unit = "year", tip.dates = "date", major.breaks = "month", 
-	axis.date.format = "\%b\%Y")
+p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE, branch.unit = "year",
+    tip.dates = "date", major.breaks = "month", axis.date.format = "\%b\%Y")
 
 ## color-code tip location
-p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE, branch.unit = "year", tip.dates = "date", tip.colour = "location")
+p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE, branch.unit = "year",
+    tip.dates = "date", tip.colour = "location")
 
 ## change tip size and transparency
-p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE, branch.unit = "year", tip.dates = "date", tip.colour = "location", 
-	tip.size = 3, tip.alpha = 0.75)
+p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE, branch.unit = "year",
+    tip.dates = "date", tip.colour = "location", tip.size = 3, tip.alpha = 0.75)
 }
 \author{
   Anton Camacho
