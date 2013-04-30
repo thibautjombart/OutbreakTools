@@ -16,13 +16,13 @@
   "month", "day" or "subst". If a time unit is provided,
   together with tip.dates, then the x-axis of the phylogeny
   will be in the Date format}
+
+  \item{verbose}{if \code{TRUE} additional information is
+  provided at execution}
 }
 \description{
   Function to convert phylogenies from the class 'phylo' to
   the class 'ggphy'
-}
-\examples{
-see misc/plot.ggphy.test.R
 }
 \author{
   Anton Camacho

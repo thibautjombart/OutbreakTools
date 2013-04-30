@@ -17,5 +17,6 @@ import(
        scales,
        plyr,
        reshape2,
-       mapproj
+       mapproj,
+       RColorBrewer
        )
