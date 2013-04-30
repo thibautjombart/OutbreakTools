@@ -10,7 +10,7 @@
 \usepackage[utf8]{inputenc} % for UTF-8/single quotes from sQuote()
 \newcommand{\code}[1]{{{\tt #1}}}
 \title{An introduction to analysing disease outbreak data using \textit{epibase} \Sexpr{packageDescription("epibase", fields = "Version")}}
-\author{Thibaut Jombart, Addyour Namehere}
+\author{Thibaut Jombart, Xavier Didelot, Rolf Ypma}
 \date{\today}
 
 
@@ -22,7 +22,7 @@
 
 \begin{document}
 
-\SweaveOpts{prefix.string = genomics, echo=TRUE, eval=TRUE, fig = FALSE, eps = FALSE, pdf = TRUE}
+\SweaveOpts{prefix.string = epibase, echo=TRUE, eval=TRUE, fig = FALSE, eps = FALSE, pdf = TRUE}
 
 
 
@@ -695,8 +695,9 @@ Default is \texttt{makePhyloTree=FALSE}.
 
 Let us look at an example in a very small population of size \texttt{N=50} and with the infectious rate \texttt{beta}
 raised accordingly to generate a few transmission events:
-<<fig=TRUE>>=
-set.seed(1);simuEpi(N=50,beta=0.01,showPlots=TRUE,makePhylo=TRUE)
+<<fig=TRUE, width=10>>=
+set.seed(1)
+simuEpi(N=50,beta=0.01,showPlots=TRUE,makePhylo=TRUE)
 @
 
 We can see that 11 individuals got infected over the default period of \texttt{D=10} days during which the outbreak
@@ -719,45 +720,48 @@ is plotted in a single window
 \item `phylo': plots a phylogenetic tree of the genetic data
 \end{itemize}
 \subsection{Plotting the timeline}
- 
- 
+
+
 
 
 Let's plot an outbreak of equine influenza provided. First import the data and make an obkData object
 <<>>=
 data(HorseFlu)
 data <- new("obkData", individuals=HorseFlu$individuals,samples=HorseFlu$samples,clinical=HorseFlu$clinics)
-@ 
-then plot
-<<>>=
-plot(data,'timeline')
-@ 
-or equivalently
-<<>>=
-plot(data)
 @
+then plot
+<<fig=TRUE>>=
+plot(data,'timeline')
+@
+
+\noindent (or equivalently \texttt{plot(data)})
+
 These are a lot of horses in one plot, let's restrict ourselves to a selection. We can do this by a vector specifying the indices of the individuals to plot. Lets plot the first twenty
-<<>>=
+<<fig=TRUE>>=
 plot(data,selection=1:20)
-@ 
-Notice that the names of the individuals are now plotted. The default behaviour is to plot these when less than fifty individuals are plotted, but we can manually override this by setting 'plotNames'
-<<>>=
+@
+
+\noindent Notice that the names of the individuals are now plotted. The default behaviour is to plot these when less than fifty individuals are plotted, but we can manually override this by setting 'plotNames'
+<<fig=TRUE>>=
 plot(data,selection=1:20,plotNames=FALSE)
 @
-The plotting of sampling times is toggled by 'plotSamples'. This defaults to TRUE, as an error will be generated when no 'date' fields can be found to plot, as would be the case for the equine dataset.
+
+\noindent The plotting of sampling times is toggled by 'plotSamples'. This defaults to TRUE, as an error will be generated when no 'date' fields can be found to plot, as would be the case for the equine dataset.
 
 We can colour the individuals by a characteristic provided in the obkData. In this case, let's colour the horses by the yard they were in, a column called 'yardID'
-<<>>=
+<<fig=TRUE>>=
 plot(data,selection=1:20,colorBy='yardID')
-@ 
-It might be useful to also order the individuals, use 'orderBy'
-<<>>=
+@
+
+\noindent It might be useful to also order the individuals, use 'orderBy'
+<<fig=TRUE>>=
 plot(data,selection=1:20,colorBy='yardID',orderBy='yardID')
-@ 
-Alternatively, we could manually specify an ordering
-<<>>=
+@
+
+\noindent Alternatively, we could manually specify an ordering
+<<fig=TRUE>>=
 plot(data,selection=1:20,colorBy='yardID',ordering=20:1)
-@ 
+@
 
 
 
@@ -770,25 +774,29 @@ Let's plot an outbreak of equine influenza provided. First import the data and m
 <<>>=
 data(HorseFlu)
 data <- new("obkData", individuals=HorseFlu$individuals,samples=HorseFlu$samples,clinical=HorseFlu$clinics)
-@ 
+@
 In this dataset, we already have longitudes and latitudes. We specify the
-columns holding these data with `location', and we have to tell the function that these are valid lon/lat with 'isLonLat' (which defaults to FALSE) <<>>=
+columns holding these data with `location', and we have to tell the function that these are valid lon/lat with 'isLonLat' (which defaults to FALSE)
+<<fig=TRUE,pdf=FALSE,png=TRUE>>=
 plot(data,'geo',location=c('lon','lat'),isLonLat=TRUE)
-@ 
-We can zoom in or out using `zoom', which is an integer (higher is zoomed in
-more) 
-<<>>=
+@
+
+\noindent We can zoom in or out using `zoom', which is an integer (higher is zoomed in
+more)
+<<fig=TRUE,pdf=FALSE,png=TRUE>>=
 plot(data,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=8)
-@ 
-We can colour the individuals by a certain characteristic using 'colorBy'
-<<>>=
+@
+
+\noindent We can colour the individuals by a certain characteristic using 'colorBy'
+<<fig=TRUE,pdf=FALSE,png=TRUE>>=
 plot(data,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=8,colorBy='sex')
-@ 
-To center the map on an individual, use `center'. We can use this to zoom in on
-a part of the map 
-<<>>=
+@
+
+\noindent To center the map on an individual, use `center'. We can use this to zoom in on
+a part of the map
+<<fig=TRUE,pdf=FALSE,png=TRUE>>=
 plot(data,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=12,colorBy='sex',center='9')
-@ 
+@
 
 \subsection{Plotting a minimal spanning tree of the genetic sequences}
 It can be useful to plot a minimal spanning tree of the sequences, to  quickly visualize the genetic diversity and the relation between sequences. We can do this as follows
@@ -796,12 +804,15 @@ It can be useful to plot a minimal spanning tree of the sequences, to  quickly v
 data(HorseFlu)
 attach(HorseFlu)
 data <- new("obkData", individuals=individuals, samples=samples, dna=dna, clinical=clinics)
+@
+<<fig=TRUE>>=
 plot(data,'mst')
-@ 
-this is a large tree, we can also look at the diversity within one individual
-<<>>=
+@
+
+\noindent this is a large tree, we can also look at the diversity within one individual
+<<fig=TRUE>>=
 plot(data,'mst',individualID=42)
-@ 
+@
 
 \subsection{Plotting a phylogenetic tree of the sequences}
 This function will plot a phylogenetic tree of the sequences.
