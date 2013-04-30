@@ -112,12 +112,12 @@ infectorTableToNetwork <- function (transmissiontreeData)
 
 
 
-#' Create phylogenetic tree from transmission tree only, just in case there is no sequence data
-#' This is not relevant; now we simulate sequence data and the phylo tree returned by simuEpi is
-#' derived from these.
-#' @param transmissiontreeData Matrix of who infected whom
-#' @return phylogenetic tree representing how samples of the infectious agents may be related
-#' @author Caroline Colijn
+## Create phylogenetic tree from transmission tree only, just in case there is no sequence data
+## This is not relevant; now we simulate sequence data and the phylo tree returned by simuEpi is
+## derived from these.
+## param transmissiontreeData Matrix of who infected whom
+## return phylogenetic tree representing how samples of the infectious agents may be related
+## author Caroline Colijn
 phylofromtranstree <- function(transmissiontreeData){
 
     ## use the transmission tree data to create an *undirected* network

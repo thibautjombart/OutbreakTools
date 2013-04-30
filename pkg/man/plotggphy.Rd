@@ -1,10 +1,10 @@
 \name{plotggphy}
 \alias{plotggphy}
-\title{Function to plot phylogenies of the class 'ggphy'}
+\title{Function to plot phylogenies using \code{\link{ggplot2}}}
 \usage{
-  plotggphy(phylo, ladderize = FALSE,
+  plotggphy(x, which.tree = 1, ladderize = FALSE,
     show.tip.label = FALSE, tip.label.size = 3,
-    tip.attribute = NULL, tip.colour = NULL,
+    build.tip.attribute = FALSE, tip.colour = NULL,
     tip.alpha = NULL, tip.shape = NULL, tip.size = NULL,
     branch.unit = NULL, tip.dates = NULL,
     guess.tip.dates.from.labels = FALSE,
@@ -14,7 +14,11 @@
     legend.position = "right")
 }
 \arguments{
-  \item{phylo}{A phylogeny of the class "phylo"}
+  \item{x}{An \linkS4class{obkData} object.}
+
+  \item{which.tree}{Numeric. Specify the order of the tree
+  to be plotted. Currently the function cannot plot
+  multiple tree.}
 
   \item{ladderize}{If TRUE, the phylogeny is ladderized}
 
@@ -23,35 +27,35 @@
 
   \item{tip.label.size}{Numeric. Size of the tip labels.}
 
-  \item{tip.attribute}{Dataframe with at least two columns.
-  One column must contain the tip labels and be named
-  "label". Other columns are tip attributes.}
+  \item{build.tip.attribute}{Logical. If TRUE, then a data
+  frame \code{tip.attribute} is constructed by merging the
+  data frames \code{individuals} and \code{samples}.}
 
   \item{tip.colour}{Character. Can be either the name of a
   color (e.g. "Black") or the name of a column of
-  tip.attribute. In the first case, all tips have the
-  specified color. In the second case, tips are
+  \code{tip.attribute}. In the first case, all tips have
+  the specified color. In the second case, tips are
   color-codded according to the specified attribute.}
 
   \item{tip.alpha}{Character (or Numeric). Can be either
   the value of transparency (between 0 and 1) or the name
-  of a column of tip.attribute. In the first case, all tips
-  have the specified transparency. In the second case, tips
-  are transparency-codded according to the specified
-  attribute.}
+  of a column of \code{tip.attribute}. In the first case,
+  all tips have the specified transparency. In the second
+  case, tips are transparency-codded according to the
+  specified attribute.}
 
   \item{tip.shape}{Character (or Numeric). Can be either
   the value of a shape (e.g. 16 correpond to filled
-  circles) or the name of a column of tip.attribute. In the
-  first case, all tips have the specified shape. In the
-  second case, tips are shape-codded according to the
+  circles) or the name of a column of \code{tip.attribute}.
+  In the first case, all tips have the specified shape. In
+  the second case, tips are shape-codded according to the
   specified attribute.}
 
   \item{tip.size}{Character (or Numeric). Can be either the
   value of tip size or the name of a column of
-  tip.attribute. In the first case, all tips have the
-  specified size. In the second case, tips are size-codded
-  according to the specified attribute.}
+  \code{tip.attribute}. In the first case, all tips have
+  the specified size. In the second case, tips are
+  size-codded according to the specified attribute.}
 
   \item{branch.unit}{Character. The unit of the branch can
   be either "year", "month", "day" or "subst". If a time
@@ -64,9 +68,9 @@
   tip.attribute that contains the sampling dates of the
   tip. See also guess.tip.dates.from.labels.}
 
-  \item{guess.tip.dates.from.labels}{Logical. If TRUE and
-  x.as.date==TRUE then tip.dates are guessed from the tip
-  labels using the information provided by set.guess.}
+  \item{guess.tip.dates.from.labels}{Logical. If TRUE then
+  tip.dates are guessed from the tip labels using the
+  information provided by set.guess.}
 
   \item{set.guess}{List. A list of three elements: prefix,
   order and from. For instance, if labels are formated like
@@ -96,10 +100,35 @@
   or two-element numeric vector)}
 }
 \description{
-  Function to plot phylogenies of the class 'ggphy'
+  Function to plot phylogenies using \code{\link{ggplot2}}
 }
 \examples{
-see misc/plot.ggphy.test.R
+## load the dataset
+data(FluH1N1pdm2009)
+## create obkData object
+x <- new("obkData", individuals = FluH1N1pdm2009$individuals, samples = FluH1N1pdm2009$samples, dna = FluH1N1pdm2009$dna, 
+	trees = FluH1N1pdm2009$trees)
+
+## first simple tree
+p <- plotggphy(x, ladderize = TRUE)
+
+## build tip attribute and use sample dates to scale the x-axis as date time
+p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE, branch.unit = "year", tip.dates = "date")
+
+## alternatively extract sample dates from the tip labels
+p <- plotggphy(x, ladderize = TRUE, branch.unit = "year", guess.tip.dates.from.labels = TRUE, set.guess = list(prefix = "_", 
+	order = 1, from = "last"))
+
+## change x breaks and labels
+p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE, branch.unit = "year", tip.dates = "date", major.breaks = "month", 
+	axis.date.format = "\%b\%Y")
+
+## color-code tip location
+p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE, branch.unit = "year", tip.dates = "date", tip.colour = "location")
+
+## change tip size and transparency
+p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE, branch.unit = "year", tip.dates = "date", tip.colour = "location", 
+	tip.size = 3, tip.alpha = 0.75)
 }
 \author{
   Anton Camacho

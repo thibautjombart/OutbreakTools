@@ -12,7 +12,7 @@ meltDateProof <- function(data,id.vars,measure.vars,variable.name){
 		df$value <- as.Date(df$value)
 	}
 	else
-		df <- melt(data,id.vars=id.vars,measure.vars=measure.vars,variable.name=variable.name)
+    df <- melt(data,id.vars=id.vars,measure.vars=measure.vars,variable.name=variable.name)
 	return(df)
 }
 

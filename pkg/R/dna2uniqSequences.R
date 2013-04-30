@@ -1,10 +1,7 @@
-#' Function to convert a class 'DNAbin' to the class 'uniqSequences'
-#'
-#' @param dna an object of the class "DNAbin"
-#' @export
-#' @author Joseph Hughes
-#' @examples see misc/plot_ggMST.R
-
+## Function to convert a class 'DNAbin' to the class 'uniqSequences'
+##
+## param dna an object of the class "DNAbin"
+## author Joseph Hughes
 dna2uniqSequences<-function(dna){
   if (!is.null(dna) && inherits(dna,"DNAbin")){
     seqmatrix <- as.character(dna)

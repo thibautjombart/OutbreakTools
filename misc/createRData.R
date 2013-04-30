@@ -33,7 +33,7 @@ BeastRData <- function(dir_RData) {
 	seq.location <- .extract.string(my.phylo$tip.label, "_", 2, from = "last")
 
 	individuals <- data.frame(individualID = seq_along(my.phylo$tip.label), location= seq.location)
-	samples <- data.frame(individualID = individuals$individualID, sampleID = individuals$individualID, date = seq.date, seqID = my.phylo$tip.label)
+	samples <- data.frame(individualID = individuals$individualID, sampleID = individuals$individualID, date = seq.date, sequenceID = my.phylo$tip.label)
 	trees<-c(my.phylo)
 	
 	FluH1N1pdm2009<-list(individuals= individuals, samples= samples, dna=dna, trees= trees)
@@ -50,6 +50,6 @@ main<-function(){
 
 }
 
-#main()
+main()
 
 
