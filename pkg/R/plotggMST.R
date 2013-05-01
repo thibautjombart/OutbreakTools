@@ -10,7 +10,7 @@ plotggMST<-function(x,individualID=NULL,locus=NULL){
     return(NULL)
   }
   ## GET DNA SEQUENCES ##
-  if(!is.null(locus) && get.nlocus(x)>1){
+  if(is.null(locus) && get.nlocus(x)>1){
     warning("You need to provide the locus name")
     return(NULL)
   }
