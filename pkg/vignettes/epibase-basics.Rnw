@@ -10,7 +10,7 @@
 \usepackage[utf8]{inputenc} % for UTF-8/single quotes from sQuote()
 \newcommand{\code}[1]{{{\tt #1}}}
 \title{An introduction to analysing disease outbreak data using \textit{epibase} \Sexpr{packageDescription("epibase", fields = "Version")}}
-\author{Thibaut Jombart, Xavier Didelot, Rolf Ypma}
+\author{Thibaut Jombart, Xavier Didelot, Rolf Ypma, Lulla Opatowski, Anne Cori}
 \date{\today}
 
 
