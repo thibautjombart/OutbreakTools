@@ -26,7 +26,6 @@ x <- HorseFlu
 ## plot minimum spanning tree for individual 42
 plotggMST(x,individualID=42)
 
-
 ## another example data
 data(ToyOutbreak)
 x <- ToyOutbreak
