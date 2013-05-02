@@ -39,23 +39,22 @@
 \examples{
 
 ## load equine influenza data and convert it to obkData
-data(HorseFluRaw)
-data <- new("obkData",individuals=HorseFluRaw$individuals,samples=HorseFluRaw$samples,
-clinical=HorseFluRaw$clinics)
+data(HorseFlu)
+data <- HorseFlu
 
 ## plot the horses over time, coloring by yard
 plotIndividualTimeline(data,colorBy='yardID')
 
 ## also sort on yard
-plotIndividualTimeline(data,orderBy='yardID',colorBy='yardID')
+plotIndividualTimeline(data,orderBy='yardID',colorBy='yardID') # returns a warning
 
 ## just plot the first 15
-plotIndividualTimeline(data,selection=1:15,orderBy='yardID',colorBy='yardID')
+plotIndividualTimeline(data,selection=1:15,orderBy='yardID',colorBy='yardID') # returns a warning
 
 ## do a simple plot for some influenza data
 data(ToyOutbreak)
 plotIndividualTimeline(ToyOutbreak,colorBy='Sex')
-plotIndividualTimeline(ToyOutbreak,selection=1:10,orderBy='lat')
+plotIndividualTimeline(ToyOutbreak,selection=1:15,orderBy='lat')
 
 }
 \author{

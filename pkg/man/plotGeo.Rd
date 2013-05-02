@@ -22,21 +22,21 @@
    Function to plot a timeline for individuals involved in an outbreak in one plot
 }
 \examples{
-## load equine influenza data and convert it to obkData
-data(HorseFluRaw)
-x <- new("obkData", individuals=HorseFluRaw$individuals)
+## load the obkData object containing information about equine influenza outbreak
+data(HorseFlu)
+x <- HorseFlu
 
 ## plot the individuals on a map
-plotGeo(x,location=c('lon','lat'),TRUE,zoom=8)
+plotGeo(x,location=c('lon','lat'),TRUE,zoom=8) # returns a warning message
 
 ## color by sex
-plotGeo(x,location=c('lon','lat'),TRUE,zoom=8,colorBy='sex')
+plotGeo(x,location=c('lon','lat'),TRUE,zoom=8,colorBy='sex') # returns a warning message
 
 ## zoom in on the small cluster, by centering on individual '9'
-plotGeo(x,location=c('lon','lat'),TRUE,colorBy='sex',zoom=12,center='9')
+plotGeo(x,location=c('lon','lat'),TRUE,colorBy='sex',zoom=12,center='9') # returns a warning message
 
 ## another example ##
-## load data
+## load obkData object containing data about a simulated outbreak
 data(ToyOutbreak)
 
 ## plot the individuals on a map
