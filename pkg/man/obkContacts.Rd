@@ -86,9 +86,13 @@
     \item{get.individuals}{\code{signature(x = "obkContacts")}: returns
       the identifiers of individuals in the sample.}
     \item{get.ncontacts}{\code{signature(x = "obkContacts")}: returns
-      the number of contacts in the sample.}
-    \item{get.contacts}{\code{signature(x = "obkContacts")}: returns the
-      contacts (as \code{network} or \code{networkDynamic}).}
+      the number of contacts in the sample; for dynamic contact
+      networks, starting dates can be specified by the argument
+      \code{from}, and end date by the argument \code{to}..}
+    \item{get.contacts}{\code{signature(x = "obkContacts")}: returns
+      the contacts (as \code{network} or \code{networkDynamic}); for
+      dynamic contact networks, starting dates can be specified by the
+      argument \code{from}, and end date by the argument \code{to}.}
   }
 }
 \author{Simon Frost (\email{sdwfrost@gmail.com})}

@@ -29,6 +29,9 @@
 \alias{get.nclinicals}
 \alias{get.nclinicals,obkData-method}
 
+\alias{get.contacts,obkData-method}
+\alias{get.ncontacts,obkData-method}
+
 % \alias{get.dates}
 % \alias{get.dates,obkData-method}
 
@@ -156,6 +159,14 @@
    \item{get.trees}{\code{signature(x = "obkData")}: return a list of
       trees of the class \code{multiPhylo}, if present, and \code{NULL}
       otherwise.}
+    \item{get.contacts*}{\code{signature(x = "obkData")}: returns the
+      contacts (as \code{network} or \code{networkDynamic}); for dynamic
+      contact networks, starting dates can be specified by the argument
+      \code{from}, and end date by the argument \code{to}.}
+    \item{get.ncontacts*}{\code{signature(x = "obkData")}: returns the
+      number of contacts; for dynamic contact networks, starting dates
+      can be specified by the argument \code{from}, and end date by the
+      argument \code{to}.}
     \item{get.data*}{\code{signature(x = "obkData")}: search for a
       matching fields in the object and returns the corresponding
       values; in the absence of match, \code{NULL} is returned. Several
@@ -167,7 +178,8 @@
 }
 \author{
   Thibaut Jombart, Simon Frost, Lulla Opatowski, Paul Birrell, Anne
-  Cori, Marc Baguelin, Caroline Colijn... add your name here}
+  Cori, Marc Baguelin, Caroline Colijn
+}
 \examples{
 
 ## EMPTY OBJECT ##
