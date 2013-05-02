@@ -33,6 +33,11 @@ setMethod("initialize", "obkContacts", function(.Object, contactFrom=NULL, conta
     ## escape if the minimum information is not provided ##
     if(is.null(contactFrom)|is.null(contactTo)) return(x)
 
+    ## escape of obkContacts is provided ##
+    if(inherits(contactFrom, "obkContacts")) return(contactFrom)
+    if(inherits(contactTo, "obkContacts")) return(contactTo)
+
+
     ## PROCESS ARGUMENTS
     if(is.list(contactFrom)) contactFrom <- unlist(contactFrom)
 

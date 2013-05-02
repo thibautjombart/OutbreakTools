@@ -115,10 +115,12 @@ setMethod("head", "obkData", function(x, n=4L, ...){
     cat("\n=== obkData x ===")
     empty <- rep(TRUE, Nslots)
     for(i in 1:Nslots){
-        if(!is.null(slot(x, slotNames(x)[i]))){
+        if(!is.null(slot(x, slotNames(x)[i]))){ # if slot is not NULL
             cat(paste("\n== @", slotNames(x)[i], "== \n",sep=""))
             if(is.list(slot(x, slotNames(x)[i])) && !is.data.frame(slot(x, slotNames(x)[i]))){ # use custom 'head' for lists
                 lapply(slot(x, slotNames(x)[i]), function(e) print(head(e, n=n, ...)))
+            } else if(inherits(slot(x, slotNames(x)[i]),"obkSequences") ||  inherits(slot(x, slotNames(x)[i]),"obkContacts")){
+                print(slot(x, slotNames(x)[i]))
             } else {
                 print(head(slot(x, slotNames(x)[i]), n=n, ...))
             }
@@ -150,6 +152,8 @@ setMethod("tail", "obkData", function(x, n=4L, ...){
             cat(paste("\n== @", slotNames(x)[i], "== \n",sep=""))
             if(is.list(slot(x, slotNames(x)[i])) && !is.data.frame(slot(x, slotNames(x)[i]))){ # use custom 'tail' for lists
                 lapply(slot(x, slotNames(x)[i]), function(e) print(tail(e, n=n, ...)))
+            } else if(inherits(slot(x, slotNames(x)[i]),"obkSequences") ||  inherits(slot(x, slotNames(x)[i]),"obkContacts")){
+                print(slot(x, slotNames(x)[i]))
             } else {
                 print(tail(slot(x, slotNames(x)[i]), n=n, ...))
             }
