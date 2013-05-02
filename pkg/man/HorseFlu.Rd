@@ -32,47 +32,41 @@ data(HorseFlu)
 summary(HorseFlu)
 
 ## individual info
-head(individuals)
+head(HorseFlu@individuals)
 
 ## sample info
-head(samples)
+head(HorseFlu@samples)
 
 ## DNA sequences
-dna
+HorseFlu@dna
 
 ## clinical info
-class(clinics)
-names(clinics)
-head(clinics$FirstVac)
-
-
-## CREATE OBKDATA ##
-x <- new("obkData", individuals=individuals, samples=samples, dna=dna, clinical=clinics)
-
+names(HorseFlu@clinical)
+head(HorseFlu@clinical$FirstVac)
+head(HorseFlu@clinical$LastVac)
 
 ## MANIPULATE OBJECT ##
 
 ## How many individuals, samples and sequences?
-get.nindividuals(x)
-get.nsamples(x)
-get.nsequences(x)
+get.nindividuals(HorseFlu)
+get.nsamples(HorseFlu)
+get.nsequences(HorseFlu)
 
 ## How many sequences per individual?
-table(x@samples$individualID)
-barplot(table(x@samples$individualID), horiz=TRUE, las=1, xlab="number of samples", cex.names=.8)
+table(HorseFlu@samples$individualID)
+barplot(table(HorseFlu@samples$individualID), horiz=TRUE, las=1, xlab="number of samples", cex.names=.8)
 
 ## Identify most sampled individual
-ind.max <- names(which.max(table(x@samples$individualID)))
-x.max <- subset(x, individual=ind.max)
-get.individuals(x.max) # sanity check
+ind.max <- names(which.max(table(HorseFlu@samples$individualID)))
+HorseFlu.max <- subset(HorseFlu, individual=ind.max)
+get.individuals(HorseFlu.max) # sanity check
 
 ## How many samples and sequences for this individual?
-get.samples(x.max)
-table(x.max@samples$sampleID)
+get.samples(HorseFlu.max)
+table(HorseFlu.max@samples$sampleID)
 
 ## Build a phylogeny for this individual
-get.phylo(x.max, type="fan")
-
+get.phylo(HorseFlu.max, type="fan")
 
 }
 }
