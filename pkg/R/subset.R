@@ -10,7 +10,7 @@
 setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus=NULL, sequences=NULL,
                                         date.from=NULL, date.to=NULL, date.format=NULL,
                                         row.individuals=NULL, row.samples=NULL,...){
-    ## CHECK THAT REQUESTED INFOR IS THERE ##
+    ## CHECK THAT REQUESTED INFO IS THERE ##
     if(is.null(x@individuals)) {
         individuals <- row.individuals <- NULL
     }
@@ -218,7 +218,12 @@ setMethod("subset", "obkData", function(x, individuals=NULL, samples=NULL, locus
     if(!is.null(x@trees)){
         for(i in 1:length(x@trees)){
             toDrop <- x@trees[[i]]$tip.label[! x@trees[[i]]$tip.label %in% get.sequences(x)]
-            x@trees[[i]] <- drop.tip(x@trees[[i]], tip=toDrop, trim.internal=TRUE, subtree=FALSE)
+            ## check that we don't try to have a tree with one tip - creates an error
+            if(length(setdiff(x@trees[[i]]$tip.label, toDrop))==1){
+                x@trees <- x@trees[-i]
+            } else {
+                x@trees[[i]] <- drop.tip(x@trees[[i]], tip=toDrop, trim.internal=TRUE, subtree=FALSE)
+            }
         }
     }
 
