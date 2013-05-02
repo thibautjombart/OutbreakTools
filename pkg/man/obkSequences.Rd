@@ -90,7 +90,7 @@ data(ToyOutbreak)
 x <- ToyOutbreak
 
 ## show obkObject
-summary(x)
+##summary(x) # generates an error
 
 ## access raw content
 get.dna(x)
