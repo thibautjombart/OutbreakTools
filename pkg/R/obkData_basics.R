@@ -53,7 +53,13 @@ setMethod("summary", "obkData", function(object, ...){
 
 	if(!is.null(object@dna)) 
 	{
-		cat(paste("- ",get.nsequences(object)," corresponding sequences on ",get.nlocus(object)," loci \n\t(concatenated alignments: ",sum(sapply(object@dna@dna,ncol))," nucleotides)\n",sep=""))
+		if(get.nlocus(object)>1)
+		{
+			cat(paste("- ",get.nsequences(object)," corresponding sequences on ",get.nlocus(object)," loci \n\t(concatenated alignments: ",sum(sapply(object@dna@dna,ncol))," nucleotides)\n",sep=""))
+		}else
+		{
+			cat(paste("- ",get.nsequences(object)," corresponding sequences on ",get.nlocus(object)," locus \n\t(concatenated alignments: ",sum(sapply(object@dna@dna,ncol))," nucleotides)\n",sep=""))
+		}
 	}else
 	{
 		cat("- 0 sequences\n")
@@ -92,9 +98,7 @@ setMethod("summary", "obkData", function(object, ...){
 # test:
 # library(epibase)
 # data(HorseFlu)
-# names(HorseFlu)
-# x <- new("obkData", dna=HorseFlu$dna, sample=HorseFlu$samples,individuals =  HorseFlu$individuals, clinical = HorseFlu$clinics)
-# summary(x)
+# summary(HorseFlu)
 # summary(new("obkData"))
 
 

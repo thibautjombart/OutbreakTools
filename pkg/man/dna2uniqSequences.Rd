@@ -15,8 +15,8 @@
 \examples{
 ### get uniq sequences for individual 49
 
-data(HorseFlu)
-attach(HorseFlu)
+data(HorseFluRaw)
+attach(HorseFluRaw)
 x <- new("obkData", individuals=individuals, samples=samples, dna=dna, clinical=clinics)
 ### create a subset DNAbin
 id49<-subset(x,individuals="49")
@@ -26,7 +26,7 @@ dna49<-get.dna(id49)[[1]]
 ### get number of sequences length(summary.seq$uniqseqID4)
 uniqdna49 <- dna2uniqSequences(dna49)
 
-detach(HorseFlu)
+detach(HorseFluRaw)
 }
 \author{
   Joseph Hughes

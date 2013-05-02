@@ -726,8 +726,8 @@ is plotted in a single window
 
 Let's plot an outbreak of equine influenza provided. First import the data and make an obkData object
 <<>>=
-data(HorseFlu)
-data <- new("obkData", individuals=HorseFlu$individuals,samples=HorseFlu$samples,clinical=HorseFlu$clinics)
+data(HorseFluRaw)
+data <- new("obkData", individuals=HorseFluRaw$individuals,samples=HorseFluRaw$samples,clinical=HorseFluRaw$clinics)
 @
 then plot
 <<fig=TRUE>>=
@@ -772,8 +772,8 @@ If geographical information is available, this function can be used to plot the 
 
 Let's plot an outbreak of equine influenza provided. First import the data and make an obkData object
 <<>>=
-data(HorseFlu)
-data <- new("obkData", individuals=HorseFlu$individuals,samples=HorseFlu$samples,clinical=HorseFlu$clinics)
+data(HorseFluRaw)
+data <- new("obkData", individuals=HorseFluRaw$individuals,samples=HorseFluRaw$samples,clinical=HorseFluRaw$clinics)
 @
 In this dataset, we already have longitudes and latitudes. We specify the
 columns holding these data with `location', and we have to tell the function that these are valid lon/lat with 'isLonLat' (which defaults to FALSE)
@@ -801,8 +801,8 @@ plot(data,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=12,colorBy='sex',cent
 \subsection{Plotting a minimal spanning tree of the genetic sequences}
 It can be useful to plot a minimal spanning tree of the sequences, to  quickly visualize the genetic diversity and the relation between sequences. We can do this as follows
 <<>>=
-data(HorseFlu)
-attach(HorseFlu)
+data(HorseFluRaw)
+attach(HorseFluRaw)
 data <- new("obkData", individuals=individuals, samples=samples, dna=dna, clinical=clinics)
 @
 <<fig=TRUE>>=
