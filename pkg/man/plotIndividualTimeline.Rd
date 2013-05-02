@@ -53,11 +53,10 @@ plotIndividualTimeline(data,orderBy='yardID',colorBy='yardID')
 plotIndividualTimeline(data,selection=1:15,orderBy='yardID',colorBy='yardID')
 
 ## do a simple plot for some influenza data
-data(FakeInfluenza)
-attach(FakeInfluenza)
-data <- new("obkData", individuals=Patients, samples=Samples, clinical=Clinical)
-plotIndividualTimeline(data,colorBy='gender')
-detach(FakeInfluenza)
+data(ToyOutbreak)
+plotIndividualTimeline(ToyOutbreak,colorBy='Sex')
+plotIndividualTimeline(ToyOutbreak,selection=1:10,orderBy='lat')
+
 }
 \author{
   Rolf Ypma

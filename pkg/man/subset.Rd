@@ -90,5 +90,6 @@ subset(x, row.samples=get.data(x, "swab") == "+") # keep only positive swabs
 
 ## mixing things up (only positive swavs in "toto")
 subset(x, row.samples=get.data(x, "swab") == "+", individuals="toto")
+
 }
 \keyword{classes}
