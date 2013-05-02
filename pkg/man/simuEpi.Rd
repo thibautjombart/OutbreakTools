@@ -29,6 +29,26 @@
   Simulate an epidemic following a SIR model, together with a transmission
   tree and a set of sequences consistent with the trajectory of the epidemic. 
 }
+
+\examples{
+
+## Simulate an outbreak of 200 individuals over 20 time steps ##
+set.seed(3)
+x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002)
+
+# x is an obkData
+x
+summary(x)
+
+## Plot the dynamics
+x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002, showPlots=TRUE)
+
+## Add phyloTree
+x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002, showPlots=TRUE, makePhyloTree=TRUE)  
+
+
+}
+
 \author{
   Xavier Didelot and Caroline Colijn
 }

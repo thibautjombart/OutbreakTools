@@ -47,21 +47,6 @@ plotGeo(ToyOutbreak,location=c('lon','lat'),TRUE,zoom=13,colorBy='Sex')
 plotGeo(ToyOutbreak,location=c('lon','lat'),TRUE,zoom=15,colorBy='Age', center='1')
 
 
-
-\dontrun{
-
-## another example
-data(rabies)
-attach(rabies)
-data <- new('obkData',individuals=data.frame(individualID=1:177,transmissions))
-plotGeo(data,location=c('xinf','yinf'),isLonLat=TRUE)
-plotGeo(data,location=c('xinf','yinf'),isLonLat=TRUE,zoom=7,colorBy='pr')
-
-## not functional, but pretty
-plotGeo(data,location=c('xinf','yinf'),isLonLat=TRUE,zoom=7,colorBy='source')
-
-detach(rabies)
-}
 }
 \author{
 	Rolf Ypma

@@ -242,8 +242,9 @@ samp$locus <- c("gene1","gene2")[c(1,1,1,2,1,2)]
 new("obkData", samples=samp, dna=dat.dna)
 
 ## incorporating data on sample and clinical data
-data(FakeInfluenza)
-new("obkData", individuals = FakeInfluenza$Patients, samples = FakeInfluenza$Samples, clinical = FakeInfluenza$Clinical)
+data(ToyOutbreakRaw)
+names(ToyOutbreakRaw)
+new("obkData", individuals = ToyOutbreakRaw$individuals, samples = ToyOutbreakRaw$samples, clinical = ToyOutbreakRaw$clinical)
 
 
 ## incorporate contacts
@@ -267,7 +268,7 @@ get.dates(x,"samples")
 get.nclinicals(x)
 
 # based on data including clinical information
-x<- new("obkData", individuals = FakeInfluenza$Patients, samples = FakeInfluenza$Samples, clinical = FakeInfluenza$Clinical)
+x<- new("obkData", individuals = ToyOutbreakRaw$individuals, samples = ToyOutbreakRaw$samples, clinical = ToyOutbreakRaw$clinical)
 
 get.clinical(x)
 get.individuals(x,"clinical")
