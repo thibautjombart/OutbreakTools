@@ -27,13 +27,12 @@ get.dates(x, \dots)
 \examples{
 
 ## LOAD DATA ##
-data(FakeInfluenza)
-x <- new("obkData", individuals = FakeInfluenza$Patients, samples = FakeInfluenza$Samples, clinical = FakeInfluenza$Clinical, date.format = "\%d/\%m/\%Y")
+data(ToyOutbreak)
 
 ## VARIOUS USE OF GET.DATES ##
-get.dates(x)
-get.dates(x, "samples")
-get.dates(x, "clinical")
+get.dates(ToyOutbreak)
+get.dates(ToyOutbreak, "samples")
+get.dates(ToyOutbreak, "clinical")
 
 }
 \keyword{classes}
