@@ -36,19 +36,25 @@ get.data(x, \dots)
 \examples{
 
 ## LOAD DATA ##
-data(FakeInfluenza)
-x <- new("obkData", individuals = FakeInfluenza$Patients, samples = FakeInfluenza$Samples, clinical = FakeInfluenza$Clinical, date.format = "\%d/\%m/\%Y")
+data(ToyOutbreak)
+ls()
+
 
 ## VARIOUS USE OF GET.DATA ##
-get.data(x, "gender")
-get.data(x, "gender", drop=FALSE)
-get.data(x, "gender", showSource=TRUE)
+# list all the data with name 'Sex' from the obkData object
+get.data(ToyOutbreak, "Sex")
 
-get.data(x, "date")
-get.data(x, "date", showSource=TRUE)
-get.data(x, "date", where="clinical")
+# list all the data with 'date' from the obkData object
+get.data(ToyOutbreak, "date")
+get.data(ToyOutbreak, "date", showSource=TRUE)
+get.data(ToyOutbreak, "date", where="clinical")
 
-get.data(x, "clinical")
-get.data(x, "samples")
+# Extract from the obkData object a given field
+x <- get.data(ToyOutbreak, "clinical")
+names(x) # x contains the whole 'clinical' list
+head(x$Fever)
+x <- get.data(ToyOutbreak, "samples")
+names(x) # x contains the whole 'samples' data.frame
+
 }
 \keyword{classes}
