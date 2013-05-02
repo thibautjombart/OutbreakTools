@@ -91,5 +91,45 @@ subset(x, row.samples=get.data(x, "swab") == "+") # keep only positive swabs
 ## mixing things up (only positive swavs in "toto")
 subset(x, row.samples=get.data(x, "swab") == "+", individuals="toto")
 
+\dontrun{
+
+## LOAD ToyOutbreak obkData object ##
+data(ToyOutbreak)
+x <- ToyOutbreak
+
+## TEST VARIOUS SUBSETTING ##
+## by individual
+get.individuals(x)
+#subset(x, individuals=1) # gives an error here
+#subset(x, individuals="15")
+
+## by sample
+get.samples(x)
+subset(x, sample=2)
+subset(x, sample="2")
+
+## by locus
+get.locus(x)
+subset(x, locus=2)
+
+## by sequences
+get.sequences(x)
+subset(x, sequences=c("gene11", "gene2360"))
+
+## by rows in @individuals
+get.data(x,"individuals")
+get.data(x, "Sex")=="M" # sex is 'm'
+subset(x, row.individuals=get.data(x, "Sex")=="M") # keep only Sex=='M'
+
+## by rows in @samples
+get.data(x,"samples")
+get.data(x, "date") <= "2000-01-10" # samples with date < Jan 10
+subset(x, row.samples=get.data(x, "date") <= "2000-01-10") # keep only samples with date < Jan 10
+
+
+## mixing things up 
+subset(x, row.samples=get.data(x, "date") <= "2000-01-10", individuals="15")
+}
+
 }
 \keyword{classes}
