@@ -1,8 +1,8 @@
-\name{HorseFlu}
+\name{HorseFluRaw}
 \docType{data}
-\alias{HorseFlu}
+\alias{HorseFluRaw}
 
-\title{Dataset from the Newmarket 2003 equine influenza outbreak}
+\title{Raw dataset from the Newmarket 2003 equine influenza outbreak}
 \description{
   This dataset is a list containing the following components:
   \itemize{
@@ -26,8 +26,54 @@
 \examples{
 \dontrun{
 ## LOAD DATA ##
-data(HorseFlu)
+data(HorseFluRaw)
+attach(HorseFluRaw)
 
+## EXAMINE CONTENT ##
+
+## individual info
+head(individuals)
+
+## sample info
+head(samples)
+
+## DNA sequences
+dna
+
+## clinical info
+class(clinics)
+names(clinics)
+head(clinics$FirstVac)
+
+
+## CREATE OBKDATA ##
+x <- new("obkData", individuals=individuals, samples=samples, dna=dna, clinical=clinics)
+
+
+## MANIPULATE OBJECT ##
+
+## How many individuals, samples and sequences?
+get.nindividuals(x)
+get.nsamples(x)
+get.nsequences(x)
+
+## How many sequences per individual?
+table(x@samples$individualID)
+barplot(table(x@samples$individualID), horiz=TRUE, las=1, xlab="number of samples", cex.names=.8)
+
+## Identify most sampled individual
+ind.max <- names(which.max(table(x@samples$individualID)))
+x.max <- subset(x, individual=ind.max)
+get.individuals(x.max) # sanity check
+
+## How many samples and sequences for this individual?
+get.samples(x.max)
+table(x.max@samples$sampleID)
+
+## Build a phylogeny for this individual
+get.phylo(x.max, type="fan")
+
+detach(HorseFluRaw)
 
 
 }

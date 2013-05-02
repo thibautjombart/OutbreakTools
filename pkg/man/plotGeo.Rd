@@ -23,8 +23,8 @@
 }
 \examples{
 ## load equine influenza data and convert it to obkData
-data(HorseFlu)
-x <- new("obkData", individuals=HorseFlu$individuals)
+data(HorseFluRaw)
+x <- new("obkData", individuals=HorseFluRaw$individuals)
 
 ## plot the individuals on a map
 plotGeo(x,location=c('lon','lat'),TRUE,zoom=8)

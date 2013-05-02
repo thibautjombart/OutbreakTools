@@ -39,9 +39,9 @@
 \examples{
 
 ## load equine influenza data and convert it to obkData
-data(HorseFlu)
-data <- new("obkData",individuals=HorseFlu$individuals,samples=HorseFlu$samples,
-clinical=HorseFlu$clinics)
+data(HorseFluRaw)
+data <- new("obkData",individuals=HorseFluRaw$individuals,samples=HorseFluRaw$samples,
+clinical=HorseFluRaw$clinics)
 
 ## plot the horses over time, coloring by yard
 plotIndividualTimeline(data,colorBy='yardID')

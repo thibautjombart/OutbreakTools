@@ -20,8 +20,8 @@
  
 \examples{
 ## load data
-data(HorseFlu)
-attach(HorseFlu)
+data(HorseFluRaw)
+attach(HorseFluRaw)
 
 x <- new("obkData", individuals=individuals, samples=samples, dna=dna, clinical=clinics)
 # plot minimum spanning tree for individual 42
@@ -30,7 +30,7 @@ plotggMST(x,individualID=42)
 # plot huge minimum spanning tree
 plotggMST(x)
 }
-detach(HorseFlu)
+detach(HorseFluRaw)
 
 }
 \author{

@@ -91,9 +91,9 @@ setMethod("summary", "obkData", function(object, ...){
 
 # test:
 # library(epibase)
-# data(HorseFlu)
-# names(HorseFlu)
-# x <- new("obkData", dna=HorseFlu$dna, sample=HorseFlu$samples,individuals =  HorseFlu$individuals, clinical = HorseFlu$clinics)
+# data(HorseFluRaw)
+# names(HorseFluRaw)
+# x <- new("obkData", dna=HorseFluRaw$dna, sample=HorseFluRaw$samples,individuals =  HorseFluRaw$individuals, clinical = HorseFluRaw$clinics)
 # summary(x)
 # summary(new("obkData"))
 
