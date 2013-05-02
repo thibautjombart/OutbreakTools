@@ -51,7 +51,7 @@ setMethod("summary", "obkData", function(object, ...){
         }
     }else{cat("\n")}
 
-	if(!is.null(object@dna)) 
+	if(!is.null(object@dna))
 	{
 		if(get.nlocus(object)>1)
 		{
@@ -64,7 +64,7 @@ setMethod("summary", "obkData", function(object, ...){
 	{
 		cat("- 0 sequences\n")
 	}
-	
+
     cat(paste("- clinical data from ",get.nindividuals(object,"clinical")," individuals",sep=""))
     if(!is.null(object@clinical) && length(object@clinical) <=10 )
     {
@@ -117,10 +117,10 @@ setMethod("head", "obkData", function(x, n=4L, ...){
     for(i in 1:Nslots){
         if(!is.null(slot(x, slotNames(x)[i]))){ # if slot is not NULL
             cat(paste("\n== @", slotNames(x)[i], "== \n",sep=""))
-            if(is.list(slot(x, slotNames(x)[i])) && !is.data.frame(slot(x, slotNames(x)[i]))){ # use custom 'head' for lists
-                lapply(slot(x, slotNames(x)[i]), function(e) print(head(e, n=n, ...)))
-            } else if(inherits(slot(x, slotNames(x)[i]),"obkSequences") ||  inherits(slot(x, slotNames(x)[i]),"obkContacts")){
+            if(inherits(slot(x, slotNames(x)[i]), c("obkSequences","obkContacts","multiPhylo"))){ # special classes
                 print(slot(x, slotNames(x)[i]))
+            } else if(is.list(slot(x, slotNames(x)[i])) && !is.data.frame(slot(x, slotNames(x)[i]))){ # use custom 'head' for lists
+                lapply(slot(x, slotNames(x)[i]), function(e) print(head(e, n=n, ...)))
             } else {
                 print(head(slot(x, slotNames(x)[i]), n=n, ...))
             }
@@ -150,10 +150,10 @@ setMethod("tail", "obkData", function(x, n=4L, ...){
     for(i in 1:Nslots){
         if(!is.null(slot(x, slotNames(x)[i]))){
             cat(paste("\n== @", slotNames(x)[i], "== \n",sep=""))
-            if(is.list(slot(x, slotNames(x)[i])) && !is.data.frame(slot(x, slotNames(x)[i]))){ # use custom 'tail' for lists
-                lapply(slot(x, slotNames(x)[i]), function(e) print(tail(e, n=n, ...)))
-            } else if(inherits(slot(x, slotNames(x)[i]),"obkSequences") ||  inherits(slot(x, slotNames(x)[i]),"obkContacts")){
+            if(inherits(slot(x, slotNames(x)[i]), c("obkSequences","obkContacts","multiPhylo"))){ # special classes
                 print(slot(x, slotNames(x)[i]))
+            } else if(is.list(slot(x, slotNames(x)[i])) && !is.data.frame(slot(x, slotNames(x)[i]))){ # use custom 'tail' for lists
+                lapply(slot(x, slotNames(x)[i]), function(e) print(tail(e, n=n, ...)))
             } else {
                 print(tail(slot(x, slotNames(x)[i]), n=n, ...))
             }
