@@ -35,6 +35,19 @@ plotGeo(x,location=c('lon','lat'),TRUE,zoom=8,colorBy='sex')
 ## zoom in on the small cluster, by centering on individual '9'
 plotGeo(x,location=c('lon','lat'),TRUE,colorBy='sex',zoom=12,center='9')
 
+## another example ##
+## load data
+data(ToyOutbreak)
+
+## plot the individuals on a map
+plotGeo(ToyOutbreak,location=c('lon','lat'),isLonLat=TRUE,zoom=8)
+plotGeo(ToyOutbreak,location=c('lon','lat'),TRUE,zoom=13,colorBy='Sex')
+
+## color by age, zooming on the first case of the outbreak: indivudal 1
+plotGeo(ToyOutbreak,location=c('lon','lat'),TRUE,zoom=15,colorBy='Age', center='1')
+
+
+
 \dontrun{
 
 ## another example

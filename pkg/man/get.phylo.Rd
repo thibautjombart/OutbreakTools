@@ -54,7 +54,9 @@ get.phylo(x, \dots)
 }
 \author{Thibaut Jombart \email{t.jombart@imperial.ac.uk}}
 \examples{
-## simulate outbreak ##
+
+## Example 1: simulate outbreak ##
+
 set.seed(3)
 x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002)
 
@@ -80,6 +82,15 @@ symbols(0,0, circles=i, inches=FALSE, add=TRUE, bg=transp("royalblue", .1), fg=N
 tiplabels(col=tre$tip.col, pch=20)
 tiplabels(col=transp(tre$tip.col), pch=20, cex=2)
 legend("bottomleft", fill=treInfo$legend$col, legend=treInfo$legend$txt,title="Days after 1st sample")
+
+## EXample 2: LOAD DATA ##
+
+data(ToyOutbreak)
+
+## get tree info for ToyOutbreak dataset ##
+pal <- colorRampPalette(c("gold","red"))
+treInfo <- get.phylo(ToyOutbreak, color.by="date", palette=pal, plot=TRUE, ask=TRUE)
+treInfo
 
 
 }

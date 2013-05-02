@@ -106,5 +106,23 @@ oc.dynamic
 
 plot(oc.static, main="Contact network")
 
+## Plotting a dynamic contact network ##
+
+# LOAD DATA #
+data(ToyOutbreak) # ToyOutbreak includes a dynamic contact network
+
+# plot the static network
+plot(ToyOutbreak@contacts)
+
+# Plot the dynamic network over the first 4 days of the outbreak
+par(mfrow=c(2,2))
+plot(ToyOutbreak@contacts,main="Contact network - days 1-4", displaylabels=TRUE)
+# plot the dynamic stages
+plot(network.extract(ToyOutbreak@contacts@contacts, onset=10957, terminus=10959), main="Contact network - days 1-2", displaylabels=TRUE)
+plot(network.extract(ToyOutbreak@contacts@contacts, onset=10959, terminus=10960), main="Contact network - day 3", displaylabels=TRUE)
+plot(network.extract(ToyOutbreak@contacts@contacts, onset=10960, terminus=10961), main="Contact network - day 4", displaylabels=TRUE)
+par(mfrow=c(1,1))
+
+
 }
 \keyword{classes}
