@@ -66,6 +66,8 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
     options("stringsAsFactors"=FALSE)
     on.exit(options(o.opt))
 
+    ## escape of obkData is provided ##
+    if(inherits(individuals, "obkData")) return(individuals)
 
     ## PROCESS PROVIDED INFORMATION ##
     ## coerce to data.frames, force to NULL if nrow=0
@@ -92,7 +94,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 
     ## check that relevant fields are here ##
     if(!is.null(individuals)){
-        if(!"individualID" %in% names(individuals) && is.null(row.names(individuals))) 
+        if(!"individualID" %in% names(individuals) && is.null(row.names(individuals)))
           stop("no field 'individualID' in the individuals data.frame ('individuals')")
     }
     if(!is.null(samples)){
@@ -112,7 +114,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
         lab <- as.character(individuals[,"individualID"])
       else
         lab <- as.character(row.names(individuals))
-      
+
         x@individuals <- individuals[, names(individuals)!="individualID", drop=FALSE]
         row.names(x@individuals) <- lab
     }
@@ -336,7 +338,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 # x <- new("obkData", individuals = inds2, date.format = "%d/%m/%Y") ## should give a warning that an individual record for Anne is missing
 # x <- new("obkData", individuals =  FakeInfluenza$Patients, sample=FakeInfluenza$Samples, clinical = FakeInfluenza$Clinical, date.format = "%d/%m/%Y") ## adding the sample part
 
-# 
+#
 # get.nclinicals(x)
 # get.clinical(x)
 # get.individuals(x,"clinical")
