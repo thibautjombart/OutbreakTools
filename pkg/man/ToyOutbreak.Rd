@@ -44,7 +44,7 @@
 
 }
 \examples{
-
+\dontrun{
 ## Load data ##
 data(ToyOutbreak)
 
@@ -54,18 +54,18 @@ summary(ToyOutbreak)
 ## Plotting the dynamic contact network ##
 par(mfrow=c(2,2))
 plot(ToyOutbreak@contacts,main="Contact network - days 1-4",displaylabels=TRUE)
-plot(network.extract(ToyOutbreak@contacts@contacts, onset=10957, terminus=10959), 
-	     main="Contact network - days 1-2", displaylabels=TRUE)
-plot(network.extract(ToyOutbreak@contacts@contacts, onset=10959, terminus=10960), 
-	     main="Contact network - day 3", displaylabels=TRUE)
-plot(network.extract(ToyOutbreak@contacts@contacts, onset=10960, terminus=10961), 
-	     main="Contact network - day 4", displaylabels=TRUE)
+plot(get.contacts(ToyOutbreak, from=0, to=2), main="Contact network -days 0-2",
+     displaylabels=TRUE)
+plot(get.contacts(ToyOutbreak, from=2, to=3), main="Contact network -days 2-3",
+     displaylabels=TRUE)
+plot(get.contacts(ToyOutbreak, from=4, to=4), main="Contact network - day 4",
+     displaylabels=TRUE)
 
 ## Mapping the outbreak (by sex) ##
 plot(ToyOutbreak,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=13,colorBy='Sex')
 
 }
-
+}
 \keyword{dataset}
 \author{
   Anne Cori, Lulla Opatowski
