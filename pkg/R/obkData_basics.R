@@ -77,7 +77,7 @@ setMethod("summary", "obkData", function(object, ...){
 
     if(!is.null(object@contacts))
     {
-        cat(paste("- ",get.ncontacts(object@contacts,"contacts")," contacts recorded between ",get.nindividuals(object,"contacts")," individuals\n",sep=""))
+        cat(paste("- ",get.ncontacts(object), " contacts recorded between ", get.nindividuals(object,"contacts")," individuals\n",sep=""))
     }
 
     if(!is.null(object@trees))
