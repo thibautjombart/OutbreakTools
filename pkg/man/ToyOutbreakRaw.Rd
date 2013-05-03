@@ -52,7 +52,6 @@
 ## Load data ##
 data(ToyOutbreakRaw)
 
-\dontrun{
 ## Constructing an obkData object ##
 x <- new ("obkData", individuals=ToyOutbreakRaw$individuals,samples=ToyOutbreakRaw$samples,clinical=ToyOutbreakRaw$clinical,contacts=ToyOutbreakRaw$contacts,contacts.start=ToyOutbreakRaw$contacts.start,contacts.end=ToyOutbreakRaw$contacts.end,dna=ToyOutbreakRaw$dna,trees=ToyOutbreakRaw$trees)
 
@@ -69,17 +68,17 @@ x@trees
 
 ## Plotting the dynamic contact network ##
 par(mfrow=c(2,2))
-plot(x@contacts,main="Contact network - days 1-4",displaylabels=TRUE)
-plot(network.extract(x@contacts@contacts, onset=10957, terminus=10959), 
-	     main="Contact network - days 1-2", displaylabels=TRUE)
-plot(network.extract(x@contacts@contacts, onset=10959, terminus=10960), 
-	     main="Contact network - day 3", displaylabels=TRUE)
-plot(network.extract(x@contacts@contacts, onset=10960, terminus=10961), 
-	     main="Contact network - day 4", displaylabels=TRUE)
+plot(get.contacts(x),main="Contact network - days 0-3",displaylabels=TRUE)
+plot(get.contacts(x, from=0, to=1.1), main="Contact network - days 0-1",
+     displaylabels=TRUE)
+plot(get.contacts(x, from=2, to=2.1), main="Contact network - day 2",
+     displaylabels=TRUE)
+plot(get.contacts(x, from=3, to=3.1), main="Contact network - day 3",
+     displaylabels=TRUE)
 
 ## Mapping the outbreak (by sex) ##
 plot(x,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=13,colorBy='Sex')
-}
+
 }
 \keyword{dataset}
 \author{
