@@ -7,7 +7,7 @@
 ## - instance of obkContacts store contacts between individuals
 ## - employs networkDynamic
 
-setClass("obkContacts",representation(contacts="networkDynamicOrNetworkOrNULL"),prototype(contacts=NULL))
+setClass("obkContacts",representation(contacts="networkDynamicOrNetworkOrNULL", origin="DateOrNULL"),prototype(contacts=NULL))
 
 setClassUnion("obkContactsOrNULL", c("obkContacts", "NULL"))
 
@@ -24,17 +24,25 @@ setClassUnion("obkContactsOrNULL", c("obkContacts", "NULL"))
 ## directed: should we consider the network as directed
 ## contactStart: if present, a vector of dates of beginning of contact
 ## contactEnd: if present, a vector of dates of end of contact
-## duration: another way to specify contactEnd, as duration of contact
-setMethod("initialize", "obkContacts", function(.Object, contactFrom=NULL, contactTo=NULL, directed=FALSE, contactStart=NULL, contactEnd=NULL,duration=NULL) {
+## duration: another way to specify contactEnd, as duration of contact; if dates (not numbers)
+## are provided in contactFrom, 'duration' is expected to be days
+setMethod("initialize", "obkContacts", function(.Object, contactFrom=NULL, contactTo=NULL, directed=FALSE,
+                                                contactStart=NULL, contactEnd=NULL,duration=NULL) {
 
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
 
     ## escape if the minimum information is not provided ##
-    if(is.null(contactFrom)|is.null(contactTo)) return(x)
+    if(is.null(contactFrom) || is.null(contactTo)) return(x)
+
+    ## escape of obkContacts is provided ##
+    if(inherits(contactFrom, "obkContacts")) return(contactFrom)
+    if(inherits(contactTo, "obkContacts")) return(contactTo)
+
 
     ## PROCESS ARGUMENTS
     if(is.list(contactFrom)) contactFrom <- unlist(contactFrom)
+    if(is.list(contactTo)) contactFrom <- unlist(contactTo)
 
     ## fill slots
     contactFrom <- as.character(contactFrom)
@@ -59,6 +67,23 @@ setMethod("initialize", "obkContacts", function(.Object, contactFrom=NULL, conta
         # single timestamps
         contactEnd <- contactStart+duration
       }
+
+      ## handle 'POSIXct' dates
+      if(inherits(contactStart, "POSIXct")){
+          contactStart <- as.Date(contactStart)
+      }
+      if(inherits(contactEnd, "POSIXct")){
+          contactEnd <- as.Date(contactEnd)
+      }
+
+      ## handle 'Date' dates
+      if(inherits(contactStart, "Date")){
+          x@origin <- min(contactStart)
+          contactStart <- as.numeric(contactStart - x@origin)
+          contactEnd <- as.numeric(contactEnd - x@origin)
+      } else {
+          x@origin <- NULL
+      }
       for(i in 1:numedges){
         v1 <- match(contactFrom[i],uniqueIDs)
         v2 <- match(contactTo[i],uniqueIDs)
@@ -69,6 +94,11 @@ setMethod("initialize", "obkContacts", function(.Object, contactFrom=NULL, conta
     x@contacts <- y
     return(x)
 }) # end obkContacts constructor
+
+
+
+
+
 
 ####################
 ####  ACCESSORS ####
@@ -90,20 +120,42 @@ setMethod("get.individuals","obkContacts", function(x, ...){
     return(network.vertex.names(x@contacts))
 })
 
-######################
-#### get.ncontacts ###
-######################
-setMethod("get.ncontacts","obkContacts", function(x, ...){
+
+#####################
+#### get.contacts ###
+#####################
+setMethod("get.contacts","obkContacts", function(x, from=NULL, to=NULL, ...){
     if(is.null(x@contacts)) return(0)
-    return(network.edgecount(x@contacts))
+
+    ## handle 'POSIXct' dates
+    if(inherits(from, "POSIXct")){
+        from <- as.Date(from)
+        to <- as.Date(to)
+    }
+
+    ## handle 'Date' dates
+    if(inherits(from, "Date")){
+        x@origin <- min(from)
+        from <- as.numeric(from - x@origin)
+        to <- as.numeric(to - x@origin)
+    }
+
+    if(!is.null(from) || !is.null(to)) {
+        res <- network.extract(x@contacts, onset=from, terminus=to)
+    } else {
+        res <- x@contacts
+    }
+
+
+    return(res)
 })
 
 ######################
-#### get.contacts ###
+#### get.ncontacts ###
 ######################
-setMethod("get.contacts","obkContacts", function(x, ...){
+setMethod("get.ncontacts","obkContacts", function(x, from=NULL, to=NULL, ...){
     if(is.null(x@contacts)) return(0)
-    return(x@contacts)
+    return(network.edgecount(get.contacts(x, from=from, to=to)))
 })
 
 ######################

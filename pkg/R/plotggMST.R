@@ -10,7 +10,7 @@ plotggMST<-function(x,individualID=NULL,locus=NULL){
     return(NULL)
   }
   ## GET DNA SEQUENCES ##
-  if(!is.null(locus) && get.nlocus(x)>1){
+  if(is.null(locus) && get.nlocus(x)>1){
     warning("You need to provide the locus name")
     return(NULL)
   }
@@ -75,10 +75,10 @@ plotggMST<-function(x,individualID=NULL,locus=NULL){
 ## NOTE: THIS MUST BE COMMENTED WHEN COMPILING/INSTALLING THE PACKAGE
 
 
-# data(HorseFlu)
-# attach(HorseFlu)
+# data(HorseFluRaw)
+# attach(HorseFluRaw)
 # x <- new("obkData", individuals=individuals, samples=samples, dna=dna, clinical=clinics)
 # plotggMST(x,individualID=42)
 # plot huge minimum spanning tree
 # plotggMST(x)
-# detach(HorseFlu)
+# detach(HorseFluRaw)

@@ -35,6 +35,9 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, locus=NULL) 
     ## escape if no info provided ##
     if(is.null(dna)) return(x)
 
+    ## escape of obkSequences is provided ##
+    if(inherits(dna, "obkSequences")) return(dna)
+
 
     ## PROCESS ARGUMENTS ##
     ## set locus to NULL if all NAs ##

@@ -1,10 +1,10 @@
-\name{HorseFlu}
+\name{HorseFluRaw}
 \docType{data}
-\alias{HorseFlu}
+\alias{HorseFluRaw}
 
-\title{Dataset from the Newmarket 2003 equine influenza outbreak}
+\title{Raw dataset from the Newmarket 2003 equine influenza outbreak}
 \description{
-  This dataset is an \code{obkData} object with the following components:
+  This dataset is a list containing the following components:
   \itemize{
     \item{
       \code{individuals}: a dataframe which contains all static information relating to a horse (individualID), training yard the horse belongs to (yardID), date of birth, sex, latitude, longitude.
@@ -25,49 +25,56 @@
 }
 \examples{
 \dontrun{
-
 ## LOAD DATA ##
-data(HorseFlu)
+data(HorseFluRaw)
+attach(HorseFluRaw)
 
 ## EXAMINE CONTENT ##
-summary(HorseFlu)
 
 ## individual info
-head(HorseFlu@individuals)
+head(individuals)
 
 ## sample info
-head(HorseFlu@samples)
+head(samples)
 
 ## DNA sequences
-HorseFlu@dna
+dna
 
 ## clinical info
-names(HorseFlu@clinical)
-head(HorseFlu@clinical$FirstVac)
-head(HorseFlu@clinical$LastVac)
+class(clinics)
+names(clinics)
+head(clinics$FirstVac)
+
+
+## CREATE OBKDATA ##
+x <- new("obkData", individuals=individuals, samples=samples, dna=dna, clinical=clinics)
+
 
 ## MANIPULATE OBJECT ##
 
 ## How many individuals, samples and sequences?
-get.nindividuals(HorseFlu)
-get.nsamples(HorseFlu)
-get.nsequences(HorseFlu)
+get.nindividuals(x)
+get.nsamples(x)
+get.nsequences(x)
 
 ## How many sequences per individual?
-table(HorseFlu@samples$individualID)
-barplot(table(HorseFlu@samples$individualID), horiz=TRUE, las=1, xlab="number of samples", cex.names=.8)
+table(x@samples$individualID)
+barplot(table(x@samples$individualID), horiz=TRUE, las=1, xlab="number of samples", cex.names=.8)
 
 ## Identify most sampled individual
-ind.max <- names(which.max(table(HorseFlu@samples$individualID)))
-HorseFlu.max <- subset(HorseFlu, individual=ind.max) # returns a warning message
-get.individuals(HorseFlu.max) # sanity check
+ind.max <- names(which.max(table(x@samples$individualID)))
+x.max <- subset(x, individual=ind.max)
+get.individuals(x.max) # sanity check
 
 ## How many samples and sequences for this individual?
-get.samples(HorseFlu.max)
-table(HorseFlu.max@samples$sampleID)
+get.samples(x.max)
+table(x.max@samples$sampleID)
 
 ## Build a phylogeny for this individual
-get.phylo(HorseFlu.max, type="fan")
+get.phylo(x.max, type="fan")
+
+detach(HorseFluRaw)
+
 
 }
 }

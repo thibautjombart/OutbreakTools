@@ -85,18 +85,12 @@
 \author{Thibaut Jombart (\email{t.jombart@imperial.ac.uk})}
 \examples{
 
-## THIS IS A TOY EXAMPLE ##
-library(ape)
-data(woodmouse)
+## Load ToyOutbreak, a simulated outbreak stored in a obkData object  ##
+data(ToyOutbreak)
+x <- ToyOutbreak
 
-## test constructor / show
-new("obkSequences") # empty object
-new("obkSequences", woodmouse) # no locus info
-new("obkSequences", as.matrix(woodmouse), locus=rep(c('loc1', 'loc2', 'locXX'), c(10,4,1)))
-
-
-## test accessors ##
-x <- new("obkSequences", as.matrix(woodmouse), locus=rep(c('loc1', 'loc2', 'locXX'), c(10,4,1)))
+## show obkObject
+##summary(x) # generates an error
 
 ## access raw content
 get.dna(x)
@@ -105,15 +99,17 @@ get.dna(x)
 get.nlocus(x)
 get.locus(x)
 get.dna(x, locus=1)
-get.dna(x, locus="locXX")
+get.dna(x, locus="gene2")
 get.dna(x, locus=1:2)
 get.nsequences(x)
 get.nsequences(x, "bylocus")
 
+get.sequences(x)
+
 ## access data by sequence ID
-get.dna(x, id=c("No305"))
-get.dna(x, id=c("No305","CthulhuDNA"))
-get.dna(x, id=c("No305", "No306", "No1114S"))
+get.dna(x, id=c("10"))
+get.dna(x, id=c("100","354"))
+get.dna(x, id=c(100:105))
 
 }
 \keyword{classes}

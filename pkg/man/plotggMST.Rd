@@ -21,16 +21,18 @@
 \examples{
 ## load data
 data(HorseFlu)
-attach(HorseFlu)
+x <- HorseFlu
 
-x <- new("obkData", individuals=individuals, samples=samples, dna=dna, clinical=clinics)
-# plot minimum spanning tree for individual 42
+## plot minimum spanning tree for individual 42
 plotggMST(x,individualID=42)
-\dontrun{
-# plot huge minimum spanning tree
-plotggMST(x)
-}
-detach(HorseFlu)
+
+## another example data
+data(ToyOutbreak)
+x <- ToyOutbreak
+
+## plot minimum spanning tree for gene1
+plotggMST(x, locus="gene1")
+
 
 }
 \author{
