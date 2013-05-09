@@ -1,22 +1,20 @@
-#wrapper for plot functions
-#
-#author: Rolf Ypma
+## wrapper for plot functions
+##
+##author: Rolf Ypma, amended by Thibaut Jombart
 
-plot.obkData=function(x,type='timeline',...){
-	if(class(x)!='obkData'){
-		error('this function only plots obkData objects')
-	}
-	if(type=='timeline')
-		plotIndividualTimeline(x,...)
-	else if(type=='geo')
-		plotGeo(x,...)
-	else if(type=='mst')
-		plotggMST(x,...)
-	else if(type=='phylo')
-		plotggphy(x,...)
-	else
-		warning('type was not recognized. Valid types: timeline, geo, mst, phylo')
-}
+setMethod("plot", "obkData", function(x, y=c("timeline","geo","mst","phylo"), ...){
+    y <- match.arg(y)
+    if(y=="timeline")
+        plotIndividualTimeline(x,...)
+    else if(y=="geo")
+        plotGeo(x,...)
+    else if(y=="mst")
+        plotggMST(x,...)
+    else if(y=="phylo")
+        plotggphy(x,...)
+    else
+        warning("Type (argument 'y') is not recognized. Valid types: timeline, geo, mst, phylo")
+})
 
 
 

@@ -19,7 +19,7 @@
   \item{center}{individualID of individual to put at the center of the map. If left empty, method will focus on center of all points}
 }
 \description{
-   Function to plot a timeline for individuals involved in an outbreak in one plot
+   Function to plot the geographic distribution of data in an \linkS4class{obkData}.
 }
 \examples{
 ## load the obkData object containing information about equine influenza outbreak
