@@ -4,7 +4,7 @@
 ## A class for reading Newick formatted trees with BEAST-style annotations
 ##
 
-strip.annotations <- function(text) {
+.strip.annotations <- function(text) {
     annotations <- list()
     end <- 1
 
@@ -22,13 +22,13 @@ strip.annotations <- function(text) {
     return(list(annotations=annotations,tree=text))
 }
 
-.split.tree.names = function(text) {
+.split.tree.names <- function(text) {
     text = gsub(pattern="\\[.*?\\]=",x=text,replacement="")
     text = gsub(pattern="^tree",x=text,replacement="")
     return(text)
 }
 
-.split.tree.traits = function(text) {
+.split.tree.traits <- function(text) {
 
     ## Pull out annotation
     text = regmatches(text,regexpr(pattern="\\[.*?\\]",text))
@@ -37,7 +37,7 @@ strip.annotations <- function(text) {
     return(text)
 }
 
-parse.value = function(text) {
+.parse.value <- function(text) {
     value = text
     if (length(grep("^\\{",value))) { ## starts with {
         save = value
@@ -68,7 +68,7 @@ parse.value = function(text) {
         part = strsplit(value, split, perl=TRUE)[[1]]
         value = list()
         for (i in 1:length(part)) {
-            value[[i]] = parse.value(part[i])
+            value[[i]] = .parse.value(part[i])
         }
         ## TODO Unlist when simple array?
     } else {
@@ -79,7 +79,7 @@ parse.value = function(text) {
     return(value)
 }
 
-parse.traits = function(text, header=FALSE) {
+.parse.traits <- function(text, header=FALSE) {
 
     if (header == TRUE) {
         text = substring(text,3,nchar(text)-1)
@@ -103,19 +103,19 @@ parse.traits = function(text, header=FALSE) {
         e <- s + length[i,1] - 1
         key <- substring(text,s,e)
 
-        traits[[key]] <- parse.value(value)
+        traits[[key]] <- .parse.value(value)
     }
 
     return(traits)
 }
 
-## annotated.clado.build <- function(tp) {
-##     stop(paste("Annotated clado.build is not yet implemented.\n"))
-## }
+.annotated.clado.build <- function(tp) {
+    stop(paste("Annotated clado.build is not yet implemented.\n"))
+}
 
 ## THE CODE BELOW COMES FROM 'ape'. MY GOAL IS TO DERIVE FROM THIS TO READ IN BEAST-STYLE ANNOTATIONS
 
-annotated.tree.build <- function(tp){
+.annotated.tree.build <- function(tp){
 
     add.internal <- function() {
         edge[j, 1] <<- current.node
@@ -154,11 +154,11 @@ annotated.tree.build <- function(tp){
         return(obj)
     }
 
-    result = strip.annotations(tp)
+    result = .strip.annotations(tp)
     annotations = result$annotations
     new.tp.stripped = result$tree
 
-    annotations = lapply(annotations, parse.traits, header=TRUE)
+    annotations = lapply(annotations, .parse.traits, header=TRUE)
 
     tp.stripped = gsub("\\[.*?\\]","",tp)
     tpc <- unlist(strsplit(tp.stripped, "[\\(\\),;]"))
@@ -215,8 +215,8 @@ annotated.tree.build <- function(tp){
     obj
 }
 
-read.annontated.tree = function (file = "", text = NULL, tree.names = NULL, skip = 0,
-comment.char = "#", keep.multi = FALSE, ...)
+read.annotated.tree <- function (file = "", text = NULL, tree.names = NULL, skip = 0,
+                                  comment.char = "#", keep.multi = FALSE, ...)
 {
     unname <- function(treetext) {
         nc <- nchar(treetext)
@@ -265,19 +265,19 @@ comment.char = "#", keep.multi = FALSE, ...)
     if (!is.null(tree.names)) {
         traits.text = lapply(tree.names, .split.tree.traits)
         tree.names = lapply(tree.names, .split.tree.names)
-        tree.traits = lapply(traits.text, parse.traits)
+        tree.traits = lapply(traits.text, .parse.traits)
     }
 
     if (!length(colon)) {
         stop(paste("Annotated clado.build is not yet implemented.\n"))
-        obj <- lapply(STRING, annotated.clado.build)
+        obj <- lapply(STRING, .annotated.clado.build)
     }
     else if (length(colon) == Ntree) {
-        obj <- lapply(STRING, annotated.tree.build)
+        obj <- lapply(STRING, .annotated.tree.build)
     }
     else {
         obj <- vector("list", Ntree)
-        obj[colon] <- lapply(STRING[colon], annotated.tree.build)
+        obj[colon] <- lapply(STRING[colon], .annotated.tree.build)
         nocolon <- (1:Ntree)[!1:Ntree %in% colon]
         obj[nocolon] <- lapply(STRING[nocolon], clado.build)
     }
@@ -359,12 +359,10 @@ read.annotated.nexus <- function (file, tree.names = NULL) {
             s <- c(1, semico[-Ntree] + 1)
             j <- mapply(":", s, semico)
             if (is.list(j)) {
-                for (i in 1:Ntree) STRING[i] <- paste(tree[j[[i]]],
-                                                      collapse = "")
+                for (i in 1:Ntree) STRING[i] <- paste(tree[j[[i]]],collapse = "")
             }
             else {
-                for (i in 1:Ntree) STRING[i] <- paste(tree[j[,
-                                                             i]], collapse = "")
+                for (i in 1:Ntree) STRING[i] <- paste(tree[j[,i]], collapse = "")
             }
         }
         else STRING <- tree
@@ -389,22 +387,22 @@ read.annotated.nexus <- function (file, tree.names = NULL) {
 
     colon <- grep(":", STRING)
     if (!length(colon)) {
-        stop("annotated.clado.build is not yet implemented.\n")
-        trees <- lapply(STRING, annotated.clado.build)
+        stop(".annotated.clado.build is not yet implemented.\n")
+        trees <- lapply(STRING, .annotated.clado.build)
     } else if (length(colon) == Ntree) {
         ##        trees <- if (translation) {
         ##            browser()
         ##            stop("treeBuildWithTokens is not yet implemented.\n")
         ##            lapply(STRING, .treeBuildWithTokens)
         ##        }
-        ##        else lapply(STRING, annotated.tree.build)
-        trees <- lapply(STRING, annotated.tree.build)
+        ##        else lapply(STRING, .annotated.tree.build)
+        trees <- lapply(STRING, .annotated.tree.build)
         ##        browser()
     } else {
         ##        trees <- vector("list", Ntree)
-        ##        trees[colon] <- lapply(STRING[colon], annotated.tree.build)
+        ##        trees[colon] <- lapply(STRING[colon], .annotated.tree.build)
         ##        nocolon <- (1:Ntree)[!1:Ntree %in% colon]
-        ##        trees[nocolon] <- lapply(STRING[nocolon], annotated.clado.build)
+        ##        trees[nocolon] <- lapply(STRING[nocolon], .annotated.clado.build)
         ##        if (translation) {
         ##            for (i in 1:Ntree) {
         ##                tr <- trees[[i]]
@@ -451,8 +449,7 @@ read.annotated.nexus <- function (file, tree.names = NULL) {
             if (length(colon) == Ntree)
                 attr(trees, "TipLabel") <- TRANS[, 2]
             else {
-                for (i in 1:Ntree) trees[[i]]$tip.label <- TRANS[,
-                                                                 2][as.numeric(trees[[i]]$tip.label)]
+                for (i in 1:Ntree) trees[[i]]$tip.label <- TRANS[, 2][as.numeric(trees[[i]]$tip.label)]
                 trees <- .compressTipLabel(trees)
             }
         }
@@ -461,5 +458,5 @@ read.annotated.nexus <- function (file, tree.names = NULL) {
             names(trees) <- nms.trees
     }
     trees
-}
+} # end read.annotated.nexus
 

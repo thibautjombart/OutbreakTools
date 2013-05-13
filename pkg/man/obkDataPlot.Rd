@@ -18,21 +18,24 @@
 
     \item \code{phylo}: plot phylogenetic trees stored in the object;
     uses \code{\link{plotggphy}}.
+
+   \item \code{contacts}: plot contacts between individuals stored in the object;
+    uses \code{\link{plot.obkContacts}}.
 }
 }
 \usage{
-\S4method{plot}{obkData}(x, y=c("timeline","geo","mst","phylo"), \dots)
+\S4method{plot}{obkData}(x, y=c("timeline","geo","mst","phylo","contacts"), \dots)
 }
 \arguments{
   \item{x}{a \linkS4class{obkData} object}
   \item{y}{a character indicating the type of plot to be generated; can
-    be "timeline" (default), "geo", "mst", or "phylo".}
+    be "timeline" (default), "geo", "mst", "phylo", or "contacts".}
   \item{\dots}{further arguments to be passed to the plotting function,
     depending on the type of plot selected (see description above).}
 }
 \seealso{
   \code{\link{plotIndividualTimeline}}, \code{\link{plotGeo}},
-  \code{\link{plotggMST}}, \code{\link{plotggphy}}.
+  \code{\link{plotggMST}}, \code{\link{plotggphy}}, \code{\link{plot.obkContacts}}.
 }
 \author{
   Rolf Ypma  \email{Rolf.Ypma@rivm.nl}
@@ -52,6 +55,10 @@ plot(HorseFlu, "geo", location=c('lon','lat'),TRUE,colorBy='sex',zoom=12,center=
 ## plot minimum spanning tree for first 10 individuals
 get.nindividuals(HorseFlu)
 plot(subset(HorseFlu, individuals=1:10), "mst")
+
+## plot contacts
+data(ToyOutbreak)
+plot(ToyOutbreak, "contacts")
 
 }
 \keyword{multivariate}
