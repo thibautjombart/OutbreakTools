@@ -738,7 +738,7 @@ plot(data,'timeline')
 \noindent (or equivalently \texttt{plot(data)})
 
 These are a lot of horses in one plot, let's restrict ourselves to a selection. We can do this by a vector specifying the indices of the individuals to plot. Lets plot the first twenty
-<<fig=TRUE>>=
+<<plotfirst20, fig=TRUE>>=
 plot(data,selection=1:20)
 @
 

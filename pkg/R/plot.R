@@ -3,6 +3,7 @@
 ##author: Rolf Ypma, amended by Thibaut Jombart
 
 setMethod("plot", "obkData", function(x, y=c("timeline","geo","mst","phylo"), ...){
+    if(missing(y)) y <- "timeline"
     y <- match.arg(y)
     if(y=="timeline")
         plotIndividualTimeline(x,...)
