@@ -56,7 +56,7 @@
 \dontrun{
 ## read annotated tree from Nexus file
 ## (note: do not use 'system file' for your own file!)
-tre <- read.annotated.nexus(system.file("files/BEAST-expl.nex"))
+tre <- read.annotated.nexus(system.file("files/BEAST-expl.nex", package="epibase"))
 
 ## ladderize the tree
 tre <- ladderize(tre)
