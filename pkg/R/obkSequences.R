@@ -173,10 +173,10 @@ setMethod("get.dna","obkSequences", function(x, locus=NULL, id=NULL, ...){
         id <- get.sequences(x)[id]
     }
     id <- as.character(id)
-    if(!all(id %in% get.sequences(x))) {
-        temp <- paste(id[!id %in% get.sequences(x)], collapse=", ")
+    if(!all(id[!is.na(id)] %in% get.sequences(x))) {
+        temp <- paste(id[!is.na(id) & !id %in% get.sequences(x)], collapse=", ")
         warning(paste("The following sequence IDs are not in the dataset:", temp))
-        id <- id[id %in% get.sequences(x)]
+        id <- id[!is.na(id) & id %in% get.sequences(x)]
     }
     out <- lapply(x@dna, function(e) e[id[id %in% rownames(e)],,drop=FALSE])
     out <- out[sapply(out, nrow)>0]

@@ -719,10 +719,11 @@ is plotted in a single window
 \item `mst': plots a minimal spanning tree of the genetic data
 \item `phylo': plots a phylogenetic tree of the genetic data
 \end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Plotting the timeline}
-
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Let's plot an outbreak of equine influenza provided. First import the data and make an obkData object
 <<>>=
@@ -730,14 +731,14 @@ data(HorseFluRaw)
 data <- new("obkData", individuals=HorseFluRaw$individuals,samples=HorseFluRaw$samples,clinical=HorseFluRaw$clinics)
 @
 then plot
-<<fig=TRUE>>=
+<<plottime1,fig=TRUE>>=
 plot(data,'timeline')
 @
 
 \noindent (or equivalently \texttt{plot(data)})
 
 These are a lot of horses in one plot, let's restrict ourselves to a selection. We can do this by a vector specifying the indices of the individuals to plot. Lets plot the first twenty
-<<fig=TRUE>>=
+<<plotfirst20, fig=TRUE>>=
 plot(data,selection=1:20)
 @
 
@@ -766,7 +767,9 @@ plot(data,selection=1:20,colorBy='yardID',ordering=20:1)
 
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Plotting geography on a map}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 If geographical information is available, this function can be used to plot the cases on a map (for example downloaded from googlemaps). Geographical information can be provided as longitude/latitudes, or as strings specifying locations (which are converted to lon/lat using googlemaps).
 
 
@@ -777,7 +780,7 @@ data <- new("obkData", individuals=HorseFluRaw$individuals,samples=HorseFluRaw$s
 @
 In this dataset, we already have longitudes and latitudes. We specify the
 columns holding these data with `location', and we have to tell the function that these are valid lon/lat with 'isLonLat' (which defaults to FALSE)
-<<fig=TRUE,pdf=FALSE,png=TRUE>>=
+<<plotgeo1,fig=TRUE,pdf=FALSE,png=TRUE>>=
 plot(data,'geo',location=c('lon','lat'),isLonLat=TRUE)
 @
 
@@ -798,14 +801,19 @@ a part of the map
 plot(data,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=12,colorBy='sex',center='9')
 @
 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Plotting a minimal spanning tree of the genetic sequences}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 It can be useful to plot a minimal spanning tree of the sequences, to  quickly visualize the genetic diversity and the relation between sequences. We can do this as follows
 <<>>=
 data(HorseFluRaw)
 attach(HorseFluRaw)
 data <- new("obkData", individuals=individuals, samples=samples, dna=dna, clinical=clinics)
 @
-<<fig=TRUE>>=
+<<plotmst1,fig=TRUE>>=
 plot(data,'mst')
 @
 
@@ -814,7 +822,13 @@ plot(data,'mst')
 plot(data,'mst',individualID=42)
 @
 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Plotting a phylogenetic tree of the sequences}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 This function will plot a phylogenetic tree of the sequences.
 
 
