@@ -38,7 +38,6 @@ Collate:
     'subset.R'
     'obkData_basics.R'
     'uniqSequences.R'
-    'annotatedTreeReader.R'
     'dna2uniqSequences.R'
     'get.phylo.R'
     'phylo2ggphy.R'
