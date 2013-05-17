@@ -81,7 +81,8 @@ symbols(0,0, circles=i, inches=FALSE, add=TRUE, bg=transp("royalblue", .1), fg=N
 ## color tips by dates ##
 tiplabels(col=tre$tip.col, pch=20)
 tiplabels(col=transp(tre$tip.col), pch=20, cex=2)
-legend("bottomleft", fill=treInfo$legend$col, legend=treInfo$legend$txt,title="Days after 1st sample")
+legend("bottomleft", fill=treInfo$legend$col, legend=treInfo$legend$txt,
+title="Days after 1st sample")
 
 ## EXample 2: LOAD DATA ##
 
@@ -89,7 +90,8 @@ data(ToyOutbreak)
 
 ## get tree info for ToyOutbreak dataset ##
 pal <- colorRampPalette(c("gold","red"))
-treInfo <- get.phylo(ToyOutbreak, color.by="date", palette=pal, plot=TRUE, ask=TRUE)
+par(mfrow=c(1,2))
+treInfo <- get.phylo(ToyOutbreak, color.by="date", palette=pal, plot=TRUE, ask=FALSE)
 treInfo
 
 
