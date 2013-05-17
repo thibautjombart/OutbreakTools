@@ -10,6 +10,7 @@ import(
        MASS,
        ape,
        adegenet,
+       network,
        networkDynamic,
        ggplot2,
        ggmap,

@@ -5,11 +5,14 @@
 ###############
 
 setMethod("get.phylo", "obkData", function(x, locus=NULL, model = "N", pairwise.deletion = FALSE, method=nj,
-                                           color.by=c("sample","individual","date"), palette=funky,
+                                           color.by=c("sample","individual","date"), palette=NULL,
                                            plot=TRUE, ask=TRUE, ...){
     if(get.nlocus(x)==0){
         warning("No DNA sequences in the data.")
         return(NULL)
+    }
+    if(is.null(palette)){
+        palette <- colorRampPalette(brewer.pal(11, "RdYlGn"))
     }
 
     ## GET DNA SEQUENCES ##

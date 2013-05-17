@@ -19,7 +19,7 @@ get.phylo(x, \dots)
 
 \S4method{get.phylo}{obkData}(x, locus=NULL, model = "N", pairwise.deletion = FALSE,
            method=nj, color.by=c("sample","individual","date"),
-           palette=funky, plot=TRUE, ask=TRUE,\dots)
+           palette=NULL, plot=TRUE, ask=TRUE,\dots)
 }
 \arguments{
   \item{x}{an \linkS4class{obkData} object.}
