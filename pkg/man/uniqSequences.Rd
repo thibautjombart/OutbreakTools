@@ -5,11 +5,13 @@
 \alias{initialize,uniqSequences-method}
 \title{Formal class "uniqSequences"}
 \description{
-  The class \code{uniqSequences} is a formal (S4) class for storing unique sequences in the form
-  of a \code{DNAbin} and an associated list of vectors containing the original sequenceID
+  The class \code{uniqSequences} is a formal (S4) class for
+  storing unique sequences in the form of a \code{DNAbin} and an
+  associated list of vectors containing the original sequenceID.
 }
 \section{Objects from the class uniqSequences}{
-  \code{uniqSequences} objects can be created using \code{new("uniqSequences",uniqID="listOrNULL", uniqdna="DNAbin")}:
+  \code{uniqSequences} objects can be created using
+  \code{new("uniqSequences",uniqID="listOrNULL", uniqdna="DNAbin")}:
   \describe{
     \item{\code{uniqdna}}{an object of type DNAbin.}
     \item{\code{uniqID}}{a list of vectors with the vector names corresponding to the labels of DNAbin.}
@@ -19,13 +21,14 @@
   \code{uniqSequences} contain the following slots.
   \describe{
     \item{\code{uniqdna}:}{a \code{DNAbin} containing the unique sequences.}
-    \item{\code{uniqID}:}{a \code{list} containing the unique IDs for each sequence and the 
-     names of the original sequences as a vector.}
+    \item{\code{uniqID}:}{a \code{list} containing the unique IDs for
+      each sequence and the names of the original sequences as a vector.}
   }
 }
 
 \author{
-  Joseph Hughes... add your name/email here}
+  Joseph Hughes
+}
 \examples{
 
 ## EMPTY OBJECT

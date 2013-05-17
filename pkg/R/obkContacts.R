@@ -191,6 +191,22 @@ setMethod ("plot", "obkContacts", function(x, y=NULL, labels=get.individuals(x),
 
 
 
+
+##########################
+#### AS.MATRIX METHOD ####
+##########################
+
+setMethod ("as.matrix", "obkContacts", function(x, matrix.type=c("adjacency","incidence","edgelist"), ...){
+    g <- x@contacts
+    if(is.null(g)) return(NULL)
+    matrix.type <- match.arg(matrix.type)
+    if(is.networkDynamic(g)) g <- network.collapse(g)
+    set.network.attribute(g, "multiple", FALSE)
+    return(as.matrix(g, matrix.type=matrix.type))
+})
+
+
+
 ##################
 ####  TESTING ####
 ##################

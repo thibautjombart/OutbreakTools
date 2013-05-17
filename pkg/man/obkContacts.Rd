@@ -27,6 +27,9 @@
 \alias{networkDynamicOrNetwork-class}
 \alias{networkDynamicOrNetworkOrNULL-class}
 
+\alias{as.matrix,obkContacts-method}
+\alias{as.matrix.obkContacts}
+
 % \alias{[,obkContacts-method}
 % \alias{[,obkContacts,ANY,ANY-method}
 %%%%
@@ -93,6 +96,9 @@
       the contacts (as \code{network} or \code{networkDynamic}); for
       dynamic contact networks, starting dates can be specified by the
       argument \code{from}, and end date by the argument \code{to}.}
+    \item{as.matrix}{\code{signature(x = "obkContacts",
+	matrix.type=c("adjacency","incidence","edgelist"))}: extract an
+      adjacency, incidence, or edge matrix from the object.}
   }
 }
 \author{Simon Frost (\email{sdwfrost@gmail.com})}
@@ -126,6 +132,11 @@ plot(network.extract(ToyOutbreak@contacts@contacts, onset=10957, terminus=10959)
 plot(network.extract(ToyOutbreak@contacts@contacts, onset=10959, terminus=10960), main="Contact network - day 3", displaylabels=TRUE)
 plot(network.extract(ToyOutbreak@contacts@contacts, onset=10960, terminus=10961), main="Contact network - day 4", displaylabels=TRUE)
 par(mfrow=c(1,1))
+
+# extract matrices
+as.matrix(ToyOutbreak@contacts)
+as.matrix(ToyOutbreak@contacts, "incidence")
+as.matrix(ToyOutbreak@contacts, "edgelist")
 
 
 }
