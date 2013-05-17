@@ -23,7 +23,17 @@
 #' @import ggplot2,RColorBrewer
 #' @author Anton Camacho
 #' @example ../misc/plotggphyExample.R
-#' 
+#'
+
+## hack to remove the NOTE in R CMD check about:
+## plotggphy: no visible binding for global variable ‘x.beg’
+## plotggphy: no visible binding for global variable ‘x.end’
+## plotggphy: no visible binding for global variable ‘y.beg’
+## plotggphy: no visible binding for global variable ‘y.end’
+## plotggphy: no visible binding for global variable ‘y’
+## plotggphy: no visible binding for global variable ‘label’
+if(getRversion() >= "2.15.1")  utils::globalVariables(c("x.beg","x.end","y.beg","y.end","y","label"))
+
 plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FALSE, tip.label.size = 3, build.tip.attribute = FALSE, 
 	tip.colour = NULL, tip.alpha = NULL, tip.shape = NULL, tip.size = NULL, branch.unit = NULL, tip.dates = NULL, 
 	guess.tip.dates.from.labels = FALSE, set.guess = list(prefix = "_", order = 1, from = "last"), axis.date.format = NULL, 
