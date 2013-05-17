@@ -28,20 +28,26 @@
   Joseph Hughes... add your name/email here}
 \examples{
 
-## THIS EXAMPLE NEEDS TO BE FIXED ##
+## EMPTY OBJECT
+new("uniqSequences")
 
-% ## EMPTY OBJECT ##
-% new("uniqSequences")
+## LOAD RAW DATA
+data(HorseFlu)
 
-% data(HorseFluOutbreak)
-% # get some sequence IDs from sample
-% seqids<-na.omit(samples[samples$sampleID=="904","sequenceID"])
-% # get the index of the sequenceIDs in the DNAbin
-% seqindex<-which(labels(dna) %in% seqids)
-% # create a subset DNAbin
-% subsetdna<-dna[seqindex, ]
-% # see the function dna2uniqSequences
-% uniqsubset<-dna2uniqSequences(subsetdna)
+## GET SEQUENCES FROM THE FIRST 3 INDIVIDUALS
+## all sequences
+dna <- get.dna(subset(HorseFlu, individuals=1:3))[[1]]
+dna
+plot(nj(dist.dna(dna)), type="unr")
+title("NJ tree - all sequences")
+
+## only unique sequences
+dna2 <- dna2uniqSequences(dna)
+dna2
+plot(nj(dist.dna(dna2@uniqdna)), type="unr")
+title("NJ tree - only unique sequences")
+
+
 
 }
 \keyword{classes}
