@@ -805,9 +805,9 @@ plot(data,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=12,colorBy='sex',cent
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Plotting a minimal spanning tree of the genetic sequences}
+\subsection{Obtaining a minimal spanning tree of the genetic sequences}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-It can be useful to plot a minimal spanning tree of the sequences, to  quickly visualize the genetic diversity and the relation between sequences. We can do this as follows
+It can be useful to plot a minimal spanning tree of the sequences, to quickly visualize the genetic diversity and the relation between sequences. We can do this as follows:
 <<>>=
 data(HorseFluRaw)
 attach(HorseFluRaw)
@@ -826,10 +826,107 @@ plot(data,'mst',individualID=42)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Plotting a phylogenetic tree of the sequences}
+\subsection{Obtaining phylogenies from genetic sequences}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The package \textit{ape} implements a wide range of genetic distances (see \texttt{?dist.dna}) and
+most usual algorithms for distance-based phylogenetic reconstruction.
+In \textit{epibase}, the function \texttt{get.phylo} is a wrapper for these methods, allowing to
+derive trees for a selection or all the genes present in an \texttt{obkData} object.
+We illustrate this procedure using the simulated outbreak \texttt{ToyOutbreak}:
+<<>>=
+data(ToyOutbreak)
+head(ToyOutbreak)
+get.nlocus(ToyOutbreak)
+get.locus(ToyOutbreak)
+@
+This object contains genetic sequences for two different genes.
+We isolate a subset of sequences, say for a random subset of samples.
+<<>>=
+get.nsamples(ToyOutbreak)
+x <- subset(ToyOutbreak, samples=sample(1:418, 15, replace=FALSE))
+summary(x)
+@
+\texttt{get.phylo} admits a range of arguments allowing to select which genes (\texttt{locus}),
+model of evolution \texttt{model}, and tree reconstruction method (\texttt{method}) should be used.
+By default, a Neighbour-Joining tree based on Hamming distances (number of differing nucleotides) is
+derived for every gene, and the resulting trees are plotted:
+<<fig=TRUE>>=
+par(mfrow=c(1,2))
+trees <- get.phylo(x, ask=FALSE)
+trees
+@
+
+\noindent But for instance, we may only want an unrooted tree for the first gene, based on Kimura's 2
+parameters model of evolution, and we may want to indicate collection dates using tip colors;
+this can be done by:
+<<fig=TRUE>>=
+tree1 <- get.phylo(x, locus=1, ask=FALSE, model="K80",
+                   color.by="dat", type="unrooted", palette=seasun)
+tree1
+@
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Plotting stored phylogenetic trees}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-This function will plot a phylogenetic tree of the sequences.
+Phylogenies stored in \texttt{obkData} (slot \texttt{@trees}) can be plotted using \texttt{plotggphy}.
+This function can be particularly useful as it allows for taking the collection dates into account
+and for plotting a time tree (where branch length represent time, rather than quantity of
+evolution).
+We illustrate this function using data on pandemic influenza stored in \texttt{FluH1N1pdm2009}.
+We first create an \texttt{obkData}:
+<<>>=
+data(FluH1N1pdm2009)
+x <- new("obkData", individuals = FluH1N1pdm2009$individuals,
+         samples = FluH1N1pdm2009$samples, dna = FluH1N1pdm2009$dna,
+         trees = FluH1N1pdm2009$trees)
+head(x)
+@
+The phylogenie(s) contained in \texttt{x} can be extracted by:
+<<>>=
+get.trees(x)
+tre <- get.trees(x)[[1]]
+tre
+@
+and plotted using \textit{ape}'s standard \texttt{plot} function:
+<<pdh1n1tree1,fig=TRUE>>=
+plot(get.trees(x)[[1]], show.tip=FALSE)
+@
+However, we are loosing the temporal information about the samples:
+<<pdh1n1,fig=TRUE,pdf=FALSE,png=TRUE>>=
+plot(x, colorBy="location", orderBy="location")
+@
+The basic plot of \texttt{plotggphy} gives a tree quite similar to \textit{ape}'s:
+<<fig=TRUE>>=
+plotggphy(x)
+@
+However, the function is more flexible and powerful.
+In particular, the argument \texttt{build.tip.attribute} allows to derive attributes for the tips
+based on information on samples and individuals.
+Here, for instance, we can use it to retrieve dates for each tip:
+<<pdh1n1tree2,fig=TRUE>>=
+p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE,
+               branch.unit = "year", tip.dates = "date")
+@
+
+\noindent Note that \texttt{p} is a graphical object, which can be re-used later to generate and
+modify the plot.
+Importantly, other attributes can also be used and represented by colors on the tips.
+For instance, \texttt{x} contains information about the location of different individuals:
+<<>>=
+head(x@individuals)
+@
+Which can be exploited by:
+<<pdh1n1tree3,fig=TRUE>>=
+ p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE,
+                branch.unit = "year", tip.dates = "date", tip.colour = "location",
+                tip.size = 3, tip.alpha = 0.75)
+@
+
+
 
 
 \end{document}
