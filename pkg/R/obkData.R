@@ -340,7 +340,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=N
 
 #
 # get.nclinicals(x)
-# get.clinical(x)
+# get.clinicals(x)
 # get.individuals(x,"clinical")
 # get.nindividuals(x,"clinical")
 # get.dates(x,"clinical")

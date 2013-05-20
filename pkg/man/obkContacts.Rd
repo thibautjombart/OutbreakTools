@@ -105,15 +105,25 @@
 }
 \usage{
 get.contacts(x, \dots)
+
 get.ncontacts(x, \dots)
 
 \S4method{show}{obkContacts}(object)
-\S4method{plot}{obkContacts}(x, y=NULL, labels=get.individuals(x), \dots)
-\S4method{as.matrix}{obkContacts}(x, matrix.type=c("adjacency","incidence","edgelist"), \dots)
+
+\S4method{plot}{obkContacts}(x, y=NULL, labels=get.individuals(x),
+\dots)
+
+\S4method{as.matrix}{obkContacts}(x,
+matrix.type=c("adjacency","incidence","edgelist"), \dots)
+
 \S4method{get.ncontacts}{obkContacts}(x, from=NULL, to=NULL, \dots)
+
 \S4method{get.contacts}{obkContacts}(x, from=NULL, to=NULL, \dots)
+
 \S4method{get.nindividuals}{obkContacts}(x, \dots)
+
 \S4method{get.individuals}{obkContacts}(x, \dots)
+
 
 }
 \arguments{

@@ -83,6 +83,34 @@
     available loci); sequence IDs must be characters.}
   }
 }
+\usage{
+get.nlocus(x, \dots)
+get.locus(x, \dots)
+
+get.nsequences(x, \dots)
+get.sequences(x, \dots)
+
+get.dna(x, \dots)
+
+\S4method{get.nsequences}{obkSequences}(x, what=c("total","bylocus"), \dots)
+
+\S4method{get.sequences}{obkSequences}(x, \dots)
+
+\S4method{get.dna}{obkSequences}(x, locus=NULL, id=NULL, \dots)
+
+\S4method{show}{obkSequences}(object)
+
+}
+\arguments{
+  \item{x,object}{an \code{obkSequences} object.}
+  \item{what}{a character string indicating whether numbers of sequences
+    should be provided in total, or per locus.}
+  \item{locus}{an indication of the locus, either by its name, or using
+    integers or logicals matching \code{get.locus}.}
+  \item{id}{an indication of the sequences, either by their names, or using
+    integers or logicals matching \code{get.sequences}.}
+  \item{\dots}{arguments passed to other methods.}
+}
 \author{Thibaut Jombart (\email{t.jombart@imperial.ac.uk})}
 \examples{
 

@@ -24,8 +24,8 @@
 \alias{get.nsamples}
 \alias{get.nsamples,obkData-method}
 
-\alias{get.clinical}
-\alias{get.clinical,obkData-method}
+\alias{get.clinicals}
+\alias{get.clinicals,obkData-method}
 \alias{get.nclinicals}
 \alias{get.nclinicals,obkData-method}
 
@@ -45,7 +45,9 @@
 % \alias{get.data,obkData-method}
 
 \alias{get.trees}
+\alias{get.ntrees}
 \alias{get.trees,obkData-method}
+\alias{get.ntrees,obkData-method}
 
 
 % \alias{[,obkData-method}
@@ -148,16 +150,16 @@
       sequences in the data.}
  %   \item{get.locus}{\code{signature(x = "obkData")}: returns the names
   %    of the loci in the sample.}
-    \item{get.individuals*}{\code{signature(x = "obkData")}: returns the
+    \item{get.individuals}{\code{signature(x = "obkData")}: returns the
       IDs of individuals in a given source of data (argument
       \code{data}, can be 'all' (default), 'samples', 'individuals', 'clinical', or 'contacts').}
-    \item{get.nindividuals*}{\code{signature(x = "obkData")}: returns the
+    \item{get.nindividuals}{\code{signature(x = "obkData")}: returns the
       number of individuals in a given source of data (argument
       \code{data}, can be 'all' (default), 'samples', 'individuals', 'clinical', or 'contacts').}
     \item{get.samples}{\code{signature(x = "obkData")}: returns the samples existing in the data.}
     \item{get.nsamples}{\code{signature(x = "obkData")}: returns the number of
       samples in the data.}
-    \item{get.clinical}{\code{signature(x = "obkData")}: returns the names of existing clinical tables in the data.}
+    \item{get.clinicals}{\code{signature(x = "obkData")}: returns the names of existing clinical tables in the data.}
     \item{get.nclinicals}{\code{signature(x = "obkData")}: returns the number of clinical tables in the data.}
      \item{get.dates*}{\code{signature(x = "obkData")}: returns the
       dates in a given source of data (argument
@@ -181,6 +183,53 @@
       \code{individuals}.
     }
   }
+}
+
+\usage{
+get.nindividuals(x, \dots)
+get.individuals(x, \dots)
+
+get.nsamples(x, \dots)
+get.samples(x, \dots)
+
+get.nclinicals(x, \dots)
+get.clinicals(x, \dots)
+
+get.ntrees(x, \dots)
+get.trees(x, \dots)
+
+\S4method{get.dna}{obkData}(x, locus=NULL, id=NULL, \dots)
+
+\S4method{get.nindividuals}{obkData}(x, data=c("all", "samples",
+"individuals", "clinical", "contacts"), \dots)
+
+\S4method{get.individuals}{obkData}(x, data=c("all", "samples",
+"individuals", "clinical", "contacts"), \dots)
+
+\S4method{get.ncontacts}{obkData}(x, from=NULL, to=NULL, \dots)
+
+\S4method{get.contacts}{obkData}(x, from=NULL, to=NULL, \dots)
+
+\S4method{get.clinicals}{obkData}(x, \dots)
+
+\S4method{get.ntrees}{obkData}(x, \dots)
+
+\S4method{get.trees}{obkData}(x, \dots)
+
+
+}
+\arguments{
+  \item{x}{an \code{obkData} object.}
+  \item{locus}{an indication of the locus, either by its name, or using
+    integers or logicals matching \code{get.locus}.}
+  \item{id}{an indication of the sequences, either by their names, or using
+    integers or logicals matching \code{get.sequences}.}
+  \item{data}{a character string indicating in which slot to seek the
+    information; in \code{get.data}, a character string indicating the
+    field to be returned.}
+  \item{from,to}{dates indicating the time span to consider for active
+    contacts (for dynamic networks only).}
+  \item{\dots}{arguments passed to other methods.}
 }
 \author{
   Thibaut Jombart, Simon Frost, Lulla Opatowski, Paul Birrell, Anne
@@ -230,7 +279,7 @@ head(get.data(x, "individuals"))
 get.dates(x)
 get.dates(x,"samples")
 get.nclinicals(x)
-get.clinical(x)
+get.clinicals(x)
 head(get.data(x, "clinical"))
 
 }
