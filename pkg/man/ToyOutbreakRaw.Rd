@@ -4,12 +4,13 @@
 
 \title{Raw simulated outbreak dataset}
 \description{
-  This dataset is a fake dataset containing information on an outbreak amongst 418 individuals. 
-	It contains a list called \code{ToyOutbreakRaw} of the following objects:
-  
-  - \code{ToyOutbreakRaw$individuals},a \code{data.frame} containing: 
+  This dataset is a fake dataset containing information on an outbreak
+  amongst 418 individuals.  It contains a list called
+  \code{ToyOutbreakRaw} of the following objects:
+
+  - \code{ToyOutbreakRaw$individuals}, a \code{data.frame} containing:
   \itemize{
-    \item{the ID of each individual, stored in the row names of the \code{data.frame},}
+    \item{the ID of each individual, stored in the row names of the \code{data.frame}}
     \item{\code{infector}, the ID of the infector of each individual}
     \item{\code{DateInfected}, the date at which each individual was infected}
     \item{\code{Sex}, the sex of each individual}
@@ -53,7 +54,12 @@
 data(ToyOutbreakRaw)
 
 ## Constructing an obkData object ##
-x <- new ("obkData", individuals=ToyOutbreakRaw$individuals,samples=ToyOutbreakRaw$samples,clinical=ToyOutbreakRaw$clinical,contacts=ToyOutbreakRaw$contacts,contacts.start=ToyOutbreakRaw$contacts.start,contacts.end=ToyOutbreakRaw$contacts.end,dna=ToyOutbreakRaw$dna,trees=ToyOutbreakRaw$trees)
+x <- new ("obkData", individuals=ToyOutbreakRaw$individuals,
+samples=ToyOutbreakRaw$samples,
+clinical=ToyOutbreakRaw$clinical,contacts=ToyOutbreakRaw$contacts,
+contacts.start=ToyOutbreakRaw$contacts.start,
+contacts.end=ToyOutbreakRaw$contacts.end,
+dna=ToyOutbreakRaw$dna,trees=ToyOutbreakRaw$trees)
 
 ## Examining the object ##
 summary(x)

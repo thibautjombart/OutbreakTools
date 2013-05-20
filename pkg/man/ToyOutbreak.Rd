@@ -4,12 +4,13 @@
 
 \title{Simulated outbreak dataset}
 \description{
-  This dataset is a fake dataset containing information on an outbreak amongst 418 individuals. 
-	It contains an \code{obkData} object called \code{ToyOutbreak}.
-  
+  This dataset is a fake dataset containing information on an outbreak
+  amongst 418 individuals.  It contains an \code{obkData} object called
+  \code{ToyOutbreak}.
+
   \code{ToyOutbreak@individuals} is a \code{data.frame} containing: 
   \itemize{
-    \item{the ID of each individual, stored in the row names of the \code{data.frame},}
+    \item{the ID of each individual, stored in the row names of the \code{data.frame}}
     \item{\code{infector}, the ID of the infector of each individual}
     \item{\code{DateInfected}, the date at which each individual was infected}
     \item{\code{Sex}, the sex of each individual}
@@ -25,9 +26,10 @@
     \item{\code{temperature}, the temperature measured in each individual.}
   }
   
-  \code{ToyOutbreak@contacts} is an \code{obkContacts} object describing the contacts inferred 
-  from the first four days of the epidemic tree 
-  (it is inferred that a contact occurred between each case and his/her infector within the day preceding infection).   
+  \code{ToyOutbreak@contacts} is an \code{obkContacts} object describing
+  the contacts inferred from the first four days of the epidemic tree
+  (it is inferred that a contact occurred between each case and his/her
+  infector within the day preceding infection).
   
   \code{ToyOutbreak@samples} is a \code{data.frame} containing: 
   \itemize{
@@ -38,9 +40,11 @@
     \item{\code{locus}, the loci associated with these sequences.}
   }
   
-  \code{ToyOutbreak@dna} is an \code{obkSequences} object storing simulated DNA sequences (for 2 genes, \code{gene1} and \code{gene2}).
+  \code{ToyOutbreak@dna} is an \code{obkSequences} object storing
+  simulated DNA sequences (for 2 genes, \code{gene1} and \code{gene2}).
  
-  \code{ToyOutbreak@tree} is a \code{multiphylo} object storing one phylogenetic tree derived from the concatenated genes. 
+  \code{ToyOutbreak@tree} is a \code{multiphylo} object storing one
+  phylogenetic tree derived from the concatenated genes.
 
 }
 \examples{

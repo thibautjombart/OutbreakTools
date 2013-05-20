@@ -78,7 +78,13 @@
       automatically as long as numbers are used, and year is provided
       first or last. Alternative formats can be specified via the
       argument date.format}
-    \item{\code{clinical}}{a list of data.frames, each of which has 2 mandatory fields, 'individualID' and 'date'. Dates are specified as in the case of the samples data.frame. Each item of the list should be named according to the type of clinical event, e.g. 'hospitalisation', 'vaccination' or 'symptoms'. The 'date' field should be utilised as a start or onset date where the clinical event spans a period of time.}
+    \item{\code{clinical}}{a list of data.frames, each of which has 2
+      mandatory fields, 'individualID' and 'date'. Dates are specified as
+      in the case of the samples data.frame. Each item of the list should
+      be named according to the type of clinical event,
+      e.g. 'hospitalisation', 'vaccination' or 'symptoms'. The 'date'
+      field should be utilised as a start or onset date where the clinical
+      event spans a period of time.}
     \item{\code{dna}}{a list of DNA sequences in \code{DNAbin} or
       \code{character} format.}
     \item{\code{contacts}}{a matrix of characters indicating edges using
@@ -180,100 +186,52 @@
   Thibaut Jombart, Simon Frost, Lulla Opatowski, Paul Birrell, Anne
   Cori, Marc Baguelin, Caroline Colijn
 }
+\seealso{
+  \itemize{
+    \item \code{\link{subset.obkData}} to subset the data in various ways.
+    \item \code{\link{plot.obkData}} to plot the data.
+  }
+}
 \examples{
 
-## EMPTY OBJECT ##
-new("obkData")
-
-## INDIVIDUAL INFO ONLY ##
-new("obkData", individuals=data.frame("individualID"=letters))
-new("obkData", individuals=data.frame("individualID"=letters, age=1:26, 1:26))
-
-
-samp <- data.frame(individualID=c('toto','toto','titi'), sampleID=c(1,3,2), date=c("2001-02-13","2001-03-01","2001-05-25"), swab=c("+","-","+"))
-
-
-## SAMPLE INFO ONLY ##
-new("obkData", sample=samp)
-new("obkData", sample=samp[,c(1:3)] )
-new("obkData", sample=samp[,c(1:3,4,4,4)] )
-
-## SAMPLE & INDIV INFO - MISSING INDIV ##
-new("obkData", sample=samp[,c(1:3,4,4,4)] , individuals=data.frame("individualID"=letters, age=1:26))
-
-## SAMPLE & INDIV INFO ##
-ind <- data.frame("individualID"=c("toto","John Doe", "titi"), age=c(20,18,67), sex=c("m","m","?"))
-new("obkData", sample=samp, ind=ind)
-
-
-## DNA INFO, NOTHING ELSE ##
-library(ape)
-data(woodmouse)
-dat.dna <- as.list(woodmouse)
-
-new("obkData", dna=dat.dna) # should be empty
-
-## SAMP + DNA INFO ##
-samp <- data.frame(individualID=c('toto','toto','titi'), sampleID=c(1,3,2), date=c("2001-02-13","2001-03-01","2001-05-25"), swab=c("+","-","+"))
-
-samp <- cbind.data.frame(samp, sequenceID=c(1,2,3))
-
-## sequences given as indices
-new("obkData", samples=samp, dna=dat.dna) # (note the nice sample ordering)
-
-## sequences given as IDs
-samp$sequenceID <- c("No304","No306","No305")
-new("obkData", samples=samp, dna=dat.dna) # (note the nice sample ordering)
-
-## sequences given as IDs, with wrong IDs
-## samp$sequenceID <- c("No304","No306","Arrrhhh") # this would generate a meaningful error
-## new("obkData", samples=samp, dna=dat.dna) # (note the nice sample ordering)
-
-
-## multiple sequences per individual
-samp$sequenceID <- c("No304","No306","No305")
-samp <- samp[c(1,1,2,2,2,3),]
-samp$sequenceID <- 1:6
-new("obkData", samples=samp, dna=dat.dna)
-
-
-## multiple sequences per individual, locus information
-samp$locus <- c("gene1","gene2")[c(1,1,1,2,1,2)]
-new("obkData", samples=samp, dna=dat.dna)
-
-## incorporating data on sample and clinical data
+## LOAD RAW DATA
 data(ToyOutbreakRaw)
+class(ToyOutbreakRaw)
 names(ToyOutbreakRaw)
-new("obkData", individuals = ToyOutbreakRaw$individuals, samples = ToyOutbreakRaw$samples, clinical = ToyOutbreakRaw$clinical)
 
+## MAKE OBKDATA FROM THESE INPUTS
+x <- new("obkData", individuals = ToyOutbreakRaw$individuals, samples =
+    ToyOutbreakRaw$samples, clinical = ToyOutbreakRaw$clinical,
+    contacts=ToyOutbreakRaw$contacts, dna=ToyOutbreakRaw$dna,
+    trees=ToyOutbreakRaw$trees)
 
-## incorporate contacts
-contacts <- cbind(c("toto","titi", "toto"), c("titi","John Doe","John Doe"))
+## HEAD, TAIL, SUMMARY
+head(x)
+tail(x)
+summary(x)
 
+## SOME BASIC PLOTS
+plot(x) # time line of samples
 
-## TEST ACCESSORS ##
-x <- new("obkData", samples=samp, dna=dat.dna, individuals=ind, contacts=contacts)
+x@contacts
+plot(x, "contacts", main="Contacts") # contact network
 
+##  ACCESSORS
+get.nlocus(x)
 get.locus(x)
+get.nindividuals(x)
 get.individuals(x)
-get.individuals(x, "individuals")
-get.dna(x, locus="gene2")
+get.individuals(x, data="individuals")
 get.nsequences(x)
-get.data(x, "samples")
-get.data(x, "individuals")
-get.data(x, c("date","swab"))
-table(get.data(x, c("swab", "locus")))
+get.dna(x, locus="gene2")
+get.dna(x, locus=1)
+head(get.data(x, "samples"))
+head(get.data(x, "individuals"))
 get.dates(x)
 get.dates(x,"samples")
 get.nclinicals(x)
-
-# based on data including clinical information
-x<- new("obkData", individuals = ToyOutbreakRaw$individuals, samples = ToyOutbreakRaw$samples, clinical = ToyOutbreakRaw$clinical)
-
 get.clinical(x)
-get.individuals(x,"clinical")
-get.nindividuals(x,"clinical")
-
+head(get.data(x, "clinical"))
 
 }
 \keyword{classes}

@@ -42,9 +42,10 @@
     ...)}, where '...' can be the following arguments:
   
   \describe{
-    \item{\code{dna}}{a list of DNA sequences in \code{DNAbin} or \code{character} format.}
+    \item{\code{dna}}{a list of DNA sequences in \code{DNAbin} or
+      \code{character} format.}
     \item{\code{locus}}{an optional vector indicating the locus of each
-    sequences; its length must match that of the list of sequences.}
+      sequences; its length must match that of the list of sequences.}
   }
 }
 \section{Slots}{

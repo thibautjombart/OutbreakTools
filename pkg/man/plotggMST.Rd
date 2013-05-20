@@ -6,18 +6,20 @@
 }
 \arguments{
   \item{x}{An object of the class "obkData"}
- \item{locus}{a character or integer indicating the loci to be
-    used; if NULL, checks will be made to check that only one locus is in the object.}
-  \item{individualID}{a character or integer to specify the individual identifier to draw 
-  the minimum spanning tree for.}
+  \item{locus}{a character or integer indicating the loci to be used; if
+    NULL, checks will be made to check that only one locus is in the
+    object.}
+  \item{individualID}{a character or integer to specify the individual
+    identifier to draw the minimum spanning tree for.}
 }
 
 \description{
-  Function to plot a minimum spanning tree for an individual using the mst function from ape 
-  and positioning the nodes according to the fruchtermanreingold in sna. The size of the nodes correspond 
-  to the number of copies for that particular sequence.
+  Function to plot a minimum spanning tree for an individual
+  using the mst function from ape and positioning the nodes according to
+  the fruchtermanreingold in sna. The size of the nodes correspond to
+  the number of copies for that particular sequence.
 }
- 
+
 \examples{
 ## load data
 data(HorseFlu)

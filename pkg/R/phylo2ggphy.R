@@ -5,7 +5,7 @@
 #' @param branch.unit the unit of the branch. Either "year", "month", "day" or "subst". If a time unit is provided, together with tip.dates, then the x-axis of the phylogeny will be in the Date format
 #' @param verbose if \code{TRUE} additional information is provided at execution
 #' @author Anton Camacho
-phylo2ggphy<-function(phylo,tip.dates=NULL,branch.unit=NULL,verbose=F){
+phylo2ggphy<-function(phylo,tip.dates=NULL,branch.unit=NULL,verbose=FALSE){
 
 	phy<-phylo
 	has.node.label<-(!is.null(phy$node.label))

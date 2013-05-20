@@ -22,12 +22,15 @@ get.data(x, \dots)
     to look for.}
   \item{where}{an optional character string indicating the name of the
     slot in which the information should be looked for; if NULL, the
-    method will look in all slots starting with \code{@individuals}, then \code{@samples},
-    and finally in \code{@clinical}.}
+    method will look in all slots starting with \code{@individuals},
+    then \code{@samples}, and finally in \code{@clinical}.}
   \item{drop}{a logical indicating if a vector should be returned
     (TRUE), as opposed to a \code{data.frame} with on single column
     (FALSE).}
-  \item{showSource}{a logical indicating if information about individualIDs and slot sources should be returned. If TRUE a dataframe with three columns will be returned, as opposed to a vector/single column if FALSE.}
+  \item{showSource}{a logical indicating if information about
+    individualIDs and slot sources should be returned. If TRUE a dataframe
+    with three columns will be returned, as opposed to a vector/single
+    column if FALSE.}
   \item{\dots}{currently not used.}
 }
 \author{

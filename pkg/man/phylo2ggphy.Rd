@@ -3,7 +3,7 @@
 \title{Function to convert phylogenies from the class 'phylo' to the class 'ggphy'}
 \usage{
   phylo2ggphy(phylo, tip.dates = NULL, branch.unit = NULL,
-    verbose = F)
+    verbose = FALSE)
 }
 \arguments{
   \item{phylo}{an object of the class "phylo"}
