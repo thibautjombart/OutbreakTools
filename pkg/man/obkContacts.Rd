@@ -69,6 +69,8 @@
   slots manually.
   \describe{
     \item{\code{contacts}:}{an object of class \code{network} or \code{networkDynamic}.}
+    \item{\code{origin}:}{an object of class \code{Date} indicating the
+      origin of the contacts (i.e., this corresponds to "day 0".}
   }
 }
 \section{Methods}{
@@ -101,7 +103,36 @@
       adjacency, incidence, or edge matrix from the object.}
   }
 }
-\author{Simon Frost (\email{sdwfrost@gmail.com})}
+\usage{
+get.contacts(x, \dots)
+get.ncontacts(x, \dots)
+
+\S4method{show}{obkContacts}(object)
+\S4method{plot}{obkContacts}(x, y=NULL, labels=get.individuals(x), \dots)
+\S4method{as.matrix}{obkContacts}(x, matrix.type=c("adjacency","incidence","edgelist"), \dots)
+\S4method{get.ncontacts}{obkContacts}(x, from=NULL, to=NULL, \dots)
+\S4method{get.contacts}{obkContacts}(x, from=NULL, to=NULL, \dots)
+\S4method{get.nindividuals}{obkContacts}(x, \dots)
+\S4method{get.individuals}{obkContacts}(x, \dots)
+
+}
+\arguments{
+  \item{x,object}{an obkContacts object.}
+  \item{y}{used for compatibility with the generic definition of
+    \code{plot}; unused.}
+  \item{labels}{a vector of characters giving annotation for the
+    vertices.}
+  \item{matrix.type}{a character indicating which type of matrix to
+    extract(adjacency, incidence, or edge matrix).}
+  \item{from,to}{dates indicating the time span to consider for active
+    contacts (for dynamic networks only).}
+ \item{\dots}{arguments passed to other methods; currently not used,
+   except for \code{plot}.}
+}
+\author{
+  Original class: Simon Frost (\email{sdwfrost@gmail.com})\cr
+  Plot and as.matrix methods: Thibaut Jombart (\email{tjombart@imperial.ac.uk})
+}
 \examples{
 
 ## THIS IS A TOY EXAMPLE ##

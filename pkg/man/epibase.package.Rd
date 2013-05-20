@@ -6,11 +6,11 @@
 \title{The epibase package}
 \description{
   \code{epibase} is a package providing basic tools for the analysis of
-  disease outbreaks. Its main features lies in handling possibly very
-  different types of data in a coherent framework, represented by the
-  class \linkS4class{obkData} (for 'outbreak data'). This class allows
+  disease outbreaks. Its main features lie in handling possibly very
+  different types of data within a coherent framework, represented by the
+  class \linkS4class{obkData} (for "outbreak data"). This class allows
   to store and manipulate data on samples, individuals, clinical
-  intervention, genetic sequences, phylogenetic trees and contact
+  interventions, genetic sequences, phylogenetic trees and contact
   networks, most of this information being time-stamped and possibly
   geo-referenced.\cr
 
