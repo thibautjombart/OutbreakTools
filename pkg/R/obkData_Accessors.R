@@ -221,6 +221,7 @@ setMethod("get.trees", "obkData", function(x, ...){
 ## get.contacts ##
 ##################
 setMethod("get.contacts", "obkData", function(x, from=NULL, to=NULL, ...){
+    if(is.null(x@contacts)) return(NULL)
     return(get.contacts(x@contacts, from=from, to=to, ...))
 })
 
@@ -230,6 +231,7 @@ setMethod("get.contacts", "obkData", function(x, from=NULL, to=NULL, ...){
 ## get.ncontacts ##
 ###################
 setMethod("get.ncontacts", "obkData", function(x, from=NULL, to=NULL, ...){
+    if(is.null(x@contacts)) return(0)
     return(get.ncontacts(x@contacts, from=from, to=to, ...))
 })
 
