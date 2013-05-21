@@ -69,6 +69,8 @@
   slots manually.
   \describe{
     \item{\code{contacts}:}{an object of class \code{network} or \code{networkDynamic}.}
+    \item{\code{origin}:}{an object of class \code{Date} indicating the
+      origin of the contacts (i.e., this corresponds to "day 0".}
   }
 }
 \section{Methods}{
@@ -101,7 +103,46 @@
       adjacency, incidence, or edge matrix from the object.}
   }
 }
-\author{Simon Frost (\email{sdwfrost@gmail.com})}
+\usage{
+get.contacts(x, \dots)
+
+get.ncontacts(x, \dots)
+
+\S4method{show}{obkContacts}(object)
+
+\S4method{plot}{obkContacts}(x, y=NULL, labels=get.individuals(x),
+\dots)
+
+\S4method{as.matrix}{obkContacts}(x,
+matrix.type=c("adjacency","incidence","edgelist"), \dots)
+
+\S4method{get.ncontacts}{obkContacts}(x, from=NULL, to=NULL, \dots)
+
+\S4method{get.contacts}{obkContacts}(x, from=NULL, to=NULL, \dots)
+
+\S4method{get.nindividuals}{obkContacts}(x, \dots)
+
+\S4method{get.individuals}{obkContacts}(x, \dots)
+
+
+}
+\arguments{
+  \item{x,object}{an obkContacts object.}
+  \item{y}{used for compatibility with the generic definition of
+    \code{plot}; unused.}
+  \item{labels}{a vector of characters giving annotation for the
+    vertices.}
+  \item{matrix.type}{a character indicating which type of matrix to
+    extract(adjacency, incidence, or edge matrix).}
+  \item{from,to}{dates indicating the time span to consider for active
+    contacts (for dynamic networks only).}
+ \item{\dots}{arguments passed to other methods; currently not used,
+   except for \code{plot}.}
+}
+\author{
+  Original class: Simon Frost (\email{sdwfrost@gmail.com})\cr
+  Plot and as.matrix methods: Thibaut Jombart (\email{tjombart@imperial.ac.uk})
+}
 \examples{
 
 ## THIS IS A TOY EXAMPLE ##
@@ -116,24 +157,32 @@ oc.dynamic
 
 plot(oc.static, main="Contact network")
 
-## Plotting a dynamic contact network ##
 
-# LOAD DATA #
+
+## PLOTTING A DYNAMIC CONTACT NETWORK ##
+## LOAD DATA
 data(ToyOutbreak) # ToyOutbreak includes a dynamic contact network
 
-# plot the static network
+## PLOT THE STATIC NETWORK
 plot(ToyOutbreak@contacts)
 
-# Plot the dynamic network over the first 4 days of the outbreak
+## PLOT THE DYNAMIC NETWORK OVER THE FIRST 4 DAYS OF THE OUTBREAK
 par(mfrow=c(2,2))
-plot(ToyOutbreak@contacts,main="Contact network - days 1-4", displaylabels=TRUE)
-# plot the dynamic stages
-plot(network.extract(ToyOutbreak@contacts@contacts, onset=10957, terminus=10959), main="Contact network - days 1-2", displaylabels=TRUE)
-plot(network.extract(ToyOutbreak@contacts@contacts, onset=10959, terminus=10960), main="Contact network - day 3", displaylabels=TRUE)
-plot(network.extract(ToyOutbreak@contacts@contacts, onset=10960, terminus=10961), main="Contact network - day 4", displaylabels=TRUE)
+
+plot(ToyOutbreak@contacts)
+
+plot(get.contacts(ToyOutbreak, from=0, to=2), displaylabels=TRUE,
+     main="Contact network - days 1-2")
+
+plot(get.contacts(ToyOutbreak, from=2.9, to=3.1), displaylabels=TRUE,
+     main="Contact network - day 3")
+
+plot(get.contacts(ToyOutbreak, from=3.9, to=4.1), displaylabels=TRUE,
+     main="Contact network - day 4")
+
 par(mfrow=c(1,1))
 
-# extract matrices
+# extract matrices of adjacency, incidence, or edge list
 as.matrix(ToyOutbreak@contacts)
 as.matrix(ToyOutbreak@contacts, "incidence")
 as.matrix(ToyOutbreak@contacts, "edgelist")

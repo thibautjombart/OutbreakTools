@@ -8,12 +8,14 @@
 \title{Access data in "obkData" objects}
 \description{
   \code{get.dates} is a generic function with a method for
-  \linkS4class{obkData} objects. It can be used to retrieve existing dates from any field of an obkData object.
+  \linkS4class{obkData} objects. It can be used to retrieve existing
+  dates from any field of an obkData object.
 }
 \usage{
 get.dates(x, \dots)
 
-\S4method{get.dates}{obkData}(x, data=c("all", "samples", "individuals", "clinical"), \dots)
+\S4method{get.dates}{obkData}(x, data=c("all", "samples", "individuals",
+       "clinical"), \dots)
 }
 \arguments{
   \item{x}{an \linkS4class{obkData} object.}

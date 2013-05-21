@@ -24,10 +24,20 @@
 #' @import ggplot2,RColorBrewer
 #' @author Anton Camacho
 #' @example ../misc/plotggphyExample.R
-#' 
-plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FALSE, tip.label.size = 3, build.tip.attribute = FALSE, 
-	tip.colour = NULL, tip.alpha = NULL, tip.shape = NULL, tip.size = NULL, branch.unit = NULL, tip.dates = NULL, 
-	guess.tip.dates.from.labels = FALSE, set.guess = list(prefix = "_", order = 1, from = "last"), axis.date.format = NULL, 
+#'
+
+## hack to remove the NOTE in R CMD check about:
+## plotggphy: no visible binding for global variable ‘x.beg’
+## plotggphy: no visible binding for global variable ‘x.end’
+## plotggphy: no visible binding for global variable ‘y.beg’
+## plotggphy: no visible binding for global variable ‘y.end’
+## plotggphy: no visible binding for global variable ‘y’
+## plotggphy: no visible binding for global variable ‘label’
+if(getRversion() >= "2.15.1")  utils::globalVariables(c("x.beg","x.end","y.beg","y.end","y","label"))
+
+plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FALSE, tip.label.size = 3, build.tip.attribute = FALSE,
+	tip.colour = NULL, tip.alpha = NULL, tip.shape = NULL, tip.size = NULL, branch.unit = NULL, tip.dates = NULL,
+	guess.tip.dates.from.labels = FALSE, set.guess = list(prefix = "_", order = 1, from = "last"), axis.date.format = NULL,
 	major.breaks = NULL, minor.breaks = NULL, colour.palette = "Spectral", legend.position = "right") {
 
 	#stop if:
@@ -45,6 +55,14 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
 	}
 
 	phylo <- phylo[[which.tree]]
+
+        ## KLUDGE: ANTON, CORRECT THIS PLEASE
+        ## this is just to avoid the freeze for unrooted trees
+        if(!is.rooted(phylo)) {
+            warning("The tree is not rooted - rooting with tip 1")
+            phylo <- root(phylo, 1, resolve.root=TRUE)
+        }
+
 
 	if (build.tip.attribute) {
 		#TODO: add other data frames (e.g. clinical, etc)
@@ -141,7 +159,7 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
 	ggphy <- phylo2ggphy(phylo, tip.dates = tip.dates, branch.unit = branch.unit)
 
 
-	#TODO: allow edge and node attributes and merge with df.edge and df.node		
+	#TODO: allow edge and node attributes and merge with df.edge and df.node
 	df.tip <- ggphy[[1]]
 	df.node <- ggphy[[2]]
 	df.edge <- ggphy[[3]]
@@ -156,7 +174,7 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
 
 
 	#theme_set(theme_grey())
-	theme.old <- theme_update(axis.ticks.y = element_blank(), axis.title.y = element_blank(), panel.grid.major.y = element_blank(), 
+	theme.old <- theme_update(axis.ticks.y = element_blank(), axis.title.y = element_blank(), panel.grid.major.y = element_blank(),
 		panel.grid.minor.y = element_blank())
 
 	p <- ggplot(data = df.edge)
@@ -164,8 +182,8 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
 	p <- p + scale_y_continuous("", labels = NULL)
 
 	if (is.x.date) {
-		to_parse <- paste("scale_x_date(\"Time\"", ifelse(is.null(axis.date.format), "", ",labels=date_format(axis.date.format)"), 
-			ifelse(is.null(major.breaks), "", ",breaks= date_breaks(major.breaks)"), ifelse(is.null(minor.breaks), 
+		to_parse <- paste("scale_x_date(\"Time\"", ifelse(is.null(axis.date.format), "", ",labels=date_format(axis.date.format)"),
+			ifelse(is.null(major.breaks), "", ",breaks= date_breaks(major.breaks)"), ifelse(is.null(minor.breaks),
 				"", ",minor_breaks= minor.breaks"), ")")
 
 		p <- p + eval(parse(text = to_parse))
@@ -217,7 +235,7 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
 	}
 
 	if (length(tip.fix) + length(tip.aes)) {
-		p <- p + eval(parse(text = paste("geom_point(data = df.tip, aes_string(x = \"x\", y = \"y\"", tip.aes.txt, 
+		p <- p + eval(parse(text = paste("geom_point(data = df.tip, aes_string(x = \"x\", y = \"y\"", tip.aes.txt,
 			")", tip.fix.txt, ")")))
 	}
 

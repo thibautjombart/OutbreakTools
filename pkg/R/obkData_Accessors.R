@@ -8,7 +8,7 @@
 ###############
 setMethod("get.locus", "obkData", function(x, ...){
     if(is.null(x@dna)) return(NULL)
-    return(get.locus(x@dna))
+    return(get.locus(x@dna, ...))
 })
 
 
@@ -18,7 +18,7 @@ setMethod("get.locus", "obkData", function(x, ...){
 ################
 setMethod("get.nlocus", "obkData", function(x, ...){
     if(is.null(x@dna)) return(0)
-    return(get.nlocus(x@dna))
+    return(get.nlocus(x@dna, ...))
 })
 
 
@@ -28,7 +28,7 @@ setMethod("get.nlocus", "obkData", function(x, ...){
 ## get.sequences ## (get sequence ID)
 ###################
 setMethod("get.sequences","obkData", function(x, ...){
-    return(get.sequences(x@dna))
+    return(get.sequences(x@dna, ...))
 })
 
 
@@ -39,7 +39,7 @@ setMethod("get.sequences","obkData", function(x, ...){
 ####################
 setMethod("get.nsequences", "obkData", function(x, ...){
     if(is.null(x@dna)) return(0)
-    return(get.nsequences(x@dna))
+    return(get.nsequences(x@dna, ...))
 })
 
 
@@ -143,9 +143,9 @@ setMethod("get.nsamples", "obkData", function(x, ...){
 
 
 #################
-## get.clinical ##
+## get.clinicals ##
 #################
-setMethod("get.clinical", "obkData", function(x, ...){
+setMethod("get.clinicals", "obkData", function(x, ...){
   if(is.null(x@clinical)) return(NULL)
   # return the list of names of the different clinical tables
   return(unique(names(x@clinical)))
@@ -201,6 +201,15 @@ setMethod("get.dates", "obkData", function(x, data=c("all","samples", "individua
 
 
 ###############
+## get.ntrees ##
+###############
+setMethod("get.ntrees", "obkData", function(x, ...){
+    if(is.null(x@trees)) return(0L)
+    return(length(x@trees))
+})
+
+
+###############
 ## get.trees ##
 ###############
 setMethod("get.trees", "obkData", function(x, ...){
@@ -208,11 +217,11 @@ setMethod("get.trees", "obkData", function(x, ...){
 })
 
 
-
 ##################
 ## get.contacts ##
 ##################
 setMethod("get.contacts", "obkData", function(x, from=NULL, to=NULL, ...){
+    if(is.null(x@contacts)) return(NULL)
     return(get.contacts(x@contacts, from=from, to=to, ...))
 })
 
@@ -222,6 +231,7 @@ setMethod("get.contacts", "obkData", function(x, from=NULL, to=NULL, ...){
 ## get.ncontacts ##
 ###################
 setMethod("get.ncontacts", "obkData", function(x, from=NULL, to=NULL, ...){
+    if(is.null(x@contacts)) return(0)
     return(get.ncontacts(x@contacts, from=from, to=to, ...))
 })
 

@@ -176,6 +176,10 @@ setMethod ("show", "obkContacts", function(object){
     }
     cat(paste(" Number of individuals = ", nindividuals, "\n"," Number of contacts = ",ncontacts,"\n",contacttype,"\n",sep=""))
     if(ncontacts>0) print(object@contacts)
+    if(contacttype==" Contacts = dynamic"){
+        cat("\nDate of origin: ")
+        print(object@origin)
+    }
 })
 
 
@@ -183,6 +187,9 @@ setMethod ("show", "obkContacts", function(object){
 ######################
 ####  PLOT METHOD ####
 ######################
+## hack to remove the NOTE in R CMD check about:
+## plot,obkContacts: no visible binding for global variable ‘y’
+if(getRversion() >= "2.15.1")  utils::globalVariables("y")
 
 setMethod ("plot", "obkContacts", function(x, y=NULL, labels=get.individuals(x), ...){
     plot(x@contacts, label=labels, ...)

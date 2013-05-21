@@ -12,7 +12,8 @@
   that several subsetting criteria can be specified at the same time.
 }
 \usage{
-\S4method{subset}{obkData}(x, individuals=NULL, samples=NULL, locus=NULL, sequences=NULL,
+\S4method{subset}{obkData}(x, individuals=NULL, samples=NULL,
+       locus=NULL, sequences=NULL,
        date.from=NULL, date.to=NULL, date.format="",
        row.individuals=NULL, row.samples=NULL, \dots)
 }
@@ -77,7 +78,7 @@ subset(x, row.individuals=get.data(x, "Sex")=="M") # keep only Sex=='M'
 ## by rows in @samples
 get.data(x,"samples")
 get.data(x, "date") <= "2000-01-10" # samples with date < Jan 10
-subset(x, row.samples=get.data(x, "date") <= "2000-01-10") # keep only samples with date < Jan 10
+subset(x, row.samples=get.data(x, "date") <= "2000-01-10") # samples with date < Jan 10
 
 
 ## mixing things up

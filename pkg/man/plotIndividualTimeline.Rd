@@ -3,18 +3,20 @@
 \title{Function to plot a timeline for individuals involved in an outbreak in one plot}
 \usage{
  plotIndividualTimeline(x, selection=1:length(get.individuals(x)),
-                        ordering=1:length(selection), orderBy=NULL, colorBy=NULL,
-                        events=NULL, clinicalEvents=NULL, periods=NULL,
-                        plotSamples=TRUE, plotNames=length(selection)<50)
+           ordering=1:length(selection), orderBy=NULL, colorBy=NULL,
+           events=NULL, clinicalEvents=NULL,periods=NULL,
+           plotSamples=TRUE, plotNames=length(selection)<50)
 }
 \arguments{
   \item{x}{the main obkData object}
 
-  \item{selection}{a vector of integers indicating the subset of individuals to plot }
+  \item{selection}{a vector of integers indicating the subset of individuals to plot}
 
-  \item{ordering}{a vector of the same length as selection, which specifies the order of individuals on the plot. Overridden by orderBy}
+  \item{ordering}{a vector of the same length as selection, which
+    specifies the order of individuals on the plot. Overridden by \code{orderBy}.}
 
-  \item{orderBy}{string giving the name of the column that should be used to order the individuals. Overrides ordering}
+  \item{orderBy}{string giving the name of the column that should be
+    used to order the individuals. Overrides \code{ordering}.}
 
   \item{colorBy}{string giving the name of the column by which
     individuals should be coloured}
@@ -34,7 +36,8 @@
   \item{plotNames}{ should the individualIDs be shown at the y-axis?}
 }
 \description{
-   Function to plot a timeline for individuals involved in an outbreak in one plot
+   Function to plot a timeline for individuals involved in an outbreak
+   in one plot.
 }
 \examples{
 
@@ -46,10 +49,10 @@ data <- HorseFlu
 plotIndividualTimeline(data,colorBy='yardID')
 
 ## also sort on yard
-plotIndividualTimeline(data,orderBy='yardID',colorBy='yardID') # returns a warning
+plotIndividualTimeline(data,orderBy='yardID',colorBy='yardID')
 
 ## just plot the first 15
-plotIndividualTimeline(data,selection=1:15,orderBy='yardID',colorBy='yardID') # returns a warning
+plotIndividualTimeline(data,selection=1:15,orderBy='yardID',colorBy='yardID')
 
 ## do a simple plot for some influenza data
 data(ToyOutbreak)

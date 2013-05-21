@@ -2,7 +2,8 @@
 \alias{simuEpi}
 \title{Simulate an epidemic following a SIR model}
 \usage{
-  simuEpi(N = 1000, D = 10, beta = 0.001, nu = 0.1, L = 1000, mu = 0.001, showPlots = FALSE,makePhyloTree=FALSE)
+  simuEpi(N = 1000, D = 10, beta = 0.001, nu = 0.1, L = 1000, mu =
+          0.001, showPlots = FALSE,makePhyloTree=FALSE)
 }
 \arguments{
   \item{N}{Size of the population}
@@ -44,7 +45,8 @@ summary(x)
 x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002, showPlots=TRUE)
 
 ## Add phyloTree
-x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002, showPlots=TRUE, makePhyloTree=TRUE)  
+x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002,
+showPlots=TRUE, makePhyloTree=TRUE)
 
 }
 }

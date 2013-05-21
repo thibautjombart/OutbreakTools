@@ -55,10 +55,10 @@ setMethod("summary", "obkData", function(object, ...){
 	{
 		if(get.nlocus(object)>1)
 		{
-			cat(paste("- ",get.nsequences(object)," corresponding sequences on ",get.nlocus(object)," loci \n\t(concatenated alignments: ",sum(sapply(object@dna@dna,ncol))," nucleotides)\n",sep=""))
+			cat(paste("- ",get.nsequences(object)," sequences across ",get.nlocus(object)," loci \n\t(length of concatenated alignment: ",sum(sapply(object@dna@dna,ncol))," nucleotides)\n",sep=""))
 		}else
 		{
-			cat(paste("- ",get.nsequences(object)," corresponding sequences on ",get.nlocus(object)," locus \n\t(concatenated alignments: ",sum(sapply(object@dna@dna,ncol))," nucleotides)\n",sep=""))
+			cat(paste("- ",get.nsequences(object)," sequences across ",get.nlocus(object)," locus \n\t(length of concatenated alignment: ",sum(sapply(object@dna@dna,ncol))," nucleotides)\n",sep=""))
 		}
 	}else
 	{

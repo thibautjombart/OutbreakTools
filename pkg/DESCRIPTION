@@ -16,6 +16,7 @@ Depends:
     MASS,
     ape,
     adegenet,
+    network,
     networkDynamic,
     ggplot2,
     ggmap,
@@ -24,10 +25,12 @@ Depends:
     plyr,
     reshape2,
     mapproj,
-    RColorBrewer
+    RColorBrewer,
+    knitr
 Description: basic tools for the analysis of disease outbreaks.
 License: GPL (>=2)
 LazyLoad: yes
+VignetteBuilder: knitr
 Collate:
     'auxClasses.R'
     'generics.R'
@@ -38,9 +41,8 @@ Collate:
     'subset.R'
     'obkData_basics.R'
     'uniqSequences.R'
-    'annotatedTreeReader.R'
     'dna2uniqSequences.R'
-    'get.phylo.R'
+    'make.phylo.R'
     'phylo2ggphy.R'
     'plotggMST.R'
     'plotggphy.R'

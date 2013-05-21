@@ -1,4 +1,15 @@
-#Function to plot a timeline for individuals involved in an outbreak in one plot
+
+
+
+## hack to remove the NOTE in R CMD check about:
+## plotIndividualTimeline: no visible binding for global variable ‘yITL’
+## plotIndividualTimeline: no visible binding for global variable ‘value’
+## plotIndividualTimeline: no visible binding for global variable ‘type’
+if(getRversion() >= "2.15.1")  utils::globalVariables(c("yITL","value","type"))
+
+
+
+## Function to plot a timeline for individuals involved in an outbreak in one plot
 
 .meltDateProof <- function(data,id.vars,measure.vars,variable.name){
 	# 'melt' in the reshape package looses the Date format, here is a hack around

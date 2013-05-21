@@ -10,6 +10,7 @@ import(
        MASS,
        ape,
        adegenet,
+       network,
        networkDynamic,
        ggplot2,
        ggmap,
@@ -18,5 +19,6 @@ import(
        plyr,
        reshape2,
        mapproj,
-       RColorBrewer
+       RColorBrewer,
+       knitr
        )
