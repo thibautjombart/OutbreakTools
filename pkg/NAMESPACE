@@ -19,5 +19,6 @@ import(
        plyr,
        reshape2,
        mapproj,
-       RColorBrewer
+       RColorBrewer,
+       knitr
        )

@@ -25,10 +25,12 @@ Depends:
     plyr,
     reshape2,
     mapproj,
-    RColorBrewer
+    RColorBrewer,
+    knitr
 Description: basic tools for the analysis of disease outbreaks.
 License: GPL (>=2)
 LazyLoad: yes
+VignetteBuilder: knitr
 Collate:
     'auxClasses.R'
     'generics.R'

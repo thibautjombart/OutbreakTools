@@ -1,6 +1,6 @@
 \documentclass{article}
 % \VignettePackage{epibase}
-% \VignetteIndexEntry{Analysis of disease outbreak data}
+% \VignetteIndexEntry{Handling disease outbreak data}
 
 \usepackage{graphicx}
 \usepackage[colorlinks=true,urlcolor=blue]{hyperref}
@@ -9,7 +9,7 @@
 
 \usepackage[utf8]{inputenc} % for UTF-8/single quotes from sQuote()
 \newcommand{\code}[1]{{{\tt #1}}}
-\title{An introduction to analysing disease outbreak data using \textit{epibase} \Sexpr{packageDescription("epibase", fields = "Version")}}
+\title{Handling disease outbreak data using \textit{epibase} \Sexpr{packageDescription("epibase", fields = "Version")}}
 \author{Thibaut Jombart, Xavier Didelot, Rolf Ypma, Lulla Opatowski, Anne Cori}
 \date{\today}
 
@@ -22,8 +22,11 @@
 
 \begin{document}
 
-\SweaveOpts{prefix.string = epibase, echo=TRUE, eval=TRUE, fig = FALSE, eps = FALSE, pdf = TRUE}
+%\SweaveOpts{prefix.string = figs/epibase, echo=TRUE, eval=TRUE, fig = FALSE, eps = FALSE, pdf = TRUE}
 
+<<>>=
+opts_chunk$set(echo=TRUE, fig.path='figs/epibase-', cache=TRUE)
+@
 
 
 \definecolor{Soutput}{rgb}{0,0,0.56}
@@ -39,9 +42,11 @@
 
 \begin{abstract}
   This vignette introduces the main functionalities of \textit{epibase}, a package implementing
-  basic tools for the analysis of outbreak data.
-  Disease outbreak data can be varied and complex, and one of the core features of \textit{epibase} lies in the formal (S4) class \texttt{obkData}, which allows for storing and handling a variety of data about individuals, samples, contact structures, or even clinical events.
-  Beyond introducing this data structure, this tutorial illustrates how these objects can be handled and analyzed in R.
+  basic tools for the analysis of outbreak data.  Disease outbreak data can be varied and complex,
+  and one of the core features of \textit{epibase} lies in the formal (S4) class \texttt{obkData},
+  which allows for storing and handling a variety of data about individuals, samples, contact
+  structures, or even clinical events.  Beyond introducing this data structure, this tutorial
+  illustrates how these objects can be handled and analyzed in R.
 \end{abstract}
 
 \newpage
@@ -921,9 +926,9 @@ head(x@individuals)
 @
 Which can be exploited by:
 <<pdh1n1tree3,fig=TRUE>>=
- p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE,
-                branch.unit = "year", tip.dates = "date", tip.colour = "location",
-                tip.size = 3, tip.alpha = 0.75)
+p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE,
+               branch.unit = "year", tip.dates = "date", tip.colour = "location",
+               tip.size = 3, tip.alpha = 0.75)
 @
 
 
