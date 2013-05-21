@@ -26,8 +26,8 @@
 
 <<eval=TRUE,echo=FALSE,results='hide'>>=
 library(knitr)
-opts_chunk$set(fig.path='figs/epibase-', fig.keep='high', dev='pdf', fig.width=7, fig.height=7,
-               tidy=FALSE, warning=FALSE, fig.show='asis', fig.align='center')
+opts_chunk$set(fig.path='figs/epibase-', fig.keep='last', dev='pdf', fig.width=7, fig.height=7,
+               tidy=FALSE, warning=FALSE, fig.show='asis', fig.align='center', cache=FALSE)
 @
 
 \color{black}
@@ -689,14 +689,15 @@ They work in the same way, and use the same arguments; they include:
 
 Another useful function is \texttt{as.matrix}, which converts the object into an adjacency matrix
 (by default)), a matrix of incidence, or a matrix listing edges.
-For instance, using a graph derived from the first 7 individuals in \texttt{ToyOutbreak}:
+For instance, using a graph derived from the first 10 individuals in \texttt{ToyOutbreak}:
 <<out.width==".7\\textwidth">>=
-x <- subset(ToyOutbreak, individuals=1:7)
+x <- subset(ToyOutbreak, individuals=1:10)
 get.ncontacts(x)
 plot(x@contacts, main="Contacts in x")
 as.matrix(x@contacts)
 as.matrix(x@contacts, "edgelist")
 @
+
 
 
 
@@ -721,51 +722,121 @@ The arguments \texttt{individuals}, \texttt{samples}, \texttt{locus} and \texttt
 vectors of characters indicating items to be kept.
 If integers or logicals are provided, these are assumed to match the output of
 \texttt{get.[\textit{...}]}.
-For instance:
+For instance (using a random subset of \texttt{ToyOutbreak}):
 <<subset1>>=
+data(ToyOutbreak)
+set.seed(1)
+get.nsamples(ToyOutbreak)
+toKeep <- sample(1:nrow(ToyOutbreak@samples), 10)
+toKeep
+x <- subset(ToyOutbreak, row.samples=toKeep)
+summary(x)
 get.individuals(x)
-subset(x, individual="titi")
-identical(subset(x, ind="titi"),subset(x, ind=2))
-identical(subset(x, ind="titi"),subset(x, ind=c(FALSE,TRUE)))
+@
+To retain only individuals \Sexpr{get.individuals(x)[3]} and \Sexpr{get.individuals(x)[5]}, once can do:
+<<>>=
+x1 <- subset(x, indiv=c("60","168"))
+@
+or
+<<>>=
+x2 <- subset(x, indiv=c(3,5))
+identical(x1,x2)
 @
 
 Another, non-exclusive way of subsetting the data is using collection dates of the samples.
 The arguments \texttt{date.from} and \texttt{date.to} are used for indicating the range of dates of
 samples to be retained.
-For instance, the range of data in \texttt{x} is:
+For instance, the range of data in the influenza H1N1 pandemic dataset \texttt{FluH1N1pdm2009} is:
 <<>>=
-get.data(x, "date", where="samples")
+data(FluH1N1pdm2009)
+x <- new("obkData", individuals = FluH1N1pdm2009$individuals, samples =
+         FluH1N1pdm2009$samples, dna = FluH1N1pdm2009$dna, trees =
+         FluH1N1pdm2009$trees)
+range(get.data(x, "date", where="samples"))
 @
-We can retain data collected before March using:
+We can retain data collected during the first month using:
 <<subsetdate>>=
-subset(x, date.to="28/02/2001")
+min.date <- min(get.data(x, "date", where="samples"))
+min.date
+min.date+31
+x1 <- subset(x, date.to=min.date+31)
+summary(x)
+summary(x1)
 @
-Note that we have specified dates using a different format from what is used in the data.
-This is no issue, as date format is detected automatically by \texttt{subset}.
+Note that dates can also be provided as character strings in any sensible format, in which case
+\texttt{subset} detects it automatically.
+\\
 
 A third way of specifying subsets of data is using indexing of the rows of \texttt{@individuals} or
 \texttt{@samples}, using the arguments \texttt{row.individuals} and \texttt{row.samples}, respectively.
 This is particularly useful for e.g. retaining only certain type of test results, or patients within
-a given age class, or of a given sex.
-For instance, to retain only positive swabs:
+a given age class, of a given sex, or data from a given location.
+For instance, we can retain data from Mexico using:
 <<>>=
-x@samples
-get.data(x, "swab")=="+"
-subset(x, row.samples=get.data(x, "swab")=="+")
-@
-Or to retain male patients only:
-<<>>=
-x@individuals
-get.data(x, "sex")=="m"
-subset(x, row.individuals=get.data(x, "sex")=="m")
+toKeep <- get.data(x, "location")=="Mexico"
+sum(toKeep)
+x.mex <- subset(x, row.individuals=toKeep)
+summary(x.mex)
+head(x.mex)
 @
 
 Finally, note that several filters can be specified at the same time.
-For instance, we can extract data of the first individual and first locus, sampled in March or
-later, using:
+For instance, in the following we extract European data collected between 1st June and the 31st August:
 <<lastsubset>>=
-subset(x, indiv=1, locus=1, date.from="01 03 2001")
+x.summerEur <- subset(x, date.from="01/06/2009", date.to="31/08/2009",
+                      row.indiv=get.data(x, "location")=="Europe")
+summary(x.summerEur)
+head(x.summerEur)
 @
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Obtaining phylogenies from genetic sequences}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The package \textit{ape} implements a wide range of genetic distances (see \texttt{?dist.dna}) and
+most usual algorithms for distance-based phylogenetic reconstruction.
+In \textit{epibase}, the function \texttt{make.phylo} is a wrapper for these methods, allowing to
+derive trees for a selection or all the genes present in an \texttt{obkData} object.
+Trees can be stored in the \texttt{obkData} (\texttt{result='obkData'}) or returned as a
+\texttt{multiPhylo} object (\texttt{result='multiPhylo'})
+We illustrate this procedure using \texttt{x.summerEur}, the data of pandemic H1N1 influenza collected in Europe during
+the summer 2009 (see previous section):
+<<>>=
+x.summerEur@trees <- NULL
+get.nsequences(x.summerEur)
+@
+\texttt{make.phylo} admits a range of arguments allowing to select which genes (\texttt{locus}),
+model of evolution \texttt{model}, and tree reconstruction method (\texttt{method}) should be used.
+By default, a Neighbour-Joining tree based on Hamming distances (number of differing nucleotides) is
+derived for every gene, and the resulting trees are plotted:
+<<makephylo, fig.keep="all">>=
+x2 <- make.phylo(x.summerEur)
+summary(x2)
+@
+
+\texttt{x2} now contains a phylogenetic tree derived from the sequences in \texttt{x.summerEur}.
+This one can be plotted simply, using:
+<<>>=
+plot(get.trees(x2)[[1]])
+axisPhylo()
+@
+
+\noindent Note that we could ask for a different model of evolution, for instance Kimura's 2
+parameters distance, and we may want to display the tree and indicate collection dates using tip colors;
+this can be done by:
+<<tree1,fig.keep="last">>=
+tree1 <- make.phylo(x.summerEur, locus=1, ask=FALSE, model="K80",
+                    plot=TRUE, color.by="dat", palette=seasun)
+axisPhylo()
+
+@
+
+
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -774,9 +845,9 @@ subset(x, indiv=1, locus=1, date.from="01 03 2001")
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\textit{epibase} provides basic functionality for the simulation of outbreak data through the \texttt{simuEpi} function.
+\textit{epibase} provides some basic functionality for the simulation of outbreak data through the \texttt{simuEpi} function.
 A basic SIR (susceptible-infectious-removed) model is assumed, and the result is returned as an \texttt{obkData} object.
-The arguments are as following:
+The arguments are as follows:
 \begin{itemize}
 \item \texttt{N}: the size of the population, which remains constant throughout. The simulation will start with one
 infectious individual, \texttt{N-1} susceptibles and zero removed. Default is \texttt{N=1000}.
@@ -795,15 +866,21 @@ Default is \texttt{makePhyloTree=FALSE}.
 
 Let us look at an example in a very small population of size \texttt{N=50} and with the infectious rate \texttt{beta}
 raised accordingly to generate a few transmission events:
-<<fig.width=10>>=
+<<>>=
 set.seed(1)
-simuEpi(N=50,beta=0.01,showPlots=TRUE,makePhylo=TRUE)
+x <- simuEpi(N=50,beta=0.01,showPlots=TRUE,makePhylo=TRUE)
+summary(x)
 @
 
 We can see that 11 individuals got infected over the default period of \texttt{D=10} days during which the outbreak
 was simulated. The panel on the left shows the trajectories for the number of susceptible, infectious and removed
 individuals over time. The panel in the middle shows the transmission tree. The panel on the right shows a Neighbor-Joining
 tree based on the simulated sequence data.
+
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -813,155 +890,99 @@ tree based on the simulated sequence data.
 Several plot functions are provided. These can be called by
 `plot(data,`type',...)' where `data' is an obkData object, `type' is a string giving the type of function to plot, and optional arguments can be given. `type' has to be one of
 \begin{itemize}
-\item `timeline': plots the timeline of the outbreak; the timeline of every case
+\item `\texttt{timeline}': plots the timeline of the outbreak; the timeline of every case
 is plotted in a single window
-\item `geo' plots the cases on a map. Needs geographical information
-\item `mst': plots a minimal spanning tree of the genetic data
-\item `phylo': plots a phylogenetic tree of the genetic data
+\item `\texttt{geo}' plots the cases on a map. Needs geographical information
+\item `\texttt{mst}': plots a minimal spanning tree of the genetic data
+\item `\texttt{phylo}': plots a phylogenetic tree of the genetic data
+\item `\texttt{contacts}': plots a phylogenetic tree of the genetic data
 \end{itemize}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Plotting the timeline}
+\subsection{Plotting a timeline of samples}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Let's plot an outbreak of equine influenza provided. First import the data and make an obkData object
+Let's plot the outbreak of equine influenza provided in \texttt{HorseFlu}:
 <<>>=
-data(HorseFluRaw)
-data <- new("obkData", individuals=HorseFluRaw$individuals,samples=HorseFluRaw$samples,clinical=HorseFluRaw$clinics)
+data(HorseFlu)
+summary(HorseFlu)
 @
-then plot
+\noindent then plot
 <<plottime1>>=
-plot(data,'timeline')
+plot(HorseFlu,'timeline')
 @
 
-\noindent (or equivalently \texttt{plot(data)})
-
-These are a lot of horses in one plot, let's restrict ourselves to a selection. We can do this by a vector specifying the indices of the individuals to plot. Lets plot the first twenty
+These are a lot of horses in one plot, and we may want to restrict the plot to a selection of individuals.
+We can do this by a vector specifying the indices of the individuals to plot. Lets plot the first twenty:
 <<plotfirst20>>=
-plot(data,selection=1:20)
+plot(HorseFlu,selection=1:20)
 @
 
-\noindent Notice that the names of the individuals are now plotted. The default behaviour is to plot these when less than fifty individuals are plotted, but we can manually override this by setting 'plotNames'
+\noindent Notice that the names of the individuals are now plotted. The default behaviour is to plot these when less than fifty individuals are plotted, but we can manually override this by setting 'plotNames'.
+The plotting of sampling times is toggled by 'plotSamples'. This defaults to TRUE, as an error will be generated when no 'date' fields can be found to plot, as would be the case for the equine dataset.
+\\
+
+We can also colour individuals by a characteristic provided in the \texttt{obkData} object.
+In this case, let us colour the horses by the yard they were in, a column called 'yardID'
 <<>>=
-plot(data,selection=1:20,plotNames=FALSE)
+plot(HorseFlu,selection=1:20,colorBy='yardID')
 @
 
-\noindent The plotting of sampling times is toggled by 'plotSamples'. This defaults to TRUE, as an error will be generated when no 'date' fields can be found to plot, as would be the case for the equine dataset.
-
-We can colour the individuals by a characteristic provided in the obkData. In this case, let's colour the horses by the yard they were in, a column called 'yardID'
+\noindent It might be useful to also order the individuals, which can be done according to some
+provided information (here, the yard) using \texttt{orderBy}:
 <<>>=
-plot(data,selection=1:20,colorBy='yardID')
+plot(HorseFlu,selection=1:20,colorBy='yardID',orderBy='yardID')
 @
-
-\noindent It might be useful to also order the individuals, use 'orderBy'
-<<>>=
-plot(data,selection=1:20,colorBy='yardID',orderBy='yardID')
-@
-
-\noindent Alternatively, we could manually specify an ordering
-<<>>=
-plot(data,selection=1:20,colorBy='yardID',ordering=20:1)
-@
-
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Plotting geography on a map}
+\subsection{Visualizing samples on a map}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-If geographical information is available, this function can be used to plot the cases on a map (for example downloaded from googlemaps). Geographical information can be provided as longitude/latitudes, or as strings specifying locations (which are converted to lon/lat using googlemaps).
-
-
-Let's plot an outbreak of equine influenza provided. First import the data and make an obkData object
+If geographical information is available, the function \texttt{plotGeo} can be used to visualize the
+cases on a map (which is by default downloaded from googlemaps).
+\texttt{plotGeo} is the function used by the generic \texttt{plot} of \texttt{obkData} when the
+second argument is \texttt{'geo'}.
+Geographical information can be provided as longitude/latitudes, or as strings specifying locations (which are converted to lon/lat using googlemaps).
+Let us plot the toy outbreak already used before, and which already contains longitudes and latitudes.
 <<>>=
-data(HorseFluRaw)
-data <- new("obkData", individuals=HorseFluRaw$individuals,samples=HorseFluRaw$samples,clinical=HorseFluRaw$clinics)
+data(ToyOutbreak)
+head(ToyOutbreak@individuals)
 @
-In this dataset, we already have longitudes and latitudes. We specify the
-columns holding these data with `location', and we have to tell the function that these are valid lon/lat with 'isLonLat' (which defaults to FALSE)
+We specify the columns holding these data with \texttt{location}, and we have to tell the function
+that these are valid lon/lat with 'isLonLat' (which defaults to FALSE):
 <<plotgeo1,dev='png'>>=
-plot(data,'geo',location=c('lon','lat'),isLonLat=TRUE)
+plot(ToyOutbreak,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=14)
 @
 
-\noindent We can zoom in or out using `zoom', which is an integer (higher is zoomed in
-more)
+\noindent We can also colour individuals by a certain characteristic using \texttt{colorBy} (here,
+by sex), and even centre the map on a given individual using \texttt{center}:
 <<dev='png'>>=
-plot(data,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=8)
+plot(ToyOutbreak,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=15,colorBy='Sex',center='11')
 @
-
-\noindent We can colour the individuals by a certain characteristic using 'colorBy'
-<<dev='png'>>=
-plot(data,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=8,colorBy='sex')
-@
-
-\noindent To center the map on an individual, use `center'. We can use this to zoom in on
-a part of the map
-<<dev='png'>>=
-plot(data,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=12,colorBy='sex',center='9')
-@
-
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Obtaining a minimal spanning tree of the genetic sequences}
+\subsection{Buidling minimum spanning trees of the genetic sequences}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-It can be useful to plot a minimal spanning tree of the sequences, to quickly visualize the genetic diversity and the relation between sequences. We can do this as follows:
+It can be useful to plot a minimal spanning tree of the sequences, to quickly visualize the genetic diversity and the relation between sequences.
+This can be achieved using \texttt{plotggMST}, or simply \texttt{plot} using \texttt{mst} for the
+second argument:
 <<>>=
 data(HorseFlu)
 @
-<<plotmst1, cache=TRUE>>=
-#plot(data,'mst')
+<<plotmst1, cache=TRUE, fig.keep="last", out.width=".8\\linewidth">>=
+plot(HorseFlu,'mst')
 @
 
-\noindent this is a large tree, we can also look at the diversity within one individual
-<<>>=
-plot(data,'mst',individualID=42)
+\noindent this is a large tree, we can also look at the diversity within one individual,
+e.g. individual 42:
+<<out.width=".8\\linewidth">>=
+plot(HorseFlu,'mst',individualID=42)
 @
 
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Obtaining phylogenies from genetic sequences}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-The package \textit{ape} implements a wide range of genetic distances (see \texttt{?dist.dna}) and
-most usual algorithms for distance-based phylogenetic reconstruction.
-In \textit{epibase}, the function \texttt{get.phylo} is a wrapper for these methods, allowing to
-derive trees for a selection or all the genes present in an \texttt{obkData} object.
-We illustrate this procedure using the simulated outbreak \texttt{ToyOutbreak}:
-<<>>=
-data(ToyOutbreak)
-head(ToyOutbreak)
-get.nlocus(ToyOutbreak)
-get.locus(ToyOutbreak)
-@
-This object contains genetic sequences for two different genes.
-We isolate a subset of sequences, say for a random subset of samples.
-<<>>=
-get.nsamples(ToyOutbreak)
-x <- subset(ToyOutbreak, samples=sample(1:418, 15, replace=FALSE))
-summary(x)
-@
-\texttt{get.phylo} admits a range of arguments allowing to select which genes (\texttt{locus}),
-model of evolution \texttt{model}, and tree reconstruction method (\texttt{method}) should be used.
-By default, a Neighbour-Joining tree based on Hamming distances (number of differing nucleotides) is
-derived for every gene, and the resulting trees are plotted:
-<<>>=
-#par(mfrow=c(1,2))
-#trees <- get.phylo(x, ask=FALSE)
-#trees
-@
-
-\noindent But for instance, we may only want an unrooted tree for the first gene, based on Kimura's 2
-parameters model of evolution, and we may want to indicate collection dates using tip colors;
-this can be done by:
-<<>>=
-tree1 <- get.phylo(x, locus=1, ask=FALSE, model="K80",
-                   color.by="dat", type="unrooted", palette=seasun)
-tree1
-@
 
 
 
@@ -998,7 +1019,7 @@ However, we are loosing the temporal information about the samples:
 plot(x, colorBy="location", orderBy="location")
 @
 The basic plot of \texttt{plotggphy} gives a tree quite similar to \textit{ape}'s:
-<<>>=
+<<fig.keep="last">>=
 plotggphy(x)
 @
 However, the function is more flexible and powerful.
