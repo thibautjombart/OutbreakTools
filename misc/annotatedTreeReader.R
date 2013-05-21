@@ -130,6 +130,9 @@
         X <- unlist(strsplit(tpc[k], ":"))
         tip.label[tip] <<- X[1]
         edge.length[j] <<- as.numeric(X[2])
+        
+        permute[[j]] <<- annotations[[k]] ## permute traits
+            
         k <<- k + 1L
         tip <<- tip + 1L
         j <<- j + 1L
@@ -139,6 +142,9 @@
         X <- unlist(strsplit(tpc[k], ":"))
         node.label[current.node - nb.tip] <<- X[1]
         edge.length[l] <<- as.numeric(X[2])
+        
+        permute[[l]] <<- annotations[[k]] ## permute traits
+
         k <<- k + 1L
         current.node <<- edge[l, 1]
     }
@@ -180,22 +186,29 @@
     index <- numeric(nb.edge + 1)
     index[node] <- nb.edge
     j <- k <- tip <- 1L
+    
+    permute = list()
+    
     for (i in 2:nsk) {
-        if (skeleton[i] == "(")
-            add.internal()
+        if (skeleton[i] == "(") {
+            add.internal()           
+        }
         if (skeleton[i] == ",") {
-            if (skeleton[i - 1] != ")")
-                add.terminal()
+            if (skeleton[i - 1] != ")") {
+                add.terminal()            	
+            }
         }
         if (skeleton[i] == ")") {
             if (skeleton[i - 1] == ",") {
-                add.terminal()
+                add.terminal()               
                 go.down()
             }
-            if (skeleton[i - 1] == ")")
+            if (skeleton[i - 1] == ")") {
                 go.down()
-        }
+            }
+        }        
     }
+    
     edge <- edge[-nb.edge, ]
     obj <- list(edge = edge, Nnode = nb.node, tip.label = tip.label)
     root.edge <- edge.length[nb.edge]
@@ -211,7 +224,7 @@
     class(obj) <- "phylo"
     attr(obj, "order") <- "cladewise"
 
-    obj$annotations = annotations
+    obj$annotations = permute
     obj
 }
 
