@@ -166,7 +166,7 @@ setGeneric("subset", function(x, ...) standardGeneric("subset"))
 
 
 ###############
-## get.phylo ##
+## make.phylo ##
 ###############
 ## return DNA sequence alignments
-setGeneric("get.phylo", function(x, ...) standardGeneric("get.phylo"))
+setGeneric("make.phylo", function(x, ...) standardGeneric("make.phylo"))

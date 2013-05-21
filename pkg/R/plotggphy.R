@@ -12,11 +12,11 @@
 #' @param tip.size Character (or Numeric). Can be either the value of tip size or the name of a column of \code{tip.attribute}. In the first case, all tips have the specified size. In the second case, tips are size-codded according to the specified attribute.
 #' @param branch.unit Character. The unit of the branch can be either "year", "month", "day" or "subst". If a time unit is provided, together with use.tip.dates, then the x-axis of the phylogeny is plotted in date format using standard POSIX specification.
 #' @param tip.dates Character. If branch.unit is in unit of time, tip.dates indicates the name of the column of tip.attribute that contains the sampling dates of the tip. See also guess.tip.dates.from.labels.
-#' @param guess.tip.dates.from.labels Logical. If TRUE then tip.dates are guessed from the tip labels using the information provided by set.guess. 
+#' @param guess.tip.dates.from.labels Logical. If TRUE then tip.dates are guessed from the tip labels using the information provided by set.guess.
 #' @param set.guess List. A list of three elements: prefix, order and from. For instance, if labels are formated like this: A/Shenzhen/40/2009_China_2009-06-09 then set.guess=list(prefix="_",order=3,from="first") or set.guess=list(prefix="_",order=1,from="last").
-#' @param axis.date.format Character. When x-axis is in date format, this argument allow to change the format of the tick labels. See strptime for more details.  
-#' @param major.breaks Character. Major x-axis breaks (only when x is in date format). Ex: "weeks", "15days", "months", etc. 
-#' @param minor.breaks Character. Minor x-axis breaks (only when x is in date format). Ex: "weeks", "15days", "months", etc. 
+#' @param axis.date.format Character. When x-axis is in date format, this argument allow to change the format of the tick labels. See strptime for more details.
+#' @param major.breaks Character. Major x-axis breaks (only when x is in date format). Ex: "weeks", "15days", "months", etc.
+#' @param minor.breaks Character. Minor x-axis breaks (only when x is in date format). Ex: "weeks", "15days", "months", etc.
 #' @param colour.palette Character. The palette for tip colors. Only palettes from the package RColorBrewer are available. See brewer.pal documentation for more details.
 #' @param legend.position Character (or numeric). The position of legends. ("left", "right", "bottom", "top", or two-element numeric vector)
 #' @export
@@ -34,9 +34,9 @@
 ## plotggphy: no visible binding for global variable ‘label’
 if(getRversion() >= "2.15.1")  utils::globalVariables(c("x.beg","x.end","y.beg","y.end","y","label"))
 
-plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FALSE, tip.label.size = 3, build.tip.attribute = FALSE, 
-	tip.colour = NULL, tip.alpha = NULL, tip.shape = NULL, tip.size = NULL, branch.unit = NULL, tip.dates = NULL, 
-	guess.tip.dates.from.labels = FALSE, set.guess = list(prefix = "_", order = 1, from = "last"), axis.date.format = NULL, 
+plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FALSE, tip.label.size = 3, build.tip.attribute = FALSE,
+	tip.colour = NULL, tip.alpha = NULL, tip.shape = NULL, tip.size = NULL, branch.unit = NULL, tip.dates = NULL,
+	guess.tip.dates.from.labels = FALSE, set.guess = list(prefix = "_", order = 1, from = "last"), axis.date.format = NULL,
 	major.breaks = NULL, minor.breaks = NULL, colour.palette = "Spectral", legend.position = "right") {
 
 	#stop if:
@@ -54,6 +54,14 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
 	}
 
 	phylo <- phylo[[which.tree]]
+
+        ## KLUDGE: ANTON, CORRECT THIS PLEASE
+        ## this is just to avoid the freeze for unrooted trees
+        if(!is.rooted(phylo)) {
+            warning("The tree is not rooted - rooting with tip 1")
+            phylo <- root(phylo, 1, resolve.root=TRUE)
+        }
+
 
 	if (build.tip.attribute) {
 		#TODO: add other data frames (e.g. clinical, etc)
@@ -150,7 +158,7 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
 	ggphy <- phylo2ggphy(phylo, tip.dates = tip.dates, branch.unit = branch.unit)
 
 
-	#TODO: allow edge and node attributes and merge with df.edge and df.node		
+	#TODO: allow edge and node attributes and merge with df.edge and df.node
 	df.tip <- ggphy[[1]]
 	df.node <- ggphy[[2]]
 	df.edge <- ggphy[[3]]
@@ -165,7 +173,7 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
 
 
 	#theme_set(theme_grey())
-	theme.old <- theme_update(axis.ticks.y = element_blank(), axis.title.y = element_blank(), panel.grid.major.y = element_blank(), 
+	theme.old <- theme_update(axis.ticks.y = element_blank(), axis.title.y = element_blank(), panel.grid.major.y = element_blank(),
 		panel.grid.minor.y = element_blank())
 
 	p <- ggplot(data = df.edge)
@@ -173,8 +181,8 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
 	p <- p + scale_y_continuous("", labels = NULL)
 
 	if (is.x.date) {
-		to_parse <- paste("scale_x_date(\"Time\"", ifelse(is.null(axis.date.format), "", ",labels=date_format(axis.date.format)"), 
-			ifelse(is.null(major.breaks), "", ",breaks= date_breaks(major.breaks)"), ifelse(is.null(minor.breaks), 
+		to_parse <- paste("scale_x_date(\"Time\"", ifelse(is.null(axis.date.format), "", ",labels=date_format(axis.date.format)"),
+			ifelse(is.null(major.breaks), "", ",breaks= date_breaks(major.breaks)"), ifelse(is.null(minor.breaks),
 				"", ",minor_breaks= minor.breaks"), ")")
 
 		p <- p + eval(parse(text = to_parse))
@@ -226,7 +234,7 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
 	}
 
 	if (length(tip.fix) + length(tip.aes)) {
-		p <- p + eval(parse(text = paste("geom_point(data = df.tip, aes_string(x = \"x\", y = \"y\"", tip.aes.txt, 
+		p <- p + eval(parse(text = paste("geom_point(data = df.tip, aes_string(x = \"x\", y = \"y\"", tip.aes.txt,
 			")", tip.fix.txt, ")")))
 	}
 

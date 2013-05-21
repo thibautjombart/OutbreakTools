@@ -1,12 +1,13 @@
 
 
 ###############
-## get.phylo ##
+## make.phylo ##
 ###############
 
-setMethod("get.phylo", "obkData", function(x, locus=NULL, model = "N", pairwise.deletion = FALSE, method=nj,
-                                           color.by=c("sample","individual","date"), palette=NULL,
-                                           plot=TRUE, ask=TRUE, ...){
+setMethod("make.phylo", "obkData", function(x, locus=NULL, result=c("obkData","multiPhylo"),
+                                            model = "N", pairwise.deletion = FALSE, method=nj,
+                                            color.by=c("sample","individual","date"), palette=NULL,
+                                            plot=FALSE, ask=TRUE, ...){
     if(get.nlocus(x)==0){
         warning("No DNA sequences in the data.")
         return(NULL)
@@ -14,6 +15,7 @@ setMethod("get.phylo", "obkData", function(x, locus=NULL, model = "N", pairwise.
     if(is.null(palette)){
         palette <- colorRampPalette(brewer.pal(11, "RdYlGn"))
     }
+    result <- match.arg(result)
 
     ## GET DNA SEQUENCES ##
     if(is.null(locus)) locus <- 1:get.nlocus(x)
@@ -76,9 +78,12 @@ setMethod("get.phylo", "obkData", function(x, locus=NULL, model = "N", pairwise.
 
 
     ## RETURN OBJECT ##
-    out <- tre
-    out$legend <- list(col=leg.col, txt=leg.txt)
-    return(out)
+    class(tre) <- "multiPhylo"
+    ## out$legend <- list(col=leg.col, txt=leg.txt)
+    if(result=="multiPhylo") return(tre) # returned object is multiPhylo
 
-}) # end get.phylo
+    x@trees <- tre # returned object is obkData
+    return(x)
+
+}) # end make.phylo
 

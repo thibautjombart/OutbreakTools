@@ -55,11 +55,11 @@ data(ToyOutbreakRaw)
 
 ## Constructing an obkData object ##
 x <- new ("obkData", individuals=ToyOutbreakRaw$individuals,
-samples=ToyOutbreakRaw$samples,
-clinical=ToyOutbreakRaw$clinical,contacts=ToyOutbreakRaw$contacts,
-contacts.start=ToyOutbreakRaw$contacts.start,
-contacts.end=ToyOutbreakRaw$contacts.end,
-dna=ToyOutbreakRaw$dna,trees=ToyOutbreakRaw$trees)
+          samples=ToyOutbreakRaw$samples,
+          clinical=ToyOutbreakRaw$clinical,contacts=ToyOutbreakRaw$contacts,
+          contacts.start=ToyOutbreakRaw$contacts.start,
+          contacts.end=ToyOutbreakRaw$contacts.end,
+          dna=ToyOutbreakRaw$dna, trees=ToyOutbreakRaw$trees)
 
 ## Examining the object ##
 summary(x)

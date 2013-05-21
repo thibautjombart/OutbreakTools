@@ -33,7 +33,7 @@
     \item \code{\link{subset.obkData}}: (simply use \code{subset}) a
     method to subset the dataset using various criteria.
 
-    \item \code{\link{get.phylo}}: derive/plot phylogenies from the genes
+    \item \code{\link{make.phylo}}: derive/plot phylogenies from the genes
     contained in an \linkS4class{obkData} object.
 
     \item \code{\link{plotggMST}}: derive/plot minimum spanning trees
