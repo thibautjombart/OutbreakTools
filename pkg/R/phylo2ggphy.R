@@ -23,6 +23,7 @@ phylo2ggphy<-function(phylo,tip.dates=NULL,branch.unit=NULL,verbose=FALSE){
 #find root
 	ind<-which(!edge$beg%in%edge$end)
 	phy.root<-unique(edge$beg[ind])
+
 	if(length(phy.root)!=1){
         cat(length(phy.root),"root(s) found!!\n")
         stop("Algorithm cannot handle more than one root in the phylo at the moment!")
@@ -30,12 +31,13 @@ phylo2ggphy<-function(phylo,tip.dates=NULL,branch.unit=NULL,verbose=FALSE){
 
 	if(!is.rooted(phy)){
 
-#find outgroup
-#ind<-which(edge$beg==phy.root & edge$end<=N.tips)
-#outG<-edge$end[ind]
 		phy<-root(phy,node=phy.root,resolve.root=TRUE)
-#remove outG label
-#phy$tip.label<-phy$tip.label[-outG]
+		edge<-as.data.frame(phy$edge)
+		names(edge)<-c("beg","end")
+
+		#if edge.length is not provided, set all to 1 by default
+		if(is.null(edge$length<-phy$edge.length)){edge$length<-rep(1,nrow(edge))}
+
 
 		if(has.node.label){
 #add NA to the root label
