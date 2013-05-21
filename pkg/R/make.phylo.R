@@ -1,10 +1,10 @@
 
 
 ###############
-## get.phylo ##
+## make.phylo ##
 ###############
 
-setMethod("get.phylo", "obkData", function(x, locus=NULL, model = "N", pairwise.deletion = FALSE, method=nj,
+setMethod("make.phylo", "obkData", function(x, locus=NULL, model = "N", pairwise.deletion = FALSE, method=nj,
                                            color.by=c("sample","individual","date"), palette=NULL,
                                            plot=TRUE, ask=TRUE, ...){
     if(get.nlocus(x)==0){
@@ -80,5 +80,5 @@ setMethod("get.phylo", "obkData", function(x, locus=NULL, model = "N", pairwise.
     out$legend <- list(col=leg.col, txt=leg.txt)
     return(out)
 
-}) # end get.phylo
+}) # end make.phylo
 

@@ -42,7 +42,7 @@ Collate:
     'obkData_basics.R'
     'uniqSequences.R'
     'dna2uniqSequences.R'
-    'get.phylo.R'
+    'make.phylo.R'
     'phylo2ggphy.R'
     'plotggMST.R'
     'plotggphy.R'

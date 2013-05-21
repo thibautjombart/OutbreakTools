@@ -1,23 +1,23 @@
 % \encoding{UTF-8}
-\name{get.phylo}
-\alias{get.phylo}
-\alias{get.phylo,obkData-method}
-\alias{get.phylo.obkData}
+\name{make.phylo}
+\alias{make.phylo}
+\alias{make.phylo,obkData-method}
+\alias{make.phylo.obkData}
 \title{Obtain phylogenies from outbreak data}
 \description{
-  The function \code{get.phylo} is used to obtain phylogenies for each
+  The function \code{make.phylo} is used to obtain phylogenies for each
   of the genes sequenced in an \linkS4class{obkData}
   object. Phylogenetic trees can optionally be plotted before being
   returned. Colors are used to distinguish samples, individuals, dates,
-  or any other requested information. \code{get.phylo} is a wrapper for
+  or any other requested information. \code{make.phylo} is a wrapper for
   functions from the \code{ape} package: \code{\link[ape]{dist.dna}} for
   computing genetic distances, and specific methods for getting trees
   such as \code{\link[ape]{nj}}.
 }
 \usage{
-get.phylo(x, \dots)
+make.phylo(x, \dots)
 
-\S4method{get.phylo}{obkData}(x, locus=NULL, model = "N", pairwise.deletion = FALSE,
+\S4method{make.phylo}{obkData}(x, locus=NULL, model = "N", pairwise.deletion = FALSE,
            method=nj, color.by=c("sample","individual","date"),
            palette=NULL, plot=TRUE, ask=TRUE,\dots)
 }
@@ -43,7 +43,7 @@ get.phylo(x, \dots)
   \item{\dots}{further graphical arguments to be passed to \code{\link[ape]{plot.phylo}}.}
 }
 \value{
-  \code{get.phylo} returns a list of items; the first item is a list of
+  \code{make.phylo} returns a list of items; the first item is a list of
   trees with \code{phylo} class, with one tree per requested
   locus; for each tree, tip colors are stored in a \code{$tip.col} slot;
   other slots of the main list are:
@@ -62,7 +62,7 @@ x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002)
 
 ## get tree info ##
 pal <- colorRampPalette(c("gold","red"))
-treInfo <- get.phylo(x, color.by="date", palette=pal, plot=FALSE)
+treInfo <- make.phylo(x, color.by="date", palette=pal, plot=FALSE)
 treInfo
 
 ## root tree to first case ##
@@ -91,7 +91,7 @@ data(ToyOutbreak)
 ## get tree info for ToyOutbreak dataset ##
 pal <- colorRampPalette(c("gold","red"))
 par(mfrow=c(1,2))
-treInfo <- get.phylo(ToyOutbreak, color.by="date", palette=pal, plot=TRUE, ask=FALSE)
+treInfo <- make.phylo(ToyOutbreak, color.by="date", palette=pal, plot=TRUE, ask=FALSE)
 treInfo
 
 
