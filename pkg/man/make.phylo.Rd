@@ -17,14 +17,22 @@
 \usage{
 make.phylo(x, \dots)
 
-\S4method{make.phylo}{obkData}(x, locus=NULL, model = "N", pairwise.deletion = FALSE,
-           method=nj, color.by=c("sample","individual","date"),
-           palette=NULL, plot=TRUE, ask=TRUE,\dots)
+\S4method{make.phylo}{obkData}(x, locus=NULL,
+           result=c("obkData","multiPhylo"), model = "N",
+           pairwise.deletion = FALSE, method=nj,
+           color.by=c("sample","individual","date"), palette=NULL,
+           plot=FALSE, ask=TRUE,\dots)
 }
 \arguments{
   \item{x}{an \linkS4class{obkData} object.}
+  \item{result}{a character string indicating the type of result to be
+    returned; if \code{obkData}, then the phylogenies are stored
+    in \code{x@trees}, possibly removing previous phylogenies; if
+    \code{multiPhylo}, the result is a list of \code{phylo}
+    objects with the class \code{multiPhylo}.}
   \item{locus}{a character or integer vector indicating the loci to be
-    used; if NULL, all loci are used, producing one phylogeny each; see \code{\link{get.dna}}.}
+    used; if NULL, all loci are used, producing one phylogeny each; see
+    \code{\link{get.dna}}.}
   \item{model, pairwise.deletion}{arguments passed to \code{\link[ape]{dist.dna}}.}
   \item{method}{a function producing phylogenetic trees with the class
     \code{phylo} (ape package) from a distance matrix with class
@@ -43,34 +51,29 @@ make.phylo(x, \dots)
   \item{\dots}{further graphical arguments to be passed to \code{\link[ape]{plot.phylo}}.}
 }
 \value{
-  \code{make.phylo} returns a list of items; the first item is a list of
-  trees with \code{phylo} class, with one tree per requested
-  locus; for each tree, tip colors are stored in a \code{$tip.col} slot;
-  other slots of the main list are:
-  \itemize{
-    \item legend$col: colors to be used when plotting a legend
-    \item legend$txt: annotations to be used when plotting a legend
-  }
+  A \code{obkData} with new phylogenies, or a list with class
+  \code{multiPhylo}.
 }
 \author{Thibaut Jombart \email{t.jombart@imperial.ac.uk}}
 \examples{
 
-## Example 1: simulate outbreak ##
+## Example using simulate outbreak ##
 
 set.seed(3)
 x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002)
+get.trees(x) # no tree here
 
-## get tree info ##
-pal <- colorRampPalette(c("gold","red"))
-treInfo <- make.phylo(x, color.by="date", palette=pal, plot=FALSE)
-treInfo
+## GET TREE AND DISPLAY IT
+x <- make.phylo(x, plot=TRUE)
+
+## DISPLAY TREE USING PLOTGGPHY
 
 ## root tree to first case ##
-tre <- root(treInfo[[1]], "1")
+tre <- root(get.trees(x)[[1]],1)
 
 ## plot tree, use color for dates ##
 par(mar=c(1,1,4,1))
-plot(tre, edge.width=2, type="fan", show.tip.label=FALSE)
+plot(tre, edge.width=2, type="fan", show.tip=FALSE)
 title("NJ tree of a simulated outbreak")
 mtext("each disk indicates 1 mutation from the root")
 
@@ -78,22 +81,7 @@ mtext("each disk indicates 1 mutation from the root")
 for(i in 1:11)
 symbols(0,0, circles=i, inches=FALSE, add=TRUE, bg=transp("royalblue", .1), fg=NA)
 
-## color tips by dates ##
-tiplabels(col=tre$tip.col, pch=20)
-tiplabels(col=transp(tre$tip.col), pch=20, cex=2)
-legend("bottomleft", fill=treInfo$legend$col, legend=treInfo$legend$txt,
-title="Days after 1st sample")
-
-## EXample 2: LOAD DATA ##
-
-data(ToyOutbreak)
-
-## get tree info for ToyOutbreak dataset ##
-pal <- colorRampPalette(c("gold","red"))
-par(mfrow=c(1,2))
-treInfo <- make.phylo(ToyOutbreak, color.by="date", palette=pal, plot=TRUE, ask=FALSE)
-treInfo
-
+tiplabels()
 
 }
 \keyword{classes}
