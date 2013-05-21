@@ -8,7 +8,7 @@
 ###############
 setMethod("get.locus", "obkData", function(x, ...){
     if(is.null(x@dna)) return(NULL)
-    return(get.locus(x@dna))
+    return(get.locus(x@dna, ...))
 })
 
 
@@ -18,7 +18,7 @@ setMethod("get.locus", "obkData", function(x, ...){
 ################
 setMethod("get.nlocus", "obkData", function(x, ...){
     if(is.null(x@dna)) return(0)
-    return(get.nlocus(x@dna))
+    return(get.nlocus(x@dna, ...))
 })
 
 
@@ -28,7 +28,7 @@ setMethod("get.nlocus", "obkData", function(x, ...){
 ## get.sequences ## (get sequence ID)
 ###################
 setMethod("get.sequences","obkData", function(x, ...){
-    return(get.sequences(x@dna))
+    return(get.sequences(x@dna, ...))
 })
 
 
@@ -39,7 +39,7 @@ setMethod("get.sequences","obkData", function(x, ...){
 ####################
 setMethod("get.nsequences", "obkData", function(x, ...){
     if(is.null(x@dna)) return(0)
-    return(get.nsequences(x@dna))
+    return(get.nsequences(x@dna, ...))
 })
 
 
