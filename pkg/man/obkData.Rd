@@ -63,46 +63,13 @@
     \item genetic sequences
     \item contact information
     \item clinical data
+    \item phylogenetic trees
   }
 }
 \section{Objects from the class obkData}{
   \code{obkData} objects can be created using \code{new("obkData",
-    ...)}, where '...' can be the following optional arguments (defaults
-  are all \code{NULL}):
-  \describe{
-    \item{\code{individuals}}{a data.frame with a mandatory column named
-      'individualID', providing unique identifiers for the individuals.}
-    \item{\code{samples}}{a data.frame with 3 mandatory columns named
-      'individualID', 'sampleID', and 'date', providing identifiers for
-      the individuals, for the samples, and dates. Dates must be
-      provided in a way convertible to \code{Date} (see
-      \code{?as.Date}). The format of the dates is detected
-      automatically as long as numbers are used, and year is provided
-      first or last. Alternative formats can be specified via the
-      argument date.format}
-    \item{\code{clinical}}{a list of data.frames, each of which has 2
-      mandatory fields, 'individualID' and 'date'. Dates are specified as
-      in the case of the samples data.frame. Each item of the list should
-      be named according to the type of clinical event,
-      e.g. 'hospitalisation', 'vaccination' or 'symptoms'. The 'date'
-      field should be utilised as a start or onset date where the clinical
-      event spans a period of time.}
-    \item{\code{dna}}{a list of DNA sequences in \code{DNAbin} or
-      \code{character} format.}
-    \item{\code{contacts}}{a matrix of characters indicating edges using
-      two columns; if contacts are directed, the first column is 'from',
-      the second is 'to'; values should match individual IDs (as
-      returned by get.individuals(x)); if numeric values are provided,
-      these are converted to integers and assumed to correspond to
-      individuals returned by get.individuals(x).}
-    \item{\code{contacts.start}}{a vector of dates indicating the beginning of each contact.}
-    \item{\code{contacts.end}}{a vector of dates indicating the end of each contact.}
-    \item{\code{contacts.duration}}{another way to specify contacts.end, as duration of contact.}
-    \item{\code{contacts.directed}}{a logical indicating if contacts are
-      directed; defaults to FALSE.}
-    \item{\code{trees}}{a list of phylogenetic trees in the class
-      \code{multiPhylo} (from the ape package)}
-  }
+    ...)}, where '...' corresponds to the arguments of the corresponding
+    initialize method (see 'Usage' section in this page).
 }
 \section{Slots}{
   \code{obkData} contain the following slots; note that in most cases, it is better to retrieve
@@ -125,6 +92,99 @@
       \code{\link{multiphylo}} storing list of trees.}
   }
 }
+
+\usage{
+\S4method{initialize}{obkData}(.Object, individuals=NULL, samples=NULL,
+          clinical=NULL, dna=NULL, trees=NULL, contacts=NULL,
+          contacts.start=NULL, contacts.end=NULL,
+          contacts.duration=NULL, contacts.directed=FALSE,
+          date.format=NULL, \dots)
+
+get.nindividuals(x, \dots)
+get.individuals(x, \dots)
+
+get.nsamples(x, \dots)
+get.samples(x, \dots)
+
+get.nclinicals(x, \dots)
+get.clinicals(x, \dots)
+
+get.ntrees(x, \dots)
+get.trees(x, \dots)
+
+\S4method{get.dna}{obkData}(x, locus=NULL, id=NULL, \dots)
+
+\S4method{get.nindividuals}{obkData}(x, data=c("all", "samples",
+"individuals", "clinical", "contacts"), \dots)
+
+\S4method{get.individuals}{obkData}(x, data=c("all", "samples",
+"individuals", "clinical", "contacts"), \dots)
+
+\S4method{get.ncontacts}{obkData}(x, from=NULL, to=NULL, \dots)
+
+\S4method{get.contacts}{obkData}(x, from=NULL, to=NULL, \dots)
+
+\S4method{get.clinicals}{obkData}(x, \dots)
+
+\S4method{get.ntrees}{obkData}(x, \dots)
+
+\S4method{get.trees}{obkData}(x, \dots)
+
+}
+\arguments{
+  \item{.Object}{the prototype of an \code{obkData} object, created
+    automatically by \code{new}.}
+  \item{individuals}{a data.frame with a mandatory column named
+    'individualID', providing unique identifiers for the individuals.}
+  \item{samples}{a data.frame with 3 mandatory columns named
+    'individualID', 'sampleID', and 'date', providing identifiers for
+    the individuals, for the samples, and dates. Dates must be
+    provided in a way convertible to \code{Date} (see
+    \code{?as.Date}). The format of the dates is detected
+    automatically as long as numbers are used, and year is provided
+    first or last. Alternative formats can be specified via the
+    argument date.format}
+  \item{clinical}{a list of data.frames, each of which has 2
+    mandatory fields, 'individualID' and 'date'. Dates are specified as
+    in the case of the samples data.frame. Each item of the list should
+    be named according to the type of clinical event,
+    e.g. 'hospitalisation', 'vaccination' or 'symptoms'. The 'date'
+    field should be utilised as a start or onset date where the clinical
+    event spans a period of time.}
+  \item{dna}{a list of DNA sequences in \code{DNAbin} or
+    \code{character} format.}
+  \item{contacts}{a matrix of characters indicating edges using
+    two columns; if contacts are directed, the first column is 'from',
+    the second is 'to'; values should match individual IDs (as
+    returned by get.individuals(x)); if numeric values are provided,
+    these are converted to integers and assumed to correspond to
+    individuals returned by get.individuals(x).}
+  \item{contacts.start}{a vector of dates indicating the
+    beginning of each contact.}
+  \item{contacts.end}{a vector of dates indicating the end of
+    each contact.}
+  \item{contacts.duration}{another way to specify contacts.end,
+    as duration of contact in days.}
+  \item{contacts.directed}{a logical indicating if contacts are
+    directed; defaults to FALSE.}
+  \item{trees}{a list of phylogenetic trees in the class
+    \code{multiPhylo} (from the ape package)}
+  \item{date.format}{a character string indicating the date format (see
+    \code{\link{as.Date}}); if \code{NULL}, date format is detected
+    automatically.}
+  \item{x}{an \code{obkData} object.}
+  \item{locus}{an indication of the locus, either by its name, or using
+    integers or logicals matching \code{get.locus}.}
+  \item{id}{an indication of the sequences, either by their names, or using
+    integers or logicals matching \code{get.sequences}.}
+  \item{data}{a character string indicating in which slot to seek the
+    information; in \code{get.data}, a character string indicating the
+    field to be returned.}
+  \item{from,to}{dates indicating the time span to consider for active
+    contacts (for dynamic networks only).}
+  \item{\dots}{arguments passed to other methods.}
+}
+
 \section{Methods}{
   Here is a list of accessors available for \code{obkData}
   objects. These functions are used to retrieve the content of the
@@ -185,62 +245,19 @@
   }
 }
 
-\usage{
-get.nindividuals(x, \dots)
-get.individuals(x, \dots)
 
-get.nsamples(x, \dots)
-get.samples(x, \dots)
-
-get.nclinicals(x, \dots)
-get.clinicals(x, \dots)
-
-get.ntrees(x, \dots)
-get.trees(x, \dots)
-
-\S4method{get.dna}{obkData}(x, locus=NULL, id=NULL, \dots)
-
-\S4method{get.nindividuals}{obkData}(x, data=c("all", "samples",
-"individuals", "clinical", "contacts"), \dots)
-
-\S4method{get.individuals}{obkData}(x, data=c("all", "samples",
-"individuals", "clinical", "contacts"), \dots)
-
-\S4method{get.ncontacts}{obkData}(x, from=NULL, to=NULL, \dots)
-
-\S4method{get.contacts}{obkData}(x, from=NULL, to=NULL, \dots)
-
-\S4method{get.clinicals}{obkData}(x, \dots)
-
-\S4method{get.ntrees}{obkData}(x, \dots)
-
-\S4method{get.trees}{obkData}(x, \dots)
-
-
-}
-\arguments{
-  \item{x}{an \code{obkData} object.}
-  \item{locus}{an indication of the locus, either by its name, or using
-    integers or logicals matching \code{get.locus}.}
-  \item{id}{an indication of the sequences, either by their names, or using
-    integers or logicals matching \code{get.sequences}.}
-  \item{data}{a character string indicating in which slot to seek the
-    information; in \code{get.data}, a character string indicating the
-    field to be returned.}
-  \item{from,to}{dates indicating the time span to consider for active
-    contacts (for dynamic networks only).}
-  \item{\dots}{arguments passed to other methods.}
-}
 \author{
   Thibaut Jombart, Simon Frost, Lulla Opatowski, Paul Birrell, Anne
   Cori, Marc Baguelin, Caroline Colijn
 }
+
 \seealso{
   \itemize{
     \item \code{\link{subset.obkData}} to subset the data in various ways.
     \item \code{\link{plot.obkData}} to plot the data.
   }
 }
+
 \examples{
 
 ## LOAD RAW DATA

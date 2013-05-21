@@ -56,7 +56,7 @@ setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataf
 ##
 setMethod("initialize", "obkData", function(.Object, individuals=NULL, samples=NULL, clinical=NULL, dna=NULL, trees=NULL,
                                             contacts=NULL, contacts.start=NULL, contacts.end=NULL, contacts.duration=NULL,
-                                            contacts.directed=FALSE, date.format=NULL){
+                                            contacts.directed=FALSE, date.format=NULL, ...){
 
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
