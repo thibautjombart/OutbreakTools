@@ -176,6 +176,10 @@ setMethod ("show", "obkContacts", function(object){
     }
     cat(paste(" Number of individuals = ", nindividuals, "\n"," Number of contacts = ",ncontacts,"\n",contacttype,"\n",sep=""))
     if(ncontacts>0) print(object@contacts)
+    if(contacttype==" Contacts = dynamic"){
+        cat("\nDate of origin: ")
+        print(object@origin)
+    }
 })
 
 
