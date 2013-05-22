@@ -54,6 +54,10 @@ make.phylo(x, \dots)
   A \code{obkData} with new phylogenies, or a list with class
   \code{multiPhylo}.
 }
+\seealso{
+  \code{\link{read.annotated.tree}} and \code{\link{read.annotated.nexus}} to 
+  read annotated phylogenies into phylo objects.
+}
 \author{Thibaut Jombart \email{t.jombart@imperial.ac.uk}}
 \examples{
 
