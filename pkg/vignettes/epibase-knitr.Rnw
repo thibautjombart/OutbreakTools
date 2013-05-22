@@ -831,9 +831,12 @@ this can be done by:
 tree1 <- make.phylo(x.summerEur, locus=1, ask=FALSE, model="K80",
                     plot=TRUE, color.by="dat", palette=seasun)
 axisPhylo()
-
 @
 
+Finally, note that \textit{epibase} also integrates functions to read annotated trees with Newick
+(\texttt{read.annotated.tree}) or NEXUS (\texttt{read.annotated.nexus}) formats. This will be
+particularly useful to process the outputs of Bayesian phylogenetic reconstruction software such as BEAST.
+See \texttt{?read.annotated.nexus} for more information.
 
 
 

@@ -51,5 +51,6 @@ Collate:
     'simuEpi.R'
     'utils.R'
     'plotGeo.R'
+    'annotatedTreeReader.R'
     'zzz.R'
     'epibase.R'

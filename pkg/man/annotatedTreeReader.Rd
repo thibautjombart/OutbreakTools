@@ -5,12 +5,15 @@
 \title{Read annotated tree files in Newick or NEXUS format}
 \description{
   These functions read annotated trees from files in Newick or NEXUS
-  formats. Except for the annotations, these functions mimic ape's functions
-  \code{\link[ape]{read.tree}} and \code{\link[ape]{read.nexus}}.
+  formats. Except for the annotations, these functions mimic ape's
+  functions \code{\link[ape]{read.tree}} and \code{\link[ape]{read.nexus}}.
+
+  Annotations are ordered by edges, i.e. matching the \code{edge.length}
+  slot of a \code{phylo} object.
 }
 \usage{
   read.annotated.tree(file="", text = NULL, tree.names = NULL, skip = 0,
-                                  comment.char = "#", keep.multi = FALSE, \dots)
+                      comment.char = "#", keep.multi = FALSE, \dots)
   read.annotated.nexus(file, tree.names = NULL)
 
 }
@@ -62,20 +65,17 @@ tre <- read.annotated.nexus(system.file("files/BEAST-expl.nex", package="epibase
 tre <- ladderize(tre)
 
 ## this tree has annotations
+##
 names(tre)
 class(tre$annotations)
 length(tre$annotations)
 
-## for each edge/node (each edge is identified by a terminal node), we have:
+## for each edge (each edge is identified by a terminal node), we have:
 tre$annotations[[1]]
 names(tre$annotations[[1]])
 
 ## extract rates from annotations
-rates <- sapply(tre$annotations, function(e) e$rate_median)
 rates <- unlist(sapply(tre$annotations, function(e) e$rate_median))
-
-## reorder annotations to match edges
-rates <- rates[tre$edge[,2]]
 
 ## plot tree, show median rates as colors
 plot(tre, show.tip=FALSE, edge.col=num2col(rates, col.pal=seasun))

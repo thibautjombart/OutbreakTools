@@ -36,6 +36,9 @@
     \item \code{\link{make.phylo}}: create/plot phylogenies from the genes
     contained in an \linkS4class{obkData} object.
 
+    \item \code{\link{read.annotated.nexus}}: read an annotated phylogeny
+    into a phylo object.
+
     \item \code{\link{plotggMST}}: create/plot minimum spanning trees
     from the genes contained in an \linkS4class{obkData} object.
 
