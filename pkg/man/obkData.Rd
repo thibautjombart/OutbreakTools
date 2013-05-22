@@ -32,27 +32,17 @@
 \alias{get.contacts,obkData-method}
 \alias{get.ncontacts,obkData-method}
 
-% \alias{get.dates}
-% \alias{get.dates,obkData-method}
-
 \alias{head.obkData}
 \alias{head,obkData-method}
 
 \alias{tail.obkData}
 \alias{tail,obkData-method}
 
-% \alias{get.data}
-% \alias{get.data,obkData-method}
-
 \alias{get.trees}
 \alias{get.ntrees}
 \alias{get.trees,obkData-method}
 \alias{get.ntrees,obkData-method}
 
-
-% \alias{[,obkData-method}
-% \alias{[,obkData,ANY,ANY-method}
-%%%%
 \title{Formal class "obkData"}
 \description{
   The class \code{obkData} is a formal (S4) class for storing data

@@ -58,10 +58,10 @@
   }
 }
 \section{Methods}{
-  Here is a list of methods available for \code{obkSequences} objects. Most of
-  these methods are accessors, that is, functions which are used to
-  retrieve the content of the object. Accessors with more than one
-  argument are indicated by a '*' symbol next to the method's
+  Here is a list of methods available for \code{obkSequences}
+  objects. Most of these methods are accessors, that is, functions which
+  are used to retrieve the content of the object. Accessors with more
+  than one argument are indicated by a '*' symbol next to the method's
   name. This list also contains methods for conversion from
   \code{obkSequences} to other classes.
   

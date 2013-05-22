@@ -42,11 +42,12 @@ x
 summary(x)
 
 ## Plot the dynamics
-x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002, showPlots=TRUE)
+x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002,
+             showPlots=TRUE)
 
 ## Add phyloTree
 x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002,
-showPlots=TRUE, makePhyloTree=TRUE)
+             showPlots=TRUE, makePhyloTree=TRUE)
 
 }
 }

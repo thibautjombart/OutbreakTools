@@ -1,6 +1,7 @@
 \name{dna2uniqSequences}
 \alias{dna2uniqSequences}
-\title{Function to convert a DNAbin with duplicated sequences to the class 'uniqSequences'}
+\title{
+  Convert a DNAbin with duplicated sequences to the class 'uniqSequences'}
 \usage{
   dna2uniqSequences(dna)
 }

@@ -1,6 +1,8 @@
 \name{plotIndividualTimeline}
 \alias{plotIndividualTimeline}
-\title{Function to plot a timeline for individuals involved in an outbreak in one plot}
+\title{
+  Plot a timeline of samples by individual.
+}
 \usage{
  plotIndividualTimeline(x, selection=1:length(get.individuals(x)),
            ordering=1:length(selection), orderBy=NULL, colorBy=NULL,

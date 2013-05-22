@@ -14,7 +14,8 @@
 \usage{
 get.data(x, \dots)
 
-\S4method{get.data}{obkData}(x, data, where=NULL, drop=TRUE, showSource=FALSE, \dots)
+\S4method{get.data}{obkData}(x, data, where=NULL, drop=TRUE,
+       showSource=FALSE, \dots)
 }
 \arguments{
   \item{x}{an \linkS4class{obkData} object.}

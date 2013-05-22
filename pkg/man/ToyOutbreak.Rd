@@ -57,16 +57,18 @@ summary(ToyOutbreak)
 
 ## Plotting the dynamic contact network ##
 par(mfrow=c(2,2))
-plot(get.contacts(ToyOutbreak),main="Contact network - days 0-3",displaylabels=TRUE)
-plot(get.contacts(ToyOutbreak, from=0, to=1.1), main="Contact network - days 0-1",
+plot(get.contacts(ToyOutbreak),main="Contact network - days 0-3",
      displaylabels=TRUE)
-plot(get.contacts(ToyOutbreak, from=2, to=2.1), main="Contact network - day 2",
-     displaylabels=TRUE)
-plot(get.contacts(ToyOutbreak, from=3, to=3.1), main="Contact network - day 3",
-     displaylabels=TRUE)
+plot(get.contacts(ToyOutbreak, from=0, to=1.1),
+     main="Contact network - days 0-1", displaylabels=TRUE)
+plot(get.contacts(ToyOutbreak, from=2, to=2.1),
+     main="Contact network - day 2", displaylabels=TRUE)
+plot(get.contacts(ToyOutbreak, from=3, to=3.1),
+     main="Contact network - day 3", displaylabels=TRUE)
 
 ## Mapping the outbreak (by sex) ##
-plot(ToyOutbreak,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=13,colorBy='Sex')
+plot(ToyOutbreak,'geo',location=c('lon','lat'), isLonLat=TRUE, zoom=13,
+     colorBy='Sex')
 
 }
 \keyword{dataset}

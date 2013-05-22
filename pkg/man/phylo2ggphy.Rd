@@ -1,6 +1,7 @@
 \name{phylo2ggphy}
 \alias{phylo2ggphy}
-\title{Function to convert phylogenies from the class 'phylo' to the class 'ggphy'}
+\title{
+  Convert phylogenies from the class 'phylo' to the class 'ggphy'}
 \usage{
   phylo2ggphy(phylo, tip.dates = NULL, branch.unit = NULL,
     verbose = FALSE)

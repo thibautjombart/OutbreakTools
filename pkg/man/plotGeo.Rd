@@ -22,10 +22,11 @@
     map. If left empty, method will focus on center of all points}
 }
 \description{
-   Function to plot the geographic distribution of data in an \linkS4class{obkData}.
+   Function to plot the geographic distribution of data in an
+   \linkS4class{obkData}.
 }
 \examples{
-## load the obkData object containing information about equine influenza outbreak
+## load the obkData of equine influenza outbreak
 data(HorseFlu)
 x <- HorseFlu
 
@@ -47,7 +48,8 @@ plotGeo(ToyOutbreak,location=c('lon','lat'),isLonLat=TRUE,zoom=8)
 plotGeo(ToyOutbreak,location=c('lon','lat'),TRUE,zoom=13,colorBy='Sex')
 
 ## color by age, zooming on the first case of the outbreak: indivudal 1
-plotGeo(ToyOutbreak,location=c('lon','lat'),TRUE,zoom=15,colorBy='Age', center='1')
+plotGeo(ToyOutbreak,location=c('lon','lat'),TRUE, zoom=15,
+        colorBy='Age', center='1')
 
 
 }

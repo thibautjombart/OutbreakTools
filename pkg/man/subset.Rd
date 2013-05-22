@@ -78,7 +78,7 @@ subset(x, row.individuals=get.data(x, "Sex")=="M") # keep only Sex=='M'
 ## by rows in @samples
 get.data(x,"samples")
 get.data(x, "date") <= "2000-01-10" # samples with date < Jan 10
-subset(x, row.samples=get.data(x, "date") <= "2000-01-10") # samples with date < Jan 10
+subset(x, row.samples=get.data(x, "date") <= "2000-01-10") # keep date < Jan 10
 
 
 ## mixing things up

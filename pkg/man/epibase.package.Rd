@@ -33,10 +33,10 @@
     \item \code{\link{subset.obkData}}: (simply use \code{subset}) a
     method to subset the dataset using various criteria.
 
-    \item \code{\link{make.phylo}}: derive/plot phylogenies from the genes
+    \item \code{\link{make.phylo}}: create/plot phylogenies from the genes
     contained in an \linkS4class{obkData} object.
 
-    \item \code{\link{plotggMST}}: derive/plot minimum spanning trees
+    \item \code{\link{plotggMST}}: create/plot minimum spanning trees
     from the genes contained in an \linkS4class{obkData} object.
 
     \item \code{\link{dna2uniqSequences}}: derive unique sequences from
@@ -67,7 +67,7 @@
     Package: \tab epibase\cr
     Type: \tab Package\cr
     Version: \tab 0.1-0\cr
-    Date: \tab 2013-05-31 \cr
+    Date: \tab 2013-05-22 \cr
     License: \tab GPL (>=2)
   }
 }

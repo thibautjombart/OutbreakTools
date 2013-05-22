@@ -79,7 +79,8 @@ mtext("each disk indicates 1 mutation from the root")
 
 ## add distance legend as bullseye ##
 for(i in 1:11)
-symbols(0,0, circles=i, inches=FALSE, add=TRUE, bg=transp("royalblue", .1), fg=NA)
+symbols(0,0, circles=i, inches=FALSE, add=TRUE, bg=transp("royalblue",
+        .1), fg=NA)
 
 tiplabels()
 

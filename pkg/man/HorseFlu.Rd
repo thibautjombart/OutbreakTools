@@ -72,8 +72,8 @@ barplot(table(HorseFlu@samples$individualID), horiz=TRUE, las=1,
 
 ## Identify most sampled individual
 ind.max <- names(which.max(table(HorseFlu@samples$individualID)))
-HorseFlu.max <- subset(HorseFlu, individual=ind.max) # returns a warning message
-get.individuals(HorseFlu.max) # sanity check
+HorseFlu.max <- subset(HorseFlu, individual=ind.max)
+get.individuals(HorseFlu.max)
 
 ## How many samples and sequences for this individual?
 get.samples(HorseFlu.max)

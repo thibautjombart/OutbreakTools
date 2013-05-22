@@ -59,7 +59,8 @@ head(clinics$FirstVac)
 
 
 ## CREATE OBKDATA ##
-x <- new("obkData", individuals=individuals, samples=samples, dna=dna, clinical=clinics)
+x <- new("obkData", individuals=individuals, samples=samples,
+         dna=dna, clinical=clinics)
 
 
 ## MANIPULATE OBJECT ##

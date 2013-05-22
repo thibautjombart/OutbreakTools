@@ -41,7 +41,8 @@
   An \code{obkContacts} object can be constructed from individual
   identifiers (stored as \code{character} vectors), representing the
   'sender' and 'receiver' individuals, whether the contacts should be
-  regarded as directed, with optional information about the timing of contacts.
+  regarded as directed, with optional information about the timing of
+  contacts.
 }
 \section{Objects from the class obkContacts}{
   \code{obkContacts} objects can be created by calls to \code{new("obkContacts",
