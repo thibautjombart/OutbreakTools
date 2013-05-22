@@ -1,0 +1,18 @@
+			CHANGES IN EPIBASE 0.1-0
+
+NEW FEATURES
+
+	o first release of the package!
+
+	o Data classes & accessors: obkData, obkSequences, obkContacts
+
+	o plotting methods: plotGeo, plotIndividualTimeline, plotggphy,
+	plotggMST
+
+	o subset for obkData
+
+	o read.annotated.tree and read.annotated.nexus
+
+	o simuEpi to simulate outbreak under a SIR model
+
+	o a 46-pages vignette (using knitr)

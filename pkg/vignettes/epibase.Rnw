@@ -7,6 +7,8 @@
 \usepackage[colorlinks=true,urlcolor=blue]{hyperref}
 \usepackage{array}
 \usepackage{color}
+\usepackage{geometry}
+\geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=3cm,rmargin=3cm}
 
 \usepackage[utf8]{inputenc} % for UTF-8/single quotes from sQuote()
 \newcommand{\code}[1]{{{\tt #1}}}
@@ -27,7 +29,9 @@
 <<eval=TRUE,echo=FALSE,results='hide'>>=
 library(knitr)
 opts_chunk$set(fig.path='figs/epibase-', fig.keep='last', dev='pdf', fig.width=7, fig.height=7,
-               tidy=FALSE, warning=FALSE, fig.show='asis', fig.align='center', cache=FALSE)
+               tidy=FALSE, warning=FALSE, fig.show='asis', fig.align='center', cache=FALSE,
+               out.width=".6\\textwidth")
+options(width=80)
 @
 
 \color{black}
@@ -66,7 +70,7 @@ In this section, we first detail the structure of the classes of objects used in
 
 Data collected during outbreaks can be hugely diverse and complex.  In \textit{epibase}, our purpose
 is to have a general class of objects which can store virtually any information sampled during
-outbreak, without the user worrying about storage issues and consistency amongst different types of
+an outbreak, without the user worrying about storage issues and consistency amongst different types of
 data.  For most purposes, the core class \texttt{obkData} can be taken as a black box, with which the user can interact using specific
 functions called \textit{accessors}. However, a basic understanding of what type of information is stored in these objects will be useful.
 
@@ -207,14 +211,15 @@ oc.dynamic
 \texttt{oc.dynamic} is a dynamic graph, i.e. a graph whose vertices and edges can change over time.
 By default, plotting the object collapses the graph so that all vertices and edges that exist at
 some point are displayed; however, sections of the graph for given time intervals can be obtained
-using \texttt{network.extract}.
+using \texttt{get.contacts} (or alternatively, \texttt{network.extract} on the
+\texttt{networkDynamic} object directly).
 As a reminder, here is the input of the graph \texttt{oc.dynamic}:
 <<>>=
 data.frame(onset,terminus,ct,cf)
 @
 And here are various plots, first of the full (collapsed) contact network, then for different time
 intervals (0--2, 2--4, 4--6):
-<<dynNet>>=
+<<dynNet,out.width=".9\\textwidth">>=
 par(mfrow=c(2,2))
 plot(oc.dynamic@contacts,main="oc.dynamic - collapsed graph",
      displaylabels=TRUE)
@@ -248,7 +253,9 @@ Storing data in \textit{epibase} requires the following, fairly simple steps:
     files. Every standard spreadsheet software can export data to these formats.
   \item read DNA sequences from a single file, typically using \texttt{read.dna} from the ape
     package; this ``master'' file must contain all DNA sequences of all genes, with unique
-    identifiers for the sequences as labels
+    identifiers for the sequences as labels. While phylogenies can be obtained in R, annotated trees
+    produced by Bayesian software such as BEAST can now be imported using
+    \texttt{read.annotated.nexus}.
   \end{enumerate}
 \item use this information as input to the \texttt{obkData} constructor (\texttt{new("obkData",\ldots)}) to create an
   \texttt{obkData} object.
@@ -277,22 +284,23 @@ of the object (see \texttt{?obkData} for more information):
       dates. Dates must be provided in a way convertible to \texttt{Date} (see
       \texttt{?as.Date}). Default format for dates provided as characters is "\%Y-\%m-\%d"
       (e.g. 1984-09-23). Alternative format can be specified via the argument \texttt{date.format}.
+      If left to \texttt{NULL}, the format is determined automatically.
     \item \texttt{clinical}: a list of \texttt{data.frame}s, each of which has 2 mandatory fields,
       individualID' and 'date' (specified as before).
     \item \texttt{dna}: a list of DNA sequences in \texttt{DNAbin} or \texttt{character} format, as
-      read by \texttt{read.dna}.
+      read by \texttt{read.dna} or \texttt{fasta2DNAbin}.
     \item \texttt{contacts}: a matrix of characters indicating edges using two columns; if contacts
       are directed, the first column is 'from', the second is 'to'; values should match individual
       IDs (as returned by \texttt{get.individuals(x)}); if numeric values are provided, these are converted
       to integers and assumed to correspond to individuals returned by \texttt{get.individuals(x)}.
     \item \texttt{contacts.start}: a vector of dates indicating the beginning of each contact.
     \item \texttt{contacts.end}: a vector of dates indicating the end of each contact.
-    \item \texttt{contacts.duration}: another way to specify contacts.end, as duration of contact in
+    \item \texttt{contacts.duration}: another way to specify \texttt{contacts.end}, as duration of contact in
       days.
     \item \texttt{contacts.directed}: a logical indicating if contacts are
-      directed; defaults to FALSE.
+      directed; defaults to \texttt{FALSE}.
     \item \texttt{trees}: a list of phylogenetic trees in the class \texttt{multiPhylo} (from the
-      ape package); this is basically a list of \texttt{phylo} objects, with the class ``\texttt{multiPhylo}''.
+      ape package); this is basically a list of \texttt{phylo} objects, with the class attribute ``\texttt{multiPhylo}''.
     \item \texttt{date.format}: a character string indicating the date format (see \texttt{as.Date}); if \texttt{NULL}, date format is detected automatically.
 \end{itemize}
 
@@ -358,7 +366,7 @@ This representation ensures, amongst other things, that:
   \item every DNA sequence belongs to a gene
   \item DNA sequences from the same gene have the same length
   \item every tip of the trees refers to a DNA sequence
-  \item every contact refers to a documented individual
+  \item every contact refers to documented individuals
 \end{itemize}
 
 Moreover, as all these items are now connected, data manipulation on every components will now be
@@ -478,7 +486,7 @@ opts_chunk$set(eval=TRUE, echo=TRUE)
 \subsection{Accessors}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The phylosophy underlying formal (S4) classes is that the internal representation of the data can be
+The philosophy underlying formal (S4) classes is that the internal representation of the data can be
 complex as long as accessing the information is simple.
 This is made possible by decoupling storage and accession: the user is not meant to access the
 content of the object directly, but has to use \textit{accessors} to retrieve the information.
@@ -489,7 +497,7 @@ the symbols ``\texttt{[]}'' should be omitted from the actual command line. For 
 \texttt{myFunction(x, y=[\textit{"foo" or "bar"}])}\\
 
 \noindent means that the argument \texttt{y} of function \texttt{myFunction} can be either \texttt{"foo"}
-or \texttt{"bar"}, and proper calls would be:
+or \texttt{"bar"}, and valid calls would be:
 <<eval=FALSE>>=
 myFunction(x, y="foo")
 @
@@ -608,7 +616,7 @@ get.ncontacts(x)
 
 
 \item \texttt{get.data(x, data=[\textit{name of data seeked}], where=NULL,
-  drop=[\textit{TRUE/FALSE}]), showSource=[\textit{TRUE/FALSE}])}: multi-purpose accessor
+  drop=[\textit{TRUE/FALSE}], showSource=[\textit{TRUE/FALSE}])}: multi-purpose accessor
   seeking a data field with a given name in the entire dataset; \texttt{data} can be the name of a
   slot, or the name of a column in \texttt{x@individuals}, \texttt{x@samples}, or
   \texttt{x@clinical}. The optional argument \texttt{where} allows one to specify in which slot the
@@ -690,15 +698,17 @@ They work in the same way, and use the same arguments; they include:
 Another useful function is \texttt{as.matrix}, which converts the object into an adjacency matrix
 (by default)), a matrix of incidence, or a matrix listing edges.
 For instance, using a graph derived from the first 10 individuals in \texttt{ToyOutbreak}:
-<<out.width==".7\\textwidth">>=
+<<out.width==".8\\textwidth">>=
 x <- subset(ToyOutbreak, individuals=1:10)
 get.ncontacts(x)
-plot(x@contacts, main="Contacts in x")
+plot(x@contacts, main="Contacts in x", label.cex=1.25, vertex.cex=2)
+@
+
+\noindent (note: see \texttt{?plot.network} to customize such graphics).
+<<>>=
 as.matrix(x@contacts)
 as.matrix(x@contacts, "edgelist")
 @
-
-
 
 
 
@@ -769,8 +779,8 @@ Note that dates can also be provided as character strings in any sensible format
 
 A third way of specifying subsets of data is using indexing of the rows of \texttt{@individuals} or
 \texttt{@samples}, using the arguments \texttt{row.individuals} and \texttt{row.samples}, respectively.
-This is particularly useful for e.g. retaining only certain type of test results, or patients within
-a given age class, of a given sex, or data from a given location.
+This is particularly useful for instance for select specific test outcomes (e.g. positive swabs), patients within
+a given age class or of a given sex, or data from a given location.
 For instance, we can retain data from Mexico using:
 <<>>=
 toKeep <- get.data(x, "location")=="Mexico"
@@ -781,7 +791,7 @@ head(x.mex)
 @
 
 Finally, note that several filters can be specified at the same time.
-For instance, in the following we extract European data collected between 1st June and the 31st August:
+For instance, in the following we extract European data collected between the 1st June and the 31st August:
 <<lastsubset>>=
 x.summerEur <- subset(x, date.from="01/06/2009", date.to="31/08/2009",
                       row.indiv=get.data(x, "location")=="Europe")
@@ -801,7 +811,7 @@ most usual algorithms for distance-based phylogenetic reconstruction.
 In \textit{epibase}, the function \texttt{make.phylo} is a wrapper for these methods, allowing to
 derive trees for a selection or all the genes present in an \texttt{obkData} object.
 Trees can be stored in the \texttt{obkData} (\texttt{result='obkData'}) or returned as a
-\texttt{multiPhylo} object (\texttt{result='multiPhylo'})
+\texttt{multiPhylo} object (\texttt{result='multiPhylo'}).
 We illustrate this procedure using \texttt{x.summerEur}, the data of pandemic H1N1 influenza collected in Europe during
 the summer 2009 (see previous section):
 <<>>=
@@ -809,7 +819,7 @@ x.summerEur@trees <- NULL
 get.nsequences(x.summerEur)
 @
 \texttt{make.phylo} admits a range of arguments allowing to select which genes (\texttt{locus}),
-model of evolution \texttt{model}, and tree reconstruction method (\texttt{method}) should be used.
+model of evolution (\texttt{model}), and tree reconstruction method (\texttt{method}) should be used.
 By default, a Neighbour-Joining tree based on Hamming distances (number of differing nucleotides) is
 derived for every gene, and the resulting trees are plotted:
 <<makephylo, fig.keep="all">>=
@@ -819,7 +829,7 @@ summary(x2)
 
 \texttt{x2} now contains a phylogenetic tree derived from the sequences in \texttt{x.summerEur}.
 This one can be plotted simply, using:
-<<>>=
+<<out.width=".75\\textwidth">>=
 plot(get.trees(x2)[[1]])
 axisPhylo()
 @
@@ -827,7 +837,7 @@ axisPhylo()
 \noindent Note that we could ask for a different model of evolution, for instance Kimura's 2
 parameters distance, and we may want to display the tree and indicate collection dates using tip colors;
 this can be done by:
-<<tree1,fig.keep="last">>=
+<<tree1,fig.keep="last",out.width=".75\\textwidth">>=
 tree1 <- make.phylo(x.summerEur, locus=1, ask=FALSE, model="K80",
                     plot=TRUE, color.by="dat", palette=seasun)
 axisPhylo()
@@ -869,7 +879,7 @@ Default is \texttt{makePhyloTree=FALSE}.
 
 Let us look at an example in a very small population of size \texttt{N=50} and with the infectious rate \texttt{beta}
 raised accordingly to generate a few transmission events:
-<<>>=
+<<fig.width=10, out.width="\\textwidth">>=
 set.seed(1)
 x <- simuEpi(N=50,beta=0.01,showPlots=TRUE,makePhylo=TRUE)
 summary(x)
@@ -890,22 +900,30 @@ tree based on the simulated sequence data.
 \section{Graphics for \texttt{obkData} objects}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Several plot functions are provided. These can be called by
-`plot(data,`type',...)' where `data' is an obkData object, `type' is a string giving the type of function to plot, and optional arguments can be given. `type' has to be one of
+Several plotting options are available for \texttt{obkData}, corresponding to different
+sub-functions (see \texttt{?plot.obkData}).
+The syntax to use is
+\texttt{plot(x, y=[\textit{"timeline" or "geo" or "mst" or "phylo" or "contacts"}], ...)} where
+\texttt{x} is an \textit{obkData} object, and \texttt{y} indicates the type of graphic to generate.
+Further arguments can be passed via \texttt{...}.
+The different types of graphics are:
 \begin{itemize}
 \item `\texttt{timeline}': plots the timeline of the outbreak; the timeline of every case
-is plotted in a single window
-\item `\texttt{geo}' plots the cases on a map. Needs geographical information
-\item `\texttt{mst}': plots a minimal spanning tree of the genetic data
-\item `\texttt{phylo}': plots a phylogenetic tree of the genetic data
-\item `\texttt{contacts}': plots a phylogenetic tree of the genetic data
+is plotted in a single window; uses \texttt{plotIndividualTimeline}.
+\item `\texttt{geo}' plots the cases on a map. Needs geographical information. Uses \texttt{plotGeo}.
+\item `\texttt{mst}': plots a minimal spanning tree of the genetic data. Uses \texttt{plotggMST}.
+\item `\texttt{phylo}': plots a phylogenetic tree of the genetic data. Uses \texttt{plotggphy}.
+\item `\texttt{contacts}': plots a phylogenetic tree of the genetic data. Uses the plot method for
+  \textit{obkContacts}.
+
 \end{itemize}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Plotting a timeline of samples}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+This plotting option relies on the function \texttt{plotIndividualTimeline}; see
+\texttt{?plotIndividualTimeline} for more information.
 Let's plot the outbreak of equine influenza provided in \texttt{HorseFlu}:
 <<>>=
 data(HorseFlu)
@@ -922,8 +940,8 @@ We can do this by a vector specifying the indices of the individuals to plot. Le
 plot(HorseFlu,selection=1:20)
 @
 
-\noindent Notice that the names of the individuals are now plotted. The default behaviour is to plot these when less than fifty individuals are plotted, but we can manually override this by setting 'plotNames'.
-The plotting of sampling times is toggled by 'plotSamples'. This defaults to TRUE, as an error will be generated when no 'date' fields can be found to plot, as would be the case for the equine dataset.
+\noindent Notice that the names of the individuals are now plotted. The default behaviour is to plot these when less than fifty individuals are plotted, but we can manually override this by setting \texttt{plotNames}.
+The plotting of sampling times is toggled by \texttt{plotSamples}. This defaults to TRUE, as an error will be generated when no 'date' fields can be found to plot, as would be the case for the equine dataset.
 \\
 
 We can also colour individuals by a characteristic provided in the \texttt{obkData} object.
@@ -943,6 +961,8 @@ plot(HorseFlu,selection=1:20,colorBy='yardID',orderBy='yardID')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Visualizing samples on a map}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% This plotting option relies on the function \texttt{plotGeo}; see
+%% \texttt{?plotGeo} for more information.
 If geographical information is available, the function \texttt{plotGeo} can be used to visualize the
 cases on a map (which is by default downloaded from googlemaps).
 \texttt{plotGeo} is the function used by the generic \texttt{plot} of \texttt{obkData} when the
@@ -955,34 +975,36 @@ head(ToyOutbreak@individuals)
 @
 We specify the columns holding these data with \texttt{location}, and we have to tell the function
 that these are valid lon/lat with 'isLonLat' (which defaults to FALSE):
-<<plotgeo1,dev='png'>>=
-plot(ToyOutbreak,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=14)
+<<plotgeo1,dev='png',results='hide',message=FALSE>>=
+plot(ToyOutbreak,'geo', location=c('lon','lat'), isLonLat=TRUE, zoom=14)
 @
 
 \noindent We can also colour individuals by a certain characteristic using \texttt{colorBy} (here,
 by sex), and even centre the map on a given individual using \texttt{center}:
-<<dev='png'>>=
-plot(ToyOutbreak,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=15,colorBy='Sex',center='11')
+<<dev='png',results='hide',message=FALSE>>=
+plot(ToyOutbreak,'geo', location=c('lon','lat'), isLonLat=TRUE, zoom=15,
+     colorBy='Sex', center='11')
 @
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Buidling minimum spanning trees of the genetic sequences}
+\subsection{Building minimum spanning trees from genetic sequences}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+This plotting option relies on the function \texttt{plotggMST}; see
+\texttt{?plotggMST} for more information.
+
 It can be useful to plot a minimal spanning tree of the sequences, to quickly visualize the genetic diversity and the relation between sequences.
 This can be achieved using \texttt{plotggMST}, or simply \texttt{plot} using \texttt{mst} for the
 second argument:
-<<>>=
+<<plotmst1, cache=TRUE, fig.keep="last">>=
 data(HorseFlu)
-@
-<<plotmst1, cache=TRUE, fig.keep="last", out.width=".8\\linewidth">>=
 plot(HorseFlu,'mst')
 @
 
 \noindent this is a large tree, we can also look at the diversity within one individual,
 e.g. individual 42:
-<<out.width=".8\\linewidth">>=
+<<>>=
 plot(HorseFlu,'mst',individualID=42)
 @
 
@@ -991,8 +1013,10 @@ plot(HorseFlu,'mst',individualID=42)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Plotting stored phylogenetic trees}
+\subsection{Plotting phylogenetic trees}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% This plotting option relies on the function \texttt{plotggphy}; see
+%% \texttt{?plotggphy} for more information.
 
 Phylogenies stored in \texttt{obkData} (slot \texttt{@trees}) can be plotted using \texttt{plotggphy}.
 This function can be particularly useful as it allows for taking the collection dates into account
@@ -1014,22 +1038,23 @@ tre <- get.trees(x)[[1]]
 tre
 @
 and plotted using \textit{ape}'s standard \texttt{plot} function:
-<<pdh1n1tree1>>=
+<<pdh1n1tree1, out.width="0.8\\textwidth">>=
 plot(get.trees(x)[[1]], show.tip=FALSE)
 @
 However, we are loosing the temporal information about the samples:
 <<pdh1n1,dev='png'>>=
 plot(x, colorBy="location", orderBy="location")
 @
+
 The basic plot of \texttt{plotggphy} gives a tree quite similar to \textit{ape}'s:
-<<fig.keep="last">>=
+<<fig.keep="last", out.width="0.8\\textwidth">>=
 plotggphy(x)
 @
-However, the function is more flexible and powerful.
+However, \texttt{plotggphy} is also more flexible and powerful.
 In particular, the argument \texttt{build.tip.attribute} allows to derive attributes for the tips
 based on information on samples and individuals.
 Here, for instance, we can use it to retrieve dates for each tip:
-<<pdh1n1tree2>>=
+<<pdh1n1tree2, out.width="0.8\\textwidth">>=
 p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE,
                branch.unit = "year", tip.dates = "date")
 @
@@ -1042,7 +1067,7 @@ For instance, \texttt{x} contains information about the location of different in
 head(x@individuals)
 @
 Which can be exploited by:
-<<pdh1n1tree3>>=
+<<pdh1n1tree3, out.width="\\textwidth">>=
 p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE,
                branch.unit = "year", tip.dates = "date", tip.colour = "location",
                tip.size = 3, tip.alpha = 0.75)
