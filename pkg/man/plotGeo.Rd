@@ -26,6 +26,7 @@
    \linkS4class{obkData}.
 }
 \examples{
+\dontrun{
 ## load the obkData of equine influenza outbreak
 data(HorseFlu)
 x <- HorseFlu
@@ -50,7 +51,7 @@ plotGeo(ToyOutbreak,location=c('lon','lat'),TRUE,zoom=13,colorBy='Sex')
 ## color by age, zooming on the first case of the outbreak: indivudal 1
 plotGeo(ToyOutbreak,location=c('lon','lat'),TRUE, zoom=15,
         colorBy='Age', center='1')
-
+}
 
 }
 \author{
