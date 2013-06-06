@@ -20,7 +20,7 @@ make.phylo(x, \dots)
 \S4method{make.phylo}{obkData}(x, locus=NULL,
            result=c("obkData","multiPhylo"), model = "N",
            pairwise.deletion = FALSE, method=nj,
-           color.by=c("sample","individual","date"), palette=NULL,
+           color.by=c("sample","individual","date"), palette=funky,
            plot=FALSE, ask=TRUE,\dots)
 }
 \arguments{
@@ -73,7 +73,9 @@ x <- make.phylo(x, plot=TRUE)
 ## DISPLAY TREE USING PLOTGGPHY
 
 ## root tree to first case ##
+if(require(ape)){
 tre <- root(get.trees(x)[[1]],1)
+}
 
 ## plot tree, use color for dates ##
 par(mar=c(1,1,4,1))
@@ -82,11 +84,12 @@ title("NJ tree of a simulated outbreak")
 mtext("each disk indicates 1 mutation from the root")
 
 ## add distance legend as bullseye ##
+if(require(adegenet)){
 for(i in 1:11)
 symbols(0,0, circles=i, inches=FALSE, add=TRUE, bg=transp("royalblue",
         .1), fg=NA)
 
 tiplabels()
-
+}
 }
 \keyword{classes}

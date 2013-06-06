@@ -6,15 +6,15 @@
 
 setMethod("make.phylo", "obkData", function(x, locus=NULL, result=c("obkData","multiPhylo"),
                                             model = "N", pairwise.deletion = FALSE, method=nj,
-                                            color.by=c("sample","individual","date"), palette=NULL,
+                                            color.by=c("sample","individual","date"), palette=funky,
                                             plot=FALSE, ask=TRUE, ...){
     if(get.nlocus(x)==0){
         warning("No DNA sequences in the data.")
         return(NULL)
     }
-    if(is.null(palette)){
-        palette <- colorRampPalette(brewer.pal(11, "RdYlGn"))
-    }
+    ## if(is.null(palette)){
+    ##     ##palette <- colorRampPalette(brewer.pal(11, "RdYlGn"))
+    ## }
     result <- match.arg(result)
 
     ## GET DNA SEQUENCES ##

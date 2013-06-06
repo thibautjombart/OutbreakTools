@@ -1,5 +1,5 @@
 Package: epibase
-Version: 0.1-0
+Version: 0.1-1
 Date: 2013/01/11
 Title: basic tools for the analysis of disease outbreaks.
 Author: {The Hackout team (In alphabetic order: David Aanensen, Marc Baguelin,
@@ -10,23 +10,8 @@ Author: {The Hackout team (In alphabetic order: David Aanensen, Marc Baguelin,
 Maintainer: Thibaut Jombart <t.jombart@imperial.ac.uk>
 Suggests:
     EpiEstim
-Depends:
-    R (>= 2.10),
-    methods,
-    MASS,
-    ape,
-    adegenet,
-    network,
-    networkDynamic,
-    ggplot2,
-    ggmap,
-    sna,
-    scales,
-    plyr,
-    reshape2,
-    mapproj,
-    RColorBrewer,
-    knitr
+Depends:  R (>= 2.10), methods, ggplot2, network, knitr
+Imports: utils, RColorBrewer, ape, adegenet, reshape2, sna, plyr, ggmap, networkDynamic, scales
 Description: basic tools for the analysis of disease outbreaks.
 License: GPL (>=2)
 LazyLoad: yes

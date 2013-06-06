@@ -830,6 +830,7 @@ summary(x2)
 \texttt{x2} now contains a phylogenetic tree derived from the sequences in \texttt{x.summerEur}.
 This one can be plotted simply, using:
 <<out.width=".75\\textwidth">>=
+library(ape)
 plot(get.trees(x2)[[1]])
 axisPhylo()
 @
@@ -839,7 +840,7 @@ parameters distance, and we may want to display the tree and indicate collection
 this can be done by:
 <<tree1,fig.keep="last",out.width=".75\\textwidth">>=
 tree1 <- make.phylo(x.summerEur, locus=1, ask=FALSE, model="K80",
-                    plot=TRUE, color.by="dat", palette=seasun)
+                    plot=TRUE, color.by="dat")
 axisPhylo()
 @
 

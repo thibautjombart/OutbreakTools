@@ -2,23 +2,45 @@
 # Remove the previous line if you edit this file
 
 # Export all names
-exportPattern(".")
+exportPattern("^[^\\.]")
+
 
 # Import all packages listed as Imports or Depends
-import(
-       methods,
-       MASS,
-       ape,
-       adegenet,
-       network,
-       networkDynamic,
-       ggplot2,
-       ggmap,
-       sna,
-       scales,
-       plyr,
-       reshape2,
-       mapproj,
-       RColorBrewer,
-       knitr
-       )
+import(methods, network, ggplot2, plyr, knitr)
+
+importFrom(utils, "packageDescription")
+
+importFrom(ape, "as.character.DNAbin", "as.DNAbin", "as.DNAbin.alignment", "as.DNAbin.character",
+           "as.DNAbin.list", "as.list.DNAbin", "as.matrix.DNAbin", "cbind.DNAbin", "c.DNAbin",
+           "[.DNAbin", "labels.DNAbin", "print.DNAbin", "rbind.DNAbin", "dist.dna", "nj", "bionj",
+           "fastme.bal", "fastme.ols", "mst", "root", "unroot", "is.rooted", "ladderize","drop.tip",
+           "plot.phylo", "print.phylo", "c.multiPhylo", "[.multiPhylo", "[[<-.multiPhylo",
+           "[[.multiPhylo", "$<-.multiPhylo", "$.multiPhylo", "plot.multiPhylo", "print.multiPhylo",
+           "axisPhylo", ".compressTipLabel", "clado.build")
+
+importFrom(adegenet, "bluepal", "redpal", "greenpal", "seasun", "spectral", "funky", "num2col",
+           "fac2col", "any2col", "transp", "findMutations", "findMutations.DNAbin")
+
+importFrom(RColorBrewer, "brewer.pal.info", "brewer.pal")
+
+importFrom(reshape2, "melt")
+
+importFrom(sna, "gplot.layout.fruchtermanreingold", "geodist")
+
+importFrom(ggmap, "geocode", "get_map", "ggmap")
+
+importFrom(networkDynamic, "activate.edges", "network.extract", "is.networkDynamic", "network.collapse")
+
+importFrom(scales, "date_breaks", "date_format")
+
+## IMPORTS TO FIX LATER ##
+## importFrom(plyr, "rename") # must be something else
+
+## importFrom(network, "network.vertex.names", "network.vertex.names<-",
+##            "delete.vertices", "network.initialize", "add.edge", "%n%", "%n%<-",
+##            "network.edgecount", "set.network.attribute", "as.matrix.network", "plot.network",
+##            "is.network")
+
+## importFrom(ggplot2, "geom_point", "element_blank", "theme_update", "theme_bw", "ggplot", "geom_segment",
+##            "scale_y_continuous", "scale_x_continuous", "geom_text", "scale_colour_discrete",
+##            "scale_colour_brewer", "scale_colour_gradientn", "scale_y_discrete", "geom_hline", "aes", "aes_string")
