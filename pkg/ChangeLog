@@ -1,5 +1,16 @@
 			CHANGES IN EPIBASE 0.1-0
 
+FIXES
+
+	o changed the NAMESPACE so as to depend on less packages
+
+	o as the vignette uses knir, epibase now explicitely depends on R
+	>= 3.0.0
+
+	
+
+			CHANGES IN EPIBASE 0.1-0
+
 NEW FEATURES
 
 	o first release of the package!
