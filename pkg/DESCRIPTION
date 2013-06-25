@@ -1,5 +1,5 @@
 Package: epibase
-Version: 0.1-1
+Version: 0.1-2
 Date: 2013/06/20
 Title: basic tools for the analysis of disease outbreaks.
 Author: {The Hackout team (In alphabetic order: David Aanensen, Marc Baguelin,
@@ -28,6 +28,7 @@ Collate:
     'uniqSequences.R'
     'dna2uniqSequences.R'
     'make.phylo.R'
+    'get.incidence.R'
     'phylo2ggphy.R'
     'plotggMST.R'
     'plotggphy.R'

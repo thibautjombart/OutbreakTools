@@ -170,3 +170,11 @@ setGeneric("subset", function(x, ...) standardGeneric("subset"))
 ###############
 ## return DNA sequence alignments
 setGeneric("make.phylo", function(x, ...) standardGeneric("make.phylo"))
+
+
+
+###################
+## get.incidence ##
+###################
+## return DNA sequence alignments
+setGeneric("get.incidence", function(x, ...) standardGeneric("get.incidence"))
