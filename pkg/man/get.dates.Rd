@@ -5,7 +5,7 @@
 \alias{get.dates,obkData-method}
 \alias{get.dates.obkData}
 
-\title{Access data in "obkData" objects}
+\title{Access dates in "obkData" objects}
 \description{
   \code{get.dates} is a generic function with a method for
   \linkS4class{obkData} objects. It can be used to retrieve existing
