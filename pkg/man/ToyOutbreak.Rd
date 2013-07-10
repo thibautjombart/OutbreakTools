@@ -19,7 +19,7 @@
     \item{\code{lon}, the longitude corresponding to each individual}
   }
   
-  \code{ToyOutbreak@clinical} is a list containing one \code{data.frame} called \code{Fever} containing: 
+  \code{ToyOutbreak@records} is a list containing one \code{data.frame} called \code{Fever} containing: 
   \itemize{
     \item{\code{individualID}, the ID of each individual,}
     \item{\code{date}, the date at which temperature was measured in each individual,}

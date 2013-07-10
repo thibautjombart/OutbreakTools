@@ -15,7 +15,7 @@
 get.incidence(x, \dots)
 
 \S4method{get.incidence}{obkData}(x, use=c("all", "samples", "individuals",
-       "clinical"), \dots)
+       "records"), \dots)
 }
 \arguments{
   \item{x}{an \linkS4class{obkData} object.}

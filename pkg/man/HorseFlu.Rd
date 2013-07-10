@@ -53,10 +53,10 @@ head(HorseFlu@samples)
 ## DNA sequences
 HorseFlu@dna
 
-## clinical info
-names(HorseFlu@clinical)
-head(HorseFlu@clinical$FirstVac)
-head(HorseFlu@clinical$LastVac)
+## records info
+names(HorseFlu@records)
+head(HorseFlu@records$FirstVac)
+head(HorseFlu@records$LastVac)
 
 ## MANIPULATE OBJECT ##
 

@@ -5,12 +5,12 @@
 ###################
 
 setMethod("get.incidence", "obkData", function(x, use=c("collection"), ...){
-    if(get.nsamples(x)<1) return(NULL)
+    if(get.nrecords(x)<1) return(NULL)
 
     ## get dates
-    dates <- get.dates(x, data="samples")
-    first.date <- min(dates <- get.dates(x, data="samples"))
-    last.date <- max(dates <- get.dates(x, data="samples"))
+    dates <- get.dates(x, data="records")
+    first.date <- min(dates <- get.dates(x, data="records"))
+    last.date <- max(dates <- get.dates(x, data="records"))
     out.dates <- seq(first.date, last.date, by=1) # output dates
 
     ## get vector of "positive outcomes" ##
@@ -31,7 +31,7 @@ setMethod("get.incidence", "obkData", function(x, use=c("collection"), ...){
     }
 
     ## fill in the output ##
- 
+
 
 }) # end get.incidence
 

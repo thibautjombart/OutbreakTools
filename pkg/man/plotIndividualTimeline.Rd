@@ -6,8 +6,8 @@
 \usage{
  plotIndividualTimeline(x, selection=1:length(get.individuals(x)),
            ordering=1:length(selection), orderBy=NULL, colorBy=NULL,
-           events=NULL, clinicalEvents=NULL,periods=NULL,
-           plotSamples=TRUE, plotNames=length(selection)<50)
+           events=NULL, periods=NULL, plotSamples=TRUE,
+           plotNames=length(selection)<50)
 }
 \arguments{
   \item{x}{the main obkData object}
@@ -26,8 +26,8 @@
   \item{events}{vector of strings giving the names of the columns that
     hold date values in 'individuals', to be marked on the time line}
   
-  \item{clinicalEvents}{vector of strings giving the names of the
-  columns that hold date values in 'clinical', to be marked on the time
+  \item{recordsEvents}{vector of strings giving the names of the
+  columns that hold date values in 'records', to be marked on the time
   line}
 
   \item{periods}{an Nx2 matrix of strings, giving pairs of column names
