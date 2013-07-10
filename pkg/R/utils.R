@@ -43,7 +43,14 @@
 
         bshape <- 0
         if(is.factor(x)) x <- as.character(x)
-        x1 <- x[1]
+
+        ## find the first non-NA value ##
+        x1 <- x[!is.na(x)][1]
+
+        ## escape if all values are NA ##
+        if(is.na(x1)){
+            return(as.Date(rep(NA, length(x))))
+        }
         symb <- unlist(strsplit(gsub("[[:digit:]]","", x1),""))[1L]
         temp <- unlist(strsplit(x1, paste("[",symb,"]",sep="")))
 

@@ -10,7 +10,7 @@
 ## - @clinical:list of clinical datasets, each stored as a data.frame information about interventions and events
 ## - @dna: dna data, stored as a obkSequences object
 ## - @contacts: contact information as obkContacts
-setClass("obkData", representation(individuals="dataframeOrNULL", samples="dataframeOrNULL",
+setClass("obkData", representation(individuals="data.frameOrNULL", samples="data.frameOrNULL",
                                    clinical="listOrNULL", dna="obkSequencesOrNULL", contacts="obkContactsOrNULL",
                                    trees="multiPhyloOrNULL"),
          prototype(individuals=NULL, samples=NULL, dna=NULL, clinical=NULL, contacts=NULL, trees=NULL))
