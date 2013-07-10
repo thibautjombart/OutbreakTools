@@ -28,6 +28,6 @@ setClassUnion("DNAbinOrNULL", c("DNAbin","NULL"))
 setClassUnion("POSIXctOrNULL", c("POSIXct","NULL"))
 setClassUnion("networkDynamicOrNetworkOrNULL",c("networkDynamicOrNetwork","NULL"))
 setClassUnion("DateOrNULL", c("Date", "NULL"))
-setClassUnion("dataframeOrNULL", c("data.frame", "NULL"))
+setClassUnion("data.frameOrNULL", c("data.frame", "NULL"))
 setClassUnion("multiPhyloOrNULL", c("multiPhylo", "NULL"))
 
