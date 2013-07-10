@@ -11,7 +11,8 @@
 ## - each element of the list is a DNAbin matrix
 ## (i.e., if there are several sequences, they are to be aligned)
 
-setClass("obkSequences", representation(dna="listOrNULL"), prototype(dna=NULL))
+setClass("obkSequences", representation(dna="listOrNULL", meta="data.frameOrNULL"),
+         prototype(dna=NULL, meta=NULL))
 
 setClassUnion("obkSequencesOrNULL", c("obkSequences", "NULL"))
 
@@ -25,54 +26,132 @@ setClassUnion("obkSequencesOrNULL", c("obkSequences", "NULL"))
 ######################
 
 ## INPUT DESCRIPTION:
-## dna: a list of DNA sequences
-## locus: a vector of characters indicating which locus each sequence corresponds to
-setMethod("initialize", "obkSequences", function(.Object, dna=NULL, locus=NULL) {
+## >> dna <<
+## - a list of DNA sequence matrices, in DNAbin format (one matrix per locus)
+## - names of the list are names of loci
+## - dates and individualID are mandatory, but may be fetched from labels
+## - sequence labels follow: [sequenceID][sep][individualID][sep][date]
+## (note: by default, [sep] is "_")
+##
+## >> ... <<
+## - any (possibly named) vector of meta data
+## - the length and order is supposed to match sequences in '@dna'
+##
+setMethod("initialize", "obkSequences", function(.Object, dna=NULL, individualID=NULL,
+                                                 date=NULL, date.format=NULL, quiet=FALSE,
+                                                 sep="_", ...) {
 
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
+    other <- NULL
 
-    ## escape if no info provided ##
+
+    ## HANDLE DNA ##
+    ## cases where an obkSequences is provided ##
+    if(inherits(dna, "obkSequences")){
+        dna <- dna@dna
+        individualID <- meta@individualID
+        date <- meta@date
+        if(ncol(dna@meta)>2) other <- dna@meta[,-(1:2),drop=FALSE]
+    }
+
+    ## cases where no info provided ##
     if(is.null(dna)) return(x)
-
-    ## escape of obkSequences is provided ##
-    if(inherits(dna, "obkSequences")) return(dna)
-
-
-    ## PROCESS ARGUMENTS ##
-    ## set locus to NULL if all NAs ##
-    if(!is.null(locus) && all(is.na(locus))) locus <- NULL
-
-    ## convert matrices of characters into DNAbin ##
-    if(is.matrix(dna) && is.character(dna)) dna <- as.DNAbin(dna)
-
-    ## force list type for DNAbin matrices ##
-    if(is.matrix(dna) && inherits(dna, "DNAbin")) dna <- as.list(dna)
-
-    ## convert list of characters to DNAbin list ##
-    if(is.list(dna) && all(sapply(dna, is.character))) dna <- lapply(dna, as.DNAbin)
-
-    ## check that dna is now a DNAbin list ##
-    if(!is.list(dna) || !inherits(dna, "DNAbin")) stop("dna input could not be processed into a DNAbin list")
-
-    ## force labels ##
-    if(is.null(names(dna))) names(dna) <- 1:length(dna)
-
-    ## SHAPE OUTPUT ##
-    ## no locus info => unnamed list of length 1
-    if(is.null(locus)){
-        x@dna <- list(as.matrix(dna))
+    if(is.matrix(dna)) dna <- list(dna)
+    NSEQ <- sum(sapply(dna, nrow))
+    if(NSEQ==0){
+        x@dna <- NULL
+        x@meta <- NULL
         return(x)
     }
 
-    ## otherwise: locus info provided ##
-    ## check length consistency
-    if(length(dna) != length(locus)) stop(paste("Length mismatch (dna:", length(dna), "items; locus:", length(locus),"items)"))
+    ## coerce items in DNA to matrices ##
+    dna <- lapply(dna, as.matrix)
 
-    ## check for NAs in locus
-    if(any(is.na(locus))) stop("NAs detected in locus information \n(if provided, locus information must be given for every sequence)")
-    x@dna <- lapply(unique(locus), function(loc) as.matrix(dna[locus==loc]))
-    names(x@dna) <- unique(locus)
+    ## convert matrices of characters into DNAbin ##
+    NLOC <- length(dna)
+    for(i in 1:NLOC){
+        if(is.character(dna[[i]])) dna[[i]] <- as.DNAbin(dna[[i]])
+    }
+
+    ## replace with generic names if needed ##
+    if(is.null(names(dna))) names(dna) <- paste("locus", 1:NLOC, sep=".")
+
+
+    ## HANDLE LABELS ##
+    ## extract labels ##
+    labels <- unlist(lapply(dna, rownames))
+    if(is.null(labels) || length(labels!=NSEQ)){
+        if(!quiet) cat("\n[obkSequence constructor] Incomplete labels provided - using generic labels.")
+        labels <- paste("sequence", 1:NSEQ, sep=".")
+    }
+
+    ## extract individualID and date if needed ##
+    NFIELDS <- length(unlist(strsplit(labels[1], sep)))
+    if(NFIELDS>=3){
+        if(!quiet) cat("\n[obkSequence constructor] Extracting individualID and dates from labels.")
+
+        temp <- strsplit(labels, sep)
+        if(!all(sapply(temp, length) == NFIELDS)) {
+            warning("[obkSequence constructor] Improper labels (varying numbers of fields)")
+            cat("\nCulprits are:\n")
+            print(labels[sapply(temp, length) != NFIELDS])
+        }
+        temp <- matrix(unlist(temp), ncol=3, byrow=TRUE)
+
+        ## get information ##
+        labels <- temp[,1]
+        individualID <- temp[,2]
+        date <- temp[,3]
+        other <- as.data.frame(temp[,-(1:2),drop=FALSE])
+
+        ## reassign labels ##
+        for(i in 1:NLOC){
+            rownames(dna[[i]]) <- labels[1:nrow(dna[[i]])]
+            labels <- labels[-(1:nrow(dna[[i]]))]
+        }
+
+        labels <- temp[,1]
+    }
+
+
+    ## HANDLE INDIVIDUAL ID ##
+    if(is.null(individualID)){
+        stop("[obkSequence constructor] Missing individualID")
+    }
+
+
+    ## HANDLE DATE ##
+    if(is.null(date)){
+        stop("[obkSequence constructor] Missing dates")
+    }
+    date <- .process.Date(date, format=date.format)
+
+
+    ## HANDLE OTHER / ... ##
+    ## retrieve information ##
+    if(is.null(other)) other <- list(...)
+    N.OTHER <- length(other)
+    if(is.null(names(other))) names(other) <- paste("other", 1:N.OTHER, sep=".")
+
+    ## convert to data.frame ##
+    if(!is.data.frame(other)){
+        other <- as.data.frame(other, row.names=labels)
+    }
+
+    ## check row.names, possibly reorder ##
+    ## right names, possibly bad order
+    if(all(labels %in% row.names(other))){
+        other <- other[labels,,drop=FALSE]
+    } else { ## bad names
+        row.names(other) <- labels
+    }
+
+
+    ## FORM FINAL OBJECT ##
+    x@dna <- dna
+    x@meta <- cbind.data.frame(individualID=individualID, date=date, other)
+    row.names(x@meta) <- labels
 
     return(x)
 }) # end obkSequences constructor
