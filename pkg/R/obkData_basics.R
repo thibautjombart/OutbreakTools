@@ -14,7 +14,7 @@ setMethod("show", "obkData", function(object){
     empty <- rep(TRUE, N)
     for(i in 1:N){
         if(!is.null(slot(object, slotNames(object)[i]))){
-            cat(paste("\n== @", slotNames(object)[i], "== \n",sep=""))
+            cat(paste("\n== @", slotNames(object)[i], " == \n",sep=""))
             print(slot(object, slotNames(object)[i]))
             empty[i] <- FALSE
         }

@@ -82,14 +82,21 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, individualID
     ## extract labels ##
     labels <- unlist(lapply(dna, rownames))
     if(is.null(labels) || length(labels)!=NSEQ){
-        if(!quiet) cat("\n[obkSequence constructor] Incomplete labels provided - using generic labels.")
+        if(!quiet) cat("\n[obkSequence constructor] Missing/incomplete labels provided - using generic labels.\n")
         labels <- paste("sequence", 1:NSEQ, sep=".")
+
+        ## assign labels ##
+        temp.lab <- labels
+        for(i in 1:NLOC){
+            rownames(dna[[i]]) <- temp.lab[1:nrow(dna[[i]])]
+            temp.lab <- temp.lab[-(1:nrow(dna[[i]]))]
+        }
     }
 
     ## extract individualID and date if needed ##
     NFIELDS <- length(unlist(strsplit(labels[1], split=sep, fixed=TRUE)))
     if(NFIELDS>=3){
-        if(!quiet) cat("\n[obkSequence constructor] Extracting individualID and dates from labels.")
+        if(!quiet) cat("\n[obkSequence constructor] Extracting individualID and dates from labels.\n")
 
         temp <- strsplit(labels, split=sep, fixed=TRUE)
         if(!all(sapply(temp, length) == NFIELDS)) {
@@ -181,13 +188,14 @@ setMethod("get.nlocus","obkSequences", function(x, ...){
 
 
 
-## ############
-## ## get.id ##
-## ############
-## setMethod("get.id","obkSequences", function(x, ...){
-##     if(is.null(x)) return(NULL)
-##     return(unlist(lapply(x@dna, rownames)))
-## })
+################
+## get.locus ##
+################
+setMethod("get.locus","obkSequences", function(x, ...){
+    if(is.null(x@dna)) return(NULL)
+    return(names(x@dna))
+})
+
 
 
 ###################
@@ -198,6 +206,7 @@ setMethod("get.sequences","obkSequences", function(x, ...){
     if(is.null(x)) return(NULL)
     return(unlist(lapply(x@dna, rownames)))
 })
+
 
 
 ####################
@@ -211,16 +220,6 @@ setMethod("get.nsequences","obkSequences", function(x, what=c("total","bylocus")
     temp <- sapply(x@dna, nrow)
     if(what=="bylocus") return(temp)
     return(sum(temp))
-})
-
-
-
-################
-## get.locus ##
-################
-setMethod("get.locus","obkSequences", function(x, ...){
-    if(is.null(x)) return(NULL)
-    return(names(x@dna))
 })
 
 
@@ -276,16 +275,20 @@ setMethod("get.dna","obkSequences", function(x, locus=NULL, id=NULL, ...){
 ######################
 ####  SHOW METHOD ####
 ######################
-
 setMethod ("show", "obkSequences", function(object){
     nLoc <- get.nlocus(object)
     nSeq <- get.nsequences(object)
     seqword <- ifelse(nSeq>1, "sequences", "sequence")
     locword <- ifelse(nLoc>1, "loci", "locus")
-    cat(paste("[", nSeq,"DNA", seqword, "in", nLoc, locword,"]\n\n"))
-    if(nLoc>0) print(object@dna)
-})
 
+    cat(paste("= @dna =\n",sep=""))
+    cat(paste("[", nSeq,"DNA", seqword, "in", nLoc, locword,"]\n"))
+    if(nLoc>0) print(object@dna)
+
+    cat(paste("\n= @meta =\n",sep=""))
+    cat("[ meta information on the sequences ]\n")
+    if(nLoc>0) print(object@meta)
+})
 
 
 
