@@ -38,8 +38,8 @@ setClassUnion("obkSequencesOrNULL", c("obkSequences", "NULL"))
 ## - the length and order is supposed to match sequences in '@dna'
 ##
 setMethod("initialize", "obkSequences", function(.Object, dna=NULL, individualID=NULL,
-                                                 date=NULL, date.format=NULL, quiet=FALSE,
-                                                 sep="_", ...) {
+                                                 date=NULL, ..., date.format=NULL, quiet=FALSE,
+                                                 sep="_") {
 
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
@@ -58,15 +58,15 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, individualID
     ## cases where no info provided ##
     if(is.null(dna)) return(x)
     if(is.matrix(dna)) dna <- list(dna)
+
+    ## coerce items in DNA to matrices ##
+    dna <- lapply(dna, as.matrix)
     NSEQ <- sum(sapply(dna, nrow))
     if(NSEQ==0){
         x@dna <- NULL
         x@meta <- NULL
         return(x)
     }
-
-    ## coerce items in DNA to matrices ##
-    dna <- lapply(dna, as.matrix)
 
     ## convert matrices of characters into DNAbin ##
     NLOC <- length(dna)
@@ -81,17 +81,17 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, individualID
     ## HANDLE LABELS ##
     ## extract labels ##
     labels <- unlist(lapply(dna, rownames))
-    if(is.null(labels) || length(labels!=NSEQ)){
+    if(is.null(labels) || length(labels)!=NSEQ){
         if(!quiet) cat("\n[obkSequence constructor] Incomplete labels provided - using generic labels.")
         labels <- paste("sequence", 1:NSEQ, sep=".")
     }
 
     ## extract individualID and date if needed ##
-    NFIELDS <- length(unlist(strsplit(labels[1], sep)))
+    NFIELDS <- length(unlist(strsplit(labels[1], split=sep, fixed=TRUE)))
     if(NFIELDS>=3){
         if(!quiet) cat("\n[obkSequence constructor] Extracting individualID and dates from labels.")
 
-        temp <- strsplit(labels, sep)
+        temp <- strsplit(labels, split=sep, fixed=TRUE)
         if(!all(sapply(temp, length) == NFIELDS)) {
             warning("[obkSequence constructor] Improper labels (varying numbers of fields)")
             cat("\nCulprits are:\n")
@@ -132,25 +132,29 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, individualID
     ## retrieve information ##
     if(is.null(other)) other <- list(...)
     N.OTHER <- length(other)
-    if(is.null(names(other))) names(other) <- paste("other", 1:N.OTHER, sep=".")
+    if(N.OTHER>0){
+        ## use generic names if needed ##
+        if(is.null(names(other))) names(other) <- paste("other", 1:N.OTHER, sep=".")
 
-    ## convert to data.frame ##
-    if(!is.data.frame(other)){
-        other <- as.data.frame(other, row.names=labels)
-    }
+        ## convert to data.frame ##
+        if(!is.data.frame(other)){
+            other <- as.data.frame(other, row.names=labels)
+        }
 
-    ## check row.names, possibly reorder ##
-    ## right names, possibly bad order
-    if(all(labels %in% row.names(other))){
-        other <- other[labels,,drop=FALSE]
-    } else { ## bad names
-        row.names(other) <- labels
+        ## check row.names, possibly reorder ##
+        ## right names, possibly bad order
+        if(all(labels %in% row.names(other)) || all(row.names(other) %in% labels)){
+            other <- other[labels,,drop=FALSE]
+        } else { ## bad names
+            row.names(other) <- labels
+        }
     }
 
 
     ## FORM FINAL OBJECT ##
     x@dna <- dna
-    x@meta <- cbind.data.frame(individualID=individualID, date=date, other)
+    x@meta <- data.frame(individualID=individualID, date=date)
+    if(N.OTHER>0) x@meta <- cbind.data.frame(x@meta, other)
     row.names(x@meta) <- labels
 
     return(x)
