@@ -7,7 +7,6 @@
 ##########
 ## show ##
 ##########
-
 setMethod("show", "obkData", function(object){
     N <- length(slotNames(object))
     cat("\n=== obkData object ===")
@@ -30,10 +29,10 @@ setMethod("show", "obkData", function(object){
 
 
 
+
 #############
 ## summary ##
 #############
-
 setMethod("summary", "obkData", function(object, ...){
 
     cat(paste("Dataset of ",get.nindividuals(object,"all")," individuals with...\n",sep=""))

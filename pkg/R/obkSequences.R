@@ -49,10 +49,10 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, individualID
     ## HANDLE DNA ##
     ## cases where an obkSequences is provided ##
     if(inherits(dna, "obkSequences")){
-        dna <- dna@dna
-        individualID <- meta@individualID
-        date <- meta@date
+        individualID <- dna@meta$individualID
+        date <- dna@meta$date
         if(ncol(dna@meta)>2) other <- dna@meta[,-(1:2),drop=FALSE]
+        dna <- dna@dna
     }
 
     ## cases where no info provided ##
@@ -82,7 +82,7 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, individualID
     ## extract labels ##
     labels <- unlist(lapply(dna, rownames))
     if(is.null(labels) || length(labels)!=NSEQ){
-        if(!quiet) cat("\n[obkSequence constructor] Missing/incomplete labels provided - using generic labels.\n")
+        if(!quiet) cat("\n[obkSequences constructor] missing/incomplete labels provided - using generic labels.\n")
         labels <- paste("sequence", 1:NSEQ, sep=".")
 
         ## assign labels ##
@@ -96,11 +96,11 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, individualID
     ## extract individualID and date if needed ##
     NFIELDS <- length(unlist(strsplit(labels[1], split=sep, fixed=TRUE)))
     if(NFIELDS>=3){
-        if(!quiet) cat("\n[obkSequence constructor] Extracting individualID and dates from labels.\n")
+        if(!quiet) cat("\n[obkSequences constructor] extracting individualID and dates from labels.\n")
 
         temp <- strsplit(labels, split=sep, fixed=TRUE)
         if(!all(sapply(temp, length) == NFIELDS)) {
-            warning("[obkSequence constructor] Improper labels (varying numbers of fields)")
+            warning("[obkSequences constructor] Improper labels (varying numbers of fields)")
             cat("\nCulprits are:\n")
             print(labels[sapply(temp, length) != NFIELDS])
         }
@@ -124,13 +124,15 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, individualID
 
     ## HANDLE INDIVIDUAL ID ##
     if(is.null(individualID)){
-        stop("[obkSequence constructor] Missing individualID")
+        if(!quiet) cat("\n[obkSequences constructor] note: missing individualID\n")
+        individualID <- rep(NA, NSEQ)
     }
 
 
     ## HANDLE DATE ##
     if(is.null(date)){
-        stop("[obkSequence constructor] Missing dates")
+        if(!quiet) cat("\n[obkSequences constructor] note: missing dates\n")
+        date <- rep(NA, NSEQ)
     }
     date <- .process.Date(date, format=date.format)
 
