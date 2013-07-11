@@ -53,7 +53,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
                                             trees=NULL, contacts=NULL, contacts.start=NULL,
                                             contacts.end=NULL, contacts.duration=NULL,
                                             contacts.directed=FALSE, date.format=NULL,
-                                            dna.individualID=NULL, date=NULL,
+                                            dna.individualID=NULL, dna.date=NULL,
                                             dna.date.format=data.format, dna.sep="_", quiet=quiet,
                                             check=TRUE, ...){
 
@@ -227,12 +227,6 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
 
 
 
-####################
-####  ACCESSORS ####
-####################
-
-
-
 
 
 
@@ -243,6 +237,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
 
 ## ## EMPTY OBJECT ##
 ## new("obkData")
+
 
 ## ## INDIVIDUAL INFO ONLY ##
 ## new("obkData", individuals=data.frame("individualID"=letters))
