@@ -64,24 +64,6 @@ setGeneric("get.sequences", function(x, ...) standardGeneric("get.sequences"))
 setGeneric("get.nsequences", function(x, ...) standardGeneric("get.nsequences"))
 
 
-##################
-## get.nsamples ##
-##################
-## return the number of samples in the object
-setGeneric("get.nsamples", function(x, ...) standardGeneric("get.nsamples"))
-
-
-#################
-## get.samples ##
-#################
-## return the number of samples in the object
-setGeneric("get.samples", function(x, ...) standardGeneric("get.samples"))
-
-## ####################
-## ## get.sampletype ##
-## ####################
-## setGeneric("get.sampletype",function(x, ...) standardGeneric("get.sampletype"))
-
 
 #####################
 ## get.individuals ##
@@ -100,31 +82,17 @@ setGeneric("get.nindividuals", function(x, ...) standardGeneric("get.nindividual
 
 
 #################
-## get.samples ##
+## get.records ##
 #################
-## return the samples in the object
-setGeneric("get.samples", function(x, ...) standardGeneric("get.samples"))
-
-
-
-##################
-## get.nsamples ##
-##################
-## return the number of samples in the object
-setGeneric("get.nsamples", function(x, ...) standardGeneric("get.nsamples"))
-
-#################
-## get.clinicals ##
-#################
-## return the names of the clinical tables in the object
-setGeneric("get.clinicals", function(x, ...) standardGeneric("get.clinicals"))
+## return the names of the records tables in the object
+setGeneric("get.records", function(x, ...) standardGeneric("get.records"))
 
 
 ##################
-## get.nclinicals ##
+## get.nrecords ##
 ##################
-## return the number of clinical tables in the object
-setGeneric("get.nclinicals", function(x, ...) standardGeneric("get.nclinicals"))
+## return the number of records tables in the object
+setGeneric("get.nrecords", function(x, ...) standardGeneric("get.nrecords"))
 
 #################
 ## get.dates ##
@@ -170,3 +138,11 @@ setGeneric("subset", function(x, ...) standardGeneric("subset"))
 ###############
 ## return DNA sequence alignments
 setGeneric("make.phylo", function(x, ...) standardGeneric("make.phylo"))
+
+
+
+###################
+## get.incidence ##
+###################
+## return DNA sequence alignments
+setGeneric("get.incidence", function(x, ...) standardGeneric("get.incidence"))

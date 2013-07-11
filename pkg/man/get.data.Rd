@@ -24,7 +24,7 @@ get.data(x, \dots)
   \item{where}{an optional character string indicating the name of the
     slot in which the information should be looked for; if NULL, the
     method will look in all slots starting with \code{@individuals},
-    then \code{@samples}, and finally in \code{@clinical}.}
+    then \code{@samples}, and finally in \code{@records}.}
   \item{drop}{a logical indicating if a vector should be returned
     (TRUE), as opposed to a \code{data.frame} with on single column
     (FALSE).}
@@ -51,11 +51,11 @@ get.data(ToyOutbreak, "Sex")
 # list all the data with 'date' from the obkData object
 get.data(ToyOutbreak, "date")
 get.data(ToyOutbreak, "date", showSource=TRUE)
-get.data(ToyOutbreak, "date", where="clinical")
+get.data(ToyOutbreak, "date", where="records")
 
 # Extract from the obkData object a given field
-x <- get.data(ToyOutbreak, "clinical")
-names(x) # x contains the whole 'clinical' list
+x <- get.data(ToyOutbreak, "records")
+names(x) # x contains the whole 'records' list
 head(x$Fever)
 x <- get.data(ToyOutbreak, "samples")
 names(x) # x contains the whole 'samples' data.frame

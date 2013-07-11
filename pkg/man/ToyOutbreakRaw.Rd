@@ -28,7 +28,7 @@
     \item{\code{locus}, the loci associated with these sequences.}
   }
   
-  - \code{ToyOutbreakRaw$clinical}, a list containing one \code{data.frame} called \code{Fever} containing: 
+  - \code{ToyOutbreakRaw$records}, a list containing one \code{data.frame} called \code{Fever} containing: 
   \itemize{
     \item{\code{individualID}, the ID of each individual,}
     \item{\code{date}, the date at which temperature was measured in each individual,}
@@ -56,7 +56,7 @@ data(ToyOutbreakRaw)
 ## Constructing an obkData object ##
 x <- new ("obkData", individuals=ToyOutbreakRaw$individuals,
           samples=ToyOutbreakRaw$samples,
-          clinical=ToyOutbreakRaw$clinical,contacts=ToyOutbreakRaw$contacts,
+          records=ToyOutbreakRaw$records,contacts=ToyOutbreakRaw$contacts,
           contacts.start=ToyOutbreakRaw$contacts.start,
           contacts.end=ToyOutbreakRaw$contacts.end,
           dna=ToyOutbreakRaw$dna, trees=ToyOutbreakRaw$trees)
@@ -66,8 +66,8 @@ summary(x)
 
 head(x@individuals)
 head(x@samples)
-names(x@clinical)
-head(x@clinical$Fever)
+names(x@records)
+head(x@records$Fever)
 x@contacts
 x@dna
 x@trees

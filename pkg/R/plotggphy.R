@@ -57,7 +57,7 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
 	phylo <- phylo[[which.tree]]
 
 	if (build.tip.attribute) {
-		#TODO: add other data frames (e.g. clinical, etc)
+		#TODO: add other data frames (e.g. records, etc)
 		df.individuals <- get.data(x, "individuals")
 		df.individuals$individualID <- 1:nrow(df.individuals)
 		df.samples <- get.data(x, "samples")

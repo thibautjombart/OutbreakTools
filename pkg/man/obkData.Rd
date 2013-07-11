@@ -24,10 +24,10 @@
 \alias{get.nsamples}
 \alias{get.nsamples,obkData-method}
 
-\alias{get.clinicals}
-\alias{get.clinicals,obkData-method}
-\alias{get.nclinicals}
-\alias{get.nclinicals,obkData-method}
+\alias{get.records}
+\alias{get.records,obkData-method}
+\alias{get.nrecords}
+\alias{get.nrecords,obkData-method}
 
 \alias{get.contacts,obkData-method}
 \alias{get.ncontacts,obkData-method}
@@ -52,7 +52,7 @@
     \item sample data (swabs, serology, accession numbers, ...)
     \item genetic sequences
     \item contact information
-    \item clinical data
+    \item records data
     \item phylogenetic trees
   }
 }
@@ -71,8 +71,8 @@
     \item{\code{samples}:}{a \code{data.frame} containing sample
       information; the first three columns are 'individualID',
       'sampleID', and 'date'.}
-    \item{\code{clinical}:}{a \code{list} of \code{data.frame}, each
-      member of the list containing clinical information of a particular
+    \item{\code{records}:}{a \code{list} of \code{data.frame}, each
+      member of the list containing records information of a particular
       type; the first two columns are 'individualID'and 'date'.}
     \item{\code{contacts}:}{an object of the class
       \linkS4class{obkContacts} storing contact information.}
@@ -85,7 +85,7 @@
 
 \usage{
 \S4method{initialize}{obkData}(.Object, individuals=NULL, samples=NULL,
-          clinical=NULL, dna=NULL, trees=NULL, contacts=NULL,
+          records=NULL, dna=NULL, trees=NULL, contacts=NULL,
           contacts.start=NULL, contacts.end=NULL,
           contacts.duration=NULL, contacts.directed=FALSE,
           date.format=NULL, \dots)
@@ -96,8 +96,8 @@ get.individuals(x, \dots)
 get.nsamples(x, \dots)
 get.samples(x, \dots)
 
-get.nclinicals(x, \dots)
-get.clinicals(x, \dots)
+get.nrecords(x, \dots)
+get.records(x, \dots)
 
 get.ntrees(x, \dots)
 get.trees(x, \dots)
@@ -105,16 +105,16 @@ get.trees(x, \dots)
 \S4method{get.dna}{obkData}(x, locus=NULL, id=NULL, \dots)
 
 \S4method{get.nindividuals}{obkData}(x, data=c("all", "samples",
-"individuals", "clinical", "contacts"), \dots)
+"individuals", "records", "contacts"), \dots)
 
 \S4method{get.individuals}{obkData}(x, data=c("all", "samples",
-"individuals", "clinical", "contacts"), \dots)
+"individuals", "records", "contacts"), \dots)
 
 \S4method{get.ncontacts}{obkData}(x, from=NULL, to=NULL, \dots)
 
 \S4method{get.contacts}{obkData}(x, from=NULL, to=NULL, \dots)
 
-\S4method{get.clinicals}{obkData}(x, \dots)
+\S4method{get.records}{obkData}(x, \dots)
 
 \S4method{get.ntrees}{obkData}(x, \dots)
 
@@ -134,13 +134,11 @@ get.trees(x, \dots)
     automatically as long as numbers are used, and year is provided
     first or last. Alternative formats can be specified via the
     argument date.format}
-  \item{clinical}{a list of data.frames, each of which has 2
+  \item{records}{a list of data.frames, each of which has 2
     mandatory fields, 'individualID' and 'date'. Dates are specified as
     in the case of the samples data.frame. Each item of the list should
-    be named according to the type of clinical event,
-    e.g. 'hospitalisation', 'vaccination' or 'symptoms'. The 'date'
-    field should be utilised as a start or onset date where the clinical
-    event spans a period of time.}
+    be named according to the type of information recorded, e.g. 'swabs',
+    'temperature', or 'hospitalisation' (admission/discharge events).}
   \item{dna}{a list of DNA sequences in \code{DNAbin} or
     \code{character} format.}
   \item{contacts}{a matrix of characters indicating edges using
@@ -202,18 +200,18 @@ get.trees(x, \dots)
   %    of the loci in the sample.}
     \item{get.individuals}{\code{signature(x = "obkData")}: returns the
       IDs of individuals in a given source of data (argument
-      \code{data}, can be 'all' (default), 'samples', 'individuals', 'clinical', or 'contacts').}
+      \code{data}, can be 'all' (default), 'samples', 'individuals', 'records', or 'contacts').}
     \item{get.nindividuals}{\code{signature(x = "obkData")}: returns the
       number of individuals in a given source of data (argument
-      \code{data}, can be 'all' (default), 'samples', 'individuals', 'clinical', or 'contacts').}
+      \code{data}, can be 'all' (default), 'samples', 'individuals', 'records', or 'contacts').}
     \item{get.samples}{\code{signature(x = "obkData")}: returns the samples existing in the data.}
     \item{get.nsamples}{\code{signature(x = "obkData")}: returns the number of
       samples in the data.}
-    \item{get.clinicals}{\code{signature(x = "obkData")}: returns the names of existing clinical tables in the data.}
-    \item{get.nclinicals}{\code{signature(x = "obkData")}: returns the number of clinical tables in the data.}
+    \item{get.records}{\code{signature(x = "obkData")}: returns the names of existing records tables in the data.}
+    \item{get.nrecords}{\code{signature(x = "obkData")}: returns the number of records tables in the data.}
      \item{get.dates*}{\code{signature(x = "obkData")}: returns the
       dates in a given source of data (argument
-      \code{data}, can be 'samples' (default), 'individuals' or 'clinical').}
+      \code{data}, can be 'samples' (default), 'individuals' or 'records').}
    \item{get.trees}{\code{signature(x = "obkData")}: return a list of
       trees of the class \code{multiPhylo}, if present, and \code{NULL}
       otherwise.}
@@ -257,7 +255,7 @@ names(ToyOutbreakRaw)
 
 ## MAKE OBKDATA FROM THESE INPUTS
 x <- new("obkData", individuals = ToyOutbreakRaw$individuals, samples =
-    ToyOutbreakRaw$samples, clinical = ToyOutbreakRaw$clinical,
+    ToyOutbreakRaw$samples, records = ToyOutbreakRaw$records,
     contacts=ToyOutbreakRaw$contacts, dna=ToyOutbreakRaw$dna,
     trees=ToyOutbreakRaw$trees)
 
@@ -285,9 +283,9 @@ head(get.data(x, "samples"))
 head(get.data(x, "individuals"))
 get.dates(x)
 get.dates(x,"samples")
-get.nclinicals(x)
-get.clinicals(x)
-head(get.data(x, "clinical"))
+get.nrecords(x)
+get.records(x)
+head(get.data(x, "records"))
 
 }
 \keyword{classes}

@@ -77,7 +77,7 @@ plotggMST<-function(x,individualID=NULL,locus=NULL){
 
 # data(HorseFluRaw)
 # attach(HorseFluRaw)
-# x <- new("obkData", individuals=individuals, samples=samples, dna=dna, clinical=clinics)
+# x <- new("obkData", individuals=individuals, dna=dna, records=clinics)
 # plotggMST(x,individualID=42)
 # plot huge minimum spanning tree
 # plotggMST(x)

@@ -52,7 +52,7 @@ head(samples)
 ## DNA sequences
 dna
 
-## clinical info
+## records info
 class(clinics)
 names(clinics)
 head(clinics$FirstVac)
@@ -60,7 +60,7 @@ head(clinics$FirstVac)
 
 ## CREATE OBKDATA ##
 x <- new("obkData", individuals=individuals, samples=samples,
-         dna=dna, clinical=clinics)
+         dna=dna, records=clinics)
 
 
 ## MANIPULATE OBJECT ##

@@ -23,11 +23,11 @@ setClassUnion("integerOrNULL", c("integer","NULL"))
 setClassUnion("factorNULL", c("factor","NULL"))
 setClassUnion("numericOrNULL", c("numeric","NULL"))
 setClassUnion("matrixOrNULL", c("matrix","NULL"))
-## setClassUnion("listOrNULL", c("list","NULL")) # defined in adegenet
+setClassUnion("listOrNULL", c("list","NULL")) # defined in adegenet
 setClassUnion("DNAbinOrNULL", c("DNAbin","NULL"))
 setClassUnion("POSIXctOrNULL", c("POSIXct","NULL"))
 setClassUnion("networkDynamicOrNetworkOrNULL",c("networkDynamicOrNetwork","NULL"))
 setClassUnion("DateOrNULL", c("Date", "NULL"))
-setClassUnion("dataframeOrNULL", c("data.frame", "NULL"))
+setClassUnion("data.frameOrNULL", c("data.frame", "NULL"))
 setClassUnion("multiPhyloOrNULL", c("multiPhylo", "NULL"))
 

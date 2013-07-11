@@ -7,14 +7,13 @@
 ##########
 ## show ##
 ##########
-
 setMethod("show", "obkData", function(object){
     N <- length(slotNames(object))
     cat("\n=== obkData object ===")
     empty <- rep(TRUE, N)
     for(i in 1:N){
         if(!is.null(slot(object, slotNames(object)[i]))){
-            cat(paste("\n== @", slotNames(object)[i], "== \n",sep=""))
+            cat(paste("\n== @", slotNames(object)[i], " == \n",sep=""))
             print(slot(object, slotNames(object)[i]))
             empty[i] <- FALSE
         }
@@ -30,69 +29,69 @@ setMethod("show", "obkData", function(object){
 
 
 
+
 #############
 ## summary ##
 #############
+## setMethod("summary", "obkData", function(object, ...){
 
-setMethod("summary", "obkData", function(object, ...){
+##     cat(paste("Dataset of ",get.nindividuals(object,"all")," individuals with...\n",sep=""))
 
-    cat(paste("Dataset of ",get.nindividuals(object,"all")," individuals with...\n",sep=""))
+##     cat(paste("- ",get.nrecords(object)," records \n\tcoming from ",get.nindividuals(object,"records")," individuals",sep=""))
 
-    cat(paste("- ",get.nsamples(object)," samples \n\tcoming from ",get.nindividuals(object,"samples")," individuals",sep=""))
+##     if(!is.null(object@samples) && dim(object@samples)[2] <=13 )
+##     {
+##         cat(paste("\n\tcollected between ",min(object@samples$date)," and ",max(object@samples$date),"\n \tcontaining information on:\n",sep=""))
+##         for (i in (1:dim(object@samples)[2])[-which((names(object@samples) %in% c("individualID","sampleID","date"))==TRUE)])
+##         {
+##             cat(paste("\t\t ",names(object@samples)[i],"\t",sep=""))
+##             if(is.numeric(object@samples[,i])==TRUE){cat(paste("(mean: ",signif(mean((object@samples[,i]),na.rm=TRUE),digits=6),", sd: ",signif(sd((object@samples[,i]),na.rm=TRUE),digits=6),")",sep=""))}
+##             cat("\n")
+##         }
+##     }else{cat("\n")}
 
-    if(!is.null(object@samples) && dim(object@samples)[2] <=13 )
-    {
-        cat(paste("\n\tcollected between ",min(object@samples$date)," and ",max(object@samples$date),"\n \tcontaining information on:\n",sep=""))
-        for (i in (1:dim(object@samples)[2])[-which((names(object@samples) %in% c("individualID","sampleID","date"))==TRUE)])
-        {
-            cat(paste("\t\t ",names(object@samples)[i],"\t",sep=""))
-            if(is.numeric(object@samples[,i])==TRUE){cat(paste("(mean: ",signif(mean((object@samples[,i]),na.rm=TRUE),digits=6),", sd: ",signif(sd((object@samples[,i]),na.rm=TRUE),digits=6),")",sep=""))}
-            cat("\n")
-        }
-    }else{cat("\n")}
+## 	if(!is.null(object@dna))
+## 	{
+## 		if(get.nlocus(object)>1)
+## 		{
+## 			cat(paste("- ",get.nsequences(object)," sequences across ",get.nlocus(object)," loci \n\t(length of concatenated alignment: ",sum(sapply(object@dna@dna,ncol))," nucleotides)\n",sep=""))
+## 		}else
+## 		{
+## 			cat(paste("- ",get.nsequences(object)," sequences across ",get.nlocus(object)," locus \n\t(length of concatenated alignment: ",sum(sapply(object@dna@dna,ncol))," nucleotides)\n",sep=""))
+## 		}
+## 	}else
+## 	{
+## 		cat("- 0 sequences\n")
+## 	}
 
-	if(!is.null(object@dna))
-	{
-		if(get.nlocus(object)>1)
-		{
-			cat(paste("- ",get.nsequences(object)," sequences across ",get.nlocus(object)," loci \n\t(length of concatenated alignment: ",sum(sapply(object@dna@dna,ncol))," nucleotides)\n",sep=""))
-		}else
-		{
-			cat(paste("- ",get.nsequences(object)," sequences across ",get.nlocus(object)," locus \n\t(length of concatenated alignment: ",sum(sapply(object@dna@dna,ncol))," nucleotides)\n",sep=""))
-		}
-	}else
-	{
-		cat("- 0 sequences\n")
-	}
+##     cat(paste("- clinical data from ",get.nindividuals(object,"clinical")," individuals",sep=""))
+##     if(!is.null(object@records) && length(object@records) <=10 )
+##     {
+##         cat("\n\t containing information on:\n")
+##         for (i in 1:length(object@records))
+##         {
+##             cat(paste("\t\t ",names(object@records)[i],"\n",sep=""))
+##         }
+##     }else{cat("\n")}
 
-    cat(paste("- clinical data from ",get.nindividuals(object,"clinical")," individuals",sep=""))
-    if(!is.null(object@clinical) && length(object@clinical) <=10 )
-    {
-        cat("\n\t containing information on:\n")
-        for (i in 1:length(object@clinical))
-        {
-            cat(paste("\t\t ",names(object@clinical)[i],"\n",sep=""))
-        }
-    }else{cat("\n")}
+##     if(!is.null(object@contacts))
+##     {
+##         cat(paste("- ",get.ncontacts(object), " contacts recorded between ", get.nindividuals(object,"contacts")," individuals\n",sep=""))
+##     }
 
-    if(!is.null(object@contacts))
-    {
-        cat(paste("- ",get.ncontacts(object), " contacts recorded between ", get.nindividuals(object,"contacts")," individuals\n",sep=""))
-    }
+##     if(!is.null(object@trees))
+##     {
+## 		if(length(object@trees)>1)
+## 		{
+##         	cat(paste("- ",length(object@trees)," phylogenetic trees with ",length(object@trees[[1]]$tip.label)," tips\n",sep=""))
+## 		}else
+## 		{
+## 			cat(paste("- ",length(object@trees)," phylogenetic tree with ",length(object@trees[[1]]$tip.label)," tips\n",sep=""))
+## 		}
+##     }
 
-    if(!is.null(object@trees))
-    {
-		if(length(object@trees)>1)
-		{
-        	cat(paste("- ",length(object@trees)," phylogenetic trees with ",length(object@trees[[1]]$tip.label)," tips\n",sep=""))
-		}else
-		{
-			cat(paste("- ",length(object@trees)," phylogenetic tree with ",length(object@trees[[1]]$tip.label)," tips\n",sep=""))
-		}
-    }
-
-    return(invisible())
-})
+##     return(invisible())
+## })
 
 
 # test:

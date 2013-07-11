@@ -30,8 +30,7 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c("yITL","value","type"))
 
 plotIndividualTimeline <- function(x, selection=1:length(get.individuals(x)),
 		ordering=1:length(selection), orderBy=NULL, colorBy=NULL,
-		events=NULL, clinicalEvents=NULL,periods=NULL,
-		plotSamples=TRUE, plotNames=length(selection)<50){
+		events=NULL, periods=NULL, plotRecords=TRUE, plotNames=length(selection)<50){
 	## plot selection of the individuals in data as a line, ordered by ordering
 	## color by colorby
 	## make lines for periods, an Nx2 matrix of column names
@@ -86,18 +85,18 @@ plotIndividualTimeline <- function(x, selection=1:length(get.individuals(x)),
 
 
 	## plot events
-	if(plotSamples){
+	if(plotRecords){
 		## make the data frame with sample dates
-		dfSamples=get.data(x,'samples')
-		#select the samples corresponding to our selection of individuals
-		dfSamples=dfSamples[dfSamples$individualID%in%get.individuals(x),]
+		dfRecords=get.data(x,'records')
+		#select the records corresponding to our selection of individuals
+		dfRecords=dfRecords[dfRecords$individualID%in%get.individuals(x),]
 		#one sample can have several rows in this df, take only unique ones
-		dfSamples=dfSamples[sapply(unique(dfSamples$sampleID),function(y){min(which(dfSamples$sampleID==y))}),]
-		if(!is.null(dfSamples)){
-			dfSamples$yITL=ordering[sapply(dfSamples$individualID,function(y){which(get.individuals(x)==y)})]#TODO this matching should be a standard method
+		dfRecords=dfRecords[sapply(unique(dfRecords$sampleID),function(y){min(which(dfRecords$sampleID==y))}),]
+		if(!is.null(dfRecords)){
+			dfRecords$yITL=ordering[sapply(dfRecords$individualID,function(y){which(get.individuals(x)==y)})]#TODO this matching should be a standard method
 
 			## make a new df using melt as an input for ggplot, so we can show the different types of events
-			fulldf <- .meltDateProof(dfSamples,id.vars='yITL',measure.vars='date',variable.name="type")
+			fulldf <- .meltDateProof(dfRecords,id.vars='yITL',measure.vars='date',variable.name="type")
 			fulldf$type=rep('sample',dim(fulldf)[1])#this could be done a lot easier...
 		}
 	}
@@ -105,18 +104,18 @@ plotIndividualTimeline <- function(x, selection=1:length(get.individuals(x)),
 		fulldf=c()
 	}
 	if(!is.null(events)){
-		## TODO how to get attributes from different dataframes when columns have the same name? e.g. 'date' from samples and clinical
+		## TODO how to get attributes from different dataframes when columns have the same name? e.g. 'date' from records and clinical
 		## add more events from 'individuals' to be drawn to the dataframe fulldf
 		fulldf <- rbind(fulldf,.meltDateProof(df,id.vars='yITL',measure.vars=events,variable.name="type"))
 	}
-	if(!is.null(clinicalEvents)){
-		## add clinical events to be drawn to the dataframe fulldf
-		## 		this will have to be done with the new functionality of get.data. See ticket 35 (11-4-2013)
-		#clinicalDF <- data@clinical[selection,,drop=FALSE]
-		## 		clinicalDF$yITL <- ordering
-		## 		fulldf <- rbind(fulldf,.meltDateProof(clinicalDF,id.vars='yITL',measure.vars=clinicalEvents,variable.name="type"))
-		## TODO 21-2-2013: for this to work we need an accessor for clinicals, that can hande duplicate column names and can subset
-	}
+	## if(!is.null(clinicalEvents)){
+	## 	## add clinical events to be drawn to the dataframe fulldf
+	## 	## 		this will have to be done with the new functionality of get.data. See ticket 35 (11-4-2013)
+	## 	#clinicalDF <- data@clinical[selection,,drop=FALSE]
+	## 	## 		clinicalDF$yITL <- ordering
+	## 	## 		fulldf <- rbind(fulldf,.meltDateProof(clinicalDF,id.vars='yITL',measure.vars=clinicalEvents,variable.name="type"))
+	## 	## TODO 21-2-2013: for this to work we need an accessor for clinicals, that can hande duplicate column names and can subset
+	## }
 
 	if(!is.null(fulldf)){
 		## draw the events

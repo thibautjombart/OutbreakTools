@@ -5,7 +5,7 @@
 \alias{get.dates,obkData-method}
 \alias{get.dates.obkData}
 
-\title{Access data in "obkData" objects}
+\title{Access dates in "obkData" objects}
 \description{
   \code{get.dates} is a generic function with a method for
   \linkS4class{obkData} objects. It can be used to retrieve existing
@@ -15,12 +15,12 @@
 get.dates(x, \dots)
 
 \S4method{get.dates}{obkData}(x, data=c("all", "samples", "individuals",
-       "clinical"), \dots)
+       "records"), \dots)
 }
 \arguments{
   \item{x}{an \linkS4class{obkData} object.}
   \item{data}{a character string indicating the name of the data field
-    to look for. It can be 'all'(default), 'samples', 'individuals' or 'clinical'.}
+    to look for. It can be 'all'(default), 'samples', 'individuals' or 'records'.}
  \item{\dots}{currently not used.}
 }
 \author{
@@ -34,7 +34,7 @@ data(ToyOutbreak)
 ## VARIOUS USE OF GET.DATES ##
 get.dates(ToyOutbreak)
 get.dates(ToyOutbreak, "samples")
-get.dates(ToyOutbreak, "clinical")
+get.dates(ToyOutbreak, "records")
 
 }
 \keyword{classes}

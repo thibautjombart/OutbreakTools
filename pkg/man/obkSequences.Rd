@@ -31,21 +31,42 @@
 \description{
   The class \code{obkSequences} is a formal (S4) class for storing a DNA
   sequences obtained from a sample during a disease outbreak. Sequences
-  from different loci can be stored.
+  from different loci can be stored, alonside meta-information on the
+  sequences.
 
   An \code{obkSequences} object can be constructed from a list of
-  sequences (stored as \code{DNAbin} or \code{character} vectors), with
-  optional information about loci.
+  matrices containing each a set of sequences of a given
+  gene/locus. Sequences may be stored as character strings or as
+  \code{DNAbin} objects. Information on individuals and collection
+  dates, as well as other meta data for the sequences, can be provided.
 }
 \section{Objects from the class obkSequences}{
   \code{obkSequences} objects can be created by calls to \code{new("obkSequences",
     ...)}, where '...' can be the following arguments:
-  
+
   \describe{
-    \item{\code{dna}}{a list of DNA sequences in \code{DNAbin} or
+    \item{\code{dna}}{a list of DNA sequence matrices in \code{DNAbin} or
       \code{character} format.}
-    \item{\code{locus}}{an optional vector indicating the locus of each
-      sequences; its length must match that of the list of sequences.}
+    \item{\code{individualID}}{an optional vector providing IDs of
+      patients/individuals for each sequence; its length must match the
+      total number of sequences; if missing, will be seeked from the
+      labels of the sequences (see details).}
+    \item{\code{date}}{an optional vector providing collection
+      dates each sequence; its length must match the total number of
+      sequences; if missing, will be seeked from the labels of the
+      sequences (see details).}
+    \item{\code{\dots}}{an optional list of vectors or a data.frame
+      providing other information about each sequence; vector lengths /
+      number of rows of the data.frame  must match the total number of
+      sequences.}
+    \item{date.format}{a character string indicating the date format (see
+      \code{\link{as.Date}}); if \code{NULL}, date format is detected
+      automatically.}
+    \item{quiet}{a logical indicating whether informative messages
+      should be hidden; this does not affect warnings or error
+      messages.}
+    \item{sep}{a character used to separate fields in the labels of the
+      sequences (see details).}
   }
 }
 \section{Slots}{
@@ -55,7 +76,22 @@
   slots manually.
   \describe{
     \item{\code{dna}:}{a list of \code{DNAbin} matrices.}
+    \item{\code{meta}:}{a \code{data.frame} where the first two columns
+      are \code{individualID} and \code{date}, with optional further
+      columns, and one row per sequence; rows are named after sequence
+      labels.
+    }
   }
+}
+\details{
+  \code{obkSequences} are meant to store DNA sequences for which
+  patient/individual IDs and collection dates are known. This
+  information can be provided using the arguments \code{individualID}
+  and \code{date}, or through the labels of the sequences. In that case,
+  the expected format is:\cr
+  [sequenceID][sep][individualID][sep][date]\cr
+  By default, the separator is "_", so a valid name would look like:\cr
+  "seq123_John Doe_2013/06/23"
 }
 \section{Methods}{
   Here is a list of methods available for \code{obkSequences}
@@ -64,7 +100,7 @@
   than one argument are indicated by a '*' symbol next to the method's
   name. This list also contains methods for conversion from
   \code{obkSequences} to other classes.
-  
+
   \describe{
     \item{show}{\code{signature(x = "obkSequences")}: printing of the
       object.}
@@ -72,15 +108,15 @@
       loci in the sample.}
     \item{get.nsequences}{\code{signature(x = "obkSequences")}: returns the number of
       sequences in the sample; the argument \code{what} can be "total"
-    (default), in which case the total number of sequences is returned,
-    or "bylocus", in which case the number of sequences per locus is returned.}
+      (default), in which case the total number of sequences is returned,
+      or "bylocus", in which case the number of sequences per locus is returned.}
     \item{get.locus}{\code{signature(x = "obkSequences")}: returns the names
       of the loci in the sample.}
     \item{get.dna}{\code{signature(x = "obkSequences")}: returns dna
       sequences, which can be optionally specified by locus (argument
-    \code{locus}) or by sequence identifier (argument \code{id}); loci
-    can be indicated by index or by name (use \code{get.locus} to know
-    available loci); sequence IDs must be characters.}
+      \code{locus}) or by sequence identifier (argument \code{id}); loci
+      can be indicated by index or by name (use \code{get.locus} to know
+      available loci); sequence IDs must be characters.}
   }
 }
 \usage{

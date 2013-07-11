@@ -41,6 +41,8 @@ data(HorseFlu)
 ## all sequences
 dna <- get.dna(subset(HorseFlu, individuals=1:3))[[1]]
 dna
+
+if(require(ape)){
 plot(nj(dist.dna(dna)), type="unr")
 title("NJ tree - all sequences")
 
@@ -50,7 +52,6 @@ dna2
 plot(nj(dist.dna(dna2@uniqdna)), type="unr")
 title("NJ tree - only unique sequences")
 
-
-
+}
 }
 \keyword{classes}

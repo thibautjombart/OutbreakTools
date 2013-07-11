@@ -8,7 +8,6 @@
 #' @description This dataset is a \code{list} containing the following objects:
 #' \enumerate{
 #' \item\code{individuals}: a data frame containing 514 individual IDs as well as their locations.
-#' \item\code{samples}: a data frame containing 514 individual IDs, their sample IDs and dates as well as the IDs of the associated genetic sequences.
 #' \item\code{dna}: a \code{\link{DNAbin}} object containing 514 genetic sequences of influenza A/H1N1/2009 haemagglutinin (HA).
 #' \item\code{tree}: a \code{\link{multiphylo}} object containing the maximum clade credibility (MCC) tree obtained via the Beast analysis of the 514 genetic sequences.
 #' }
