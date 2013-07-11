@@ -60,13 +60,21 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
 
-    ## store old option ##
+
+    ## SORT OUT STRINGSASFACTORS  OPTION ##
     o.opt <- options("stringsAsFactors")
     options("stringsAsFactors"=FALSE)
     on.exit(options(o.opt))
 
-    ## escape of obkData is provided ##
-    if(inherits(individuals, "obkData")) return(individuals)
+
+    ## HANDLE OBKDATA INPUT ##
+    if(inherits(individuals, "obkData")){
+        individuals <- x@individuals
+        records <- x@records
+        dna <- x@dna
+        trees <- x@trees
+        contacts <- x@contacts
+    }
 
 
     ## HANDLE INDIVIDUALS ##
