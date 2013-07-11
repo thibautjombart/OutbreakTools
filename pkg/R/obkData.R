@@ -49,9 +49,12 @@ setClass("obkData", representation(individuals="data.frameOrNULL", records="list
 ## 'contacts.duration': another way to specify contacts.end, as duration of contact
 ##
 ##
-setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=NULL, dna=NULL, trees=NULL,
-                                            contacts=NULL, contacts.start=NULL, contacts.end=NULL, contacts.duration=NULL,
-                                            contacts.directed=FALSE, date.format=NULL, ...){
+setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=NULL, dna=NULL,
+                                            trees=NULL, contacts=NULL, contacts.start=NULL,
+                                            contacts.end=NULL, contacts.duration=NULL,
+                                            contacts.directed=FALSE, date.format=NULL,
+                                            dna.individualID=NULL, date=NULL, dna.date.format=NULL,
+                                            dna.sep="_", quiet=quiet, ...){
 
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
@@ -64,71 +67,94 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
     ## escape of obkData is provided ##
     if(inherits(individuals, "obkData")) return(individuals)
 
-    ## PROCESS PROVIDED INFORMATION ##
-    ## coerce to data.frames, force to NULL if nrow=0
+
+    ## HANDLE INDIVIDUALS ##
+    ## force NULL if empty data.frame ##
+    if(!is.null(individuals) && (nrow(individuals)==0 || ncol(individuals)==0)) individuals <- NULL
+
+    ## process information ##
     if(!is.null(individuals)) {
+        ## force type to data.frame
         individuals <- as.data.frame(individuals)
-                                        #    if(nrow(individuals)==0 || ncol(individuals)==1) individuals <- NULL
-        if(nrow(individuals)==0 || ncol(individuals)==0) individuals <- NULL
-    }
- 
-    if(!is.null(records)) {
-        if(is.data.frame(records))
-            records <- list(records)
-        else records <- as.list(records)
-        if(length(records)==0) records <- NULL
-    }
-    if(!is.null(dna) && (inherits(dna, "DNAbin") && is.matrix(dna))) dna <- as.list(dna)
-    if(!is.null(dna) && (!is.list(dna) || !inherits(dna, "DNAbin"))) stop("dna is not a list of DNAbin objects.")
 
-    ## escape if no info provided ##
-    if(is.null(individuals) && is.null(records) && is.null(dna) && is.null(contacts)) return(x)
-
-    ## check that relevant fields are here ##
-    if(!is.null(individuals)){
+        ## check mandatory fields
         if(!"individualID" %in% names(individuals) && is.null(row.names(individuals)))
-          stop("no field 'individualID' in the individuals data.frame ('individuals')")
+            stop("no field 'individualID' in the individuals data.frame ('individuals')")
+
+        ## extract/process labels
+        if("individualID" %in% names(individuals)){
+            lab <- as.character(individuals[,"individualID"])
+        } else {
+            lab <- as.character(row.names(individuals))
+        }
+
+        ## store info in output
+        x@individuals <- individuals[, names(individuals)!="individualID", drop=FALSE]
+        row.names(x@individuals) <- lab
+    } else {
+        x@individuals <- NULL
     }
-    for(i in 1:length(records)){
-        if(!is.null(records[[i]])){
+
+
+    ## HANDLE RECORDS ##
+    ## force NULL if empty list ##
+    if(!is.null(records) && length(records)==0) records <- NULL
+
+    ## force NULL if empty data.frame ##
+    if(!is.null(records) && is.data.frame(records) && (nrow(records)==0 || ncol(records)==0)) records <- NULL
+
+    ## process information ##
+    if(!is.null(records)) {
+        ## force type to list
+        if(is.data.frame(records)) records <- list(records)
+
+        ## remove NULL elements
+        records <- records[!sapply(records, is.null)]
+
+        ## check mandatory fields
+        NREC <- length(records)
+        for(i in 1:NREC){
             if(!"individualID" %in% names(records[[i]])) stop(paste("no field 'individualID' in the records data.frame", names(records)[i], ")"))
             if(!"date" %in% names(records[[i]])) stop(paste("no field 'date' in the records data.frame", names(records)[i], ")"))
         }
-    }
-    ## PROCESS INFORMATION ABOUT INDIVIDUALS ('individuals') ##
-    if(!is.null(individuals)){
-      if("individualID" %in% names(individuals))
-        lab <- as.character(individuals[,"individualID"])
-      else
-        lab <- as.character(row.names(individuals))
 
-        x@individuals <- individuals[, names(individuals)!="individualID", drop=FALSE]
-        row.names(x@individuals) <- lab
+        ## store info in output
+        ## (reorder the columns within each data frame / convert types)
+        all.records.ID <- NULL
+        for(i in 1:NREC){
+            nameOrder <- c(c("individualID","date"), setdiff(names(records[[i]]), c("individualID","date")))
+            x@records[[i]] <- records[[i]][, nameOrder]
+            x@records[[i]][,"individualID"] <- as.character(x@records[[i]][,"individualID"])
+            if(is.factor(x@records[[i]][,"date"])) x@records[[i]][,"date"] <- as.character(x@records[[i]][,"date"])
+            x@records[[i]][,"date"] <- .process.Date(x@records[[i]][,"date"], format=date.format)
+            all.records.ID <- c(all.records.ID, x@records[[i]][, "individualID"])
+        }
+
+        names(x@records) <- names(records)
+
+
+    } else {
+        x@records <- NULL
+    }
+
+
+    ## HANDLE DNA ##
+    if(!is.null(dna)){
+        ## if dna is already an obkSequences
+        if(inherits(dna, "obkSequences")){
+            x@dna <- dna
+        } else {
+            ## pass on inputs to obkSequences constructor
+            x@dna <- new("obkSequences",
+                         dna=dna, individualID=dna.individualID, date=dna.date,
+                         ..., date.format=dna.date.format, quiet=quiet, sep=dna.sep)
+        }
     }
 
     ## PROCESS INFORMATION ABOUT RECORDS EVENTS ('records') ##
     if(!is.null(records)){
         x@records <- list()
 
-        ##if records is a data-frame (one set of records data)
-        ##put it as a list
-        if(is.data.frame(records))
-          records=list(records)
-
-        ## reorder the columns within each data frame.
-        all.records.ID <- NULL
-        for(i in 1:length(records))
-        {
-            nameOrder <- c(c("individualID","date"), setdiff(names(records[[i]]), c("individualID","date")))
-            x@records[[i]] <- records[[i]][, nameOrder]
-            x@records[[i]][,"individualID"] <- as.character(x@records[[i]][,"individualID"])
-            if(is.factor(x@records[[i]][,"date"])) x@records[[i]][,"date"] <- as.character(x@records[[i]][,"date"])
-            x@records[[i]][,"date"] <- .process.Date(x@records[[i]][,"date"], format=date.format)
-
-            all.records.ID <- c(all.records.ID, x@records[[i]][, "individualID"])
-        }
-
-        names(x@records) <- names(records)
 
         ## make sure that all the individualIDs are in 'individuals', if the slot is not NULL
         if(!is.null(x@individuals)){
