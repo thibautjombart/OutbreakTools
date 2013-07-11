@@ -53,8 +53,9 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
                                             trees=NULL, contacts=NULL, contacts.start=NULL,
                                             contacts.end=NULL, contacts.duration=NULL,
                                             contacts.directed=FALSE, date.format=NULL,
-                                            dna.individualID=NULL, date=NULL, dna.date.format=NULL,
-                                            dna.sep="_", quiet=quiet, ...){
+                                            dna.individualID=NULL, date=NULL,
+                                            dna.date.format=data.format, dna.sep="_", quiet=quiet,
+                                            check=TRUE, ...){
 
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
@@ -131,9 +132,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
         }
 
         names(x@records) <- names(records)
-
-
-    } else {
+    } else { # no information
         x@records <- NULL
     }
 
@@ -151,65 +150,61 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
         }
     }
 
-    ## PROCESS INFORMATION ABOUT RECORDS EVENTS ('records') ##
-    if(!is.null(records)){
-        x@records <- list()
 
-
-        ## make sure that all the individualIDs are in 'individuals', if the slot is not NULL
-        if(!is.null(x@individuals)){
-            unknownIDs <- unique(all.records.ID)[!unique(all.records.ID) %in% row.names(x@individuals)]
-            if(length(unknownIDs)>0) {
-                unknownIDs.txt <- paste(unknownIDs, collapse = ", ")
-                warning(paste("the following individuals with records observations have no individual information:\n", unknownIDs.txt))
-            }
-        }
-    }
-
-    ## PROCESS INFORMATION ABOUT CONTACTS ('contacts') ##
-    ## need to make sure that contact input is consisten with constructor
-    if(!is.null(contacts)){
-        ## process vertices indicated as numbers
-        if(is.numeric(contacts)){
-            if(!is.null(x@individuals)){
-                ## replace with labels if available
-                contacts <- matrix(row.names(x@individuals)[contacts], ncol=2)
-            } else {
-                ## convert as characters otherwise
-                contacts <- matrix(as.character(contacts), ncol=2)
-            }
-        }
-
-        ## check that all IDs match @individuals
-        if(!is.null(x@individuals)){
-            unknownIDs <- unique(contacts)[!unique(contacts) %in% row.names(x@individuals)]
-            if(length(unknownIDs)>0) {
-                unknownIDs.txt <- paste(unknownIDs, collapse = ", ")
-                warning(paste("the following individuals with contact matrix have no individual information:\n", unknownIDs.txt))
-            }
-        }
-        ## pass arguments to the obkContacts constructor
-        x@contacts <- new("obkContacts", contactFrom=contacts[,1,drop=TRUE], contactTo=contacts[,2,drop=TRUE],
-                          directed=contacts.directed, contactStart=contacts.start, contactEnd=contacts.end,
-                          duration=contacts.duration)
-    }
-
-
-    ## PROCESS INFORMATION ABOUT DNA SEQUENCES ('sequenceID') ##
-    if(!is.null(dna)){ # if DNA provided
-        ## TO BE FILLED ##
-    } else { # if no DNA
-        x@dna <- NULL
-    }
-
-
-    ## PROCESS INFORMATION ABOUT PHYLOGENIES ('trees') ##
+    ## HANDLE PHYLOGENIES ('trees') ##
     if(!is.null(trees)){
         ## check class
         if(!inherits(trees, "multiPhylo")) stop("trees must be a multiPhylo object")
 
         ## check label consistency (to be added)
         x@trees <- trees
+    }
+
+
+    ## HANDLE CONTACTS ##
+    if(!is.null(contacts)){
+        if(inherits(contacts, "obkContacts")){
+            x@contacts <- contacts
+        } else {
+            ## process vertices provided as numbers
+            if(is.numeric(contacts)){
+                if(!is.null(x@individuals)){
+                    ## replace with labels if available
+                    contacts <- matrix(row.names(x@individuals)[contacts], ncol=2)
+                } else {
+                    ## convert as characters otherwise
+                    contacts <- matrix(as.character(contacts), ncol=2)
+                }
+            }
+
+            ## pass arguments to the obkContacts constructor
+            x@contacts <- new("obkContacts", contactFrom=contacts[,1,drop=TRUE], contactTo=contacts[,2,drop=TRUE],
+                              directed=contacts.directed, contactStart=contacts.start, contactEnd=contacts.end,
+                              duration=contacts.duration)
+        }
+    }
+
+
+    ## QUALITY/CONSISTENCY CHECKS ##
+    if(check){
+        ## look for undocumented individuals in @records ##
+        if(!is.null(x@individuals) && !is.null(x@records)){
+            unknownIDs <- unique(all.records.ID)[!unique(all.records.ID) %in% row.names(x@individuals)]
+            if(length(unknownIDs)>0) {
+                unknownIDs.txt <- paste(unknownIDs, collapse = ", ")
+                warning(paste("records refer to undocumented individuals:\n", unknownIDs.txt))
+            }
+        }
+
+        ## look for undocumented individuals in @dna ##
+        if(!is.null(x@individuals) && !is.null(x@dna)){
+            dna.lab <- x@dna@meta$individualID[!is.na(x@dna@meta$individualID)]
+            unknownIDs <- dna.lab[!dna.lab %in% row.names(x@individuals)]
+            if(length(unknownIDs)>0){
+                unknownIDs.txt <- paste(unknownIDs, collapse = ", ")
+                warning(paste("dna sequences refer to undocumented individuals:\n", unknownIDs.txt))
+            }
+        }
     }
 
 
