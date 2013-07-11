@@ -22,16 +22,16 @@
 setGeneric("get.dna", function(x, ...) standardGeneric("get.dna"))
 
 
-#############
+################
 ## get.ntrees ##
-#############
+################
 ## return multiPhylo object (list of trees)
 setGeneric("get.ntrees", function(x, ...) standardGeneric("get.ntrees"))
 
 
-#############
+##############
 ## get.trees ##
-#############
+##############
 ## return multiPhylo object (list of trees)
 setGeneric("get.trees", function(x, ...) standardGeneric("get.trees"))
 
@@ -94,11 +94,18 @@ setGeneric("get.records", function(x, ...) standardGeneric("get.records"))
 ## return the number of records tables in the object
 setGeneric("get.nrecords", function(x, ...) standardGeneric("get.nrecords"))
 
-#################
+###############
 ## get.dates ##
-#################
+###############
 ## return the dates in the object
 setGeneric("get.dates", function(x, ...) standardGeneric("get.dates"))
+
+
+#################
+## get.ndates ##
+#################
+## return the dates in the object
+setGeneric("get.ndates", function(x, ...) standardGeneric("get.ndates"))
 
 
 ##################
