@@ -284,9 +284,9 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
             for(i in 1:length(x@records)){
                 if(any(data %in% names(x@records[[i]]))){
                     found <- TRUE
-                    temp<-x@records[[i]][,c(data,"individualID")]
+                    temp<-x@records[[i]][,c(data,"individualID","date")]
                     temp<-cbind(temp,rep(names(x@records)[i],dim(temp)[1]))
-                    colnames(temp)<-c(data,"individualID","source")
+                    colnames(temp)<-c(data,"individualID","date","source")
                     ## colnames(temp)<-c(data[1],"individualID","source")
                 }
                 result<-rbind(result,temp)
@@ -352,9 +352,9 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
             ## look within slots in @records ##
             for(i in 1:length(x@records)){
                 if(any(data %in% names(x@records[[i]]))){
-                    temp<-x@records[[i]][,c(data,"individualID")]
+                    temp<-x@records[[i]][,c(data,"individualID","date")]
                     temp<-cbind(temp,rep(names(x@records)[i],dim(temp)[1]))
-                    colnames(temp)<-c(data,"individualID","source")
+                    colnames(temp)<-c(data,"individualID","date","source")
                     result<-rbind(result,temp)
                 }
             }
