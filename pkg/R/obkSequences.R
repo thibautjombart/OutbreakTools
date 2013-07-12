@@ -231,7 +231,7 @@ setMethod("get.nsequences","obkSequences", function(x, what=c("total","bylocus")
 #####################
 setMethod("get.individuals","obkSequences", function(x, ...){
     if(is.null(x)) return(NULL)
-    return(x@meta$individualID)
+    return(unique(x@meta$individualID))
 })
 
 
@@ -251,7 +251,7 @@ setMethod("get.nindividuals","obkSequences", function(x, ...){
 ###############
 setMethod("get.dates","obkSequences", function(x, ...){
     if(is.null(x)) return(NULL)
-    return(x@meta$date)
+    return(unique(x@meta$date))
 })
 
 
@@ -326,7 +326,15 @@ setMethod ("show", "obkSequences", function(object){
 
     cat(paste("\n= @meta =\n",sep=""))
     cat("[ meta information on the sequences ]\n")
-    if(nLoc>0) print(object@meta)
+    if(nLoc>0) {
+        if(nrow(object@meta)>10){
+            print(head(object@meta,4))
+            cat("\n...\n")
+            print(tail(object@meta,4))
+        } else {
+            print(object@meta)
+        }
+    }
 })
 
 
