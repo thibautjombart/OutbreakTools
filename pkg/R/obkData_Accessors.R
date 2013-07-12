@@ -251,7 +251,8 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
 
     ## HANDLE 'WHERE'
     if(!is.null(where)){
-        where <- match.arg(as.character(where), c("individuals", "records"))
+        where <- match.arg(as.character(where), c("individuals", "records", "context"))
+    
         if(where=="individuals"){
             if(is.null(x@individuals)) { # return NULL if empty
                 warning("x@individuals is NULL")
@@ -290,6 +291,29 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                 return(NULL)
             }
         } # end where==records
+
+        
+        if(where=="context"){
+          if(is.null(x@context)) { # return NULL if empty
+            warning("x@context is NULL")
+            return(NULL)
+          }
+          found <- FALSE
+          for(i in 1:length(x@context)){
+            if(any(data %in% names(x@context[[i]]))){
+              found=T
+              temp<-x@context[[i]][,c(data,"date")]
+              temp<-cbind(temp,rep(names(x@context)[i],dim(temp)[1]))
+              colnames(temp)<-c(data,"date","source")
+            }
+            result<-rbind(result,temp)
+          }
+          if(!found){
+            warning(paste("data '", data, "'was not found in @context"))
+            return(NULL)
+          }
+        } # end where==context
+        
     } # end if 'where' provided
     else{
         ## else, look everywhere
