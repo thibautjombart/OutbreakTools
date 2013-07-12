@@ -19,16 +19,16 @@ setMethod("get.incidence", "obkData", function(x, use=c("collection"), ...){
 
     ## get date of first positive for each individual ##
 
-    ## auxiliary function: find 1st positive for one individual
-    f1 <- function(e){
-        ## no positive outcome
-        if() return(NULL)
+    ## ## auxiliary function: find 1st positive for one individual
+    ## f1 <- function(e){
+    ##     ## no positive outcome
+    ##     if() return(NULL)
 
-        ## at least one positive outcome
-        ## find first date
-        ## return
-        return(out)
-    }
+    ##     ## at least one positive outcome
+    ##     ## find first date
+    ##     ## return
+    ##     return(out)
+    ## }
 
     ## fill in the output ##
 
