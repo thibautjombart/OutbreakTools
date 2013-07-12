@@ -6,13 +6,14 @@
 ## CLASS DESCRIPTION:
 ## Instance of obkData store outbreak data; its content includes:
 ## - @individuals: meta-information on the individuals (group, etc.), stored as a data.frame
-## - @records:list of data.frames with records made on individuals; mantatory columns: individualID, date
+## - @records: list of data.frames with records made on individuals; mantatory columns: individualID, date
 ## - @dna: dna data, stored as a obkSequences object
 ## - @contacts: contact information as obkContacts
+## - @context: list of data.frames with records of events made on population; mantatory columns: date
 setClass("obkData", representation(individuals="data.frameOrNULL", records="listOrNULL",
                                    dna="obkSequencesOrNULL", contacts="obkContactsOrNULL",
-                                   trees="multiPhyloOrNULL"),
-         prototype(individuals=NULL, records=NULL, dna=NULL, contacts=NULL, trees=NULL))
+                                   context="listOrNULL", trees="multiPhyloOrNULL"),
+         prototype(individuals=NULL, records=NULL, dna=NULL, contacts=NULL, trees=NULL, context=NULL))
 
 
 
@@ -48,9 +49,12 @@ setClass("obkData", representation(individuals="data.frameOrNULL", records="list
 ##
 ## 'contacts.duration': another way to specify contacts.end, as duration of contact
 ##
+## 'context': a list of data.frame where each row is an observation made on a population (which includes interentions,
+## environmental observations etc.), and the following uniqu mandatory columns:
+## - "date"
 ##
 setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=NULL, dna=NULL,
-                                            trees=NULL, contacts=NULL, contacts.start=NULL,
+                                            trees=NULL, contacts=NULL, context=NULL, contacts.start=NULL,
                                             contacts.end=NULL, contacts.duration=NULL,
                                             contacts.directed=FALSE, date.format=NULL,
                                             dna.individualID=NULL, dna.date=NULL,
@@ -74,6 +78,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
         dna <- x@dna
         trees <- x@trees
         contacts <- x@contacts
+        context <- x@context
     }
 
 
@@ -192,7 +197,44 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
         }
     }
 
-
+    ## HANDLE CONTEXT ##
+    ## force NULL if empty list ##
+    if(!is.null(context) && length(context)==0) context <- NULL
+    
+    ## force NULL if empty data.frame ##
+    if(!is.null(context) && is.data.frame(context) && (nrow(context)==0 || ncol(context)==0)) context <- NULL
+    
+    ## process information ##
+    if(!is.null(context)) {
+      ## force type to list
+      if(is.data.frame(context)) context <- list(context)
+      
+      ## remove NULL elements
+      context <- context[!sapply(context, is.null)]
+      
+      ## check mandatory fields
+      NCONT <- length(context)
+      for(i in 1:NCONT){
+        if(!"date" %in% names(context[[i]])) stop(paste("no field 'date' in the context data.frame", names(context)[i], ")"))
+      }
+      
+      ## store info in output
+      ## (reorder the columns within each data frame / convert types)
+      ## Note : not sure if we need this??
+      all.context.date <- NULL
+      for(i in 1:NCONT){
+        nameOrder <- c(c("date"), setdiff(names(context[[i]]), c("date")))
+        x@context[[i]] <- context[[i]][, nameOrder]
+        if(is.factor(x@context[[i]][,"date"])) x@context[[i]][,"date"] <- as.character(x@context[[i]][,"date"])
+        x@context[[i]][,"date"] <- .process.Date(x@context[[i]][,"date"], format=date.format)
+        all.context.date <- c(all.context.date, x@context[[i]][, "date"])
+      }
+      
+      names(x@context) <- names(context)
+    } else { # no information
+      x@context <- NULL
+    }
+    
     ## QUALITY/CONSISTENCY CHECKS ##
     if(check){
         ## look for undocumented individuals in @records ##
@@ -243,6 +285,9 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
 ## new("obkData", individuals=data.frame("individualID"=letters))
 ## new("obkData", individuals=data.frame("individualID"=letters, age=1:26, 1:26))
 
+## ## INDIVIDUAL INFO ONLY ##
+## new("obkData", individuals=data.frame("individualID"=letters))
+## new("obkData", individuals=data.frame("individualID"=letters, age=1:26, 1:26))
 
 
 ## ## DNA INFO, NOTHING ELSE ##

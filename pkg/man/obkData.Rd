@@ -53,6 +53,7 @@
     \item genetic sequences
     \item contact information
     \item records data
+    \item context data
     \item phylogenetic trees
   }
 }
@@ -78,6 +79,8 @@
       \linkS4class{obkContacts} storing contact information.}
     \item{\code{dna}:}{an object of the class
       \linkS4class{obkSequences} storing DNA sequences.}
+    \item{\code{context}:}{a \code{list} of \code{data.frame}, each
+      member of the list containing contextual information related to the population of a particular type; the first column is 'date'.}
     \item{\code{trees}:}{an object of the class
       \code{\link{multiphylo}} storing list of trees.}
   }
@@ -85,7 +88,7 @@
 
 \usage{
 \S4method{initialize}{obkData}(.Object, individuals=NULL, samples=NULL,
-          records=NULL, dna=NULL, trees=NULL, contacts=NULL,
+          records=NULL, dna=NULL, trees=NULL, contacts=NULL, context=NULL,
           contacts.start=NULL, contacts.end=NULL,
           contacts.duration=NULL, contacts.directed=FALSE,
           date.format=NULL, \dots)
@@ -98,6 +101,9 @@ get.samples(x, \dots)
 
 get.nrecords(x, \dots)
 get.records(x, \dots)
+
+get.ncontext(x, \dots)
+get.rcontext(x, \dots)
 
 get.ntrees(x, \dots)
 get.trees(x, \dots)
@@ -115,6 +121,8 @@ get.trees(x, \dots)
 \S4method{get.contacts}{obkData}(x, from=NULL, to=NULL, \dots)
 
 \S4method{get.records}{obkData}(x, \dots)
+
+\S4method{get.context}{obkData}(x, \dots)
 
 \S4method{get.ntrees}{obkData}(x, \dots)
 
@@ -147,6 +155,11 @@ get.trees(x, \dots)
     returned by get.individuals(x)); if numeric values are provided,
     these are converted to integers and assumed to correspond to
     individuals returned by get.individuals(x).}
+  \item{context}{a list of data.frames, each of which has 1
+    mandatory field: 'date'. Dates are specified as
+    in the case of the samples data.frame. Each item of the list should
+    be named according to the type of information recorded, e.g. 'intervention',
+    'vaccination', 'climat' (temperature, humidity, etc.), or schools (opening/closure).}
   \item{contacts.start}{a vector of dates indicating the
     beginning of each contact.}
   \item{contacts.end}{a vector of dates indicating the end of
@@ -209,6 +222,8 @@ get.trees(x, \dots)
       samples in the data.}
     \item{get.records}{\code{signature(x = "obkData")}: returns the names of existing records tables in the data.}
     \item{get.nrecords}{\code{signature(x = "obkData")}: returns the number of records tables in the data.}
+    \item{get.context}{\code{signature(x = "obkData")}: returns the names of existing context tables in the data.}
+    \item{get.ncontext}{\code{signature(x = "obkData")}: returns the number of context tables in the data.}
      \item{get.dates*}{\code{signature(x = "obkData")}: returns the
       dates in a given source of data (argument
       \code{data}, can be 'samples' (default), 'individuals' or 'records').}
