@@ -127,11 +127,29 @@ setMethod("get.nrecords", "obkData", function(x, ...){
 })
 
 
+#################
+## get.context ##
+#################
+setMethod("get.context", "obkData", function(x, ...){
+  if(is.null(x@context)) return(NULL)
+  return(names(x@context))
+})
+
+
+
+##################
+## get.nrecords ##
+##################
+setMethod("get.ncontext", "obkData", function(x, ...){
+  if(is.null(x@context)) return(0)
+  return(length(get.context(x)))
+})
+
 
 ###############
 ## get.dates ##
 ###############
-setMethod("get.dates", "obkData", function(x, data=c("all", "individuals", "records", "dna"),...){
+setMethod("get.dates", "obkData", function(x, data=c("all", "individuals", "records", "dna", "context"),...){
 
   data <- match.arg(data)
 

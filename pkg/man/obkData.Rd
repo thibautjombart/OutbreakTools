@@ -103,7 +103,7 @@ get.nrecords(x, \dots)
 get.records(x, \dots)
 
 get.ncontext(x, \dots)
-get.rcontext(x, \dots)
+get.context(x, \dots)
 
 get.ntrees(x, \dots)
 get.trees(x, \dots)

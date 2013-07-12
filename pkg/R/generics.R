@@ -94,6 +94,21 @@ setGeneric("get.records", function(x, ...) standardGeneric("get.records"))
 ## return the number of records tables in the object
 setGeneric("get.nrecords", function(x, ...) standardGeneric("get.nrecords"))
 
+
+#################
+## get.context ##
+#################
+## return the names of the context tables in the object
+setGeneric("get.context", function(x, ...) standardGeneric("get.context"))
+
+
+##################
+## get.ncontext ##
+##################
+## return the number of context tables in the object
+setGeneric("get.ncontext", function(x, ...) standardGeneric("get.ncontext"))
+
+
 ###############
 ## get.dates ##
 ###############
