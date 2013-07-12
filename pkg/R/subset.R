@@ -123,7 +123,7 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
                                         ...){
     ## CHECK THAT REQUESTED INFO IS THERE ##
     if(is.null(x@individuals)) {
-        individuals <- row.individuals <- NULL
+        individuals <- NULL
     }
 
     if(is.null(x@dna)){
@@ -170,6 +170,7 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
 
         ## keep only relevant dates ##
         x <- subset(x, date.from=min(get.dates(x@dna)), date.to=max(get.dates(x@dna)))
+        
     } # end subsetting by locus
 
 
@@ -208,7 +209,7 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
     } # end subset by date.from
 
 
-      ## DATES TO ... ##
+    ## DATES TO ... ##
     if(!is.null(date.to)){
         ## process date ##
         date.to <- .process.Date(date.to, format=date.format)
@@ -230,14 +231,13 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
     } # end subset by date.to
 
 
-   
-
-    ## SUBSET CONTACTS
-    ## subset @contacts - static or dynamic network
+    ## SUBSET @CONTACTS ##
+    ## static or dynamic network
     if(!is.null(x@contacts)){
         toRemove <- which(!network.vertex.names(x@contacts@contacts) %in%  rownames(x@individuals)) # individuals to remove
         x@contacts@contacts <- delete.vertices(x@contacts@contacts, toRemove) # remove vertices
     }
+
 
     ## SUBSET @TREES ##
     ## these only depend on @sample, so only one code is useful here
