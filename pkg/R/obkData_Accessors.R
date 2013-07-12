@@ -165,7 +165,13 @@ setMethod("get.dates", "obkData", function(x, data=c("all", "individuals", "reco
         out <- unlist(lapply(x@records, function(e) e$date))
         return(out)
     }
-
+    ## list dates in @context
+    if(data=="context"){
+      if(is.null(x@context)) return(NULL)
+      out <- unlist(lapply(x@context, function(e) e$date))
+      return(out)
+    }
+  
     ## list individuals in @contacts
     if(data=="dna"){
         if(is.null(x@dna)) return(NULL)
