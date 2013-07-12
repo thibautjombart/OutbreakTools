@@ -191,7 +191,7 @@ setMethod("get.dates", "obkData", function(x, data=c("all", "individuals", "reco
 ################
 ## get.ndates ##
 ################
-setMethod("get.ndates", "obkData", function(x, data=c("all", "individuals", "records", "dna"),...){
+setMethod("get.ndates", "obkData", function(x, data=c("all", "individuals", "records", "dna","context"),...){
     return(length(unique(get.dates(x, data=data))))
 })
 
@@ -317,6 +317,17 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                     result<-rbind(result,temp)
                 }
             }
+        }
+        ## LOOK FOR 'DATA' IN CONTEXT ##
+        if(!is.null(x@context)){
+          for(i in 1:length(x@rcontext)){
+            if(any(data %in% names(x@context[[i]]))){
+              temp<-x@context[[i]][,c(data,"date")]
+              temp<-cbind(temp,rep(names(x@context)[i],dim(temp)[1]))
+              colnames(temp)<-c(data,"date","source")
+              result<-rbind(result,temp)
+            }
+          }
         }
     }
     if(length(result)>0){
