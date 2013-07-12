@@ -127,11 +127,29 @@ setMethod("get.nrecords", "obkData", function(x, ...){
 })
 
 
+#################
+## get.context ##
+#################
+setMethod("get.context", "obkData", function(x, ...){
+  if(is.null(x@context)) return(NULL)
+  return(names(x@context))
+})
+
+
+
+##################
+## get.nrecords ##
+##################
+setMethod("get.ncontext", "obkData", function(x, ...){
+  if(is.null(x@context)) return(0)
+  return(length(get.context(x)))
+})
+
 
 ###############
 ## get.dates ##
 ###############
-setMethod("get.dates", "obkData", function(x, data=c("all", "individuals", "records", "dna"),...){
+setMethod("get.dates", "obkData", function(x, data=c("all", "individuals", "records", "dna", "context"),...){
 
   data <- match.arg(data)
 
@@ -147,7 +165,13 @@ setMethod("get.dates", "obkData", function(x, data=c("all", "individuals", "reco
         out <- unlist(lapply(x@records, function(e) e$date))
         return(out)
     }
-
+    ## list dates in @context
+    if(data=="context"){
+      if(is.null(x@context)) return(NULL)
+      out <- unlist(lapply(x@context, function(e) e$date))
+      return(out)
+    }
+  
     ## list individuals in @contacts
     if(data=="dna"){
         if(is.null(x@dna)) return(NULL)
@@ -167,7 +191,7 @@ setMethod("get.dates", "obkData", function(x, data=c("all", "individuals", "reco
 ################
 ## get.ndates ##
 ################
-setMethod("get.ndates", "obkData", function(x, data=c("all", "individuals", "records", "dna"),...){
+setMethod("get.ndates", "obkData", function(x, data=c("all", "individuals", "records", "dna","context"),...){
     return(length(unique(get.dates(x, data=data))))
 })
 
@@ -227,7 +251,8 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
 
     ## HANDLE 'WHERE'
     if(!is.null(where)){
-        where <- match.arg(as.character(where), c("individuals", "records"))
+        where <- match.arg(as.character(where), c("individuals", "records", "context"))
+    
         if(where=="individuals"){
             if(is.null(x@individuals)) { # return NULL if empty
                 warning("x@individuals is NULL")
@@ -259,9 +284,9 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
             for(i in 1:length(x@records)){
                 if(any(data %in% names(x@records[[i]]))){
                     found <- TRUE
-                    temp<-x@records[[i]][,c(data,"individualID")]
+                    temp<-x@records[[i]][,c(data,"individualID","date")]
                     temp<-cbind(temp,rep(names(x@records)[i],dim(temp)[1]))
-                    colnames(temp)<-c(data,"individualID","source")
+                    colnames(temp)<-c(data,"individualID","date","source")
                     ## colnames(temp)<-c(data[1],"individualID","source")
                 }
                 result<-rbind(result,temp)
@@ -271,6 +296,35 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                 return(NULL)
             }
         } # end where==records
+
+        
+        if(where=="context"){
+          if(is.null(x@context)) { # return NULL if empty
+            warning("x@context is NULL")
+            return(NULL)
+          }
+          ## look in @context ##
+          if(any(data %in% names(x@context))){
+            return(x@context[[data]])
+          }
+          ## look within elements of @context
+          found <- FALSE
+          for(i in 1:length(x@context)){
+            if(any(data %in% names(x@context[[i]]))){
+              found=T
+              temp<-x@context[[i]][,c(data,"date")]
+              temp<-cbind(temp,rep(names(x@context)[i],dim(temp)[1]))
+              colnames(temp)<-c(data,"date","source")
+              
+              result<-rbind(result,temp)
+            }
+          }
+          if(!found){
+            warning(paste("data '", data, "'was not found in @context"))
+            return(NULL)
+          }
+        } # end where==context
+        
     } # end if 'where' provided
     else{
         ## else, look everywhere
@@ -298,12 +352,29 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
             ## look within slots in @records ##
             for(i in 1:length(x@records)){
                 if(any(data %in% names(x@records[[i]]))){
-                    temp<-x@records[[i]][,c(data,"individualID")]
+                    temp<-x@records[[i]][,c(data,"individualID","date")]
                     temp<-cbind(temp,rep(names(x@records)[i],dim(temp)[1]))
-                    colnames(temp)<-c(data,"individualID","source")
+                    colnames(temp)<-c(data,"individualID","date","source")
                     result<-rbind(result,temp)
                 }
             }
+        }
+        ## LOOK FOR 'DATA' IN CONTEXT ##
+        if(!is.null(x@context)){
+          ## look in @context ##
+          if(any(data %in% names(x@context))){
+            return(x@context[[data]])
+          }
+          
+          ## look within slots in @context ##
+          for(i in 1:length(x@context)){
+            if(any(data %in% names(x@context[[i]]))){
+              temp<-x@context[[i]][,c(data,"date")]
+              temp<-cbind(temp,rep(names(x@context)[i],dim(temp)[1]))
+              colnames(temp)<-c(data,"date","source")
+              result<-rbind(result,temp)
+            }
+          }
         }
     }
     if(length(result)>0){
