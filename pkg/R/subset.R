@@ -106,10 +106,57 @@ setMethod("subset", "obkSequences", function(x, sequences=NULL, locus=NULL, indi
         x <- subset(x, sequences=seq.tokeep)
     } # end subset by date.to
 
-
     return(x)
 }) # end subset for obkSequences
 
+
+
+
+
+
+########################
+## obkContacts method ##
+########################
+setMethod("subset", "obkContacts", function(x, individuals=NULL, date.from=NULL, date.to=NULL,
+                                            date.format=NULL, ...){
+    ## SUBSET BY INDIVIDUALS ##
+    if(!is.null(individuals)){
+        ## handle non-character argument ##
+        if(!is.character(individuals)){
+            individuals <- get.individuals(x)[individuals]
+        }
+
+        ## check that all individuals are known ##
+        if(!all(individuals %in% get.individuals(x))){
+            temp <- paste(individuals[!individuals %in% get.individuals(x)], collapse=", ")
+            warning(paste("The following individuals were not found in the data:", temp))
+            individuals <- individuals[individuals %in% get.individuals(x)]
+        }
+
+        ## delete obsolete edges ##
+        toRemove <- which(!network.vertex.names(x@contacts) %in%  individuals) # individuals to remove
+        x@contacts <- delete.vertices(x@contacts, toRemove) # remove vertices
+    }
+
+    ## DATES FROM ... ##
+    if(!is.null(date.from)){
+        ## subset contacts ##
+        if(inherits(x@contacts, "networkDynamic")){
+            x@contacts <- get.contacts(x, from=date.from, to=Inf)
+        }
+    } # end subset by date.from
+
+
+    ## DATES TO ... ##
+    if(!is.null(date.to)){
+        ## subset contacts ##
+        if(inherits(x@contacts, "networkDynamic")){
+            x@contacts <- get.contacts(x, from=-1, to=date.to)
+        }
+    } # end subset by date.to
+
+    return(x)
+}) # end subset for obkContacts
 
 
 
@@ -151,11 +198,16 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
         ## subset @dna ##
         if(!is.null(x@dna)) x@dna <- subset(x@dna, individuals=individuals)
 
-        ## subset @records
+        ## subset @records ##
         if(!is.null(x@records)){
             for(i in 1:length(x@records)){
                 x@records[[i]] <- x@records[[i]][x@records[[i]]$"individualID" %in% individuals, ,drop=FALSE]
             }
+        }
+
+        ## subset @contacts ##
+        if(!is.null(x@contacts)){
+            x@contacts <- subset(x@contacts, individuals=individuals)
         }
     } # end subsetting by individuals
 
@@ -170,7 +222,12 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
 
         ## keep only relevant dates ##
         x <- subset(x, date.from=min(get.dates(x@dna)), date.to=max(get.dates(x@dna)))
-        
+
+        ## subset @contacts ##
+        if(!is.null(x@contacts)){
+            x@contacts <- subset(x@contacts, individuals=get.individuals(x@dna))
+        }
+
     } # end subsetting by locus
 
 
@@ -184,6 +241,12 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
 
         ## keep only relevant dates ##
         x <- subset(x, date.from=min(get.dates(x@dna)), date.to=max(get.dates(x@dna)))
+
+        ## subset @contacts ##
+        if(!is.null(x@contacts)){
+            x@contacts <- subset(x@contacts, individuals=get.individuals(x@dna))
+        }
+
     } # end subsetting by sequences
 
 
@@ -204,7 +267,7 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
 
         ## subset contacts ##
         if(!is.null(x@contacts) && inherits(x@contacts@contacts, "networkDynamic")){
-            x@contacts@contacts <- network.extract(x@contacts@contacts, onset=date.from)
+            x@contacts <- subset(x@contacts, date.from=date.from)
         }
     } # end subset by date.from
 
@@ -226,17 +289,13 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
 
         ## subset contacts ##
         if(!is.null(x@contacts) && inherits(x@contacts@contacts, "networkDynamic")){
-            x@contacts@contacts <- network.extract(x@contacts@contacts, terminus=date.to)
+            x@contacts <- subset(x@contacts, date.to=date.to)
         }
     } # end subset by date.to
 
 
     ## SUBSET @CONTACTS ##
     ## static or dynamic network
-    if(!is.null(x@contacts)){
-        toRemove <- which(!network.vertex.names(x@contacts@contacts) %in%  rownames(x@individuals)) # individuals to remove
-        x@contacts@contacts <- delete.vertices(x@contacts@contacts, toRemove) # remove vertices
-    }
 
 
     ## SUBSET @TREES ##

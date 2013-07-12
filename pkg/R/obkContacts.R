@@ -112,6 +112,7 @@ setMethod("get.nindividuals","obkContacts", function(x, ...){
     return(x@contacts%n%"n")
 })
 
+
 ######################
 ## get.individuals ##
 ######################
@@ -121,9 +122,9 @@ setMethod("get.individuals","obkContacts", function(x, ...){
 })
 
 
-#####################
-#### get.contacts ###
-#####################
+##################
+## get.contacts ##
+##################
 setMethod("get.contacts","obkContacts", function(x, from=NULL, to=NULL, ...){
     if(is.null(x@contacts)) return(0)
 
@@ -133,19 +134,18 @@ setMethod("get.contacts","obkContacts", function(x, from=NULL, to=NULL, ...){
         to <- as.Date(to)
     }
 
+    ## handle character dates
+    if(is.character(from)) from <- .process.Date(from)
+    if(is.character(to)) to <- .process.Date(to)
+
     ## handle 'Date' dates
-    if(inherits(from, "Date")){
-        x@origin <- min(from)
-        from <- as.numeric(from - x@origin)
-        to <- as.numeric(to - x@origin)
-    }
+    if(inherits(from, "Date")) from <- as.numeric(from - x@origin)
+    if(inherits(to, "Date")) to <- as.numeric(to - x@origin)
 
-    if(!is.null(from) || !is.null(to)) {
-        res <- network.extract(x@contacts, onset=from, terminus=to)
-    } else {
-        res <- x@contacts
-    }
-
+    ## extract network
+    if(is.null(from)) from <- -1
+    if(is.null(to)) to <- Inf
+    res <- network.extract(x@contacts, onset=from, terminus=to)
 
     return(res)
 })
