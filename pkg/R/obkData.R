@@ -309,3 +309,13 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
 # 
 # x <- new("obkData", individuals = ToyOutbreakRaw$individuals, context=context,date.format = "%d/%m/%Y")
 
+## and test accessors
+# get.context(x)
+# get.ncontext(x)
+# get.data(x,"context")
+# get.data(x,"date",where="context")
+# get.data(x,"temperature",where="context")
+# get.data(x,"vaccination",where="context")
+# get.data(x,"vaccination")
+# get.data(x,"date")
+# get.data(x,"temperature")
