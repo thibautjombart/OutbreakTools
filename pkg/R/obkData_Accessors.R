@@ -250,10 +250,15 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                 warning("x@records is NULL")
                 return(NULL)
             }
+            ## look in @records ##
+            if(any(data %in% names(x@records))){
+                return(x@records[[data]])
+            }
+            ## look within slots in @records ##
             found <- FALSE
             for(i in 1:length(x@records)){
                 if(any(data %in% names(x@records[[i]]))){
-                    found=T
+                    found <- TRUE
                     temp<-x@records[[i]][,c(data,"individualID")]
                     temp<-cbind(temp,rep(names(x@records)[i],dim(temp)[1]))
                     colnames(temp)<-c(data,"individualID","source")
@@ -274,7 +279,7 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
         if(!is.null(x@individuals)){
             if(any(data %in% names(x@individuals))){
                                         #temp<-x@individuals[,c(data,"individualID")]
-                temp<-x@individuals[,data,drop=F]
+                temp<-x@individuals[,data,drop=FALSE]
                 temp<-cbind(temp,rownames(x@individuals))
                 temp<-cbind(temp,rep("individuals",dim(temp)[1]))
                 colnames(temp)<-c(data,"individualID","source")
@@ -285,6 +290,12 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
 
         ## LOOK FOR 'DATA' IN RECORDS ##
         if(!is.null(x@records)){
+            ## look in @records ##
+            if(any(data %in% names(x@records))){
+                return(x@records[[data]])
+            }
+
+            ## look within slots in @records ##
             for(i in 1:length(x@records)){
                 if(any(data %in% names(x@records[[i]]))){
                     temp<-x@records[[i]][,c(data,"individualID")]
