@@ -303,6 +303,11 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
             warning("x@context is NULL")
             return(NULL)
           }
+          ## look in @context ##
+          if(any(data %in% names(x@context))){
+            return(x@context[[data]])
+          }
+          ## look within elements of @context
           found <- FALSE
           for(i in 1:length(x@context)){
             if(any(data %in% names(x@context[[i]]))){
@@ -310,8 +315,9 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
               temp<-x@context[[i]][,c(data,"date")]
               temp<-cbind(temp,rep(names(x@context)[i],dim(temp)[1]))
               colnames(temp)<-c(data,"date","source")
+              
+              result<-rbind(result,temp)
             }
-            result<-rbind(result,temp)
           }
           if(!found){
             warning(paste("data '", data, "'was not found in @context"))
@@ -355,6 +361,12 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
         }
         ## LOOK FOR 'DATA' IN CONTEXT ##
         if(!is.null(x@context)){
+          ## look in @context ##
+          if(any(data %in% names(x@context))){
+            return(x@context[[data]])
+          }
+          
+          ## look within slots in @context ##
           for(i in 1:length(x@context)){
             if(any(data %in% names(x@context[[i]]))){
               temp<-x@context[[i]][,c(data,"date")]
