@@ -344,7 +344,7 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
         }
         ## LOOK FOR 'DATA' IN CONTEXT ##
         if(!is.null(x@context)){
-          for(i in 1:length(x@rcontext)){
+          for(i in 1:length(x@context)){
             if(any(data %in% names(x@context[[i]]))){
               temp<-x@context[[i]][,c(data,"date")]
               temp<-cbind(temp,rep(names(x@context)[i],dim(temp)[1]))

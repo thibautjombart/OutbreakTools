@@ -296,3 +296,19 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
 ## dat.dna <- as.list(woodmouse)
 
 ## new("obkData", dna=dat.dna) # should be empty
+
+## ## TEST CONTEXT
+
+# library(epibase)
+# data(ToyOutbreakRaw)
+# names(ToyOutbreakRaw)
+
+# vaccination <- data.frame(date=c("02/01/2000","04/01/2000"),Targeted_population=c("children","elderly"))
+# school_closure <-data.frame(date=c("05/01/2000"),ending_date=c("26/01/2000"), location=c("London"))
+# temperature <-data.frame(date=c("02/01/2000","03/01/2000","04/01/2000","05/01/2000","06/01/2000","07/01/2000"),temp=c(4,2,-1,2,0,1))
+# 
+# context <-list(vaccination,school_closure,temperature)
+# names(context) <-c("vaccination","school_closure","temperature")
+# 
+# x <- new("obkData", individuals = ToyOutbreakRaw$individuals, context=context,date.format = "%d/%m/%Y")
+
