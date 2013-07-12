@@ -220,14 +220,11 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
       
       ## store info in output
       ## (reorder the columns within each data frame / convert types)
-      ## Note : not sure if we need this??
-      all.context.date <- NULL
       for(i in 1:NCONT){
         nameOrder <- c(c("date"), setdiff(names(context[[i]]), c("date")))
         x@context[[i]] <- context[[i]][, nameOrder]
         if(is.factor(x@context[[i]][,"date"])) x@context[[i]][,"date"] <- as.character(x@context[[i]][,"date"])
         x@context[[i]][,"date"] <- .process.Date(x@context[[i]][,"date"], format=date.format)
-        all.context.date <- c(all.context.date, x@context[[i]][, "date"])
       }
       
       names(x@context) <- names(context)
