@@ -133,6 +133,9 @@ setMethod("subset", "obkContacts", function(x, individuals=NULL, date.from=NULL,
             individuals <- individuals[individuals %in% get.individuals(x)]
         }
 
+        ## escape if < 2 individuals ##
+        if(length(individuals)<2) return(NULL)
+
         ## delete obsolete edges ##
         toRemove <- which(!network.vertex.names(x@contacts) %in%  individuals) # individuals to remove
         x@contacts <- delete.vertices(x@contacts, toRemove) # remove vertices
@@ -154,6 +157,9 @@ setMethod("subset", "obkContacts", function(x, individuals=NULL, date.from=NULL,
             x@contacts <- get.contacts(x, from=-1, to=date.to)
         }
     } # end subset by date.to
+
+    ## do not return graphs with no edge ##
+    if(nrow(suppressWarnings(as.data.frame(x))) < 1) return(NULL)
 
     return(x)
 }) # end subset for obkContacts
@@ -310,6 +316,9 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
                 x@trees[[i]] <- drop.tip(x@trees[[i]], tip=toDrop, trim.internal=TRUE, subtree=FALSE)
             }
         }
+
+        ## set slot to NULL if no tree left
+        if(length(x@trees)==0) x@trees <- NULL
     }
 
     return(x)
