@@ -20,7 +20,6 @@ make.phylo(x, \dots)
 \S4method{make.phylo}{obkData}(x, locus=NULL,
            result=c("obkData","multiPhylo"), model = "N",
            pairwise.deletion = FALSE, method=nj,
-           color.by=c("sample","individual","date"), palette=funky,
            plot=FALSE, ask=TRUE,\dots)
 }
 \arguments{
@@ -39,12 +38,12 @@ make.phylo(x, \dots)
     \code{dist}; examples include \code{\link[ape]{nj}},
     \code{\link[ape]{bionj}}, \code{\link[ape]{fastme.bal}},
     and \code{\link[ape]{fastme.ols}}.}
-  \item{color.by}{a character string indicating the information to be
-    used to color the tips of the tree; "sample", "individual", and
-    "date" will be fetched from the appropriate fields in the
-    \linkS4class{obkData} object; other fields present in
-    \code{@samples} of the object can be used.}
-  \item{palette}{a color palette to be used for the tip colors}
+  % \item{color.by}{a character string indicating the information to be
+  %   used to color the tips of the tree; "sample", "individual", and
+  %   "date" will be fetched from the appropriate fields in the
+  %   \linkS4class{obkData} object; other fields present in
+  %   \code{@samples} of the object can be used.}
+  % \item{palette}{a color palette to be used for the tip colors}
   \item{plot}{a logical indicating whether plots of the trees should be produced.}
   \item{ask}{a logical indicating whether user input must be waited for
     before drawing new plots.}
@@ -69,6 +68,8 @@ get.trees(x) # no tree here
 
 ## GET TREE AND DISPLAY IT
 x <- make.phylo(x, plot=TRUE)
+get.trees(x) # newly created trees
+
 
 ## DISPLAY TREE USING PLOTGGPHY
 
