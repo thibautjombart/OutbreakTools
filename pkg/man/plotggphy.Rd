@@ -4,13 +4,13 @@
 \usage{
   plotggphy(x, which.tree = 1, ladderize = FALSE,
     show.tip.label = FALSE, tip.label.size = 3,
-    build.tip.attribute = FALSE, tip.colour = NULL,
+    build.tip.attribute = FALSE, tip.color = NULL,
     tip.alpha = NULL, tip.shape = NULL, tip.size = NULL,
     branch.unit = NULL, tip.dates = NULL,
     guess.tip.dates.from.labels = FALSE,
     set.guess = list(prefix = "_", order = 1, from = "last"),
     axis.date.format = NULL, major.breaks = NULL,
-    minor.breaks = NULL, colour.palette = "Spectral",
+    minor.breaks = NULL, color.palette = "Spectral",
     legend.position = "right")
 }
 \arguments{
@@ -33,7 +33,7 @@
   merging the data frames \code{individuals} and
   \code{samples}.}
 
-  \item{tip.colour}{Character. Can be either the name of a
+  \item{tip.color}{Character. Can be either the name of a
   color (e.g. "Black") or the name of a column of
   \code{tip.attribute}. In the first case, all tips have
   the specified color. In the second case, tips are
@@ -92,7 +92,7 @@
   when x is in date format). Ex: "weeks", "15days",
   "months", etc.}
 
-  \item{colour.palette}{Character. The palette for tip
+  \item{color.palette}{Character. The palette for tip
   colors. Only palettes from the package
   \code{\link{RColorBrewer}} are available. See
   \code{\link{brewer.pal}} documentation for more details.}
@@ -132,12 +132,12 @@ p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE,
 ## color-code tip location
 p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE,
                branch.unit = "year", tip.dates = "date",
-               tip.colour = "location")
+               tip.color = "location")
 
 ## change tip size and transparency
 p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE,
                branch.unit = "year", tip.dates = "date",
-               tip.colour = "location", tip.size = 3, tip.alpha = 0.75)
+               tip.color = "location", tip.size = 3, tip.alpha = 0.75)
 }
 \author{
   Anton Camacho

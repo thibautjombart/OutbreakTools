@@ -6,7 +6,9 @@ exportPattern("^[^\\.]")
 exportPattern(".process.Date")
 
 # Import all packages listed as Imports or Depends
-import(methods, network, ggplot2, plyr, knitr)
+import(methods, network, ggplot2, knitr)
+
+# to try: importFrom(plyr, "rename")
 
 importFrom(utils, "packageDescription")
 
