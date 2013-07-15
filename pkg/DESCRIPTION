@@ -28,6 +28,7 @@ Collate:
     'uniqSequences.R'
     'dna2uniqSequences.R'
     'make.phylo.R'
+    'make.attributes.R'
     'get.incidence.R'
     'phylo2ggphy.R'
     'plotggMST.R'

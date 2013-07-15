@@ -35,17 +35,18 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c("x.beg","x.end","y.beg",
 #' @author Anton Camacho
 #' @example ../misc/plotggphyExample.R
 #'
-plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FALSE, tip.label.size = 3, build.tip.attribute = FALSE,
+plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FALSE, tip.label.size = 3, build.tip.attribute = TRUE,
 	tip.color = NULL, tip.alpha = NULL, tip.shape = NULL, tip.size = NULL, branch.unit = NULL, tip.dates = NULL,
 	guess.tip.dates.from.labels = FALSE, set.guess = list(prefix = "_", order = 1, from = "last"), axis.date.format = NULL,
                       major.breaks = NULL, minor.breaks = NULL, color.palette = "Spectral", legend.position = "right") {
 
-    ##stop if:
+    ## STOP IF NOT OBKDATA OBJECT ##
     if (!inherits(x, "obkData")) {
         stop("argument x must be an object of class obkData")
     }
 
-    ##how many trees?
+
+    ## GET PLOTTED TREE ##
     phylo <- get.trees(x)
     if (!length(phylo)) {
         stop("x doesn't contain any tree")
@@ -56,48 +57,12 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
 
     phylo <- phylo[[which.tree]]
 
-    if (build.tip.attribute) {
-        ##TODO: add other data frames (e.g. records, etc)
-        df.individuals <- get.data(x, "individuals")
-        df.individuals$individualID <- 1:nrow(df.individuals)
-        df.dna <- x@dna@meta
 
-        tip.attribute <- merge(df.dna, df.individuals, by = "individualID", all.x = TRUE)
-        tip.attribute <- rename(tip.attribute, c(sequenceID = "label"))
-
-        if (!is.null(tip.dates)) {
-            if (!tip.dates %in% names(tip.attribute)) {
-                stop("tip.dates is not the name of a column of tip.attribute.")
-            }
-            if (tip.dates %in% names(tip.attribute) & guess.tip.dates.from.labels) {
-                stop("either specify tip.dates or guess.tip.dates.from.labels, not both.")
-            }
-            if (tip.dates %in% names(tip.attribute)) {
-                tip.dates = tip.attribute[, tip.dates]
-            }
-
-        }
-        if (!is.null(tip.color)) {
-            if (!tip.color %in% names(tip.attribute) & !is.color(tip.color)) {
-                stop("tip.color must be either the name of a column of tip.attribute or a color name (e.g. \"red\").")
-            }
-        }
-        if (!is.null(tip.shape)) {
-            if (!tip.shape %in% names(tip.attribute) & !is.numeric(tip.shape)) {
-                stop("tip.shape must be either the name of a column of tip.attribute or a numeric value.")
-            }
-        }
-        if (!is.null(tip.size)) {
-            if (!tip.size %in% names(tip.attribute) & !is.numeric(tip.size)) {
-                stop("tip.size must be either the name of a column of tip.attribute or a numeric value.")
-            }
-        }
-        if (!is.null(tip.alpha)) {
-            if (!tip.alpha %in% names(tip.attribute) & !is.numeric(tip.alpha)) {
-                stop("tip.alpha must be either the name of a column of tip.attribute or a numeric value.")
-            }
-        }
-    } else {
+    ## BUILD DATA.FRAME OF TIP ATTRIBUTES IF NEEDED ##
+    if(build.tip.attribute && is.null(x@dna@meta)) warning("Cannot build tip attribute without information on the sequences (@dna@meta is empty).")
+    if(build.tip.attribute && !is.null(x@dna@meta)){
+        tip.attribute <- make.tip.attributes(x, which.tree=which.tree)
+    } else { # not building tip attributes
 
         tip.attribute <- NULL
 
@@ -160,6 +125,7 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
 
     if (!is.null(tip.attribute)) {
         ##merge df.tip with tip.attribute
+        tip.attribute$label <- rownames(tip.attribute)
         tmp <- merge(df.tip, tip.attribute, by = "label", all.x = T)
         df.tip <- tmp
     }
@@ -200,13 +166,13 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
             return(NA)
         }
         if (x.val %in% names(tip.attribute)) {
-            return(T)
+            return(TRUE)
         }
         if (x.name == "color" & is.color(x.val)) {
-            return(F)
+            return(FALSE)
         }
         if (x.name %in% c("alpha", "shape", "size") & is.numeric(x.val)) {
-            return(F)
+            return(FALSE)
         }
     })
     names(is.aes) <- names(tip.characteristic)
@@ -243,7 +209,7 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
                 p <- p + scale_color_brewer(tip.color, palette = color.palette)
             }
         } else {
-            p <- p + scale_color_gradientn(tip.color, colors = brewer.pal(nMaxCol, color.palette))
+            p <- p + scale_color_gradientn(tip.color, colours = brewer.pal(nMaxCol, color.palette))
         }
     }
 

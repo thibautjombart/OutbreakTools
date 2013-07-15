@@ -1,8 +1,8 @@
 
 
-###############
+################
 ## make.phylo ##
-###############
+################
 
 setMethod("make.phylo", "obkData", function(x, locus=NULL, result=c("obkData","multiPhylo"),
                                             model = "N", pairwise.deletion = FALSE, method=nj,
