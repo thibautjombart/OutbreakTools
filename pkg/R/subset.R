@@ -213,7 +213,7 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
 
         ## subset @contacts ##
         if(!is.null(x@contacts)){
-            x@contacts <- subset(x@contacts, individuals=individuals)
+            x@contacts <- suppressWarnings(subset(x@contacts, individuals=individuals))
         }
     } # end subsetting by individuals
 
