@@ -7,7 +7,7 @@
 ## - @uniqID: data about the identical sequences, stored as a list of vectors of sequenceID
 ## - @uniqdna: unique dna sequences, stored as a DNAbin
 
-setOldClass("DNAbin")
+## setOldClass("DNAbin")
 setClass("uniqSequences", representation(uniqID="list", uniqdna="DNAbin"),prototype(uniqID=NULL, uniqdna=NULL))
 
 
@@ -56,7 +56,7 @@ setMethod("initialize", "uniqSequences", function(.Object, uniqID=NULL, uniqdna=
 
       }
     }
-    
+
     ## RETURN OBJECT ##
     return(x)
 }) # end uniqSequences constructor
