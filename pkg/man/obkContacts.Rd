@@ -49,18 +49,18 @@
     ...)}, where '...' can be the following arguments:
   
   \describe{
-    \item{\code{contactsFrom}}{a vector of individual identifiers in
+    \item{\code{from}}{a vector of individual identifiers in
     \code{character} format representing the source of the contact.}
-    \item{\code{contactsTo}}{a vector of individual identifiers in
+    \item{\code{to}}{a vector of individual identifiers in
       \code{character} format representing the sink of the contact.}
     \item{\code{directed}}{a Boolean for whether contacts should be
       regarded as directed (\code{TRUE}) or not (\code{FALSE}).}
-    \item{\code{contactStart}}{an optional vector of times representing
+    \item{\code{start}}{an optional vector of times representing
       the start of a contact.}
-    \item{\code{contactEnd}}{an optional vector of times representing the end of a
+    \item{\code{end}}{an optional vector of times representing the end of a
       contact.}
     \item{\code{duration}}{an optional vector of durations of a contact,
-    as an alternative way of representing dynamic contacts than using \code{contactEnd}.}
+    as an alternative way of representing dynamic contacts than using \code{end}.}
   }
 }
 \section{Slots}{
