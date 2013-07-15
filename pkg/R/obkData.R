@@ -49,8 +49,8 @@ setClass("obkData", representation(individuals="data.frameOrNULL", records="list
 ##
 ## 'contacts.duration': another way to specify contacts.end, as duration of contact
 ##
-## 'context': a list of data.frame where each row is an observation made on a population (which includes interentions,
-## environmental observations etc.), and the following uniqu mandatory columns:
+## 'context': a list of data.frame where each row is an observation made on a population (which includes interventions,
+## environmental observations etc.), and the following mandatory columns:
 ## - "date"
 ##
 setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=NULL, dna=NULL,
@@ -197,27 +197,28 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
         }
     }
 
+    
     ## HANDLE CONTEXT ##
     ## force NULL if empty list ##
     if(!is.null(context) && length(context)==0) context <- NULL
-    
+
     ## force NULL if empty data.frame ##
     if(!is.null(context) && is.data.frame(context) && (nrow(context)==0 || ncol(context)==0)) context <- NULL
-    
+
     ## process information ##
     if(!is.null(context)) {
       ## force type to list
       if(is.data.frame(context)) context <- list(context)
-      
+
       ## remove NULL elements
       context <- context[!sapply(context, is.null)]
-      
+
       ## check mandatory fields
       NCONT <- length(context)
       for(i in 1:NCONT){
         if(!"date" %in% names(context[[i]])) stop(paste("no field 'date' in the context data.frame", names(context)[i], ")"))
       }
-      
+
       ## store info in output
       ## (reorder the columns within each data frame / convert types)
       for(i in 1:NCONT){
@@ -226,12 +227,13 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
         if(is.factor(x@context[[i]][,"date"])) x@context[[i]][,"date"] <- as.character(x@context[[i]][,"date"])
         x@context[[i]][,"date"] <- .process.Date(x@context[[i]][,"date"], format=date.format)
       }
-      
+
       names(x@context) <- names(context)
     } else { # no information
       x@context <- NULL
     }
-    
+
+
     ## QUALITY/CONSISTENCY CHECKS ##
     if(check){
         ## look for undocumented individuals in @records ##
@@ -303,10 +305,10 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
 # vaccination <- data.frame(date=c("02/01/2000","04/01/2000"),Targeted_population=c("children","elderly"))
 # school_closure <-data.frame(date=c("05/01/2000"),ending_date=c("26/01/2000"), location=c("London"))
 # temperature <-data.frame(date=c("02/01/2000","03/01/2000","04/01/2000","05/01/2000","06/01/2000","07/01/2000"),temp=c(4,2,-1,2,0,1))
-# 
+#
 # context <-list(vaccination,school_closure,temperature)
 # names(context) <-c("vaccination","school_closure","temperature")
-# 
+#
 # x <- new("obkData", individuals = ToyOutbreakRaw$individuals, context=context,date.format = "%d/%m/%Y")
 
 ## and test accessors
