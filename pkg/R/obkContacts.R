@@ -122,6 +122,26 @@ setMethod("get.individuals","obkContacts", function(x, ...){
 })
 
 
+###############
+## get.dates ##
+###############
+setMethod("get.dates","obkContacts", function(x, ...){
+    if(is.null(x@contacts)) return(NULL)
+    out <- x@origin + get.change.times(x@contacts)
+    return(out)
+})
+
+
+################
+## get.ndates ##
+################
+setMethod("get.ndates","obkContacts", function(x, ...){
+    if(is.null(x@contacts)) return(0)
+    return(length(get.dates(x)))
+})
+
+
+
 ##################
 ## get.contacts ##
 ##################
@@ -157,6 +177,7 @@ setMethod("get.ncontacts","obkContacts", function(x, from=NULL, to=NULL, ...){
     if(is.null(x@contacts)) return(0)
     return(network.edgecount(get.contacts(x, from=from, to=to)))
 })
+
 
 ######################
 ####  SHOW METHOD ####
@@ -202,15 +223,49 @@ setMethod ("plot", "obkContacts", function(x, y=NULL, labels=get.individuals(x),
 ##########################
 #### AS.MATRIX METHOD ####
 ##########################
-
-setMethod ("as.matrix", "obkContacts", function(x, matrix.type=c("adjacency","incidence","edgelist"), ...){
+setMethod ("as.matrix", "obkContacts", function(x, matrix.type=c("adjacency","incidence","edgelist"),
+                                                use.labels=TRUE, ...){
     g <- x@contacts
     if(is.null(g)) return(NULL)
     matrix.type <- match.arg(matrix.type)
     if(is.networkDynamic(g)) g <- network.collapse(g)
     set.network.attribute(g, "multiple", FALSE)
-    return(as.matrix(g, matrix.type=matrix.type))
+    out <- as.matrix(g, matrix.type=matrix.type)
+    if(use.labels){
+        if(matrix.type=="edgelist"){
+            lab <- attr(out, "vnames")
+            out <- matrix(lab[out], ncol=2)
+        }
+        if(matrix.type=="incidence"){
+            temp <- as.matrix(g, matrix.type="edgelist")
+            v.lab <- attr(temp, "vnames")
+            e.lab <- apply(matrix(v.lab[temp],ncol=2), 1, paste, collapse="-")
+            rownames(out) <- v.lab
+            colnames(out) <- e.lab
+        }
+    }
+    return(out)
 })
+
+
+
+##############################
+#### AS.DATA.FRAME METHOD ####
+##############################
+setMethod ("as.data.frame", "obkContacts", function(x, row.names = NULL, optional = FALSE, ...){
+    g <- x@contacts
+    if(is.null(g)) return(NULL)
+    if(is.networkDynamic(g)) {
+        out <- as.data.frame(g, row.names=row.names, optional=optional, ...)
+        out$onset <- x@origin + out$onset
+        out$terminus <- x@origin + out$terminus
+    } else {
+        out <- as.matrix(g, matrix.type="edgelist")
+    }
+
+    return(out)
+})
+
 
 
 
