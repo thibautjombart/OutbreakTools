@@ -258,15 +258,16 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
 
     ## HANDLE 'WHERE'
     if(!is.null(where)){
-        where <- match.arg(as.character(where), c("individuals", "records", "context"))
+        where <- match.arg(as.character(where), c("individuals", "records", "context", "dna"))
 
+        ## look in @individuals ##
         if(where=="individuals"){
             if(is.null(x@individuals)) { # return NULL if empty
                 warning("x@individuals is NULL")
                 return(NULL)
             }
             if(any(data %in% names(x@individuals))){
-                temp<-x@individuals[,data,drop=F]
+                temp<-x@individuals[,data,drop=FALSE]
                 temp<-cbind(temp,rownames(x@individuals))
                 temp<-cbind(temp,rep("individuals",dim(temp)[1]))
                 result<-temp
@@ -277,16 +278,18 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
             }
         } # end where==individuals
 
+
+        ## look in @records ##
         if(where=="records"){
             if(is.null(x@records)) { # return NULL if empty
                 warning("x@records is NULL")
                 return(NULL)
             }
-            ## look in @records ##
+            ## look in @records
             if(any(data %in% names(x@records))){
                 return(x@records[[data]])
             }
-            ## look within slots in @records ##
+            ## look within slots in @records
             found <- FALSE
             for(i in 1:length(x@records)){
                 if(any(data %in% names(x@records[[i]]))){
@@ -305,46 +308,65 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
         } # end where==records
 
 
+        ## look in @context ##
         if(where=="context"){
-          if(is.null(x@context)) { # return NULL if empty
-            warning("x@context is NULL")
-            return(NULL)
-          }
-          ## look in @context ##
-          if(any(data %in% names(x@context))){
-            return(x@context[[data]])
-          }
-          ## look within elements of @context
-          found <- FALSE
-          for(i in 1:length(x@context)){
-            if(any(data %in% names(x@context[[i]]))){
-              found=T
-              temp<-x@context[[i]][,c(data,"date")]
-              temp<-cbind(temp,rep(names(x@context)[i],dim(temp)[1]))
-              colnames(temp)<-c(data,"date","source")
-
-              result<-rbind(result,temp)
+            if(is.null(x@context)) { # return NULL if empty
+                warning("x@context is NULL")
+                return(NULL)
             }
-          }
-          if(!found){
-            warning(paste("data '", data, "'was not found in @context"))
-            return(NULL)
-          }
+            ## look in @context
+            if(any(data %in% names(x@context))){
+                return(x@context[[data]])
+            }
+            ## look within elements of @context
+            found <- FALSE
+            for(i in 1:length(x@context)){
+                if(any(data %in% names(x@context[[i]]))){
+                    found=T
+                    temp<-x@context[[i]][,c(data,"date")]
+                    temp<-cbind(temp,rep(names(x@context)[i],dim(temp)[1]))
+                    colnames(temp)<-c(data,"date","source")
+
+                    result<-rbind(result,temp)
+                }
+            }
+            if(!found){
+                warning(paste("data '", data, "'was not found in @context"))
+                return(NULL)
+            }
         } # end where==context
+
+        ## look within elements of @dna ##
+        if(where=="dna"){
+            if(is.null(x@dna)){ # return NULL if empty
+                warning("x@dna is NULL")
+                return(NULL)
+            }
+            if(any(data %in% names(x@dna@meta))){
+                temp <- x@dna@meta[, c(data, "individualID", "date"), drop=FALSE]
+                temp <- cbind(temp,rep("dna",dim(temp)[1]))
+                result <- temp
+                names(result) <- c(data,"individualID", "date", "source")
+            } else {
+                warning(paste("data '", data, "'was not found in @dna"))
+                return(NULL)
+            }
+        } # end where==dna
+
 
     } # end if 'where' provided
     else{
-        ## else, look everywhere
+        ## ELSE, LOOK EVERYWHERE ##
 
         ## LOOK FOR 'DATA' IN INDIVIDUALS ##
         if(!is.null(x@individuals)){
             if(any(data %in% names(x@individuals))){
-                                        #temp<-x@individuals[,c(data,"individualID")]
-                temp<-x@individuals[,data,drop=FALSE]
-                temp<-cbind(temp,rownames(x@individuals))
-                temp<-cbind(temp,rep("individuals",dim(temp)[1]))
-                colnames(temp)<-c(data,"individualID","source")
-                result<-temp
+                temp <- x@individuals[,data,drop=FALSE]
+                ## temp<-cbind(temp,rownames(x@individuals))
+                temp <- cbind(temp,rep("individuals", nrow(temp)))
+                colnames(temp)<-c(data,"source")
+                rownames(temp) <- rownames(x@individuals)
+                result <- temp
             }
         }
 
@@ -359,31 +381,51 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
             ## look within slots in @records ##
             for(i in 1:length(x@records)){
                 if(any(data %in% names(x@records[[i]]))){
-                    temp<-x@records[[i]][,c(data,"individualID","date")]
-                    temp<-cbind(temp,rep(names(x@records)[i],dim(temp)[1]))
-                    colnames(temp)<-c(data,"individualID","date","source")
-                    result<-rbind(result,temp)
+                    temp <- x@records[[i]][, data, drop=FALSE]
+                    temp <- cbind(temp, rep(paste("records", names(x@records)[i], sep="."), nrow(temp)))
+                    colnames(temp) <- c(data, "source")
+                    rownames(temp) <- rownames(x@records[[i]])
+                    result <- rbind(result,temp)
                 }
             }
         }
+
+
         ## LOOK FOR 'DATA' IN CONTEXT ##
         if(!is.null(x@context)){
-          ## look in @context ##
-          if(any(data %in% names(x@context))){
-            return(x@context[[data]])
-          }
-
-          ## look within slots in @context ##
-          for(i in 1:length(x@context)){
-            if(any(data %in% names(x@context[[i]]))){
-              temp<-x@context[[i]][,c(data,"date")]
-              temp<-cbind(temp,rep(names(x@context)[i],dim(temp)[1]))
-              colnames(temp)<-c(data,"date","source")
-              result<-rbind(result,temp)
+            ## look in @context ##
+            if(any(data %in% names(x@context))){
+                return(x@context[[data]])
             }
-          }
+
+            ## look within slots in @context ##
+            for(i in 1:length(x@context)){
+                if(any(data %in% names(x@context[[i]]))){
+                    temp <- x@context[[i]][, data, drop=FALSE]
+                    temp <- cbind(temp, rep(paste("context", names(x@context)[i], sep="."), nrow(temp)))
+                    colnames(temp) <- c(data, "source")
+                    rownames(temp) <- rownames(x@context[[i]])
+                    result <- rbind(result,temp)
+                }
+            }
         }
-    }
+
+
+
+        ## LOOK FOR 'DATA' IN DNA ##
+        if(!is.null(x@dna)){
+            if(any(data %in% names(x@dna@meta))){
+                temp <- x@dna@meta[,data,drop=FALSE]
+                temp <- cbind(temp,rep("dna", nrow(temp)))
+                colnames(temp) <- c(data, "source")
+                rownames(temp) <- rownames(x@dna@meta)
+                result <- rbind(result,temp)
+            }
+        }
+    } # end search everywhere
+
+
+    ## RETURN REQUESTED RESULT ##
     if(length(result)>0){
         if(showSource)
             return(result)
