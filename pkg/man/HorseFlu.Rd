@@ -13,19 +13,15 @@
       longitude.
     }
     \item{
-      \code{samples}: a dataframe which contains each sample taken from
-      a horse with the date of the sample and the result from the
-      sample. Here, the result from a sample are sequences (sequenceID)
-      and shedding (viral copy number)
+      \code{dna}: an \linkS4class{obkSequence} object containing DNA
+      sequences and their meta-information.
     }
     \item{
-      \code{dna}: a DNAbin object alignment of FASTA sequences obtained
-      by cloning and Sanger sequencing (sequenceID, nucleotide sequence)
+      \code{records}: a list of dataframes containing information about
+      the dates of first and last vaccinations, and shedding data
+      (viral copy number) for some samples.
     }
-    \item{
-      \code{clinics}: a list of dataframes, there is only one for the
-      date of first vaccination
-    }
+
   }
 }
 \references{
@@ -47,40 +43,33 @@ summary(HorseFlu)
 ## individual info
 head(HorseFlu@individuals)
 
-## sample info
-head(HorseFlu@samples)
-
 ## DNA sequences
 HorseFlu@dna
 
 ## records info
-names(HorseFlu@records)
-head(HorseFlu@records$FirstVac)
-head(HorseFlu@records$LastVac)
+lapply(HorseFlu@records, head)
 
-## MANIPULATE OBJECT ##
 
-## How many individuals, samples and sequences?
+## How many individuals and sequences?
 get.nindividuals(HorseFlu)
-get.nsamples(HorseFlu)
 get.nsequences(HorseFlu)
 
 ## How many sequences per individual?
-table(HorseFlu@samples$individualID)
-barplot(table(HorseFlu@samples$individualID), horiz=TRUE, las=1,
+ind <- table(get.data(HorseFlu, "individualID", where="dna"))
+ind
+barplot(sort(ind), horiz=TRUE, las=1,
        xlab="number of samples", cex.names=.8)
 
-## Identify most sampled individual
-ind.max <- names(which.max(table(HorseFlu@samples$individualID)))
-HorseFlu.max <- subset(HorseFlu, individual=ind.max)
-get.individuals(HorseFlu.max)
+## How many sequences for this individual?
+ind.42 <- subset(HorseFlu, individualID="42")
+get.nsequences(ind.42)
 
-## How many samples and sequences for this individual?
-get.samples(HorseFlu.max)
-table(HorseFlu.max@samples$sampleID)
+## How many samples?
+length(unique(get.data(HorseFlu, "sampleID", where="dna")))
 
-## Build a phylogeny for this individual
-get.phylo(HorseFlu.max, type="fan")
+## How many sequences per sample?
+table(get.data(HorseFlu, "sampleID", where="dna"))
+
 
 }
 }

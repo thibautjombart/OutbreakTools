@@ -58,7 +58,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
                                             contacts.end=NULL, contacts.duration=NULL,
                                             contacts.directed=FALSE, date.format=NULL,
                                             dna.individualID=NULL, dna.date=NULL,
-                                            dna.date.format=data.format, dna.sep="_", quiet=quiet,
+                                            dna.date.format=date.format, dna.sep="_", quiet=FALSE,
                                             check=TRUE, ...){
 
     ## RETRIEVE PROTOTYPED OBJECT ##
@@ -238,7 +238,8 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
     if(check){
         ## look for undocumented individuals in @records ##
         if(!is.null(x@individuals) && !is.null(x@records)){
-            unknownIDs <- unique(all.records.ID)[!unique(all.records.ID) %in% row.names(x@individuals)]
+            temp <- all.records.ID[!is.na(all.records.ID)]
+            unknownIDs <- unique(temp)[!unique(temp) %in% row.names(x@individuals)]
             if(length(unknownIDs)>0) {
                 unknownIDs.txt <- paste(unknownIDs, collapse = ", ")
                 warning(paste("records refer to undocumented individuals:\n", unknownIDs.txt))
@@ -247,8 +248,8 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
 
         ## look for undocumented individuals in @dna ##
         if(!is.null(x@individuals) && !is.null(x@dna)){
-            dna.lab <- x@dna@meta$individualID[!is.na(x@dna@meta$individualID)]
-            unknownIDs <- dna.lab[!dna.lab %in% row.names(x@individuals)]
+            temp <- x@dna@meta$individualID[!is.na(x@dna@meta$individualID)]
+            unknownIDs <- temp[!temp %in% row.names(x@individuals)]
             if(length(unknownIDs)>0){
                 unknownIDs.txt <- paste(unknownIDs, collapse = ", ")
                 warning(paste("dna sequences refer to undocumented individuals:\n", unknownIDs.txt))

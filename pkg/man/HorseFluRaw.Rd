@@ -7,24 +7,25 @@
   This dataset is a list containing the following components:
   \itemize{
     \item{
+      \code{dna}: a DNAbin object alignment of FASTA sequences obtained
+      by cloning and Sanger sequencing (sequenceID, nucleotide
+      sequence); sequence labels contain sequence identifiers,
+      individual IDs, and dates, separated by "_".
+    }
+    \item{
       \code{individuals}: a dataframe which contains all static
       information relating to a horse (individualID), training yard the
       horse belongs to (yardID), date of birth, sex, latitude,
       longitude.
     }
     \item{
-      \code{samples}: a dataframe which contains each sample taken from
-      a horse with the date of the sample and the result from the
-      sample. Here, the result from a sample are sequences (sequenceID)
-      and shedding (viral copy number)
+      \code{records}: a list of dataframes containing information about
+      the dates of first and last vaccinations, and shedding data
+      (viral copy number) for some samples.
     }
     \item{
-      \code{dna}: a DNAbin object alignment of FASTA sequences obtained
-      by cloning and Sanger sequencing (sequenceID, nucleotide sequence)
-    }
-    \item{
-      \code{clinics}: a list of dataframes, there is only one for the
-      date of first vaccination
+      \code{dna.info}: an indication of the samples from which the DNA
+      sequences were obtained.
     }
   }
 }
@@ -46,46 +47,38 @@ attach(HorseFluRaw)
 ## individual info
 head(individuals)
 
-## sample info
-head(samples)
+## records info
+lapply(records, head)
 
 ## DNA sequences
 dna
 
-## records info
-class(clinics)
-names(clinics)
-head(clinics$FirstVac)
-
-
 ## CREATE OBKDATA ##
-x <- new("obkData", individuals=individuals, samples=samples,
-         dna=dna, records=clinics)
+x <- new("obkData", individuals=individuals, records=records,
+         dna=dna, sampleID=dna.info$sampleID)
 
 
 ## MANIPULATE OBJECT ##
 
-## How many individuals, samples and sequences?
+## How many individuals and sequences?
 get.nindividuals(x)
-get.nsamples(x)
 get.nsequences(x)
 
 ## How many sequences per individual?
-table(x@samples$individualID)
-barplot(table(x@samples$individualID), horiz=TRUE, las=1,
+ind <- table(get.data(x, "individualID", where="dna"))
+ind
+barplot(sort(ind), horiz=TRUE, las=1,
        xlab="number of samples", cex.names=.8)
 
-## Identify most sampled individual
-ind.max <- names(which.max(table(x@samples$individualID)))
-x.max <- subset(x, individual=ind.max)
-get.individuals(x.max) # sanity check
+## How many sequences for this individual?
+ind.42 <- subset(x, individualID="42")
+get.nsequences(ind.42)
 
-## How many samples and sequences for this individual?
-get.samples(x.max)
-table(x.max@samples$sampleID)
+## How many samples?
+length(unique(get.data(x, "sampleID", where="dna")))
 
-## Build a phylogeny for this individual
-get.phylo(x.max, type="fan")
+## How many sequences per sample?
+table(get.data(x, "sampleID", where="dna"))
 
 detach(HorseFluRaw)
 
