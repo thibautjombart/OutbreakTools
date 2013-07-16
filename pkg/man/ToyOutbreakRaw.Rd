@@ -19,12 +19,12 @@
     \item{\code{lon}, the longitude corresponding to each individual}
   }
   
-  - \code{ToyOutbreakRaw$samples}, a \code{data.frame} containing: 
+  - \code{ToyOutbreakRaw$records}, a \code{data.frame} containing: 
   \itemize{
     \item{\code{individualID}, the ID of each individual,}
-    \item{\code{sampleID}, the ID of blood samples taken from individuals,}
+    \item{\code{sampleID}, the ID of blood records taken from individuals,}
     \item{\code{date}, the date at which each sample was taken,}
-    \item{\code{sequenceID}, the ID of dna sequences obtained from the samples,}
+    \item{\code{sequenceID}, the ID of dna sequences obtained from the records,}
     \item{\code{locus}, the loci associated with these sequences.}
   }
   
@@ -52,20 +52,23 @@
 \examples{
 ## Load data ##
 data(ToyOutbreakRaw)
+attach(ToyOutbreakRaw)
 
 ## Constructing an obkData object ##
-x <- new ("obkData", individuals=ToyOutbreakRaw$individuals,
-          samples=ToyOutbreakRaw$samples,
-          records=ToyOutbreakRaw$records,contacts=ToyOutbreakRaw$contacts,
-          contacts.start=ToyOutbreakRaw$contacts.start,
-          contacts.end=ToyOutbreakRaw$contacts.end,
-          dna=ToyOutbreakRaw$dna, trees=ToyOutbreakRaw$trees)
+x <- new ("obkData", individuals=individuals, records=records,
+          contacts=contacts, contacts.start=contacts.start,
+          contacts.end=contacts.end, dna=dna,
+          dna.individualID=dna.info$individualID,
+          dna.date=dna.info$date, sample=dna.info$sample, trees=trees)
+
+detach(ToyOutbreakRaw)
+
 
 ## Examining the object ##
 summary(x)
 
 head(x@individuals)
-head(x@samples)
+head(x@records)
 names(x@records)
 head(x@records$Fever)
 x@contacts

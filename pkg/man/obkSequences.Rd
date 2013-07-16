@@ -149,6 +149,14 @@ get.dna(x, \dots)
 }
 \author{Thibaut Jombart (\email{t.jombart@imperial.ac.uk})}
 \examples{
+## construct an obkSequences object ##
+
+data(ToyOutbreakRaw)
+attach(ToyOutbreakRaw)
+x <- new("obkSequences", dna, individualID=dna.info$individualID,
+    date=dna.info$date)
+x
+detach(ToyOutbreakRaw)
 
 ## Load ToyOutbreak, a simulated outbreak stored in a obkData object  ##
 data(ToyOutbreak)

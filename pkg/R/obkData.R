@@ -191,13 +191,13 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
             }
 
             ## pass arguments to the obkContacts constructor
-            x@contacts <- new("obkContacts", contactFrom=contacts[,1,drop=TRUE], contactTo=contacts[,2,drop=TRUE],
-                              directed=contacts.directed, contactStart=contacts.start, contactEnd=contacts.end,
+            x@contacts <- new("obkContacts", from=contacts[,1,drop=TRUE], to=contacts[,2,drop=TRUE],
+                              directed=contacts.directed, start=contacts.start, end=contacts.end,
                               duration=contacts.duration)
         }
     }
 
-    
+
     ## HANDLE CONTEXT ##
     ## force NULL if empty list ##
     if(!is.null(context) && length(context)==0) context <- NULL
