@@ -18,35 +18,30 @@
     \item{\code{lat}, the latitute corresponding to each individual}
     \item{\code{lon}, the longitude corresponding to each individual}
   }
-  
-  - \code{ToyOutbreakRaw$records}, a \code{data.frame} containing: 
-  \itemize{
-    \item{\code{individualID}, the ID of each individual,}
-    \item{\code{sampleID}, the ID of blood records taken from individuals,}
-    \item{\code{date}, the date at which each sample was taken,}
-    \item{\code{sequenceID}, the ID of dna sequences obtained from the records,}
-    \item{\code{locus}, the loci associated with these sequences.}
-  }
-  
-  - \code{ToyOutbreakRaw$records}, a list containing one \code{data.frame} called \code{Fever} containing: 
+
+  - \code{ToyOutbreakRaw$records}, a list containing one
+  \code{data.frame} called \code{Fever} containing:
   \itemize{
     \item{\code{individualID}, the ID of each individual,}
     \item{\code{date}, the date at which temperature was measured in each individual,}
     \item{\code{temperature}, the temperature measured in each individual.}
   }
   
-  - \code{ToyOutbreakRaw$contacts}, a \code{matrix} with two columns called \code{from} and \code{to} describing 
-  contacts between individuals 
+  - \code{ToyOutbreakRaw$contacts}, a \code{matrix} with two columns
+  called \code{from} and \code{to} describing contacts between
+  individuals
   
-  - \code{ToyOutbreakRaw$contacts.start}, a \code{vector} containing the start dates of each contact 
-  stored in \code{ToyOutbreakRaw$contacts}. 
+  - \code{ToyOutbreakRaw$contacts.start}, a \code{vector} containing the
+  start dates of each contact stored in \code{ToyOutbreakRaw$contacts}.
   
-  - \code{ToyOutbreakRaw$contacts.end}, a \code{vector} containing the end dates of each contact 
-  stored in \code{ToyOutbreakRaw$contacts}.
+  - \code{ToyOutbreakRaw$contacts.end}, a \code{vector} containing the
+  end dates of each contact stored in \code{ToyOutbreakRaw$contacts}.
   
-  - \code{ToyOutbreakRaw$dna} is a \code{DNAbin} object storing DNA sequences.
+  - \code{ToyOutbreakRaw$dna} is a list of two \code{DNAbin} matrices
+    corresponding to two different genes.
  
-  - \code{ToyOutbreakRaw$tree} is a \code{multiphylo} object storing a phylogenetic tree. 
+  - \code{ToyOutbreakRaw$tree} is a \code{multiphylo} object storing a
+    phylogenetic tree.
 
 }
 \examples{
