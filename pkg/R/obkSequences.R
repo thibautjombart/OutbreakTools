@@ -39,7 +39,7 @@ setClassUnion("obkSequencesOrNULL", c("obkSequences", "NULL"))
 ##
 setMethod("initialize", "obkSequences", function(.Object, dna=NULL, individualID=NULL,
                                                  date=NULL, ..., date.format=NULL, quiet=FALSE,
-                                                 sep="_") {
+                                                 sep="_", keep.simple.labels=TRUE) {
 
     ## RETRIEVE PROTOTYPED OBJECT ##
     x <- .Object
@@ -112,13 +112,14 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, individualID
         date <- temp[,3]
         other <- as.data.frame(temp[,-(1:2),drop=FALSE])
 
-        ## reassign labels ##
-        for(i in 1:NLOC){
-            rownames(dna[[i]]) <- labels[1:nrow(dna[[i]])]
-            labels <- labels[-(1:nrow(dna[[i]]))]
+        ## reassign labels if we need simple accession numbers ##
+        if(keep.simple.labels){
+            for(i in 1:NLOC){
+                rownames(dna[[i]]) <- labels[1:nrow(dna[[i]])]
+                labels <- labels[-(1:nrow(dna[[i]]))]
+            }
+            labels <- temp[,1]
         }
-
-        labels <- temp[,1]
     }
 
 
