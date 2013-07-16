@@ -94,34 +94,35 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, individualID
     }
 
     ## extract individualID and date if needed ##
-    NFIELDS <- length(unlist(strsplit(labels[1], split=sep, fixed=TRUE)))
-    if(NFIELDS>=3){
-        if(!quiet) cat("\n[obkSequences constructor] extracting individualID and dates from labels.\n")
+    if(is.null(individualID) || is.null(date)){
+        NFIELDS <- length(unlist(strsplit(labels[1], split=sep, fixed=TRUE)))
+        if(NFIELDS>=3){
+            if(!quiet) cat("\n[obkSequences constructor] extracting individualID and dates from labels.\n")
 
-        temp <- strsplit(labels, split=sep, fixed=TRUE)
-        if(!all(sapply(temp, length) == NFIELDS)) {
-            warning("[obkSequences constructor] Improper labels (varying numbers of fields)")
-            cat("\nCulprits are:\n")
-            print(labels[sapply(temp, length) != NFIELDS])
-        }
-        temp <- matrix(unlist(temp), nrow=length(labels), byrow=TRUE)
-
-        ## get information ##
-        labels <- temp[,1]
-        individualID <- temp[,2]
-        date <- temp[,3]
-        if(ncol(temp)>3) other <- as.data.frame(temp[,-(1:3),drop=FALSE])
-
-        ## reassign labels if we need simple accession numbers ##
-        if(keep.simple.labels){
-            for(i in 1:NLOC){
-                rownames(dna[[i]]) <- labels[1:nrow(dna[[i]])]
-                labels <- labels[-(1:nrow(dna[[i]]))]
+            temp <- strsplit(labels, split=sep, fixed=TRUE)
+            if(!all(sapply(temp, length) == NFIELDS)) {
+                warning("[obkSequences constructor] Improper labels (varying numbers of fields)")
+                cat("\nCulprits are:\n")
+                print(labels[sapply(temp, length) != NFIELDS])
             }
+            temp <- matrix(unlist(temp), nrow=length(labels), byrow=TRUE)
+
+            ## get information ##
             labels <- temp[,1]
+            individualID <- temp[,2]
+            date <- temp[,3]
+            if(ncol(temp)>3) other <- as.data.frame(temp[,-(1:3),drop=FALSE])
+
+            ## reassign labels if we need simple accession numbers ##
+            if(keep.simple.labels){
+                for(i in 1:NLOC){
+                    rownames(dna[[i]]) <- labels[1:nrow(dna[[i]])]
+                    labels <- labels[-(1:nrow(dna[[i]]))]
+                }
+                labels <- temp[,1]
+            }
         }
     }
-
 
     ## HANDLE INDIVIDUAL ID ##
     if(is.null(individualID)){
