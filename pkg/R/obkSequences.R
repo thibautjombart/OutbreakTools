@@ -168,6 +168,9 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, individualID
     ## GET LOCUS INFO ##
     locus <- rep(names(dna), sapply(dna, nrow))
 
+    ## RESTORE NAs (might be considered as characters "NA") ##
+    individualID[individualID=="NA"] <- NA
+
     ## FORM FINAL OBJECT ##
     x@dna <- dna
     x@meta <- data.frame(individualID=individualID, date=date, locus=locus)
