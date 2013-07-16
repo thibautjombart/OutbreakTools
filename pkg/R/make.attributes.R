@@ -27,6 +27,9 @@ make.sequence.attributes <- function(x){
     ## clean the data.frame (removed by-products of the merge) ##
     names(out)[2] <- "date"
 
+    ## restore original rownames ##
+    rownames(out) <- rownames(x@dna@meta)
+
     return(out)
 } # end make.sequence.attributes
 
@@ -64,6 +67,9 @@ make.tip.attributes <- function(x, which.tree = 1){
 
     ## clean the data.frame (removed by-products of the merge) ##
     names(out)[2] <- "date"
+
+    ## restore original rownames ##
+    rownames(out) <- rownames(x@dna@meta)
 
     return(out)
 } # end make.tip.attributes

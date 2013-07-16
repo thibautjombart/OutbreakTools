@@ -1027,9 +1027,11 @@ We illustrate this function using data on pandemic influenza stored in \texttt{F
 We first create an \texttt{obkData}:
 <<>>=
 data(FluH1N1pdm2009)
-x <- new("obkData", individuals = FluH1N1pdm2009$individuals,
-         samples = FluH1N1pdm2009$samples, dna = FluH1N1pdm2009$dna,
-         trees = FluH1N1pdm2009$trees)
+
+x <- new("obkData", individuals = individuals, dna = FluH1N1pdm2009$dna,
+      dna.individualID = samples$individualID, dna.date = samples$date,
+      trees = FluH1N1pdm2009$trees)
+
 head(x)
 @
 The phylogenie(s) contained in \texttt{x} can be extracted by:
@@ -1056,8 +1058,7 @@ In particular, the argument \texttt{build.tip.attribute} allows to derive attrib
 based on information on samples and individuals.
 Here, for instance, we can use it to retrieve dates for each tip:
 <<pdh1n1tree2, out.width="0.8\\textwidth">>=
-p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE,
-               branch.unit = "year", tip.dates = "date")
+p <- plotggphy(x, ladderize = TRUE,  branch.unit = "year")
 @
 
 \noindent Note that \texttt{p} is a graphical object, which can be re-used later to generate and
@@ -1069,9 +1070,8 @@ head(x@individuals)
 @
 Which can be exploited by:
 <<pdh1n1tree3, out.width="\\textwidth">>=
-p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE,
-               branch.unit = "year", tip.dates = "date", tip.colour = "location",
-               tip.size = 3, tip.alpha = 0.75)
+p <- plotggphy(x, ladderize = TRUE, branch.unit = "year",
+               tip.color = "location", tip.size = 3, tip.alpha = 0.75)
 @
 
 

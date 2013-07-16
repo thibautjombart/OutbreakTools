@@ -100,11 +100,13 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
             stop("set.guess must be a named list containing prefix, order and from, see documentation")
         }
         ##read dates
-        tip.dates <- try(as.Date(.extract.string(phylo$tip.label, set.guess[["prefix"]], set.guess[["order"]], set.guess[["from"]])))
+        tip.dates <- try(.process.Date(.extract.string(phylo$tip.label, set.guess[["prefix"]], set.guess[["order"]], set.guess[["from"]])))
         if (inherits(tip.dates, "try-error")) {
             stop("tip.dates are not in an unambiguous format when extracted from tip.label using the prefix and order provided by set.guess. See documentation of as.Date().")
         }
 
+    } else {
+        if(is.null(tip.dates)) tip.dates <- x@dna@meta$date
     }
 
     ##ladderize?
@@ -201,7 +203,8 @@ plotggphy <- function(x, which.tree = 1, ladderize = FALSE, show.tip.label = FAL
         nMaxCol <- brewer.pal.info[color.palette, "maxcolors"]
         tmp <- df.tip[, tip.color]
 
-        if (is.discrete(tmp)) {
+        ## if (is.discrete(tmp)) {
+        if (is.character(tmp) || is.factor(tmp)) {
             if (length(unique(tmp)) > nMaxCol) {
                 warning(paste("too many tip colors for palette", color.palette, ": we use default palette instead"))
                 p <- p + scale_color_discrete(tip.color)
