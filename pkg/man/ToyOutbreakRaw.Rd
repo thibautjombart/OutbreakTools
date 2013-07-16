@@ -38,7 +38,15 @@
   end dates of each contact stored in \code{ToyOutbreakRaw$contacts}.
   
   - \code{ToyOutbreakRaw$dna} is a list of two \code{DNAbin} matrices
-    corresponding to two different genes.
+  corresponding to two different genes.
+
+  - \code{ToyOutbreakRaw$dna.info} is a data.frame containing:
+   \itemize{
+    \item{\code{individualID}, the ID of individuals for each sequence.}
+    \item{\code{sampleID}, an indicator of samples from which sequences
+      were obtained.}
+    \item{\code{date}, the date at samples were collected.}
+  }
  
   - \code{ToyOutbreakRaw$tree} is a \code{multiphylo} object storing a
     phylogenetic tree.
