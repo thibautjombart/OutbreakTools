@@ -30,16 +30,7 @@
   the contacts inferred from the first four days of the epidemic tree
   (it is inferred that a contact occurred between each case and his/her
   infector within the day preceding infection).
-  
-  \code{ToyOutbreak@samples} is a \code{data.frame} containing: 
-  \itemize{
-    \item{\code{individualID}, the ID of each individual,}
-    \item{\code{sampleID}, the ID of blood samples taken from individuals,}
-    \item{\code{date}, the date at which each sample was taken,}
-    \item{\code{sequenceID}, the ID of dna sequences obtained from the samples,}
-    \item{\code{locus}, the loci associated with these sequences.}
-  }
-  
+
   \code{ToyOutbreak@dna} is an \code{obkSequences} object storing
   simulated DNA sequences (for 2 genes, \code{gene1} and \code{gene2}).
  
