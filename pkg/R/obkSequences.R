@@ -104,13 +104,13 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, individualID
             cat("\nCulprits are:\n")
             print(labels[sapply(temp, length) != NFIELDS])
         }
-        temp <- matrix(unlist(temp), ncol=3, byrow=TRUE)
+        temp <- matrix(unlist(temp), nrow=length(labels), byrow=TRUE)
 
         ## get information ##
         labels <- temp[,1]
         individualID <- temp[,2]
         date <- temp[,3]
-        other <- as.data.frame(temp[,-(1:2),drop=FALSE])
+        if(ncol(temp)>3) other <- as.data.frame(temp[,-(1:3),drop=FALSE])
 
         ## reassign labels if we need simple accession numbers ##
         if(keep.simple.labels){
@@ -140,7 +140,11 @@ setMethod("initialize", "obkSequences", function(.Object, dna=NULL, individualID
 
     ## HANDLE OTHER / ... ##
     ## retrieve information ##
-    if(is.null(other)) other <- list(...)
+    if(is.null(other)) {
+        other <- list(...)
+    } else {
+        other <- list(other)
+    }
     N.OTHER <- length(other)
     if(N.OTHER>0){
         ## use generic names if needed ##
