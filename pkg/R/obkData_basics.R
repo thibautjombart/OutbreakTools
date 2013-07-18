@@ -51,7 +51,7 @@ setMethod("summary", "obkData", function(object, ...){
             cat(indent, "recorded fields are:\n", sep="")
             for(i in 1:ncol(temp)){
                 cat(indent, "<", names(temp)[i], "> ", sep="")
-                .inlineSummary(unlist(temp[i]), ...) #  '...' is passed to 'format'
+                .inlineSummary(temp[[i]], ...) #  '...' is passed to 'format'
             }
         }
     }
@@ -96,7 +96,7 @@ setMethod("summary", "obkData", function(object, ...){
         cat("== @dna ==\n")
         cat(get.nsequences(object)," sequences across ", get.nlocus(object), " loci, ",
             get.nindividuals(object@dna), " individuals, from ", as.character(min(object@dna@meta$date, na.rm=TRUE)),
-            " to ", as.character(max(object@dna@meta$date, na.rm=TRUE)), "\n")
+            " to ", as.character(max(object@dna@meta$date, na.rm=TRUE)), "\n", sep="")
         cat("(length of concatenated alignment: ", sum(sapply(object@dna@dna,ncol)), " nucleotides)\n", sep="")
         f1(object@dna@meta)
         cat("\n")
