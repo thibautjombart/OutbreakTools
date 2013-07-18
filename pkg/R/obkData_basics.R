@@ -94,11 +94,10 @@ setMethod("summary", "obkData", function(object, ...){
     ## handle @dna ##
     if(!is.null(object@dna)){
         cat("== @dna ==\n")
-        cat(paste(get.nsequences(object)," sequences across ", get.nlocus(object),
-                  " loci \n\t(length of concatenated alignment: ",
-                  sum(sapply(object@dna@dna,ncol)), " nucleotides)\n", sep=""))
-        temp <- paste(names(object@dna@meta), collapse=", ")
-        cat("meta information includes", temp)
+        cat(get.nsequences(object)," sequences across ", get.nlocus(object), " loci, ",
+            get.nindividuals(object@dna), " individuals, from ", as.character(min(object@dna@meta$date, na.rm=TRUE)),
+            " to ", as.character(max(object@dna@meta$date, na.rm=TRUE)), "\n")
+        cat("(length of concatenated alignment: ", sum(sapply(object@dna@dna,ncol)), " nucleotides)\n", sep="")
         f1(object@dna@meta)
         cat("\n")
     }

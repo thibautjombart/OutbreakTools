@@ -5,6 +5,7 @@
 \alias{obkData-class}
 \alias{initialize,obkData-method}
 \alias{summary,obkData-method}
+\alias{summary.obkData}
 
 \alias{show,obkData-method}
 \alias{get.locus,obkData-method}
