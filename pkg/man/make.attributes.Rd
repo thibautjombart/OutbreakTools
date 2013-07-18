@@ -27,6 +27,9 @@ make.tip.attributes(x, which.tree=1)
 \author{Thibaut Jombart \email{t.jombart@imperial.ac.uk}}
 \examples{
 data(ToyOutbreak)
-head(make.sequence.attributes(ToyOutbreak))
+head(make.tip.attributes(ToyOutbreak))
+
+data(HorseFlu)
+head(make.sequence.attributes(HorseFlu))
 }
 \keyword{classes}

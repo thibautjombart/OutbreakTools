@@ -8,11 +8,14 @@ make.sequence.attributes <- function(x){
     ## start with what is in @dna@meta ##
     out <- x@dna@meta
 
+    ## important to keep track of the labels as merge shuffles rows around ##
+    out$sequenceID <- rownames(out)
+
     ## merge with info on individuals (@individuals) ##
     if(!is.null(x@individuals)){
         df.individuals <- get.data(x, "individuals")
         df.individuals$individualID <- rownames(df.individuals)
-        out <- merge(out, df.individuals, by = "individualID", all.x = TRUE)
+        out <- merge(out, df.individuals, by = "individualID", all.x = TRUE, sort=FALSE)
     }
 
     ## merge with info on records (@records) ##
@@ -20,15 +23,16 @@ make.sequence.attributes <- function(x){
         ## merge each data.frame (by individualID)
         for(i in 1:length(x@records)){
             temp <- x@records[[i]]
-            out <- merge(out, temp, by = "individualID", all.x = TRUE)
+            ##names(temp) <- gsub("date", paste(names(x@records)[i],"date", sep="."), names(temp))
+            out <- merge(out, temp, all.x = TRUE, sort=FALSE)
         }
     }
 
-    ## clean the data.frame (removed by-products of the merge) ##
-    names(out)[2] <- "date"
 
-    ## restore original rownames ##
-    rownames(out) <- rownames(x@dna@meta)
+    ## restore original row.names and ordering ##
+    rownames(out) <- out$sequenceID
+    out$sequenceID <- NULL
+    out <- out[rownames(x@dna@meta),,drop=FALSE]
 
     return(out)
 } # end make.sequence.attributes
@@ -49,11 +53,14 @@ make.tip.attributes <- function(x, which.tree = 1){
     phylo <- get.trees(x)[[which.tree]]
     out <- x@dna@meta[phylo$tip.label, , drop=FALSE]
 
+    ## important to keep track of the labels as merge shuffles rows around ##
+    out$tip.label <- rownames(out)
+
     ## merge with info on individuals (@individuals) ##
     if(!is.null(x@individuals)){
         df.individuals <- get.data(x, "individuals")
         df.individuals$individualID <- rownames(df.individuals)
-        out <- merge(out, df.individuals, by = "individualID", all.x = TRUE)
+        out <- merge(out, df.individuals, by = "individualID", all.x = TRUE, all.y=FALSE, sort=FALSE)
     }
 
     ## merge with info on records (@records) ##
@@ -61,15 +68,16 @@ make.tip.attributes <- function(x, which.tree = 1){
         ## merge each data.frame (by individualID)
         for(i in 1:length(x@records)){
             temp <- x@records[[i]]
-            out <- merge(out, temp, by = "individualID", all.x = TRUE)
+            ##names(temp) <- gsub("date", paste(names(x@records)[i],"date", sep="."), names(temp))
+            out <- merge(out, temp, all.x = TRUE, all.y=FALSE, sort=FALSE)
         }
     }
 
-    ## clean the data.frame (removed by-products of the merge) ##
-    names(out)[2] <- "date"
 
-    ## restore original rownames ##
-    rownames(out) <- rownames(x@dna@meta)
+    ## restore original row.names and ordering ##
+    rownames(out) <- out$tip.label
+    out$tip.label <- NULL
+    out <- out[phylo$tip.label,,drop=FALSE]
 
     return(out)
 } # end make.tip.attributes
