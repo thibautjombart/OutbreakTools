@@ -3,7 +3,8 @@
 
 # Export all names
 exportPattern("^[^\\.]")
-exportPattern(".process.Date")
+export(".process.Date")
+export(".inlineSummary")
 
 # Import all packages listed as Imports or Depends
 import(methods, network, ggplot2, knitr)

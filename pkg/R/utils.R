@@ -35,7 +35,6 @@
 ###################
 ## .process.Date ##
 ###################
-
 .process.Date <- function(x, format=NULL){
     if(inherits(x, "Date")) return(x)
 
@@ -84,3 +83,24 @@
 
     return(as.Date(x,format=format))
 } # end .process.Date
+
+
+
+
+
+####################
+## .inlineSummary ##
+####################
+## FUNCTION TO GET INLINE SUMMARY FOR ONE VECTOR ##
+.inlineSummary <- function(x, ...){
+    cat("class: ", class(x), ",  ", sep="")
+    if(is.numeric(x)) cat("mean: ", format(mean(x, na.rm=TRUE), ...), ",  sd:", format(sd(x, na.rm=TRUE), ...),
+                          ", range: [", format(min(x, na.rm=TRUE), ...), ";", format(max(x, na.rm=TRUE), ...), "],  ",
+                          sum(is.na(x)), " NAs", sep="")
+    if(is.character(x) || is.factor(x)) cat(length(unique(x)), " unique values,  frequency range: [",
+                                            min(table(x)), ";", max(table(x)), "],  ",
+                                            sum(is.na(x)), " NAs", sep="")
+    cat("\n")
+}
+
+

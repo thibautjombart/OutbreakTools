@@ -33,73 +33,99 @@ setMethod("show", "obkData", function(object){
 #############
 ## summary ##
 #############
-## setMethod("summary", "obkData", function(object, ...){
-
-##     cat(paste("Dataset of ",get.nindividuals(object,"all")," individuals with...\n",sep=""))
-
-##     cat(paste("- ",get.nrecords(object)," records \n\tcoming from ",get.nindividuals(object,"records")," individuals",sep=""))
-
-##     if(!is.null(object@samples) && dim(object@samples)[2] <=13 )
-##     {
-##         cat(paste("\n\tcollected between ",min(object@samples$date)," and ",max(object@samples$date),"\n \tcontaining information on:\n",sep=""))
-##         for (i in (1:dim(object@samples)[2])[-which((names(object@samples) %in% c("individualID","sampleID","date"))==TRUE)])
-##         {
-##             cat(paste("\t\t ",names(object@samples)[i],"\t",sep=""))
-##             if(is.numeric(object@samples[,i])==TRUE){cat(paste("(mean: ",signif(mean((object@samples[,i]),na.rm=TRUE),digits=6),", sd: ",signif(sd((object@samples[,i]),na.rm=TRUE),digits=6),")",sep=""))}
-##             cat("\n")
-##         }
-##     }else{cat("\n")}
-
-## 	if(!is.null(object@dna))
-## 	{
-## 		if(get.nlocus(object)>1)
-## 		{
-## 			cat(paste("- ",get.nsequences(object)," sequences across ",get.nlocus(object)," loci \n\t(length of concatenated alignment: ",sum(sapply(object@dna@dna,ncol))," nucleotides)\n",sep=""))
-## 		}else
-## 		{
-## 			cat(paste("- ",get.nsequences(object)," sequences across ",get.nlocus(object)," locus \n\t(length of concatenated alignment: ",sum(sapply(object@dna@dna,ncol))," nucleotides)\n",sep=""))
-## 		}
-## 	}else
-## 	{
-## 		cat("- 0 sequences\n")
-## 	}
-
-##     cat(paste("- clinical data from ",get.nindividuals(object,"clinical")," individuals",sep=""))
-##     if(!is.null(object@records) && length(object@records) <=10 )
-##     {
-##         cat("\n\t containing information on:\n")
-##         for (i in 1:length(object@records))
-##         {
-##             cat(paste("\t\t ",names(object@records)[i],"\n",sep=""))
-##         }
-##     }else{cat("\n")}
-
-##     if(!is.null(object@contacts))
-##     {
-##         cat(paste("- ",get.ncontacts(object), " contacts recorded between ", get.nindividuals(object,"contacts")," individuals\n",sep=""))
-##     }
-
-##     if(!is.null(object@trees))
-##     {
-## 		if(length(object@trees)>1)
-## 		{
-##         	cat(paste("- ",length(object@trees)," phylogenetic trees with ",length(object@trees[[1]]$tip.label)," tips\n",sep=""))
-## 		}else
-## 		{
-## 			cat(paste("- ",length(object@trees)," phylogenetic tree with ",length(object@trees[[1]]$tip.label)," tips\n",sep=""))
-## 		}
-##     }
-
-##     return(invisible())
-## })
+setMethod("summary", "obkData", function(object, ...){
+    ## FUNCTION TO DISPLAY SUMMARY OF 1 DATA.FRAME ##
+    ## displays the numer of entries, individuals, and time window for a given data.frame
+    ## plus summary of other variables (not individualID and date)
+    f1 <- function(x, indent="  ", ...){
+        if(is.null(x$individualID)){
+            cat(indent, nrow(x), " entries\n", sep="")
+        } else {
+            cat(indent, nrow(x), " entries,  ", length(unique(x$individualID)), " individuals, from ",
+                as.character(min(x$date, na.rm=TRUE)), " to ", as.character(max(x$date,na.rm=TRUE)), "\n", sep="")
+        }
+        if(ncol(x)>2){
+            temp <- x
+            temp$individualID <- NULL
+            temp$date <- NULL
+            cat(indent, "recorded fields are:\n", sep="")
+            for(i in 1:ncol(temp)){
+                cat(indent, "<", names(temp)[i], "> ", sep="")
+                .inlineSummary(unlist(temp[i]), ...) #  '...' is passed to 'format'
+            }
+        }
+    }
 
 
-# test:
-# library(epibase)
-# data(HorseFlu)
-# summary(HorseFlu)
-# summary(new("obkData"))
+    cat(paste("Dataset of ",get.nindividuals(object,"all")," individuals with...\n",sep=""))
 
+    ## handle @individuals ##
+    if(!is.null(object@individuals)){
+        cat("== @individuals ==\n")
+        cat("individuals information\n")
+        f1(object@individuals)
+        cat("\n")
+    }
+
+    ## handle @records ##
+    if(!is.null(object@records)){
+        temp <- paste(get.records(object), collapse=", ")
+        cat("== @records ==\n")
+        cat("records on: ", temp,"\n")
+        for(i in 1:length(object@records)){
+            cat("$", names(object@records)[i], "\n", sep="")
+            f1(object@records[[i]])
+        }
+        cat("\n")
+    }
+
+    ## handle @context ##
+    if(!is.null(object@context)){
+        temp <- paste(get.context(object), collapse=", ")
+        cat("== @context ==\n")
+        cat("contextual information including", temp,"\n")
+        for(i in 1:length(object@context)){
+            cat("$", names(object@context)[i], "\n", sep="")
+            f1(object@context[[i]])
+        }
+        cat("\n")
+    }
+
+    ## handle @dna ##
+    if(!is.null(object@dna)){
+        cat("== @dna ==\n")
+        cat(paste(get.nsequences(object)," sequences across ", get.nlocus(object),
+                  " loci \n\t(length of concatenated alignment: ",
+                  sum(sapply(object@dna@dna,ncol)), " nucleotides)\n", sep=""))
+        temp <- paste(names(object@dna@meta), collapse=", ")
+        cat("meta information includes", temp)
+        f1(object@dna@meta)
+        cat("\n")
+    }
+
+    ## handle @contacts ##
+    if(!is.null(object@contacts)){
+        cat("== @contacts ==\n")
+        cat(get.ncontacts(object@contacts)," contacts between ", get.nindividuals(object@contacts), " individuals\n", sep="")
+        cat("\n")
+    }
+
+    ## handle @trees ##
+    if(!is.null(object@contacts)){
+        cat("== @trees ==\n")
+        cat(length(object@trees)," phylogenetic trees with ", length(object@trees[[1]]$tip.label), " tips\n", sep="")
+        cat("\n")
+    }
+
+    return(invisible())
+}) # end summary
+
+
+## test:
+## library(epibase)
+## data(HorseFlu)
+## summary(HorseFlu)
+## summary(new("obkData"))
 
 
 
