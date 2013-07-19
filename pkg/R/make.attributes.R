@@ -116,12 +116,37 @@ make.individual.attributes <- function(x){
                 temp <- reshape(newtab, idvar="individualID", direction="wide")
             }
 
-            ## alter the names
+            ## alter the names ##
             toChange <- names(temp)!="individualID"
             names(temp)[toChange] <- paste(names(x@records)[i], names(temp)[toChange], sep=".")
 
+            ## merge ##
             out <- merge(out, temp, all.x = TRUE, all.y=FALSE, by="individualID", sort=FALSE)
         }
+    }
+
+     ## merge with info on dna (@dna@meta) ##
+    if(!is.null(x@dna)){
+
+        ## keep only unique indiv/date combinations ##
+        splitDates <- tapply(as.character(x@dna@meta$date), x@dna@meta$individualID, unique)
+        temp <- data.frame(date=unlist(splitDates))
+        temp$individualID <- rep(names(splitDates), sapply(splitDates, length))
+
+        ## need to reshape data.frame into wide format when multiple individuals ##
+        if(any(table(temp$individualID)>1)){
+            newtab <- split(temp, temp$individualID)
+            for(j in 1:length(newtab)) newtab[[j]]$time <- order(newtab[[j]]$date)
+            newtab <- Reduce(rbind.data.frame, newtab)
+            temp <- reshape(newtab, idvar="individualID", direction="wide")
+        }
+
+        ## alter the names ##
+        toChange <- names(temp)!="individualID"
+        names(temp)[toChange] <- paste("dna", names(temp)[toChange], sep=".")
+
+        ## merge ##
+        out <- merge(out, temp, all.x = TRUE, all.y=FALSE, by="individualID", sort=FALSE)
     }
 
 
