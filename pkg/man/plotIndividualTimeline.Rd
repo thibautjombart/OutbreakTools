@@ -1,68 +1,75 @@
 \name{plotIndividualTimeline}
 \alias{plotIndividualTimeline}
-\title{
-  Plot a timeline of samples by individual.
+\title{Plot a timeline of recorded data}
+\description{
+  This function plots a timeline of recorded data per individual, using
+  an \linkS4class{obkData} object. Colors can be used to display
+  meta-information on individuals, while different types of records are
+  indicated using different symbols.
 }
 \usage{
- plotIndividualTimeline(x, selection=1:length(get.individuals(x)),
-           ordering=1:length(selection), orderBy=NULL, colorBy=NULL,
-           events=NULL, periods=NULL, plotSamples=TRUE,
-           plotNames=length(selection)<50)
-}
+ plotIndividualTimeline(x, what="", selection=NULL, ordering=NULL,
+                        orderBy=NULL, colorBy=NULL, periods=NULL,
+                        plotNames=length(selection)<50, \dots) }
 \arguments{
   \item{x}{the main obkData object}
 
-  \item{selection}{a vector of integers indicating the subset of individuals to plot}
+  \item{what}{a character string indicating which type of record should
+  be displayed; partial matching is permitted; 'dna' should be used to
+  include dates of DNA sequence collections; several values can be
+  provided as a vector; if left by default (""), all available data are
+  use.}
+
+  \item{selection}{a vector of integers indicating the subset of
+    individuals to plot}
+  
 
   \item{ordering}{a vector of the same length as selection, which
-    specifies the order of individuals on the plot. Overridden by \code{orderBy}.}
+    specifies the order of individuals on the plot. Overridden by
+    \code{orderBy}.}
+  
+  \item{orderBy}{a character indicating the name of the column that
+    should be used to order the individuals. Overrides \code{ordering}.}
 
-  \item{orderBy}{string giving the name of the column that should be
-    used to order the individuals. Overrides \code{ordering}.}
-
-  \item{colorBy}{string giving the name of the column by which
+  \item{colorBy}{a character indicating the name of the column by which
     individuals should be coloured}
   
-  \item{events}{vector of strings giving the names of the columns that
-    hold date values in 'individuals', to be marked on the time line}
-  
-  \item{recordsEvents}{vector of strings giving the names of the
-  columns that hold date values in 'records', to be marked on the time
-  line}
-
   \item{periods}{an Nx2 matrix of strings, giving pairs of column names
     for periods to be plotted}
   
-  \item{plotSamples}{should the samples (at sampling time) be plotted?}
-  
-  \item{plotNames}{ should the individualIDs be shown at the y-axis?}
-}
-\description{
-   Function to plot a timeline for individuals involved in an outbreak
-   in one plot.
+  \item{plotNames}{a logiacal indicating whether the individualIDs
+    should be shown at the y-axis}
 }
 \examples{
-
-## load equine influenza data and convert it to obkData
-data(HorseFlu)
-data <- HorseFlu
-
-## plot the horses over time, coloring by yard
-plotIndividualTimeline(data,colorBy='yardID')
-
-## also sort on yard
-plotIndividualTimeline(data,orderBy='yardID',colorBy='yardID')
-
-## just plot the first 15
-plotIndividualTimeline(data,selection=1:15,orderBy='yardID',colorBy='yardID')
-
-## do a simple plot for some influenza data
+## simple example using ToyOutbreak
 data(ToyOutbreak)
-plotIndividualTimeline(ToyOutbreak,colorBy='Sex')
+plotIndividualTimeline(ToyOutbreak)
+plotIndividualTimeline(ToyOutbreak, what="DateInfected", colorBy="Sex")
+plotIndividualTimeline(ToyOutbreak, what="DateInfected", colorBy="Age",
+   orderBy="Sex")
+
 plotIndividualTimeline(ToyOutbreak,selection=1:15,orderBy='lat')
+plotIndividualTimeline(ToyOutbreak,selection=1:15,orderBy='lat',
+   colorBy="Sex", size=4)
+
+
+## example using HorseFlu
+data(HorseFlu)
+
+## plot all information, coloring by yard - messy!
+plotIndividualTimeline(HorseFlu,colorBy='yardID')
+
+## sort on yard, only DNA sequence collection
+plotIndividualTimeline(HorseFlu, what="dna", orderBy='yardID',colorBy='yardID')
+
+## just plot the first 30, vaccination dates
+plotIndividualTimeline(HorseFlu, what=c("FirstVac","LastVac"),
+   selection=1:30,orderBy='yardID',colorBy='yardID', size=3)
+
 
 }
 \author{
-  Rolf Ypma
+  Original version by Rolf Ypma,
+  modified by Thibaut Jombart.
 }
 
