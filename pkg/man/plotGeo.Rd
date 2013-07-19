@@ -2,24 +2,29 @@
 \alias{plotGeo}
 \title{Function to plot cases on a map}
 \usage{
-  plotGeo(data,location='location',isLonLat=FALSE,zoom='auto',
-          source='google',colorBy=c(),center=c() )
+  plotGeo(x, location='location', zoom='auto', source='google',
+          colorBy=NULL, shapeBy=NULL, center=NULL)
 
 }
 \arguments{
-  \item{data}{the main obkData object}
+  \item{x}{the main \linkS4class{obkData} object}
 
-  \item{location}{the name of the column holding strings representing
-    geographical location, or two columns with lon/lat coordinates}
+  \item{location}{the name of the columns containing location data; if
+    a vector of length 2 is provided, these are expected to be
+    longitudes and latitudes.}
 
-  \item{isLonLat}{specifies whether the data are already in lon/lat format}
+ \item{zoom}{a numeric indicating the level of zooming; higher number
+   gives smaller scale (higher zoom).}
 
-  \item{zoom}{level of zooming. Higher number gives smaller scale. }
+  \item{source}{a character string indicating the internet source from
+    which to download maps.}
+  
+  \item{colorBy}{the name of the attribute to use for coloring the symbols.}
 
-  \item{source}{source internet source to download maps}
-  \item{colorBy}{attribute to color the nodes by}
+  \item{shapeBy}{the name of the attribute to use for shaping the symbols.}
+  
   \item{center}{individualID of individual to put at the center of the
-    map. If left empty, method will focus on center of all points}
+    map. If left empty, method will focus on the center of all points}
 }
 \description{
    Function to plot the geographic distribution of data in an
@@ -32,25 +37,29 @@ data(HorseFlu)
 x <- HorseFlu
 
 ## plot the individuals on a map
-plotGeo(x,location=c('lon','lat'),TRUE,zoom=8)
+plotGeo(x,location=c('lon','lat'),zoom=8)
 
 ## color by sex
-plotGeo(x,location=c('lon','lat'),TRUE,zoom=8,colorBy='sex')
+plotGeo(x,location=c('lon','lat'),zoom=8,colorBy='sex')
 
 ## zoom in on the small cluster, by centering on individual '9'
-plotGeo(x,location=c('lon','lat'),TRUE,colorBy='sex',zoom=12,center='9')
+plotGeo(x,location=c('lon','lat'),colorBy="sex",zoom=14,center='9',size=4,
+  alpha=(.7))
+
+plotGeo(x,location=c('lon','lat'),colorBy="yardID", shapeBy="sex", zoom=14,center='9',size=4,
+  alpha=(.7))
 
 ## another example ##
 ## load obkData object containing data about a simulated outbreak
 data(ToyOutbreak)
 
 ## plot the individuals on a map
-plotGeo(ToyOutbreak,location=c('lon','lat'),isLonLat=TRUE,zoom=8)
-plotGeo(ToyOutbreak,location=c('lon','lat'),TRUE,zoom=13,colorBy='Sex')
+plotGeo(ToyOutbreak,location=c('lon','lat'), zoom=8)
+plotGeo(ToyOutbreak,location=c('lon','lat'), zoom=13, colorBy='Sex', size=3)
 
 ## color by age, zooming on the first case of the outbreak: indivudal 1
-plotGeo(ToyOutbreak,location=c('lon','lat'),TRUE, zoom=15,
-        colorBy='Age', center='1')
+plotGeo(ToyOutbreak,location=c('lon','lat'), zoom=15,
+        colorBy='Age', center='1', size=5)
 }
 
 }

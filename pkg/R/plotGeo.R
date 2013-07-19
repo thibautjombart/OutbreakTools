@@ -7,45 +7,48 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c("lon","lat"))
 
 ## Function to plot cases on a map
 
-plotGeo <- function(data,location='location',isLonLat=FALSE,zoom='auto',source='google',colorBy=c(),center=c()){
-	#function to plot cases on a map
-	#names gives the name of the column with location information
-	#isLatLon indicates whether this is already in lon/lat format (if TRUE, there should be two columns in 'names', the first corresponding to Lon, the second to Lat)
-	#zoom is used to specify the zoom level of the map
-	#maps are retrieved from source
-	#colorBy specifies column which should be used for coloring of nodes
-	if(!isLonLat){
-		#get the actual lon/lat
-		lonlat=geocode(get.data(data,location))
-	}
-	else{
-		lonlat=data.frame(get.data(data,location))
-		#rename to standard names used later
-		names(lonlat)=c('lon','lat')
-	}
-	if(!is.null(colorBy)){
-		#add a column for coloring covariate
-		lonlat$colorBy=get.data(data,colorBy)
-	}
+plotGeo <- function(x, location='location', zoom='auto', source='google',
+                    colorBy=NULL, shapeBy=NULL, center=NULL, ...){
+    ## function to plot cases on a map
+    ## names gives the name of the column with location information
+    ## isLatLon indicates whether this is already in lon/lat format (if TRUE, there should be two columns in 'names', the first corresponding to Lon, the second to Lat)
+    ## zoom is used to specify the zoom level of the map
+    ## maps are retrieved from source
+    ## colorBy specifies column which should be used for coloring of nodes
 
-	if(is.null(center)) #if not specified, center on the middle of the points
-		centerLonLat <- c(lon=(max(lonlat[,1],na.rm=T)+min(lonlat[,1],na.rm=T))/2,lat=(max(lonlat[,2],na.rm=T)+min(lonlat[,2],na.rm=T))/2)
-	else{#center on the given individual
-		no=which(get.individuals(data,'individuals')==center)#TODO there should be a standard function to do this?
-		if(length(no)==0){
-			print(warning(paste('individual',center,'not found')))
-		}
-		centerLonLat <- c(lon=lonlat[no,1],lat=lonlat[no,2])
-	}
+    ## GET THE DATA ##
+    if(is.null(x@individuals)) stop("no information on individuals - x@individuals is empty")
+    isLonLat <- length(location)==2
+    if(!isLonLat){
+        ## get the actual lon/lat
+        lonlat <- geocode(get.data(x, location, where="individuals"))
+        df <- cbind.data.frame(get.data(x, "individuals"), lonlat)
+    }
+    else{
+        df <- get.data(x, "individuals")
+        ## rename to standard names used later
+        lonlat <- df[location]
+    }
 
-	#download the map,
-	map <- get_map(centerLonLat, zoom = zoom,source=source)
-	if(!is.null(colorBy))
-		p <- ggmap(map) + geom_point(data=lonlat,aes(x = lon, y = lat,colour=colorBy))
-	else
-		p <- ggmap(map) + geom_point(data=lonlat,aes(x = lon, y = lat))
-	#draw the image
-	p
-}
+    if(is.null(center)){ #if not specified, center on the middle of the points
+        centerLonLat <- sapply(lonlat, mean, na.rm=TRUE)
+    } else{#center on the given individual
+        no=which(get.individuals(x,'individuals')==center)#TODO there should be a standard function to do this?
+        if(length(no)==0){
+            print(warning(paste('individual',center,'not found')))
+        }
+        centerLonLat <- c(lon=lonlat[no,1],lat=lonlat[no,2])
+    }
+
+
+    ## DOWNLOAD THE MAP ##
+    map <- get_map(centerLonLat, zoom = zoom, source=source)
+
+    ## GENERATE THE PLOT ##
+    out <- ggmap(map) + geom_point(aes_string(x=location[1], y=location[2], colour=colorBy, shape=shapeBy), data=df, ...)
+
+    ## draw the image
+    return(out)
+} # end plotGeo
 
 
