@@ -111,7 +111,7 @@ make.individual.attributes <- function(x){
             ## need to reshape data.frame into wide format when multiple individuals ##
             if(any(table(temp$individualID)>1)){
                 newtab <- split(temp, temp$individualID)
-                for(i in 1:length(newtab)) newtab[[i]]$time <- order(newtab[[i]]$date)
+                for(j in 1:length(newtab)) newtab[[j]]$time <- order(newtab[[j]]$date)
                 newtab <- Reduce(rbind.data.frame, newtab)
                 temp <- reshape(newtab, idvar="individualID", direction="wide")
             }
