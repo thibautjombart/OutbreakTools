@@ -81,3 +81,54 @@ make.tip.attributes <- function(x, which.tree = 1){
 
     return(out)
 } # end make.tip.attributes
+
+
+
+
+
+
+
+
+################################
+## make.individual.attributes ##
+################################
+make.individual.attributes <- function(x){
+    ## check object type##
+    if(!inherits(x,"obkData")) stop("x is not an obkData object")
+
+    ## start with what is in @dna@meta ##
+    out <- x@individuals
+
+    ## important to keep track of the labels as merge shuffles rows around ##
+    out$individual.label <- out$individualID <- rownames(out)
+
+    ## merge with info on records (@records) ##
+    if(!is.null(x@records)){
+        ## merge each data.frame (by individualID)
+        for(i in 1:length(x@records)){
+            temp <- x@records[[i]]
+
+            ## need to reshape data.frame into wide format when multiple individuals ##
+            if(any(table(temp$individualID)>1)){
+                newtab <- split(temp, temp$individualID)
+                for(i in 1:length(newtab)) newtab[[i]]$time <- order(newtab[[i]]$date)
+                newtab <- Reduce(rbind.data.frame, newtab)
+                temp <- reshape(newtab, idvar="individualID", direction="wide")
+            }
+
+            ## alter the names
+            toChange <- names(temp)!="individualID"
+            names(temp)[toChange] <- paste(names(x@records)[i], names(temp)[toChange], sep=".")
+
+            out <- merge(out, temp, all.x = TRUE, all.y=FALSE, by="individualID", sort=FALSE)
+        }
+    }
+
+
+    ## restore original row.names and ordering ##
+    rownames(out) <- out$individual.label
+    out$individual.label <- NULL
+    out <- out[rownames(x@individuals),,drop=FALSE]
+
+    return(out)
+} # end make.individual.attributes
