@@ -51,7 +51,8 @@ plotIndividualTimeline <- function(x, what="", selection=NULL, ordering=NULL, or
     ## define ordering ##
     if(!is.null(orderBy)){
         ## alternatively, order by this character
-        ordering <- sapply(1:length(selection), function(i) which(order(get.data(x,orderBy)[selection])==i))
+        ordering <- order(unlist(get.data(x, data=orderBy, where="individuals")))
+        ## ordering <- sapply(1:length(selection), function(i) which(order(get.data(x,orderBy)[selection])==i))
     }
 
     ## get time series data.frame ##
