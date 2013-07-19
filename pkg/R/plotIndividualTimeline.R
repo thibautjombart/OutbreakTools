@@ -31,19 +31,18 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c("yITL","value","type"))
 ##########################
 ## plotIndividualTimeline
 ##########################
-plotIndividualTimeline <- function(x, what, selection=NULL,
-                                   ordering=1:length(selection), orderBy=NULL, colorBy=NULL,
-                                   events=NULL, periods=NULL, plotNames=length(selection)<50){
+plotIndividualTimeline <- function(x, what="", selection=NULL, ordering=NULL, orderBy=NULL, colorBy=NULL,
+                                   periods=NULL, plotNames=length(selection)<50, ...){
     ## plot selection of the individuals in data as a line, ordered by ordering
     ## color by colorby
     ## make lines for periods, an Nx2 matrix of column names
-    ## clinical Events is a vector specifying which of the dataframes in the clinicalData list to plot
 
     if(is.null(selection)) selection <- 1:get.nindividuals(x, "individuals")
     if(length(selection)>length(get.individuals(x))){
         warning("selection is longer than the number of individuals. Selecting all.")
         selection <- 1:get.nindividuals(x, "individuals")
     }
+    if(is.null(ordering)) ordering <- 1:length(selection)
 
     ## GET THE DATA.FRAME FOR THE TIME SERIES ##
     ## get subset of the plotted data ##
@@ -104,19 +103,19 @@ plotIndividualTimeline <- function(x, what, selection=NULL,
     if(is.null(colorBy)){
         out <- out + geom_hline(aes(yintercept=yITL),alpha=.3)
     } else{
-        out <- out + geom_hline(aes_string(yintercept="yITL", colour=colorBy, data=df.ind),alpha=I(.3), data=df.ind)
+        out <- out + geom_hline(aes_string(yintercept="yITL", colour=colorBy), alpha=I(.8), data=df.ind, show_guide=TRUE)
     }
 
     ## add points
-    out <- out + geom_point(aes(x=date, y=yITL, shape=type), data=df.ts)
+    out <- out + geom_point(aes(x=date, y=yITL, shape=type), data=df.ts, ...)
 
 
     ## add indiv labels
-    if(plotNames)
+    if(plotNames){
         out <- out + scale_y_discrete(aes(name="Individuals", label=IndividualID))
-    else
+    } else {
         out <- out + scale_y_discrete(name="Individuals",breaks=NULL)
-
+    }
 
     ## THIS MAY NEED TESTING
     if(!is.null(periods)){
@@ -134,69 +133,7 @@ plotIndividualTimeline <- function(x, what, selection=NULL,
         }
     }
 
-
-
-    ## plot events
-        ## make the data frame with sample dates ##
-        dfRecords <- make.individual.attributes(x)
-
-        ## keep only dates
-        toKeep <- sapply(dfRecords, inherits, "Date")
-        if(length(toKeep)<1) stop("No date information to be used for the timeline plot")
-        dfRecords <- dfRecords[,toKeep,drop=FALSE]
-
-        ## convert dates to characters for now
-        dfRecords <- as.data.frame(lapply(dfRecords, as.character))
-
-        ## keep only matches with requested data
-        toKeep <- unlist(lapply(what, grep, names(dfRecords)))
-        if(length(toKeep)<1) stop(paste(what, "was not found in the data"))
-        dfRecords <- dfRecords[,toKeep,drop=FALSE]
-
-        ## add yITL info
-        dfRecords$yITL <- ordering
-
-        ## convert data.frame into 'long' form
-        dfRecords <- melt(dfRecords, id.var="yITL")
-
-        ## remove NAs, restore Date class
-        dfRecords <- na.omit(dfRecords)
-        dfRecords$value <- .process.Date(dfRecords$value)
-
-        ##select the records corresponding to our selection of individuals
-        dfRecords=dfRecords[dfRecords$individualID%in%get.individuals(x),]
-        ##one sample can have several rows in this df, take only unique ones
-        dfRecords=dfRecords[sapply(unique(dfRecords$sampleID),function(y){min(which(dfRecords$sampleID==y))}),]
-        if(!is.null(dfRecords)){
-            dfRecords$yITL=ordering[sapply(dfRecords$individualID,function(y){which(get.individuals(x)==y)})]#TODO this matching should be a standard method
-
-            ## make a new df using melt as an input for ggplot, so we can show the different types of events
-            fulldf <- .meltDateProof(dfRecords,id.vars='yITL',measure.vars='date',variable.name="type")
-            fulldf$type=rep('sample',dim(fulldf)[1])#this could be done a lot easier...
-        }
-
-    else{
-        fulldf=c()
-    }
-    if(!is.null(events)){
-        ## TODO how to get attributes from different dataframes when columns have the same name? e.g. 'date' from records and clinical
-        ## add more events from 'individuals' to be drawn to the dataframe fulldf
-        fulldf <- rbind(fulldf,.meltDateProof(df,id.vars='yITL',measure.vars=events,variable.name="type"))
-    }
-    ## if(!is.null(clinicalEvents)){
-    ## 	## add clinical events to be drawn to the dataframe fulldf
-    ## 	## 		this will have to be done with the new functionality of get.data. See ticket 35 (11-4-2013)
-    ## 	#clinicalDF <- data@clinical[selection,,drop=FALSE]
-    ## 	## 		clinicalDF$yITL <- ordering
-    ## 	## 		fulldf <- rbind(fulldf,.meltDateProof(clinicalDF,id.vars='yITL',measure.vars=clinicalEvents,variable.name="type"))
-    ## 	## TODO 21-2-2013: for this to work we need an accessor for clinicals, that can hande duplicate column names and can subset
-    ## }
-
-    if(!is.null(fulldf)){
-        ## draw the events
-        out <- out+geom_point(data=fulldf,aes(y=yITL,x=value,colour=c(),shape=type))
-    }
-    suppressWarnings(out)
-}
+    return(suppressWarnings(out))
+} # end plotIndividualTimeline
 
 
