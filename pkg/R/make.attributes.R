@@ -130,7 +130,7 @@ make.individual.attributes <- function(x){
 
         ## keep only unique indiv/date combinations ##
         splitDates <- tapply(as.character(x@dna@meta$date), x@dna@meta$individualID, unique)
-        temp <- data.frame(date=unlist(splitDates))
+        temp <- data.frame(date=.process.Date(unlist(splitDates)))
         temp$individualID <- rep(names(splitDates), sapply(splitDates, length))
 
         ## need to reshape data.frame into wide format when multiple individuals ##
