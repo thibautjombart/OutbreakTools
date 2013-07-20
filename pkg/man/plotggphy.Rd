@@ -2,8 +2,8 @@
 \alias{plotggphy}
 \title{Function to plot phylogenies using \code{\link{ggplot2}}}
 \usage{
-  plotggphy(x, which.tree = 1, ladderize = FALSE,
-    show.tip.label = FALSE, tip.label.size = 3,
+  plotggphy(x, which.tree = 1, ladderize = TRUE,
+    show.tip.label = TRUE, tip.label.size = 3,
     build.tip.attribute = FALSE, tip.color = NULL,
     tip.alpha = NULL, tip.shape = NULL, tip.size = NULL,
     branch.unit = NULL, tip.dates = NULL,
