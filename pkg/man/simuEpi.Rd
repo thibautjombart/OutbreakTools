@@ -3,7 +3,7 @@
 \title{Simulate an epidemic following a SIR model}
 \usage{
   simuEpi(N = 1000, D = 10, beta = 0.001, nu = 0.1, L = 1000, mu =
-          0.001, showPlots = FALSE,makePhyloTree=FALSE)
+          0.001, plot=TRUE, makePhyloTree=FALSE)
 }
 \arguments{
   \item{N}{Size of the population}
@@ -17,14 +17,16 @@
   \item{L}{Length of genetic sequences}
 
   \item{mu}{Probability of mutation per base per transmission event}
-  \item{showPlots}{Logical; whether or not to plot the SIR trajectory
-    over time, the transmission tree, and the phylogenetic tree if it is
-    created.}
+  \item{plot}{logical indicating whether or not to plot the SIR trajectory
+    over time and save it in the output.}
+
   \item{makePhyloTree}{Logical; whether to create a
     neighbour-joining tree from the simulated sequences.}
 }
 \value{
-  Simulated epidemic as an obkData object.
+  A list containing the SIR dynamics (\code{$dynamics}), an
+    \code{obkData} of the outbreak (\code{$x}), and an optional \code{ggplot}
+    graphic (\code{$plot}).
 }
 \description{
   Simulate an epidemic following a SIR model, together with a transmission
@@ -35,23 +37,35 @@
 \dontrun{
 ## Simulate an outbreak of 200 individuals over 20 time steps ##
 set.seed(3)
+
 x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002)
 
-# x is an obkData
-x
-summary(x)
+## x is a list:
+class(x)
+names(x)
 
-## Plot the dynamics
+## x$dynamics contains demographic info
+x$dynamics
+
+## x$plot is a ggplot object
+class(x$plot)
+x$plot
+
+## x$x is the obkData object
+summary(x$x)
+plotIndividualTimeline(x$x, colorBy="DateInfected")
+
+
+## Same, with a phylogenetic tree
 x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002,
-             showPlots=TRUE)
+             plot=TRUE, makePhyloTree=TRUE)
 
-## Add phyloTree
-x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002,
-             showPlots=TRUE, makePhyloTree=TRUE)
-
+plotggphy(x$x, ladderize=TRUE, show.tip=TRUE,
+      branch.unit="year", tip.label.size=4)
 }
 }
 
 \author{
-  Xavier Didelot and Caroline Colijn
+  Original version by Xavier Didelot and Caroline Colijn.
+  Graphics modification by Thibaut Jombart.
 }

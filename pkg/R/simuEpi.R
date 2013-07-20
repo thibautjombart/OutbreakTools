@@ -1,13 +1,17 @@
-#Simulate an epidemic following a SIR model
-#N Size of the population
-#D Duration of simulation
-#beta Rate of infection
-#nu Rate of recovery
-#L Length of genetic sequences
-#mu Probability of mutation per base per transmission event
-#Returns to simulated epidemic as an obkData object
-#Xavier Didelot
-simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001,showPlots=FALSE,makePhyloTree=FALSE) {
+
+if(getRversion() >= "2.15.1")  utils::globalVariables(c("date","number","category"))
+
+## Simulate an epidemic following a SIR model
+## N Size of the population
+## D Duration of simulation
+## beta Rate of infection
+## nu Rate of recovery
+## L Length of genetic sequences
+## mu Probability of mutation per base per transmission event
+## Returns to simulated epidemic as an obkData object
+## Xavier Didelot
+simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001, plot=TRUE, makePhyloTree=FALSE,
+                     ask=TRUE, ...) {
     S<-matrix(0,D,3)
     T<-matrix(0,N,3)
     dates<-matrix("",N,1)
@@ -40,43 +44,76 @@ simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001,showPlots=FAL
         S[i,3]=S[i-1,3]+rec
     }
     T=T[1:ninf,]
-    dates=dates[1:ninf,]
-    seqs=seqs[1:ninf,]
-
-    samp=data.frame("sampleID"=1:ninf,"individualID"=1:ninf,"date"=dates,"sequenceID"=1:ninf)
+    dates=.process.Date(dates[1:ninf,])
+    seqs=seqs[1:ninf,,drop=FALSE]
     rownames(seqs)<-1:ninf
+
+    ## make contact matrix from -> to ##
+    contacts <- na.omit(data.frame(from=T[,2], to=1:ninf))
+
 
     if (makePhyloTree){
         ## make a simple phylogeny from the sequences
         simplephylo=nj(dist.dna(as.DNAbin(seqs))) # quick and dirty but doesn't assume homochronous samples
         simplephylo=root(simplephylo,1)
 
-        ## make 3 plots in this case: the epidemic, the trans tree and the phylo tree
-        if (showPlots) {par(mfrow=c(1,3)); plotEpi(S); plot(infectorTableToNetwork(T),main="Transmission tree"); plot(simplephylo,main="NJ phylogeny")}
+        ## ## make 3 plots in this case: the epidemic, the trans tree and the phylo tree
+        ## if (showPlots) {par(mfrow=c(1,3)); plotEpi(S); plot(infectorTableToNetwork(T),main="Transmission tree"); plot(simplephylo,main="NJ phylogeny")}
 
         ## convert to multiphylo
         simplephylo=list(simplephylo)
         class(simplephylo)="multiPhylo"  # this class is required by the obkData structure
 
         ## include the NJ tree in the obkData object that will be returned
-        ret<-new("obkData",individuals=data.frame("individualID"=1:ninf,"infector"=T[,2],"DateInfected"=dates),sample=samp,dna=as.DNAbin(seqs),trees=simplephylo)}
+        ret <- new("obkData",individuals=data.frame("individualID"=1:ninf,"infector"=T[,2],"DateInfected"=dates),
+                   dna=as.DNAbin(seqs), dna.date=dates, dna.individualID=1:ninf, trees=simplephylo,
+                   contacts=contacts, contacts.start=dates, contacts.end=dates, contacts.directed=TRUE)
+    } else {     ## otherwise, just do 2 plots and don't make any phylogeny
+        ## if (showPlots) {
+        ##     par(mfrow=c(1,2)); plotEpi(S); plot(infectorTableToNetwork(T),main="Transmission tree")
+        ## }
+	ret <- new("obkData",individuals=data.frame("individualID"=1:ninf,"infector"=T[,2],"DateInfected"=dates),
+                   dna=as.DNAbin(seqs), dna.date=dates, dna.individualID=1:ninf,
+                   contacts=contacts, contacts.start=dates, contacts.end=dates, contacts.directed=TRUE)
+    }
 
-    ## otherwise, just do 2 plots and don't make any phylogeny
-    else {
-        if (showPlots) {par(mfrow=c(1,2)); plotEpi(S); plot(infectorTableToNetwork(T),main="Transmission tree");}
-	ret <- new("obkData",individuals=data.frame("individualID"=1:ninf,"infector"=T[,2],"DateInfected"=dates),sample=samp,dna=as.DNAbin(seqs))}
-    return(ret)
-}
+
+    ## MAKE POPULATION DYNAMICS TABLE ##
+    S <- as.data.frame(S)
+    names(S) <- c("Susceptible","Infected","Recovered")
+
+    ## add dates
+    S$date <- seq(from=min(dates), by=1, length=nrow(S))
+
+    out <- list(x=ret, dynamics=S)
+
+    ## MAKE PLOTS IF REQUESTED ##
+    if(plot){
+        ## build long form data.frame for ggplot
+        df <- melt(S, id.var="date")
+        names(df) <- c("date","category","number")
+
+        ## make plot
+        p <- ggplot(df, aes(x=date, y=number)) + geom_point(aes(colour=category),shape=20,size=4)
+        p <- p + geom_line(aes(colour=category), size=3, alpha=I(.5))
+        p
+        out$plot <- p
+    }
+    return(out)
+} # end simuEpi
+
+
+
 
 .resample <- function(x, ...) x[sample.int(length(x), ...)]
-# because sample can take an integer argument and then samples from 1:n,
-# need this resampler to make simuEpi work in cases where length(curinf) is 1 and the value of curinf is an integer.
+                                        # because sample can take an integer argument and then samples from 1:n,
+                                        # need this resampler to make simuEpi work in cases where length(curinf) is 1 and the value of curinf is an integer.
 
 
 
-#Plot the number of susceptible, infected and recovered as a function of time
-#S Matrix containing the numbers to be plotted
-#Xavier Didelot
+                                        #Plot the number of susceptible, infected and recovered as a function of time
+                                        #S Matrix containing the numbers to be plotted
+                                        #Xavier Didelot
 plotEpi <- function(S) {
     plot(c(0,dim(S)[1]),c(0,sum(S[1,])),type='n',xlab='Days',ylab='Individuals',main="Epidemic summary")
     lines(S[,1],col='black')
@@ -85,26 +122,26 @@ plotEpi <- function(S) {
     legend('right',lty=c(1,1),col=c('black','red','blue'),c('Susceptible','Infected','Recovered'))
 }
 
-#Convert transmission tree to a network
-#transmissiontreeData Matrix of who infected whom
-#Network of who infected whom
-#Caroline Colijn
-infectorTableToNetwork <- function (transmissiontreeData)
-{
-    uniqueIDs <- sort(c(unique(as.character(transmissiontreeData[,1]),as.character(transmissiontreeData[,2]))))
-    nUniqueIDs <- length(uniqueIDs)
-    edgeList <- na.omit(transmissiontreeData[,1:2])
-    numEdges <- dim(edgeList)[1]
-    y <- network.initialize(nUniqueIDs)
-    network.vertex.names(y) <- uniqueIDs
-    for(i in 1:numEdges){
-        v1 <- match(as.character(edgeList[i,1]),uniqueIDs)
-        v2 <- match(as.character(edgeList[i,2]),uniqueIDs)
+##                                     #Convert transmission tree to a network
+##                                         #transmissiontreeData Matrix of who infected whom
+##                                         #Network of who infected whom
+##                                         #Caroline Colijn
+## infectorTableToNetwork <- function (transmissiontreeData)
+## {
+##     uniqueIDs <- sort(c(unique(as.character(transmissiontreeData[,1]),as.character(transmissiontreeData[,2]))))
+##     nUniqueIDs <- length(uniqueIDs)
+##     edgeList <- na.omit(transmissiontreeData[,1:2])
+##     numEdges <- dim(edgeList)[1]
+##     y <- network.initialize(nUniqueIDs)
+##     network.vertex.names(y) <- uniqueIDs
+##     for(i in 1:numEdges){
+##         v1 <- match(as.character(edgeList[i,1]),uniqueIDs)
+##         v2 <- match(as.character(edgeList[i,2]),uniqueIDs)
 
-        if (!is.na(v2)) add.edges(y,v2,v1)
-    }
-    return(y)
-}
+##         if (!is.na(v2)) add.edges(y,v2,v1)
+##     }
+##     return(y)
+## }
 
 
 
