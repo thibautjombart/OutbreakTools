@@ -96,7 +96,7 @@ simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001, plot=TRUE, m
         ## make plot
         p <- ggplot(df, aes(x=date, y=number)) + geom_point(aes(colour=category),shape=20,size=4)
         p <- p + geom_line(aes(colour=category), size=3, alpha=I(.5))
-        p
+        print(p)
         out$plot <- p
     }
     return(out)
