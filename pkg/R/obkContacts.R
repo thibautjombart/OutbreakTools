@@ -57,7 +57,7 @@ setMethod("initialize", "obkContacts", function(.Object, from=NULL, to=NULL, dir
       for(i in 1:numedges){
         v1 <- match(from[i],uniqueIDs)
         v2 <- match(to[i],uniqueIDs)
-        add.edge(y,v2,v1)
+        add.edge(y,v1,v2)
         }
     }
     ## dynamic network
@@ -87,7 +87,7 @@ setMethod("initialize", "obkContacts", function(.Object, from=NULL, to=NULL, dir
       for(i in 1:numedges){
         v1 <- match(from[i],uniqueIDs)
         v2 <- match(to[i],uniqueIDs)
-        add.edge(y,v2,v1)
+        add.edge(y,v1,v2)
         activate.edges(y,onset=start[i],terminus=end[i],e=get.edgeIDs(y,v=v1,alter=v2,neighborhood="out"))
       }
     }
