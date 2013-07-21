@@ -63,7 +63,7 @@ make.phylo(x, \dots)
 ## Example using simulate outbreak ##
 
 set.seed(3)
-x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002)
+x <- simuEpi(N = 200, D = 20, beta = 0.002, nu = 0.1, mu = 0.002)$x
 get.trees(x) # no tree here
 
 ## GET TREE AND DISPLAY IT
