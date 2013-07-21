@@ -11,22 +11,24 @@
 
 \alias{get.locus}
 \alias{get.locus,obkSequences-method}
+\alias{get.locus.obkSequences}
 
 \alias{get.nlocus}
 \alias{get.nlocus,obkSequences-method}
+\alias{get.nlocus.obkSequences}
 
 \alias{get.sequences}
 \alias{get.sequences,obkSequences-method}
+\alias{get.sequences.obkSequences}
 
 \alias{get.nsequences}
 \alias{get.nsequences,obkSequences-method}
+\alias{get.nsequences.obkSequences}
 
 \alias{get.dna}
 \alias{get.dna,obkSequences-method}
+\alias{get.dna.obkSequences}
 
-% \alias{[,obkSequences-method}
-% \alias{[,obkSequences,ANY,ANY-method}
-%%%%
 \title{Formal class "obkSequences"}
 \description{
   The class \code{obkSequences} is a formal (S4) class for storing a DNA

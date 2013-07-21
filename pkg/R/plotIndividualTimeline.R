@@ -113,7 +113,7 @@ plotIndividualTimeline <- function(x, what="", selection=NULL, ordering=NULL, or
 
     ## add indiv labels
     if(plotNames){
-        out <- out + scale_y_discrete(aes(name="Individuals", label=IndividualID))
+        out <- out + scale_y_discrete(aes(name="Individuals", label=individualID))
     } else {
         out <- out + scale_y_discrete(name="Individuals",breaks=NULL)
     }

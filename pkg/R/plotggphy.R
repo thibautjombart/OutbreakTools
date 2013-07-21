@@ -106,7 +106,7 @@ plotggphy <- function(x, which.tree = 1, ladderize = TRUE, show.tip.label = TRUE
         }
 
     } else {
-        if(is.null(tip.dates)) tip.dates <- x@dna@meta$date
+        if(is.null(tip.dates)) tip.dates <- tip.attribute$date
     }
 
     ##ladderize?

@@ -4,7 +4,7 @@
 \usage{
   plotggphy(x, which.tree = 1, ladderize = TRUE,
     show.tip.label = TRUE, tip.label.size = 3,
-    build.tip.attribute = FALSE, tip.color = NULL,
+    build.tip.attribute = TRUE, tip.color = NULL,
     tip.alpha = NULL, tip.shape = NULL, tip.size = NULL,
     branch.unit = NULL, tip.dates = NULL,
     guess.tip.dates.from.labels = FALSE,

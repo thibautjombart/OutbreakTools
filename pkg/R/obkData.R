@@ -54,10 +54,10 @@ setClass("obkData", representation(individuals="data.frameOrNULL", records="list
 ## - "date"
 ##
 setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=NULL, dna=NULL,
-                                            trees=NULL, contacts=NULL, context=NULL, contacts.start=NULL,
-                                            contacts.end=NULL, contacts.duration=NULL,
-                                            contacts.directed=FALSE, date.format=NULL,
-                                            dna.individualID=NULL, dna.date=NULL,
+                                            trees=NULL, contacts=NULL, context=NULL,
+                                            contacts.start=NULL, contacts.end=NULL,
+                                            contacts.duration=NULL, contacts.directed=FALSE,
+                                            date.format=NULL, dna.individualID=NULL, dna.date=NULL,
                                             dna.date.format=date.format, dna.sep="_", quiet=FALSE,
                                             check=TRUE, ...){
 

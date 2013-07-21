@@ -21,7 +21,8 @@
 \alias{matrixOrNULL-class}
 \alias{data.frameOrNULL}
 \alias{data.frameOrNULL-class}
-
+\alias{listOrNULL}
+\alias{listOrNULL-class}
 
 \alias{DateOrNULL}
 \alias{DateOrNULL-class}
