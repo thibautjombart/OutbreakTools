@@ -3,7 +3,7 @@
 \title{Function to plot cases on a map}
 \usage{
   plotGeo(x, location='location', zoom='auto', source='google',
-          colorBy=NULL, shapeBy=NULL, center=NULL)
+          colorBy=NULL, shapeBy=NULL, center=NULL, \dots)
 
 }
 \arguments{
@@ -25,6 +25,8 @@
   
   \item{center}{individualID of individual to put at the center of the
     map. If left empty, method will focus on the center of all points}
+
+  \item{\dots}{further arguments passed to \code{geom_point}.}
 }
 \description{
    Function to plot the geographic distribution of data in an

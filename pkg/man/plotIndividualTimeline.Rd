@@ -39,6 +39,9 @@
   
   \item{plotNames}{a logiacal indicating whether the individualIDs
     should be shown at the y-axis}
+
+  \item{\dots}{further arguments passed to \code{geom_point}.}
+
 }
 \examples{
 ## simple example using ToyOutbreak

@@ -11,6 +11,7 @@
 \alias{subset.obkContacts}
 
 \title{Subset data in "obkData" objects}
+
 \description{ \code{subset} is a generic function with methods for
   \linkS4class{obkData}, \linkS4class{obkSequences} and
   \linkS4class{obkContacts} objects. It can be used to subset data by
@@ -18,26 +19,22 @@
   that several subsetting criteria can be specified at the same time.
 }
 \usage{
-\S4method{subset}{obkData}(x, individuals=NULL, samples=NULL,
-       locus=NULL, sequences=NULL, date.from=NULL, date.to=NULL,
-       date.format="", row.individuals=NULL, row.samples=NULL, \dots)
+\S4method{subset}{obkData}(x, individuals=NULL, locus=NULL, sequences=NULL,
+       date.from=NULL, date.to=NULL, date.format=NULL, \dots)
 
 \S4method{subset}{obkSequences}(x, sequences=NULL, locus=NULL, individuals=NULL,
-       date.from=NULL, date.to=NULL, date.format=NULL \dots)
+       date.from=NULL, date.to=NULL, date.format=NULL, \dots)
 
 \S4method{subset}{obkContacts}(x, individuals=NULL, date.from=NULL,
-        date.to=NULL, date.format=NULL, x, individuals=NULL,
-        samples=NULL, \dots) }
+        date.to=NULL, date.format=NULL, \dots)
+}
 \arguments{
   \item{x}{an \linkS4class{obkData} object.}
+  
   \item{individuals}{labels of retained individuals; if integer, numeric
     or logical are provided, they are assumed to indicate individuals as
     returned by \code{get.individuals}.}
-  
-  \item{samples}{labels of retained samples; if integer, numeric
-    or logical are provided, they are assumed to indicate samples as
-    returned by \code{get.samples}.}
-  
+
   \item{locus}{labels of retained loci; if integer, numeric
     or logical are provided, they are assumed to indicate locus as
     returned by \code{get.locus}.}
@@ -51,13 +48,7 @@
   
   \item{date.format}{the format for dates if in character strings;
     defaults to "\%Y-\%m-\%d" (see \code{?as.Date}).}
-  
-  \item{row.individuals}{rows of \code{x@individuals} to be retained;
-    any usual subsetting of a matrix is accepted.}
-  
-  \item{row.samples}{rows of \code{x@samples} to be retained;
-    any usual subsetting of a matrix is accepted.}
-  
+
   \item{\dots}{currently not used.}
 }
 \author{

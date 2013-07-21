@@ -198,7 +198,7 @@ setMethod("get.dates", "obkData", function(x, data=c("all", "individuals", "reco
 ################
 ## get.ndates ##
 ################
-setMethod("get.ndates", "obkData", function(x, data=c("all", "individuals", "records", "dna","context"),...){
+setMethod("get.ndates", "obkData", function(x, data=c("all", "individuals", "records", "dna","context", "contacts"),...){
     return(length(get.dates(x, data=data)))
 })
 

@@ -151,6 +151,17 @@ get.trees(x, \dots)
     \code{character} format, each component of the list being a
     different gene. A matrix can be provided if there is a single gene.}
 
+  \item{dna.date}{a vector of collection dates for the DNA sequences;
+    see \linkS4class{obkSequences} manpage for more information.}
+
+  \item{dna.individualID}{a vector of individual from which DNA
+    sequences where obtained; see \linkS4class{obkSequences} manpage for
+    more information.}
+
+  \item{dna.sep}{the character string used to separate fields
+    (e.g. sequenceID/individualID/date) in sequences labels; see
+    \linkS4class{obkSequences} manpage for more information.}
+
   \item{contacts}{a matrix of characters indicating contacts using two
     columns; if contacts are directed, the first column is 'from', the
     second is 'to'; values should match individual IDs (as returned by
@@ -318,9 +329,8 @@ detach(ToyOutbreakRaw)
 
 ## EXAMINING THE OBJECT ##
 head(x@individuals)
-head(x@records)
 names(x@records)
-head(x@records$Fever)
+lapply(x@records, head)
 x@contacts
 x@dna
 x@trees
@@ -337,7 +347,7 @@ get.nlocus(x)
 get.locus(x)
 get.nindividuals(x)
 head(get.individuals(x))
-get.individuals(x, data="individuals")
+get.individuals(x, data="contacts")
 get.nsequences(x)
 get.dna(x, locus="gene2")
 get.dna(x, locus=1)
@@ -361,7 +371,7 @@ plot(x,'geo',location=c('lon','lat'),zoom=15,colorBy='Sex')
 
 ## plot the tree ##
 plotggphy(x)
-plotggphy(subset(x, 1:50), tip.color="Sex", color.pal="Set1",
+plotggphy(subset(x, 1:50), tip.color="Sex", color.pal="Set1")
 
 }
 \keyword{classes}

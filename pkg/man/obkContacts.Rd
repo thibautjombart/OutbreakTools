@@ -154,7 +154,8 @@ get.ncontacts(x, \dots)
 \dots)
 
 \S4method{as.matrix}{obkContacts}(x,
-         matrix.type=c("adjacency","incidence","edgelist"), \dots)
+         matrix.type=c("adjacency","incidence","edgelist"),
+         use.labels=TRUE, \dots)
 
 \S4method{as.data.frame}{obkContacts}(x, row.names=NULL, optional=FALSE,
          use.labels=TRUE, \dots)
@@ -162,20 +163,28 @@ get.ncontacts(x, \dots)
 }
 \arguments{
   \item{x,object}{an obkContacts object.}
+  
   \item{y}{used for compatibility with the generic definition of
     \code{plot}; unused.}
+  
   \item{labels}{a vector of characters giving annotation for the
     vertices.}
+  
   \item{matrix.type}{a character indicating which type of matrix to
     extract(adjacency, incidence, or edge matrix).}
+  
   \item{from,to}{dates indicating the time span to consider for active
     contacts (for dynamic networks only).}
+  
  \item{\dots}{arguments passed to other methods; currently not used,
    except for \code{plot}.}
+ 
  \item{row.names,optional}{unused arguments, there for compatibility
    with the generic \code{as.data.frame}.}
+ 
  \item{use.labels}{a logical indicating whether labels should be used to
    indicate individuals, as opposed to their index in the network.}
+ 
 }
 \author{
   Original class: Simon Frost (\email{sdwfrost@gmail.com})\cr
