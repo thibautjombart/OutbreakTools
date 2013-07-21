@@ -40,13 +40,13 @@ get.ndates(x, \dots)
 \S4method{get.ndates}{obkData}(x, data=c("all", "individuals", "records",
     "dna","context", "contacts"), \dots)
 
-\S4method{get.dates}{obkSequences}(x, \dots}
+\S4method{get.dates}{obkSequences}(x, \dots)
 
-\S4method{get.ndates}{obkSequences}(x, \dots}
+\S4method{get.ndates}{obkSequences}(x, \dots)
 
-\S4method{get.dates}{obkContacts}(x, \dots}
+\S4method{get.dates}{obkContacts}(x, \dots)
 
-\S4method{get.ndates}{obkContacts}(x, \dots}
+\S4method{get.ndates}{obkContacts}(x, \dots)
 }
 \arguments{
   \item{x}{an input object to seek dates from.}
