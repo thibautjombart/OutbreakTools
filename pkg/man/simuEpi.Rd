@@ -1,6 +1,11 @@
 \name{simuEpi}
 \alias{simuEpi}
 \title{Simulate an epidemic following a SIR model}
+\description{
+  Simulate an epidemic following a SIR model, together with a
+  transmission tree and a set of sequences consistent with the
+  trajectory of the epidemic.
+}
 \usage{
   simuEpi(N = 1000, D = 10, beta = 0.001, nu = 0.1, L = 1000, mu =
           0.001, plot=TRUE, makePhyloTree=FALSE)
@@ -27,10 +32,6 @@
   A list containing the SIR dynamics (\code{$dynamics}), an
     \code{obkData} of the outbreak (\code{$x}), and an optional \code{ggplot}
     graphic (\code{$plot}).
-}
-\description{
-  Simulate an epidemic following a SIR model, together with a transmission
-  tree and a set of sequences consistent with the trajectory of the epidemic. 
 }
 
 \examples{

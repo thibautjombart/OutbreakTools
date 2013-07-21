@@ -10,7 +10,7 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c("date","number","categor
 ## mu Probability of mutation per base per transmission event
 ## Returns to simulated epidemic as an obkData object
 ## Xavier Didelot
-simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001, plot=TRUE, makePhyloTree=FALSE, ...) {
+simuEpi <- function (N=1000,D=10,beta=0.001,nu=0.1,L=1000,mu=0.001, plot=TRUE, makePhyloTree=FALSE) {
     S<-matrix(0,D,3)
     T<-matrix(0,N,3)
     dates<-matrix("",N,1)

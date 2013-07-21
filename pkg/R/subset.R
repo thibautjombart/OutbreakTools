@@ -202,7 +202,7 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
         if(!is.null(x@individuals)) x@individuals <- x@individuals[individuals, ,drop=FALSE]
 
         ## subset @dna ##
-        if(!is.null(x@dna)) x@dna <- subset(x@dna, individuals=individuals)
+        if(!is.null(x@dna)) x@dna <- suppressWarnings(subset(x@dna, individuals=individuals))
 
         ## subset @records ##
         if(!is.null(x@records)){

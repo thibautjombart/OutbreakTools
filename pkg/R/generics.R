@@ -163,8 +163,7 @@ setGeneric("make.phylo", function(x, ...) standardGeneric("make.phylo"))
 
 
 
-###################
-## get.incidence ##
-###################
-## return DNA sequence alignments
-setGeneric("get.incidence", function(x, ...) standardGeneric("get.incidence"))
+## ###################
+## ## get.incidence ##
+## ###################
+## setGeneric("get.incidence", function(x, ...) standardGeneric("get.incidence"))

@@ -158,6 +158,10 @@ get.trees(x, \dots)
     sequences where obtained; see \linkS4class{obkSequences} manpage for
     more information.}
 
+  \item{dna.date.format}{a character string indicating the format of the
+    date in \code{dna.date} if ambiguous; see \linkS4class{obkSequences}
+    manpage for more information.}
+
   \item{dna.sep}{the character string used to separate fields
     (e.g. sequenceID/individualID/date) in sequences labels; see
     \linkS4class{obkSequences} manpage for more information.}
@@ -202,14 +206,16 @@ get.trees(x, \dots)
   \item{id}{an indication of the sequences, either by their names, or
     using integers or logicals matching \code{get.sequences}.}
 
-  \item{data}{a character string indicating in which slot to seek the
-    information; in \code{get.data}, a character string indicating the
-    field to be returned.}
-
   \item{from,to}{dates indicating the time span to consider for active
     contacts (for dynamic networks only).}
 
   \item{\dots}{arguments passed to other methods.}
+
+  \item{quiet}{a logical indicating whether informative messages should
+    be displayed to the screen.}
+
+  \item{check}{a logical indicating whether supplementary consistency
+    checks should be performed.}
 
 }
 
