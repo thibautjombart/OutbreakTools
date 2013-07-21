@@ -358,17 +358,17 @@ names(ToyOutbreakRaw)
 Here is an overview of the inputs, including data on individuals:
 <<>>=
 head(ToyOutbreakRaw$individuals)
-@ 
+@
 various time-stamped records:
 <<>>=
 lapply(ToyOutbreakRaw$records, head)
-@ 
+@
 contact information:
 <<>>=
 head(ToyOutbreakRaw$contacts)
 head(ToyOutbreakRaw$contacts.start)
 head(ToyOutbreakRaw$contacts.end)
-@ 
+@
 DNA sequences:
 <<>>=
 ToyOutbreakRaw$dna
@@ -553,40 +553,31 @@ To simply access slots, use the \texttt{@} operator, e.g. \texttt{x@samples},
 
 All accessors return \texttt{NULL} when information is missing, except for functions returning
 number of items, which will return \texttt{0}.
-In the following, we illustrate accessors using a random sample (n=5) of the toy dataset \texttt{ToyOutbreak}:
+In the following, we illustrate accessors using a random sample of 5 individuals of the toy dataset \texttt{ToyOutbreak}:
 <<>>=
 data(ToyOutbreak)
 set.seed(1)
-get.nsamples(ToyOutbreak)
-toKeep <- sample(1:nrow(ToyOutbreak@samples), 5)
+toKeep <- sample(get.nindividuals(ToyOutbreak),5)
 toKeep
-x <- subset(ToyOutbreak, row.samples=toKeep)
+x <- subset(ToyOutbreak, individuals=toKeep)
 summary(x)
 @
 
 \begin{itemize}
-\item \texttt{get.individuals(x, data=[\textit{"all" or "samples" or "individuals" or "clinical" or "contacts"}])}: returns the
+\item \texttt{get.individuals(x, data=[\textit{"all" or "individuals" or "records" or "contacts" or "dna" or "context"}])}: returns the
   individual IDs in different components of the object.
 
-\item  \texttt{get.nindividuals(x, data=[\textit{"all" or "samples" or "individuals" or "clinical"
-      or "contacts"}])}: returns the number of individuals in different components of the object.
+\item  \texttt{get.nindividuals(x, data=[\textit{"all" or "individuals" or "records" or "contacts" or "dna" or "context"}])}:
+  returns the number of individuals in different components of the object.
 <<>>=
 get.nindividuals(x)
-get.nindividuals(x, "contacts")
-get.individuals(x)
-
+get.nindividuals(x, "records")
+get.nindividuals(x, "dna")
 @
 There are 5 individuals in the data, except for contact information; this is because contacts were
 only recorded between the first 20 individuals of \texttt{ToyOutbreak}:
 <<>>=
 get.individuals(ToyOutbreak, "contacts")
-@
-
-\item \texttt{get.nsamples(x)}: returns the number of sample.
-\item \texttt{get.samples(x)}: returns the unique IDs of the samples in the data.
-<<>>=
-get.nsamples(x)
-get.samples(x)
 @
 
 \item \texttt{get.nlocus(x)}: returns the number of loci.
@@ -636,6 +627,7 @@ identical(get.dna(x, id=c("311","222")), get.dna(x, id=c(2,1)))
 \item \texttt{get.ncontacts(x, from=NULL, to=NULL)}: returns the number of contacts in \texttt{x@contacts}; the
   optional arguments \texttt{from} and \texttt{to} can be used, in the case of dynamic networks, to
   specify the range of dates for which contacts should be kept.
+
 \item \texttt{get.contacts(x, from=NULL, to=NULL)}: returns the contacts in \texttt{x@contacts}; the
   optional arguments \texttt{from} and \texttt{to} can be used, in the case of dynamic networks, to
   specify the range of dates for which contacts should be kept.
@@ -681,21 +673,17 @@ actually corresponds to:
 <<>>=
 get.data(x, "date", showSource=TRUE)
 @
-as there are dates in both \texttt{@samples} and \texttt{@clinical}.
+as there are dates in both \texttt{@records} and \texttt{@dna}.
 To retain only the latter, we use the argument \texttt{where}:
 <<>>=
-get.data(x, "date", where="clinical", showSource=TRUE)
+get.data(x, "date", where="records", showSource=TRUE)
 @
 
 A failed search will return NULL with a warning; for instance, we can try searching for ``sugarman'':
 <<sugarman, warning=TRUE>>=
 get.data(x, "sugarman")
 @
-And the same happens when looking for information in an empty slot:
-<< warning=TRUE>>=
-x@clinical <- NULL
-get.data(x, "date", where="clinical")
-@
+
 \end{itemize}
 
 
@@ -712,6 +700,10 @@ They work in the same way, and use the same arguments; they include:
   \item \texttt{get.sequences}
   \item \texttt{get.nsequences}
   \item \texttt{get.dna}
+  \item \texttt{get.individuals}
+  \item \texttt{get.nindividuals}
+  \item \texttt{get.dates}
+  \item \texttt{get.ndates}
 \end{itemize}
 
 
@@ -727,6 +719,8 @@ They work in the same way, and use the same arguments; they include:
   \item \texttt{get.individuals}
   \item \texttt{get.ncontacts}
   \item \texttt{get.contacts}
+  \item \texttt{get.dates}
+  \item \texttt{get.ndates}
 \end{itemize}
 
 Another useful function is \texttt{as.matrix}, which converts the object into an adjacency matrix
@@ -744,6 +738,10 @@ as.matrix(x@contacts)
 as.matrix(x@contacts, "edgelist")
 @
 
+Lastly, for dynamic graphs, the function \texttt{as.data.frame} returns all the relevant information:
+<<>>=
+as.data.frame(x@contacts)
+@
 
 
 
@@ -756,51 +754,42 @@ A lot of data handling lies in creating subsets of the data based on some given 
 The method \texttt{subset} for \texttt{obkData} objects allows for a range of manipulations.
 The syntax is as follows:
 <<eval=FALSE, tidy=FALSE>>=
-subset(x, individuals=NULL, samples=NULL, locus=NULL, sequences=NULL,
-       date.from=NULL, date.to=NULL, date.format=NULL,
-       row.individuals=NULL, row.samples=NULL,...)
+subset(x, individuals=NULL, locus=NULL, sequences=NULL,
+       date.from=NULL, date.to=NULL, date.format=NULL, ...)
 @
 See \texttt{?subset.obkData} for the details of these arguments.
 The function works in a fairly intuitive way.
-The arguments \texttt{individuals}, \texttt{samples}, \texttt{locus} and \texttt{sequences} are
+The arguments \texttt{individuals}, \texttt{locus} and \texttt{sequences} are
 vectors of characters indicating items to be kept.
 If integers or logicals are provided, these are assumed to match the output of
 \texttt{get.[\textit{...}]}.
-For instance (using a random subset of \texttt{ToyOutbreak}):
+For instance, these two formulations are equivalent:
 <<subset1>>=
 data(ToyOutbreak)
-set.seed(1)
-get.nsamples(ToyOutbreak)
-toKeep <- sample(1:nrow(ToyOutbreak@samples), 10)
-toKeep
-x <- subset(ToyOutbreak, row.samples=toKeep)
-summary(x)
-get.individuals(x)
-@
-To retain only individuals \Sexpr{get.individuals(x)[3]} and \Sexpr{get.individuals(x)[5]}, once can do:
-<<>>=
-x1 <- subset(x, indiv=c("60","168"))
-@
-or
-<<>>=
-x2 <- subset(x, indiv=c(3,5))
+x1 <- subset(ToyOutbreak, individuals=1:10)
+x2 <- subset(ToyOutbreak, get.individuals(ToyOutbreak)[1:10])
 identical(x1,x2)
 @
 
-Another, non-exclusive way of subsetting the data is using collection dates of the samples.
+Another, non-exclusive way of subsetting the data is using dates.
 The arguments \texttt{date.from} and \texttt{date.to} are used for indicating the range of dates of
 samples to be retained.
 For instance, the range of data in the influenza H1N1 pandemic dataset \texttt{FluH1N1pdm2009} is:
 <<>>=
 data(FluH1N1pdm2009)
-x <- new("obkData", individuals = FluH1N1pdm2009$individuals, samples =
-         FluH1N1pdm2009$samples, dna = FluH1N1pdm2009$dna, trees =
-         FluH1N1pdm2009$trees)
-range(get.data(x, "date", where="samples"))
+attach(FluH1N1pdm2009)
+
+x <- new("obkData", individuals = individuals, dna = FluH1N1pdm2009$dna,
+      dna.individualID = samples$individualID, dna.date = samples$date,
+      trees = FluH1N1pdm2009$trees)
+
+detach(FluH1N1pdm2009)
+
+range(get.data(x, "date"))
 @
 We can retain data collected during the first month using:
 <<subsetdate>>=
-min.date <- min(get.data(x, "date", where="samples"))
+min.date <- min(get.dates(x))
 min.date
 min.date+31
 x1 <- subset(x, date.to=min.date+31)
@@ -811,24 +800,13 @@ Note that dates can also be provided as character strings in any sensible format
 \texttt{subset} detects it automatically.
 \\
 
-A third way of specifying subsets of data is using indexing of the rows of \texttt{@individuals} or
-\texttt{@samples}, using the arguments \texttt{row.individuals} and \texttt{row.samples}, respectively.
-This is particularly useful for instance for select specific test outcomes (e.g. positive swabs), patients within
-a given age class or of a given sex, or data from a given location.
-For instance, we can retain data from Mexico using:
-<<>>=
-toKeep <- get.data(x, "location")=="Mexico"
-sum(toKeep)
-x.mex <- subset(x, row.individuals=toKeep)
-summary(x.mex)
-head(x.mex)
-@
-
 Finally, note that several filters can be specified at the same time.
 For instance, in the following we extract European data collected between the 1st June and the 31st August:
 <<lastsubset>>=
+temp <- get.data(x, "location")=="Europe"
+toKeep <- rownames(get.data(x, "location",drop=FALSE))[temp]
 x.summerEur <- subset(x, date.from="01/06/2009", date.to="31/08/2009",
-                      row.indiv=get.data(x, "location")=="Europe")
+                      indiv=toKeep)
 summary(x.summerEur)
 head(x.summerEur)
 @
