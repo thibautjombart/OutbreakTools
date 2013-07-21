@@ -102,7 +102,7 @@ setMethod("get.individuals", "obkData", function(x, data=c("all", "individuals",
 setMethod("get.nindividuals", "obkData", function(x, data=c("all", "individuals", "records", "contacts", "dna"), ...){
     data <- match.arg(data)
 
-    return(length(unique(get.individuals(x, data=data))))
+    return(length(get.individuals(x, data=data)))
 })
 
 
@@ -199,7 +199,7 @@ setMethod("get.dates", "obkData", function(x, data=c("all", "individuals", "reco
 ## get.ndates ##
 ################
 setMethod("get.ndates", "obkData", function(x, data=c("all", "individuals", "records", "dna","context"),...){
-    return(length(unique(get.dates(x, data=data))))
+    return(length(get.dates(x, data=data)))
 })
 
 
