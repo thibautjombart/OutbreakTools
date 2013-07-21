@@ -242,14 +242,14 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
         if(!is.null(x@dna)) x@dna <- subset(x@dna, locus=locus)
 
         ## keep only relevant individuals ##
-        x <- subset(x, individuals=get.individuals(x@dna))
+        x <- suppressWarnings(subset(x, individuals=get.individuals(x@dna)))
 
         ## keep only relevant dates ##
         x <- subset(x, date.from=min(get.dates(x@dna),na.rm=TRUE), date.to=max(get.dates(x@dna),na.rm=TRUE))
 
         ## subset @contacts ##
         if(!is.null(x@contacts)){
-            x@contacts <- subset(x@contacts, individuals=get.individuals(x@dna))
+            x@contacts <- suppressWarnings(subset(x@contacts, individuals=get.individuals(x@dna)))
         }
 
     } # end subsetting by locus
@@ -263,14 +263,14 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
         if(!is.null(x@dna)) x@dna <- subset(x@dna, sequences=sequences)
 
         ## keep only relevant individuals ##
-        x <- subset(x, individuals=get.individuals(x@dna))
+        x <- suppressWarnings(subset(x, individuals=get.individuals(x@dna)))
 
         ## keep only relevant dates ##
         x <- subset(x, date.from=min(get.dates(x@dna),na.rm=TRUE), date.to=max(get.dates(x@dna),na.rm=TRUE))
 
         ## subset @contacts ##
         if(!is.null(x@contacts)){
-            x@contacts <- subset(x@contacts, individuals=get.individuals(x@dna))
+            x@contacts <- suppressWarnings(subset(x@contacts, individuals=get.individuals(x@dna)))
         }
 
     } # end subsetting by sequences
@@ -323,9 +323,6 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
         }
     } # end subset by date.to
 
-
-    ## SUBSET @CONTACTS ##
-    ## static or dynamic network
 
 
     ## SUBSET @TREES ##
