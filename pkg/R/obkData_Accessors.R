@@ -71,7 +71,7 @@ setMethod("get.individuals", "obkData", function(x, data=c("all", "individuals",
     if(data=="records"){
         if(is.null(x@records)) return(NULL)
         out <- unlist(lapply(x@records, function(e) e$individualID), use.names=FALSE)
-        return(out)
+        return(unique(out))
     }
 
     ## list individuals in @contacts
@@ -90,7 +90,7 @@ setMethod("get.individuals", "obkData", function(x, data=c("all", "individuals",
     ## list all individuals in the object (in @individuals, @records and @contacts)
     if(data=="all"){
         out <- unlist(lapply(c("individuals", "records", "contacts", "dna"), function(e) get.individuals(x, e)), use.names=FALSE)
-        return(out)
+        return(unique(out))
     }
 })
 

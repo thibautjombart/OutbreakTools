@@ -21,6 +21,7 @@ setMethod("subset", "obkSequences", function(x, sequences=NULL, locus=NULL, indi
 
         ## check that all sequences are known ##
         if(!all(sequences %in% get.sequences(x))){
+            sequences <- na.omit(sequences)
             temp <- paste(sequences[!sequences %in% get.sequences(x)], collapse=", ")
             warning(paste("The following sequences were not found in the data:", temp))
             sequences <- sequences[sequences %in% get.sequences(x)]
@@ -37,6 +38,8 @@ setMethod("subset", "obkSequences", function(x, sequences=NULL, locus=NULL, indi
 
     ## SUBSET BY LOCUS ##
     if(!is.null(locus)){
+        locus <- na.omit(locus)
+
         ## handle non-character argument ##
         if(!is.character(locus)){
             locus <- get.locus(x)[locus]
@@ -61,6 +64,7 @@ setMethod("subset", "obkSequences", function(x, sequences=NULL, locus=NULL, indi
 
      ## SUBSET BY INDIVIDUAL ID ##
     if(!is.null(individuals)){
+        individuals <- na.omit(individuals)
         ## handle non-character argument ##
         if(!is.character(individuals)){
             individuals <- get.individuals(x)[individuals]
@@ -83,6 +87,8 @@ setMethod("subset", "obkSequences", function(x, sequences=NULL, locus=NULL, indi
 
     ## DATES FROM ... ##
     if(!is.null(date.from)){
+        date.from <- na.omit(date.from)
+
         ## process date ##
         date.from <- .process.Date(date.from, format=date.format)
 
@@ -96,7 +102,9 @@ setMethod("subset", "obkSequences", function(x, sequences=NULL, locus=NULL, indi
 
     ## DATES TO ... ##
     if(!is.null(date.to)){
-         ## process date ##
+        date.to <- na.omit(date.to)
+
+        ## process date ##
         date.to <- .process.Date(date.to, format=date.format)
 
         ## find sequences to retain ##
@@ -121,6 +129,8 @@ setMethod("subset", "obkContacts", function(x, individuals=NULL, date.from=NULL,
                                             date.format=NULL, ...){
     ## SUBSET BY INDIVIDUALS ##
     if(!is.null(individuals)){
+        individuals <- na.omit(individuals)
+
         ## handle non-character argument ##
         if(!is.character(individuals)){
             individuals <- get.individuals(x)[individuals]
@@ -143,6 +153,8 @@ setMethod("subset", "obkContacts", function(x, individuals=NULL, date.from=NULL,
 
     ## DATES FROM ... ##
     if(!is.null(date.from)){
+        date.from <- na.omit(date.from)
+
         ## subset contacts ##
         if(inherits(x@contacts, "networkDynamic")){
             x@contacts <- get.contacts(x, from=date.from, to=Inf)
@@ -152,6 +164,8 @@ setMethod("subset", "obkContacts", function(x, individuals=NULL, date.from=NULL,
 
     ## DATES TO ... ##
     if(!is.null(date.to)){
+        date.to <- na.omit(date.to)
+
         ## subset contacts ##
         if(inherits(x@contacts, "networkDynamic")){
             x@contacts <- get.contacts(x, from=-1, to=date.to)
@@ -186,6 +200,8 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
 
     ## SUBSET BY INDIVIDUALS ##
     if(!is.null(individuals)){
+        individuals <- na.omit(individuals)
+
         ## handle non-character argument ##
         if(!is.character(individuals)){
             individuals <- get.individuals(x)[individuals]
@@ -220,6 +236,8 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
 
     ## SUBSET BY LOCUS ##
     if(!is.null(locus)){
+        locus <- na.omit(locus)
+
         ## subset @dna ##
         if(!is.null(x@dna)) x@dna <- subset(x@dna, locus=locus)
 
@@ -227,7 +245,7 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
         x <- subset(x, individuals=get.individuals(x@dna))
 
         ## keep only relevant dates ##
-        x <- subset(x, date.from=min(get.dates(x@dna)), date.to=max(get.dates(x@dna)))
+        x <- subset(x, date.from=min(get.dates(x@dna),na.rm=TRUE), date.to=max(get.dates(x@dna),na.rm=TRUE))
 
         ## subset @contacts ##
         if(!is.null(x@contacts)){
@@ -239,6 +257,8 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
 
     ## SUBSET BY SEQUENCES ##
     if(!is.null(sequences)){
+        sequences <- na.omit(sequences)
+
         ## subset @dna ##
         if(!is.null(x@dna)) x@dna <- subset(x@dna, sequences=sequences)
 
@@ -246,7 +266,7 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
         x <- subset(x, individuals=get.individuals(x@dna))
 
         ## keep only relevant dates ##
-        x <- subset(x, date.from=min(get.dates(x@dna)), date.to=max(get.dates(x@dna)))
+        x <- subset(x, date.from=min(get.dates(x@dna),na.rm=TRUE), date.to=max(get.dates(x@dna),na.rm=TRUE))
 
         ## subset @contacts ##
         if(!is.null(x@contacts)){
@@ -258,6 +278,8 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
 
     ## DATES FROM ... ##
     if(!is.null(date.from)){
+        date.from <- na.omit(date.from)
+
         ## process date ##
         date.from <- .process.Date(date.from, format=date.format)
 
@@ -280,6 +302,8 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
 
     ## DATES TO ... ##
     if(!is.null(date.to)){
+        date.to <- na.omit(date.to)
+
         ## process date ##
         date.to <- .process.Date(date.to, format=date.format)
 

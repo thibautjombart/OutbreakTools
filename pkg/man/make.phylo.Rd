@@ -84,13 +84,5 @@ plot(tre, edge.width=2, type="fan", show.tip=FALSE)
 title("NJ tree of a simulated outbreak")
 mtext("each disk indicates 1 mutation from the root")
 
-## add distance legend as bullseye ##
-if(require(adegenet)){
-for(i in 1:11)
-symbols(0,0, circles=i, inches=FALSE, add=TRUE, bg=transp("royalblue",
-        .1), fg=NA)
-
-tiplabels()
-}
 }
 \keyword{classes}

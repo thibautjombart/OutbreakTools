@@ -3,7 +3,11 @@
 ## param dna an object of the class "DNAbin"
 ## author Joseph Hughes
 dna2uniqSequences<-function(dna){
-  if (!is.null(dna) && inherits(dna,"DNAbin")){
+    if(is.null(dna)) return(NULL)
+    if(!inherits(dna,"DNAbin")) {
+        warning("dna should be a DNAbin object - returning NULL")
+        return(NULL)
+    }
     seqmatrix <- as.character(dna)
     seqstring<-apply(format(seqmatrix), 1, paste, collapse="")
     uniqList<-tapply(names(seqstring),list(seqstring),I)
@@ -14,7 +18,7 @@ dna2uniqSequences<-function(dna){
     names(uniqList)<-uniqnames
     uniqdna<-as.DNAbin(uniqmat)
     uniqSequences<-new("uniqSequences",uniqID=uniqList,uniqdna=uniqdna)
-  }
+
 
   return(uniqSequences)
 }
