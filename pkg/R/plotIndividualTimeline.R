@@ -5,7 +5,7 @@
 ## plotIndividualTimeline: no visible binding for global variable ‘yITL’
 ## plotIndividualTimeline: no visible binding for global variable ‘value’
 ## plotIndividualTimeline: no visible binding for global variable ‘type’
-if(getRversion() >= "2.15.1")  utils::globalVariables(c("yITL","date","type"))
+if(getRversion() >= "2.15.1")  utils::globalVariables(c("yITL","date","type", "individualID"))
 
 
 

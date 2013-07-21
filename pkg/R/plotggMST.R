@@ -3,6 +3,7 @@
 ## param x an object of the class "obkData"
 ## author Joseph Hughes
 ## examples see below
+if(getRversion() >= "2.15.1")  utils::globalVariables(c("count"))
 
 plotggMST<-function(x,individualID=NULL,locus=NULL){
   if(get.nlocus(x)==0){
@@ -16,7 +17,7 @@ plotggMST<-function(x,individualID=NULL,locus=NULL){
   }
   if(is.null(locus) && get.nlocus(x)==1) locus <- 1
   print (locus)
-  
+
   if (!is.null(locus)){
     subx<-subset(x, locus=locus)
     subx<-subset(subx, individuals=individualID)
@@ -25,7 +26,7 @@ plotggMST<-function(x,individualID=NULL,locus=NULL){
     # get the counts for each sequence
     IDcounts<-do.call(rbind, lapply(uniqseq@uniqID, function(x) length(x)))
     IDcounts<-as.data.frame(IDcounts[order(-IDcounts[,1]),])
-    colnames(IDcounts) <- c( 'count') 
+    colnames(IDcounts) <- c( 'count')
     seqindex<-match(rownames(IDcounts), labels(uniqseq@uniqdna))
     # reorder the DNAbin accordingly
     ordereddna<-uniqseq@uniqdna[seqindex, ]
@@ -58,7 +59,7 @@ plotggMST<-function(x,individualID=NULL,locus=NULL){
                axis.ticks.y = element_blank(), axis.ticks.x = element_blank(),
                axis.title.y = element_blank(),	panel.grid.major.y = element_blank(),
                panel.grid.minor.y = element_blank(), panel.grid.major.x = element_blank(),
-               panel.grid.minor.x = element_blank(), panel.border = element_blank(), 
+               panel.grid.minor.x = element_blank(), panel.border = element_blank(),
                panel.background = element_blank(), legend.position = "none")
 
     pmst<-ggplot()
