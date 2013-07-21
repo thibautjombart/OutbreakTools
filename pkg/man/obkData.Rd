@@ -82,8 +82,8 @@
       information, with individual labels stored as row names.}
 
     \item{\code{records}:}{a \code{list} of \code{data.frame}, each
-      member of the list containing records information of a particular
-      type; the first two columns are 'individualID'and 'date'.}
+      containing records of a particular type; the first two columns are
+      'individualID'and 'date'.}
 
     \item{\code{contacts}:}{an object of the class
       \linkS4class{obkContacts} storing contact information.}
@@ -140,7 +140,7 @@ get.trees(x, \dots)
   \item{records}{a list of data.frames, each of which has 2 mandatory
     fields, 'individualID' and 'date'. Dates can be specified as
     \code{Date} or \code{characters}, in which case they will be
-    converted tp dates. Most sensible formats will be detected
+    converted to dates. Most sensible formats will be detected
     automatically and processed. Unusual formats should be provided
     through the argument \code{date.format}.  Each item of the list
     should be named according to the type of information recorded,

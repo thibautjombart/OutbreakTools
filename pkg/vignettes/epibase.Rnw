@@ -97,22 +97,19 @@ The slots respectively contain:
 \item \texttt{@individuals}: a \texttt{data.frame} storing individual data, such as age, sex,
   or onset of symptoms. If not \texttt{NULL}, this \texttt{data.frame} will have exactly one row per
   individual, with row names providing unique identifiers for individuals.
-\item \texttt{@samples}: a \texttt{data.frame} storing sample data, typically swab results or
-  accession numbers of DNA sequences. If not \texttt{NULL}, this \texttt{data.frame} must contain
-  the three following columns: \texttt{individualID} (unique identifiers for individuals),
-  \texttt{sampleID} (identifiers for samples, possibly repeated if several measurements have been
-  made on the same sample), and \texttt{date} (collection dates for the samples).
-\item \texttt{@clinical}: a list of \texttt{data.frame}s storing any additional clinical information;
-  there is no constraint on the number of \texttt{data.frame}s stored, but each one must contain
-  columns named \texttt{individualID} (unique identifiers for individuals) and \texttt{date} (date
-  of observations/interventions).
-  \item \texttt{@dna}: DNA sequences of one or more genes, stored as an \texttt{obkSequences}
-    object. See section below for details on \texttt{obkSequences} objects.
-  \item \texttt{@contacts}: dynamic contact network between the individuals, stored as an
-    \texttt{obkContacts} object. See section below for details on \texttt{obkContacts} objects.
-  \item \texttt{@trees}: a list of phylogenetic trees with the class \texttt{multiPhylo} (from the
-    \textit{ape} package); can be used to store e.g. a posterior distribution of trees from a Bayesian
-    phylogenetic reconstruction using BEAST.
+\item \texttt{@records}: a named list of \texttt{data.frame}s storing any time-stamped data gathered at an
+  individual level; there is no constraint on the number of \texttt{data.frame}s stored, but each one must contain
+  columns named \texttt{individualID} (unique identifiers for individuals) and
+  \texttt{date}. Examples: swab data, fever, onset of symptoms, etc.
+\item \texttt{@dna}: DNA sequences of one or more genes, stored as an \texttt{obkSequences}
+  object. See section below for details on \texttt{obkSequences} objects.
+\item \texttt{@contacts}: dynamic contact network between the individuals, stored as an
+  \texttt{obkContacts} object. See section below for details on \texttt{obkContacts} objects.
+\item \texttt{@records}: a list of \texttt{data.frame}s storing any time-stamped data at a
+  non-individual leve. Examples: climat indicators, school closures, vaccination campain, etc.
+\item \texttt{@trees}: a list of phylogenetic trees with the class \texttt{multiPhylo} (from the
+  \textit{ape} package); can be used to store e.g. a posterior distribution of trees from a Bayesian
+  phylogenetic reconstruction using BEAST.
 \end{itemize}
 
 The slots of an object \texttt{foo} can be accessed using \texttt{foo@[name-of-the-slot]}.
@@ -147,14 +144,20 @@ more powerful using accessors in the following sections.
 
 Pathogen sequence data can typically be obtained for different genes, making the handling of such information not entirely trivial.
 The class \texttt{obkSequences} stores such information.
-It consists in a list of matrices of aligned DNA sequences (in rows), stored using \textit{ape}'s class
+\texttt{obkSequences} objects contain two slots.
+
+
+The slot \texttt{@dna} is a list of matrices of aligned DNA sequences (in rows), stored using \textit{ape}'s class
 \texttt{DNAbin} for efficiency, with each item of the list corresponding to a different gene.
-If provided, gene names are the names of the list.
+Gene names are the names of the list.
 The row names in each matrix contain unique identifiers for the sequences, typically accession numbers.
-In \texttt{obkData} objects, sequences are matched to samples by the field \texttt{sequenceID} in
-the \texttt{@sample} slot, which effectively contains the sequence identifiers.
-When several loci have been sequenced, the locus information must also be provided for each
-sequence identifiers using the column \texttt{locus} in the \texttt{@sample} slot.
+
+
+The slot \texttt{meta} is a \texttt{data.frame} containing some meta-information about the sequences.
+It contains at least two columns for sampled individuals (\texttt{individualID}) and collection
+dates (\texttt{date}).
+The row names corrspond to sequence labels used in \texttt{@dna}, and respect the same ordering.
+\\
 
 Let us examine the DNA information stored in \texttt{ToyOutbreak}:
 <<>>=
@@ -251,9 +254,8 @@ Storing data in \textit{epibase} requires the following, fairly simple steps:
   \item read \texttt{data.frame}s storing individuals, samples, and clinical information in R from a
     text file, typically using \texttt{read.table} or \texttt{read.csv} for comma-separated
     files. Every standard spreadsheet software can export data to these formats.
-  \item read DNA sequences from a single file, typically using \texttt{read.dna} from the ape
-    package; this ``master'' file must contain all DNA sequences of all genes, with unique
-    identifiers for the sequences as labels. While phylogenies can be obtained in R, annotated trees
+  \item read DNA sequences from separate files containing alignments (one file per gene), typically using \texttt{read.dna} from the ape
+    package. While phylogenies can be obtained in R, annotated trees
     produced by Bayesian software such as BEAST can now be imported using
     \texttt{read.annotated.nexus}.
   \end{enumerate}
@@ -278,30 +280,71 @@ new("obkData")
 \noindent This function accepts the following arguments, which mirror to some extent the structure
 of the object (see \texttt{?obkData} for more information):
 \begin{itemize}
-  \item \texttt{individuals}: a \texttt{data.frame} with a mandatory column named 'individualID', providing unique identifiers for the individuals.
-    \item \texttt{samples}: a \texttt{data.frame} with 3 mandatory columns named 'individualID',
-      'sampleID', and 'date', providing identifiers for the individuals, for the samples, and
-      dates. Dates must be provided in a way convertible to \texttt{Date} (see
-      \texttt{?as.Date}). Default format for dates provided as characters is "\%Y-\%m-\%d"
-      (e.g. 1984-09-23). Alternative format can be specified via the argument \texttt{date.format}.
-      If left to \texttt{NULL}, the format is determined automatically.
-    \item \texttt{clinical}: a list of \texttt{data.frame}s, each of which has 2 mandatory fields,
-      individualID' and 'date' (specified as before).
-    \item \texttt{dna}: a list of DNA sequences in \texttt{DNAbin} or \texttt{character} format, as
-      read by \texttt{read.dna} or \texttt{fasta2DNAbin}.
-    \item \texttt{contacts}: a matrix of characters indicating edges using two columns; if contacts
-      are directed, the first column is 'from', the second is 'to'; values should match individual
-      IDs (as returned by \texttt{get.individuals(x)}); if numeric values are provided, these are converted
-      to integers and assumed to correspond to individuals returned by \texttt{get.individuals(x)}.
-    \item \texttt{contacts.start}: a vector of dates indicating the beginning of each contact.
-    \item \texttt{contacts.end}: a vector of dates indicating the end of each contact.
-    \item \texttt{contacts.duration}: another way to specify \texttt{contacts.end}, as duration of contact in
-      days.
-    \item \texttt{contacts.directed}: a logical indicating if contacts are
-      directed; defaults to \texttt{FALSE}.
-    \item \texttt{trees}: a list of phylogenetic trees in the class \texttt{multiPhylo} (from the
-      ape package); this is basically a list of \texttt{phylo} objects, with the class attribute ``\texttt{multiPhylo}''.
-    \item \texttt{date.format}: a character string indicating the date format (see \texttt{as.Date}); if \texttt{NULL}, date format is detected automatically.
+ \item \texttt{individuals}: {a data.frame with a mandatory column named
+    'individualID', providing unique identifiers for the individuals; if
+    missing, row names are used as identifiers.}
+
+  \item \texttt{records}: a list of data.frames, each of which has 2 mandatory
+    fields, 'individualID' and 'date'. Dates can be specified as
+    \texttt{Date} or \texttt{characters}, in which case they will be
+    converted to dates. Most sensible formats will be detected
+    automatically and processed. Unusual formats should be provided
+    through the argument \texttt{date.format}.  Each item of the list
+    should be named according to the type of information recorded,
+    e.g. 'swabs', 'temperature', or 'hospitalisation' (admission /
+    discharge events).
+
+  \item \texttt{dna}: a list matrices of DNA sequences in \texttt{DNAbin} or
+    \texttt{character} format, each component of the list being a
+    different gene. A matrix can be provided if there is a single gene.
+
+  \item \texttt{dna.date}: a vector of collection dates for the DNA sequences;
+    see \linkS4class{obkSequences} manpage for more information.
+
+  \item \texttt{dna.individualID}: a vector of individual from which DNA
+    sequences where obtained; see \linkS4class{obkSequences} manpage for
+    more information.
+
+  \item \texttt{dna.date.format}: a character string indicating the format of the
+    date in \texttt{dna.date} if ambiguous; see \linkS4class{obkSequences}
+    manpage for more information.
+
+  \item \texttt{dna.sep}: the character string used to separate fields
+    (e.g. sequenceID/individualID/date) in sequences labels; see
+    \linkS4class{obkSequences} manpage for more information.
+
+  \item \texttt{contacts}: a matrix of characters indicating contacts using two
+    columns; if contacts are directed, the first column is 'from', the
+    second is 'to'; values should match individual IDs (as returned by
+    get.individuals(x)); if numeric values are provided, these are
+    converted to integers and assumed to correspond to individuals
+    returned by get.individuals(x).
+
+  \item \texttt{context}: a list of data.frames, each of which has 1 mandatory
+    field: 'date'. Each item of the list should be named according to
+    the type of information recorded, e.g. 'intervention',
+    'vaccination', 'climat' (temperature, humidity, etc.), or schools
+    (opening/closure).
+
+  \item \texttt{contacts.start}: a vector of dates indicating the beginning of
+    each contact.
+
+  \item \texttt{contacts.end}: a vector of dates indicating the end of each
+    contact.
+
+  \item \texttt{contacts.duration}: another way to specify contacts.end, as
+    duration of contact in days.
+
+  \item \texttt{contacts.directed}: a logical indicating if contacts are
+    directed; defaults to FALSE.
+
+  \item \texttt{trees}: a list of phylogenetic trees with the class
+    \texttt{multiPhylo} (from the ape package)
+
+  \item \texttt{date.format}: a character string indicating the date format (see
+    \texttt{\link{as.Date}}); if \texttt{NULL}, date format is detected
+    automatically, which is usually a sensible option.
+
 \end{itemize}
 
 \noindent We can now show how to create a new \texttt{obkData} from multiple inputs, using the
@@ -312,68 +355,59 @@ class(ToyOutbreakRaw)
 names(ToyOutbreakRaw)
 @
 
-The simplest information we can store is about the samples and individuals:
+Here is an overview of the inputs, including data on individuals:
 <<>>=
-head(ToyOutbreakRaw$samples)
 head(ToyOutbreakRaw$individuals)
-x <- new("obkData", samples=ToyOutbreakRaw$samples,
-         individuals=ToyOutbreakRaw$individuals)
-head(x)
-@
-This apparently did not do much, as the stored information is nearly identical to the input.
-However, a number of checks have been made to ensure that dates are actually \texttt{Date} objects,
-that individual identifiers of are indeed unique, etc.
-More importantly, the two sources of information are now connected, so that we can later e.g. subset the
-data per sample or per individual.
-This is possible for many other types of information we may want to handle.
-Let us now consider the following, additional inputs, including information about a dynamic contact network:
+@ 
+various time-stamped records:
+<<>>=
+lapply(ToyOutbreakRaw$records, head)
+@ 
+contact information:
 <<>>=
 head(ToyOutbreakRaw$contacts)
 head(ToyOutbreakRaw$contacts.start)
 head(ToyOutbreakRaw$contacts.end)
-@
-clinical intervention (here, merely temperature measurements):
-<<>>=
-head(ToyOutbreakRaw$clinical$Fever)
-@
+@ 
 DNA sequences:
 <<>>=
 ToyOutbreakRaw$dna
 @
-and even phylogenetic trees:
+and phylogenetic trees:
 <<>>=
 ToyOutbreakRaw$trees
 @
+
 All this information will be compiled into a single object by:
 <<>>=
-x <- new ("obkData", individuals=ToyOutbreakRaw$individuals,
-          samples=ToyOutbreakRaw$samples,
-          clinical=ToyOutbreakRaw$clinical, contacts=ToyOutbreakRaw$contacts,
-          contacts.start=ToyOutbreakRaw$contacts.start,
-          contacts.end=ToyOutbreakRaw$contacts.end,
-          dna=ToyOutbreakRaw$dna, trees=ToyOutbreakRaw$trees)
+x <- new ("obkData", individuals=individuals, records=records,
+          contacts=contacts, contacts.start=contacts.start,
+          contacts.end=contacts.end, dna=dna,
+          dna.individualID=dna.info$individualID,
+          dna.date=dna.info$date, sample=dna.info$sample, trees=trees)
 head(x)
 summary(x)
 @
+
 \texttt{x} is a new, coherent representation of the data.
 This representation ensures, amongst other things, that:
 \begin{itemize}
-  \item individual labels are unique and consistent across samples, clinical interventions, contacts, and
+  \item individual labels are unique and consistent across records, contacts, DNA sequences and
     patient information
-  \item every item is dated using actual dates (\texttt{Date} objects), using the same format
-  \item every sample refers to an individual, for which meta-information may be available
-  \item every DNA sequence refers to a sample
+  \item every item is dated using actual dates (\texttt{Date} objects)
+  \item every sample/record refers to an individual and a date
+  \item every DNA sequence refers to an individual and a date
   \item every DNA sequence belongs to a gene
   \item DNA sequences from the same gene have the same length
   \item every tip of the trees refers to a DNA sequence
   \item every contact refers to documented individuals
 \end{itemize}
 
-Moreover, as all these items are now connected, data manipulation on every components will now be
+As all these items are now connected, data manipulation on every components will now be
 drastically simplified (see section below on data handling).
-
-
-
+For instance, it will be easy to isolate a subset of individuals from the data, which will impact the phylogenies,
+DNA sequences, records and contacts.
+It will also be straightforward to add e.g. patient information onto phylogenies.
 
 <<eval=TRUE,echo=FALSE,results='hide'>>=
 opts_chunk$set(eval=FALSE, echo=FALSE)
