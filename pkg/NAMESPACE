@@ -21,8 +21,8 @@ importFrom(ape, "as.character.DNAbin", "as.DNAbin", "as.DNAbin.alignment", "as.D
            "[[.multiPhylo", "$<-.multiPhylo", "$.multiPhylo", "plot.multiPhylo", "print.multiPhylo",
            "axisPhylo", ".compressTipLabel", "clado.build")
 
-importFrom(adegenet, "bluepal", "redpal", "greenpal", "seasun", "spectral", "funky", "num2col",
-           "fac2col", "any2col", "transp", "findMutations", "findMutations.DNAbin")
+## importFrom(adegenet, "bluepal", "redpal", "greenpal", "seasun", "spectral", "funky", "num2col",
+##            "fac2col", "any2col", "transp", "findMutations", "findMutations.DNAbin")
 
 importFrom(RColorBrewer, "brewer.pal.info", "brewer.pal")
 

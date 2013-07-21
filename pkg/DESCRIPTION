@@ -11,7 +11,7 @@ Maintainer: Thibaut Jombart <t.jombart@imperial.ac.uk>
 Suggests:
     EpiEstim
 Depends:  R (>= 3.0.0), methods, ggplot2, network, knitr
-Imports: utils, RColorBrewer, ape, adegenet, reshape2, sna, plyr, ggmap, networkDynamic, scales
+Imports: utils, RColorBrewer, ape, reshape2, sna, plyr, ggmap, networkDynamic, scales
 Description: basic tools for the analysis of disease outbreaks.
 License: GPL (>=2)
 LazyLoad: yes
