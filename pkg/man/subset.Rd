@@ -60,39 +60,27 @@
 data(ToyOutbreak)
 x <- ToyOutbreak
 
+
 ## TEST VARIOUS SUBSETTING ##
 ## by individual
 get.individuals(x)
-subset(x, individuals=1:10)
+plot(x)
+plot(subset(x, individuals=1:10))
 subset(x, individuals=1)
 subset(x, individuals="15")
-
-## by sample
-get.samples(x)
-subset(x, sample=2)
-subset(x, sample="2")
 
 ## by locus
 get.locus(x)
 subset(x, locus=2)
 
-## by sequences
-get.sequences(x)
-subset(x, sequences=c("gene11", "gene2360"))
+## by locus and sequences
+subset(x, locus=1, sequence=1:10)
+plot(subset(x, locus=1, sequence=1:10))
+plot(subset(x, locus=1, sequence=1:10), "phy")
 
-## by rows in @individuals
-get.data(x,"individuals")
-get.data(x, "Sex")=="M" # sex is 'm'
-subset(x, row.individuals=get.data(x, "Sex")=="M") # keep only Sex=='M'
-
-## by rows in @samples
-get.data(x,"samples")
-get.data(x, "date") <= "2000-01-10" # samples with date < Jan 10
-subset(x, row.samples=get.data(x, "date") <= "2000-01-10") # keep date < Jan 10
-
-
-## mixing things up
-subset(x, row.samples=get.data(x, "date") <= "2000-01-10", individuals="15")
+## by dates
+get.dates(x)
+plotIndividualTimeline(subset(x, date.to="2000-01-05"), "dna")
 
 }
 \keyword{classes}
