@@ -107,37 +107,36 @@
 \examples{
 ## load the dataset
 data(FluH1N1pdm2009)
-## create obkData object
-x <- new("obkData", individuals = FluH1N1pdm2009$individuals, samples =
-         FluH1N1pdm2009$samples, dna = FluH1N1pdm2009$dna,
-         trees = FluH1N1pdm2009$trees)
+attach(FluH1N1pdm2009)
+
+x <- new("obkData", individuals = individuals, dna = FluH1N1pdm2009$dna,
+      dna.individualID = samples$individualID, dna.date = samples$date,
+      trees = FluH1N1pdm2009$trees)
+
+detach(FluH1N1pdm2009)
+
+
+## have a look at the summary
+summary(x)
 
 ## first simple tree
-p <- plotggphy(x, ladderize = TRUE)
+p <- plotggphy(x, ladderize = FALSE)
 
 ## build tip attribute and use sample dates to scale the x-axis as date time
-p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE,
-               branch.unit = "year", tip.dates = "date")
-
-## alternatively extract sample dates from the tip labels
-p <- plotggphy(x, ladderize = TRUE, branch.unit = "year",
-               guess.tip.dates.from.labels = TRUE, set.guess =
-               list(prefix = "_", order = 1, from = "last"))
+p <- plotggphy(x, branch.unit = "year", show.tip=FALSE)
 
 ## change x breaks and labels
-p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE,
-               branch.unit = "year", tip.dates = "date",
-               major.breaks = "month", axis.date.format = "\%b\%Y")
+p <- plotggphy(x, branch.unit = "year", major.breaks = "month",
+       axis.date.format = "\%b\%Y", show.tip=FALSE)
 
 ## color-code tip location
-p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE,
-               branch.unit = "year", tip.dates = "date",
-               tip.color = "location")
+p <- plotggphy(x, branch.unit = "year", show.tip=FALSE, tip.color = "location")
 
 ## change tip size and transparency
-p <- plotggphy(x, ladderize = TRUE, build.tip.attribute = TRUE,
-               branch.unit = "year", tip.dates = "date",
-               tip.color = "location", tip.size = 3, tip.alpha = 0.75)
+p <- plotggphy(x, branch.unit = "year", tip.color = "location",
+               tip.size = 3, tip.alpha = 0.75, show.tip=FALSE)
+
+
 }
 \author{
   Anton Camacho
