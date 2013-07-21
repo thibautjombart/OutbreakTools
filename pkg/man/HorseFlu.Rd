@@ -13,7 +13,7 @@
       longitude.
     }
     \item{
-      \code{dna}: an \linkS4class{obkSequence} object containing DNA
+      \code{dna}: an \linkS4class{obkSequences} object containing DNA
       sequences and their meta-information.
     }
     \item{
