@@ -33,6 +33,7 @@
 \alias{get.records,obkData-method}
 \alias{get.records.obkData}
 \alias{get.nrecords}
+\alias{get.nrecords,obkData-method}
 \alias{get.nrecords.obkData}
 
 \alias{get.contacts,obkData-method}
