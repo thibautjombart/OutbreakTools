@@ -313,7 +313,12 @@ setMethod("subset", "obkData", function(x, individuals=NULL, locus=NULL, sequenc
             if(length(setdiff(x@trees[[i]]$tip.label, toDrop))==1){
                 x@trees <- x@trees[-i]
             } else {
-                x@trees[[i]] <- drop.tip(x@trees[[i]], tip=toDrop, trim.internal=TRUE, subtree=FALSE)
+                temp <- drop.tip(x@trees[[i]], tip=toDrop, trim.internal=TRUE, subtree=FALSE)
+                if(is.null(temp)) {
+                    x@trees <- x@trees[-i]
+                } else {
+                    x@trees[[i]] <- drop.tip(x@trees[[i]], tip=toDrop, trim.internal=TRUE, subtree=FALSE)
+                }
             }
         }
 
