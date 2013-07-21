@@ -22,23 +22,23 @@
 \alias{get.ndates,obkContacts-method}
 \alias{get.ndates.obkContacts}
 
-\title{Access dates in "obkData" objects}
+\title{Retrieve dates data}
 \description{
   \code{get.dates} is a generic function with a method for
   \linkS4class{obkData}, \linkS4class{obkSequences} and
-  \linkS4class{obkContacts} objects. It can be used to retrieve existing
-  dates from any field of an obkData object.
+  \linkS4class{obkContacts} objects. It can be used to retrieve
+  dates stored in the object.
 }
 \usage{
 get.dates(x, \dots)
 
 get.ndates(x, \dots)
 
-\S4method{get.dates}{obkData}(x,
-    data=c("all", "individuals", "records", "dna","context"), \dots)
+\S4method{get.dates}{obkData}(x, data=c("all", "individuals", "records",
+    "dna","context", "contacts"), \dots)
 
-\S4method{get.ndates}{obkData}(x,
-    data=c("all", "individuals", "records", "dna","context"), \dots)
+\S4method{get.ndates}{obkData}(x, data=c("all", "individuals", "records",
+    "dna","context", "contacts"), \dots)
 
 \S4method{get.dates}{obkSequences}(x, \dots}
 
