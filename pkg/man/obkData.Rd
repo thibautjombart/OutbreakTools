@@ -206,9 +206,8 @@ get.trees(x, \dots)
   objects. These functions are used to retrieve the content of the
   object. Specific manpages can exist for the more complex functions.
   These are indicated by a '*' symbol next to the method's name.
-  \describe{
-    \item{show}{\code{signature(x = "obkData")}: printing of the
-      object's contents.}
+  \describe{ \item{show}{\code{signature(x = "obkData")}: printing of
+    the object's contents.}
     
     \item{head}{\code{signature(x = "obkData")}: printing of the
       object's contents - showing only the firt lines of each record.}
@@ -216,24 +215,24 @@ get.trees(x, \dots)
     \item{tail}{\code{signature(x = "obkData")}: printing of the
       object's contents - showing only the last lines of each record.}
     
-    \item{summary}{\code{signature(x = "obkData")}: printing a summary of the
-      object.}
+    \item{summary}{\code{signature(x = "obkData")}: printing a summary
+      of the object.}
 
     \item{get.individuals*}{\code{signature(x = "obkData")}: returns the
       itendifiers of individuals in a given source of data (see manpage
-      of \code{\link{get.individuals.okbData}} for details).}
+      of \code{\link{get.individuals}} for details).}
     
     \item{get.nindividuals*}{\code{signature(x = "obkData")}: returns
       the number of individuals in a given source of data (see manpage
-      of \code{\link{get.individuals.okbData}} for details).}
+      of \code{\link{get.individuals}} for details).}
+
+    \item{get.dates*}{\code{signature(x = "obkData")}: returns the dates
+      in a given source of data (see manpage of \code{\link{get.dates}}
+      for details).}
 
     \item{get.dates*}{\code{signature(x = "obkData")}: returns the
-      dates in a given source of data (see manpage
-      of \code{\link{get.dates.okbData}} for details).}
-
-    \item{get.dates*}{\code{signature(x = "obkData")}: returns the
-      number of dates in a given source of data (see manpage
-      of \code{\link{get.dates.okbData}} for details).}
+      number of dates in a given source of data (see manpage of
+      \code{\link{get.dates}} for details).}
 
     \item{get.records}{\code{signature(x = "obkData")}: returns the
       names of existing records tables in the data.}
@@ -244,8 +243,8 @@ get.trees(x, \dots)
     \item{get.locus}{\code{signature(x = "obkData")}: returns the names
       of the sequenced loci.}
     
-    \item{get.nlocus}{\code{signature(x = "obkData")}: returns the number of
-      sequenced loci.}
+    \item{get.nlocus}{\code{signature(x = "obkData")}: returns the
+      number of sequenced loci.}
     
     \item{get.nsequences*}{\code{signature(x = "obkData")}: returns the
       number of sequences in the data; see \linkS4class{obkSequences}
@@ -272,7 +271,7 @@ get.trees(x, \dots)
     \item{get.contacts*}{\code{signature(x = "obkData")}: returns the
       contacts (as \code{network} or \code{networkDynamic}); for dynamic
       contact networks, starting dates can be specified by the argument
-      \code{from}, and end date by the argument \code{to};  see 
+      \code{from}, and end date by the argument \code{to}; see
       \linkS4class{obkContacts} manpage for further details.}
     
     \item{get.ncontacts*}{\code{signature(x = "obkData")}: returns the
@@ -286,9 +285,7 @@ get.trees(x, \dots)
       values; in the absence of match, \code{NULL} is returned. Several
       values can be provided; they can be names of the slots, or any
       variable stored within the data.frames \code{samples} or
-      \code{individuals}.
-    }
-  }
+      \code{individuals}.  } }
 }
 
 \author{

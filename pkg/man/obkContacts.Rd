@@ -12,18 +12,6 @@
 \alias{plot,obkContacts-method}
 \alias{plot.obkContacts}
 
-\alias{get.nindividuals,obkContacts-method}
-\alias{get.nindividuals.obkContacts}
-
-\alias{get.individuals,obkContacts-method}
-\alias{get.individuals.obkContacts}
-
-\alias{get.ndates,obkContacts-method}
-\alias{get.ndates.obkContacts}
-
-\alias{get.dates,obkContacts-method}
-\alias{get.dates.obkContactsmethod}
-
 \alias{get.ncontacts,obkContacts-method}
 \alias{get.ncontacts.obkContacts}
 
@@ -71,19 +59,25 @@
 
   \describe{
     \item{\code{from}}{a vector of individual identifiers in
-    \code{character} format representing the source of the contact.}
+      \code{character} format representing the source of the contact.}
+    
     \item{\code{to}}{a vector of individual identifiers in
       \code{character} format representing the sink of the contact.}
+    
     \item{\code{directed}}{a Boolean for whether contacts should be
       regarded as directed (\code{TRUE}) or not (\code{FALSE}).}
-    \item{\code{start}}{an optional vector of times representing
-      the start of a contact; can be dates or numeric values.}
-    \item{\code{end}}{an optional vector of times representing the end of a
-      contact; can be dates or numeric values..}
+    
+    \item{\code{start}}{an optional vector of times representing the
+      start of a contact; can be dates or numeric values.}
+    
+    \item{\code{end}}{an optional vector of times representing the end
+      of a contact; can be dates or numeric values..}
+    
     \item{\code{duration}}{an optional vector of durations of a contact,
-    as an alternative way of representing dynamic contacts than using
-    \code{end}; if numeric values are used together with dates in
-    'start' and 'end', these will be interpreted as numbers of days.}
+      as an alternative way of representing dynamic contacts than using
+      \code{end}; if numeric values are used together with dates in
+      'start' and 'end', these will be interpreted as numbers of days.}
+
   }
 }
 \section{Slots}{
@@ -98,37 +92,51 @@
   }
 }
 \section{Methods}{
-  Here is a list of methods available for \code{obkContacts} objects. Most of
-  these methods are accessors, that is, functions which are used to
-  retrieve the content of the object. Specific manpages can exist for
-  accessors with more than one argument. These are indicated by a '*'
-  symbol next to the method's name. This list also contains methods
-  for conversion from \code{obkContacts} to other classes.
+  Here is a list of methods available for \code{obkContacts}
+  objects. Most of these methods are accessors, that is, functions which
+  are used to retrieve the content of the object. Specific manpages can
+  exist for accessors with more than one argument. These are indicated
+  by a '*' symbol next to the method's name. This list also contains
+  methods for conversion from \code{obkContacts} to other classes.
+
   \describe{
     \item{show}{\code{signature(x = "obkContacts")}: printing of the
       object.}
+    
     \item{plot}{\code{signature(x = "obkContacts", y=NULL)}: plot the
       contact network; relies on \code{\link[network]{plot.network}}, to
       which arguments can be passed via \code{...}.}
-    \item{get.nindividuals}{\code{signature(x = "obkContacts")}: returns the number of
-      individuals in the contact data.}
-    \item{get.individuals}{\code{signature(x = "obkContacts")}: returns
-      the identifiers of individuals in the contact data.}
-    \item{get.ndates}{\code{signature(x = "obkContacts")}: returns the number of
-      dates at which contact structure changes.}
-    \item{get.dates}{\code{signature(x = "obkContacts")}: returns the
-      dates at which contact structure changes.}
+
     \item{get.ncontacts}{\code{signature(x = "obkContacts")}: returns
       the number of contacts; for dynamic contact
       networks, starting dates can be specified by the argument
       \code{from}, and end date by the argument \code{to}.}
+    
     \item{get.contacts}{\code{signature(x = "obkContacts")}: returns
       the contacts (as \code{network} or \code{networkDynamic}); for
       dynamic contact networks, starting dates can be specified by the
       argument \code{from}, and end date by the argument \code{to}.}
+
+    \item{get.nindividuals*}{\code{signature(x = "obkContacts")}: returns the number of
+      individuals in the contact data (see manpage
+      of \code{\link{get.individuals}} for details)..}
+    
+    \item{get.individuals*}{\code{signature(x = "obkContacts")}: returns
+      the identifiers of individuals in the contact data(see manpage
+      of \code{\link{get.individuals}} for details)..}
+    
+    \item{get.ndates*}{\code{signature(x = "obkContacts")}: returns the number of
+      dates at which contact structure changes (see manpage of
+      \code{\link{get.dates}} for details).}
+    
+    \item{get.dates*}{\code{signature(x = "obkContacts")}: returns the
+      dates at which contact structure changes (see manpage of
+      \code{\link{get.dates}} for details).}
+    
     \item{as.matrix}{\code{signature(x = "obkContacts",
 	matrix.type=c("adjacency","incidence","edgelist"))}: extract an
       adjacency, incidence, or edge matrix from the object.}
+    
     \item{as.data.frame}{\code{signature(x = "obkContacts", ...)}: for
       static contacts, returns an edge list; for dynamic contacts, returns
       and edge list with information on the timing of contacts.}
@@ -136,8 +144,9 @@
 }
 \usage{
 get.contacts(x, \dots)
-
 get.ncontacts(x, \dots)
+\S4method{get.ncontacts}{obkContacts}(x, from=NULL, to=NULL, \dots)
+\S4method{get.contacts}{obkContacts}(x, from=NULL, to=NULL, \dots)
 
 \S4method{show}{obkContacts}(object)
 
@@ -149,19 +158,6 @@ get.ncontacts(x, \dots)
 
 \S4method{as.data.frame}{obkContacts}(x, row.names=NULL, optional=FALSE,
          use.labels=TRUE, \dots)
-
-\S4method{get.ncontacts}{obkContacts}(x, from=NULL, to=NULL, \dots)
-
-\S4method{get.contacts}{obkContacts}(x, from=NULL, to=NULL, \dots)
-
-\S4method{get.nindividuals}{obkContacts}(x, \dots)
-
-\S4method{get.individuals}{obkContacts}(x, \dots)
-
-\S4method{get.ndates}{obkContacts}(x, \dots)
-
-\S4method{get.dates}{obkContacts}(x, \dots)
-
 
 }
 \arguments{
@@ -229,6 +225,7 @@ as.matrix(ToyOutbreak@contacts)
 as.matrix(ToyOutbreak@contacts, "incidence")
 as.matrix(ToyOutbreak@contacts, "edgelist")
 
+as.data.frame(ToyOutbreak@contacts)
 
 }
 \keyword{classes}
