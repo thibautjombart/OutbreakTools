@@ -365,7 +365,7 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                          suppressWarnings(get.data(x, data=data, where=e, drop=drop, showSource=TRUE)))
 
         result <- Reduce("rbind", result)
-        if(nrow(result)>0) rownames(result) <- NULL
+        if(!is.null(result) && nrow(result)>0) rownames(result) <- NULL
 
     } # end search everywhere
 
