@@ -805,7 +805,7 @@ Note that dates can also be provided as character strings in any sensible format
 Finally, note that several filters can be specified at the same time.
 For instance, in the following we extract European data collected between the 1st June and the 31st August:
 <<lastsubset>>=
-temp <- get.data(x, "location")
+temp <- get.data(x, "location", showSource=TRUE)
 head(temp)
 toKeep <- temp$individualID[temp$location=="Europe"]
 x.summerEur <- subset(x, date.from="01/06/2009", date.to="31/08/2009",
