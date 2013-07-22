@@ -278,7 +278,7 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                 result<-temp
                 names(result)<-c(data,"individualID", "source")
             } else {
-                warning(paste("data '", data, "'was not found in @individuals"))
+                warning(paste("data '", data, "' was not found in @individuals",sep=""))
                 return(NULL)
             }
         } # end where==individuals
@@ -306,7 +306,7 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                 }
             }
             if(!found){
-                warning(paste("data '", data, "'was not found in @records"))
+                warning(paste("data '", data, "' was not found in @records", sep=""))
                 return(NULL)
             }
         } # end where==records
@@ -335,7 +335,7 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                 }
             }
             if(!found){
-                warning(paste("data '", data, "'was not found in @context"))
+                warning(paste("data '", data, "' was not found in @context",sep=""))
                 return(NULL)
             }
         } # end where==context
@@ -352,7 +352,7 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                 result <- temp
                 names(result) <- c(data,"individualID", "date", "source")
             } else {
-                warning(paste("data '", data, "'was not found in @dna"))
+                warning(paste("data '", data, "' was not found in @dna",sep=""))
                 return(NULL)
             }
         } # end where==dna
@@ -365,7 +365,7 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                          suppressWarnings(get.data(x, data=data, where=e, drop=drop, showSource=TRUE)))
 
         result <- Reduce("rbind", result)
-        if(!is.null(result) && nrow(result)>0) rownames(result) <- NULL
+        if(!is.null(result) && nrow(result)>0) rownames(result) <- NULL # rownames are meaningless
 
     } # end search everywhere
 
@@ -375,11 +375,14 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
         if(showSource)
             return(result)
         else
-            return(result[,data,drop=drop])
+            if(data %in% names(result)){
+                result <- result[,data,drop=drop]
+            }
+            return(result)
     }
     else{
         ## DEFAULT IF WE DON'T KNOW WHAT TO RETURN ##
-        warning(paste("data '", data, "'was not found in the object"))
+        warning(paste("data '", data, "' was not found in the object", sep=""))
         return(NULL)
     }
 }) # end get.data
