@@ -35,7 +35,7 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c("x.beg","x.end","y.beg",
 #' @author Anton Camacho
 #' @example ../misc/plotggphyExample.R
 #'
-plotggphy <- function(x, which.tree = 1, ladderize = TRUE, show.tip.label = TRUE, tip.label.size = 3, build.tip.attribute = TRUE,
+plotggphy <- function(x, which.tree = 1, ladderize = TRUE, show.tip.label = NULL, tip.label.size = 3, build.tip.attribute = TRUE,
 	tip.color = NULL, tip.alpha = NULL, tip.shape = NULL, tip.size = NULL, branch.unit = NULL, tip.dates = NULL,
 	guess.tip.dates.from.labels = FALSE, set.guess = list(prefix = "_", order = 1, from = "last"), axis.date.format = NULL,
                       major.breaks = NULL, minor.breaks = NULL, color.palette = "Spectral", legend.position = "right") {
@@ -56,6 +56,15 @@ plotggphy <- function(x, which.tree = 1, ladderize = TRUE, show.tip.label = TRUE
     }
 
     phylo <- phylo[[which.tree]]
+
+    ## handle default value for show.tip.label ##
+    if(is.null(show.tip.label)){
+        if(length(phylo$tip.label)<=50) {
+            show.tip.label <- TRUE
+        } else {
+            show.tip.label <- FALSE
+        }
+    }
 
 
     ## BUILD DATA.FRAME OF TIP ATTRIBUTES IF NEEDED ##

@@ -3,7 +3,7 @@
 \title{Function to plot phylogenies using \code{\link{ggplot2}}}
 \usage{
   plotggphy(x, which.tree = 1, ladderize = TRUE,
-    show.tip.label = TRUE, tip.label.size = 3,
+    show.tip.label = NULL, tip.label.size = 3,
     build.tip.attribute = TRUE, tip.color = NULL,
     tip.alpha = NULL, tip.shape = NULL, tip.size = NULL,
     branch.unit = NULL, tip.dates = NULL,
@@ -24,7 +24,8 @@
   ladderized}
 
   \item{show.tip.label}{Logical. If \code{TRUE}, the labels
-  of the tip are shown.}
+  of the tip are shown; if \code{NULL} (default), labels are shown for
+  tree sizes up to 50 tips.}
 
   \item{tip.label.size}{Numeric. Size of the tip labels.}
 
@@ -123,18 +124,18 @@ summary(x)
 p <- plotggphy(x, ladderize = FALSE)
 
 ## build tip attribute and use sample dates to scale the x-axis as date time
-p <- plotggphy(x, branch.unit = "year", show.tip=FALSE)
+p <- plotggphy(x, branch.unit = "year")
 
 ## change x breaks and labels
 p <- plotggphy(x, branch.unit = "year", major.breaks = "month",
-       axis.date.format = "\%b\%Y", show.tip=FALSE)
+       axis.date.format = "\%b\%Y")
 
 ## color-code tip location
 p <- plotggphy(x, branch.unit = "year", show.tip=FALSE, tip.color = "location")
 
 ## change tip size and transparency
 p <- plotggphy(x, branch.unit = "year", tip.color = "location",
-               tip.size = 3, tip.alpha = 0.75, show.tip=FALSE)
+               tip.size = 3, tip.alpha = 0.75)
 
 
 }
