@@ -105,8 +105,8 @@ The slots respectively contain:
   object. See section below for details on \texttt{obkSequences} objects.
 \item \texttt{@contacts}: dynamic contact network between the individuals, stored as an
   \texttt{obkContacts} object. See section below for details on \texttt{obkContacts} objects.
-\item \texttt{@records}: a list of \texttt{data.frame}s storing any time-stamped data at a
-  non-individual leve. Examples: climat indicators, school closures, vaccination campain, etc.
+\item \texttt{@context}: a list of \texttt{data.frame}s storing any time-stamped data at a
+  non-individual level. Examples: climatic variables, school closures, vaccination campaign, etc.
 \item \texttt{@trees}: a list of phylogenetic trees with the class \texttt{multiPhylo} (from the
   \textit{ape} package); can be used to store e.g. a posterior distribution of trees from a Bayesian
   phylogenetic reconstruction using BEAST.
@@ -123,14 +123,11 @@ summary(ToyOutbreak)
 @
 
 \noindent \texttt{ToyOutbreak} is an \texttt{obkData} object containing information on individuals (\texttt{@individuals}),
-samples (\texttt{@samples}), clinical events (\texttt{@clinical}), some DNA sequences
-(\texttt{@dna}), a contact network (\texttt{@contacts}) and a phylgenetic tree (\texttt{@trees}).
-Note the presence of the mandatory columns in \texttt{@samples}: \texttt{individualID},
-\texttt{sampleID}, and \texttt{date}.
+samples/records made on individuals (\texttt{@records}), DNA sequences (\texttt{@dna}), a contact network (\texttt{@contacts}) and a phylogenetic tree (\texttt{@trees}).
 Accessing a given slot is as easy as:
 <<>>=
 head(ToyOutbreak@individuals)
-head(ToyOutbreak@samples)
+head(ToyOutbreak@records$Fever)
 ToyOutbreak@trees
 @
 However, we will see how retrieving information from \texttt{obkData} objects can be made
@@ -299,19 +296,19 @@ of the object (see \texttt{?obkData} for more information):
     different gene. A matrix can be provided if there is a single gene.
 
   \item \texttt{dna.date}: a vector of collection dates for the DNA sequences;
-    see \linkS4class{obkSequences} manpage for more information.
+    see \texttt{obkSequences} manpage for more information.
 
   \item \texttt{dna.individualID}: a vector of individual from which DNA
-    sequences where obtained; see \linkS4class{obkSequences} manpage for
+    sequences where obtained; see \texttt{obkSequences} manpage for
     more information.
 
   \item \texttt{dna.date.format}: a character string indicating the format of the
-    date in \texttt{dna.date} if ambiguous; see \linkS4class{obkSequences}
+    date in \texttt{dna.date} if ambiguous; see \texttt{obkSequences}
     manpage for more information.
 
   \item \texttt{dna.sep}: the character string used to separate fields
     (e.g. sequenceID/individualID/date) in sequences labels; see
-    \linkS4class{obkSequences} manpage for more information.
+    \texttt{obkSequences} manpage for more information.
 
   \item \texttt{contacts}: a matrix of characters indicating contacts using two
     columns; if contacts are directed, the first column is 'from', the
@@ -342,7 +339,7 @@ of the object (see \texttt{?obkData} for more information):
     \texttt{multiPhylo} (from the ape package)
 
   \item \texttt{date.format}: a character string indicating the date format (see
-    \texttt{\link{as.Date}}); if \texttt{NULL}, date format is detected
+    \texttt{as.Date}); if \texttt{NULL}, date format is detected
     automatically, which is usually a sensible option.
 
 \end{itemize}
