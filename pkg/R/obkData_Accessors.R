@@ -375,7 +375,8 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
         if(showSource)
             return(result)
         else
-            if(data %in% names(result)){
+            if(any(data %in% names(result))){
+                data <- data[data %in% names(result)]
                 result <- result[,data,drop=drop]
             }
             return(result)

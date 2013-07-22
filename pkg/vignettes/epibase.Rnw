@@ -82,8 +82,10 @@ functions called \textit{accessors}. However, a basic understanding of what type
 The main class of objects in \textit{epibase} is \texttt{obkData}.  This formal (S4) class is used
 to store various types of information gathered during outbreaks.  The definition of the class in
 terms of R objects can be obtained by:
-<<>>=
+<<results='hide'>>=
 library(epibase)
+@
+<<>>=
 getClassDef("obkData")
 @
 One can also examine a structure using an empty object:
@@ -123,7 +125,8 @@ summary(ToyOutbreak)
 @
 
 \noindent \texttt{ToyOutbreak} is an \texttt{obkData} object containing information on individuals (\texttt{@individuals}),
-samples/records made on individuals (\texttt{@records}), DNA sequences (\texttt{@dna}), a contact network (\texttt{@contacts}) and a phylogenetic tree (\texttt{@trees}).
+samples/records made on individuals (\texttt{@records}), DNA sequences (\texttt{@dna}), a contact
+network (\texttt{@contacts}) and one or more phylogenetic trees (\texttt{@trees}).
 Accessing a given slot is as easy as:
 <<>>=
 head(ToyOutbreak@individuals)
@@ -139,9 +142,11 @@ more powerful using accessors in the following sections.
 \subsubsection{\texttt{obkSequences}: storage of DNA sequences for different genes}
 % % % % % % % % % % % % % % % % %
 
-Pathogen sequence data can typically be obtained for different genes, making the handling of such information not entirely trivial.
+Pathogen sequence data can typically be obtained for different genes, making the handling of such
+information not entirely trivial: different individuals may have been sequenced for different genes,
+at different points in time, etc.
 The class \texttt{obkSequences} stores such information.
-\texttt{obkSequences} objects contain two slots.
+\texttt{obkSequences} objects contain two slots: \texttt{@dna} and \texttt{@meta}.
 
 
 The slot \texttt{@dna} is a list of matrices of aligned DNA sequences (in rows), stored using \textit{ape}'s class
@@ -150,7 +155,7 @@ Gene names are the names of the list.
 The row names in each matrix contain unique identifiers for the sequences, typically accession numbers.
 
 
-The slot \texttt{meta} is a \texttt{data.frame} containing some meta-information about the sequences.
+The slot \texttt{@meta} is a \texttt{data.frame} containing some meta-information about the sequences.
 It contains at least two columns for sampled individuals (\texttt{individualID}) and collection
 dates (\texttt{date}).
 The row names corrspond to sequence labels used in \texttt{@dna}, and respect the same ordering.
@@ -165,6 +170,8 @@ is.list(ToyOutbreak@dna@dna)
 names(ToyOutbreak@dna@dna)
 ToyOutbreak@dna@dna$gene1
 class(ToyOutbreak@dna@dna$gene1)
+class(ToyOutbreak@dna@meta)
+head(ToyOutbreak@dna@meta)
 @
 
 \noindent \texttt{ToyOutbreak@dna} is an \texttt{obkSequences} object containing DNA sequences for two genes.
@@ -278,11 +285,11 @@ new("obkData")
 of the object (see \texttt{?obkData} for more information):
 \begin{itemize}
  \item \texttt{individuals}: {a data.frame with a mandatory column named
-    'individualID', providing unique identifiers for the individuals; if
+    \texttt{individualID}, providing unique identifiers for the individuals; if
     missing, row names are used as identifiers.}
 
   \item \texttt{records}: a list of data.frames, each of which has 2 mandatory
-    fields, 'individualID' and 'date'. Dates can be specified as
+    fields, \texttt{individualID} and \texttt{date}. Dates can be specified as
     \texttt{Date} or \texttt{characters}, in which case they will be
     converted to dates. Most sensible formats will be detected
     automatically and processed. Unusual formats should be provided
@@ -318,7 +325,7 @@ of the object (see \texttt{?obkData} for more information):
     returned by get.individuals(x).
 
   \item \texttt{context}: a list of data.frames, each of which has 1 mandatory
-    field: 'date'. Each item of the list should be named according to
+    field: \texttt{date}. Each item of the list should be named according to
     the type of information recorded, e.g. 'intervention',
     'vaccination', 'climat' (temperature, humidity, etc.), or schools
     (opening/closure).
@@ -405,10 +412,9 @@ This representation ensures, amongst other things, that:
   \item every contact refers to documented individuals
 \end{itemize}
 
-As all these items are now connected, data manipulation on every components will now be
-drastically simplified (see section below on data handling).
-For instance, it will be easy to isolate a subset of individuals from the data, which will impact the phylogenies,
-DNA sequences, records and contacts.
+Having all these items connected allows to simplify data manipulation fairly drastically (see section below on data handling).
+For instance, it will be easy to isolate a subset of individuals from the data, which will impact
+not only patient information but also the phylogenies, DNA sequences, records and contacts.
 It will also be straightforward to add e.g. patient information onto phylogenies.
 
 <<eval=TRUE,echo=FALSE,results='hide'>>=
@@ -575,6 +581,7 @@ summary(x)
 get.nindividuals(x)
 get.nindividuals(x, "records")
 get.nindividuals(x, "dna")
+get.nindividuals(x, "contacts")
 @
 There are 5 individuals in the data, except for contact information; this is because contacts were
 only recorded between the first 20 individuals of \texttt{ToyOutbreak}:
@@ -646,14 +653,17 @@ get.ncontacts(x)
 \item \texttt{get.data(x, data=[\textit{name of data seeked}], where=NULL,
   drop=[\textit{TRUE/FALSE}], showSource=[\textit{TRUE/FALSE}])}: multi-purpose accessor
   seeking a data field with a given name in the entire dataset; \texttt{data} can be the name of a
-  slot, or the name of a column in \texttt{x@individuals}, \texttt{x@samples}, or
-  \texttt{x@clinical}. The optional argument \texttt{where} allows one to specify in which slot the
+  slot, or the name of a column in \texttt{x@individuals}, in the data.frames in \texttt{x@records}, or
+  \texttt{x@context}, or in the \texttt{@dna@meta}. The optional argument \texttt{where} allows one to specify in which slot the
   information should be looked for. The argument \texttt{drop} states whether to return a vector
-  (\texttt{TRUE}), or a one-column \texttt{data.frame} (\texttt{FALSE}).
+  (\texttt{TRUE}), or a one-column \texttt{data.frame} (\texttt{FALSE}), while \texttt{showSource}
+  allows to put information in context (i.e., adding \texttt{individualID}, \texttt{date} and
+  \texttt{source} where applicable.
 
 \noindent For instance, we can retrieve temperature measurements using:
 <<getData1>>=
 get.data(x,"temperature")
+get.data(x,"temperature", showSource=TRUE)
 @
 or the sex of the different individuals:
 <<>>=
@@ -877,7 +887,10 @@ See \texttt{?read.annotated.nexus} for more information.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \textit{epibase} provides some basic functionality for the simulation of outbreak data through the \texttt{simuEpi} function.
-A basic SIR (susceptible-infectious-removed) model is assumed, and the result is returned as an \texttt{obkData} object.
+A basic SIR (susceptible-infectious-removed) model is assumed, and the result is returned as a list containing the SIR dynamics (\texttt{x\$dynamics}), an
+\texttt{obkData} object (\texttt{x\$x}) and an optional \texttt{ggplot} graphic of the SIR dynamics (\texttt{x\$plot}).
+\\
+
 The arguments are as follows:
 \begin{itemize}
 \item \texttt{N}: the size of the population, which remains constant throughout. The simulation will start with one
@@ -906,8 +919,6 @@ x$dynamics
 summary(x$x)
 @
 
-The output of the function is a list containing the SIR dynamics (\texttt{x\$dynamics}), an
-\texttt{obkData} object (\texttt{x\$x}) and an optional \texttt{ggplot} graphic of the SIR dynamics (\texttt{x\$plot}).
 We can see that \Sexpr{get.nindividuals(x$x)} individuals got infected over the time period of \texttt{D=20} days during which the outbreak
 was simulated.
 The actual transmission tree is stored as contact information:
@@ -962,8 +973,8 @@ summary(HorseFlu)
 <<plottime1>>=
 plot(HorseFlu,'timeline')
 @
-This warning makes sense: in this dataset, there is simply too much information for us to visualize
-it alltogether.
+A problem appears here: in this dataset, there is simply too much information to display on a single
+graphic.
 This can be improved by passing further arguments to \texttt{plotIndividualTimeline}:
 <<>>=
 args(plotIndividualTimeline)
