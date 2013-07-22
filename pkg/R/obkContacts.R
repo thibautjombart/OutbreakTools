@@ -260,8 +260,10 @@ setMethod ("as.data.frame", "obkContacts", function(x, row.names = NULL, optiona
     if(is.null(g)) return(NULL)
     if(is.networkDynamic(g)) {
         out <- as.data.frame(g, row.names=row.names, optional=optional, ...)
-        out$onset <- x@origin + out$onset
-        out$terminus <- x@origin + out$terminus
+        if(!is.null(x@origin)){
+            out$onset <- x@origin + out$onset
+            out$terminus <- x@origin + out$terminus
+        }
         if(use.labels){
             lab <- get.individuals(x)
             out$tail <- lab[out$tail]
