@@ -248,7 +248,7 @@ setMethod("get.ncontacts", "obkData", function(x, from=NULL, to=NULL, ...){
 ## Universal accessor:
 ## tries to find any type of data within the obkData object
 ##
-setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSource=TRUE, ...){
+setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSource=FALSE, ...){
     ## disable bloody stringsAsFactor ##
     o.saf <- options("stringsAsFactors")
     on.exit(options(o.saf))
@@ -302,9 +302,8 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                     temp<-x@records[[i]][,c(data,"individualID","date")]
                     temp<-cbind(temp,rep(names(x@records)[i],dim(temp)[1]))
                     colnames(temp)<-c(data,"individualID","date","source")
-                    ## colnames(temp)<-c(data[1],"individualID","source")
+                    result<-rbind(result,temp)
                 }
-                result<-rbind(result,temp)
             }
             if(!found){
                 warning(paste("data '", data, "'was not found in @records"))
@@ -327,7 +326,7 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
             found <- FALSE
             for(i in 1:length(x@context)){
                 if(any(data %in% names(x@context[[i]]))){
-                    found=T
+                    found <- TRUE
                     temp<-x@context[[i]][,c(data,"date")]
                     temp<-cbind(temp,rep(names(x@context)[i],dim(temp)[1]))
                     colnames(temp)<-c(data,"date","source")
@@ -367,7 +366,7 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
         while(is.null(result)){
             if(i>4) break
             result <- suppressWarnings(get.data(x, data=data, where=c("individuals", "records", "context", "dna")[i],
-                                                drop=drop, showSource=showSource))
+                                                drop=drop, showSource=TRUE))
             i <- i+1
         }
 
