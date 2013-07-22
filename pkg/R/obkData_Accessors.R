@@ -248,7 +248,7 @@ setMethod("get.ncontacts", "obkData", function(x, from=NULL, to=NULL, ...){
 ## Universal accessor:
 ## tries to find any type of data within the obkData object
 ##
-setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSource=FALSE, ...){
+setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSource=TRUE, ...){
     data <- as.character(data)
 
     result <- data.frame()
@@ -256,7 +256,7 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
     ## LOOK FOR SLOT NAMES ##
     if(data[1] %in% slotNames(x)) return(slot(x, data))
 
-    ## HANDLE 'WHERE'
+    ## HANDLE 'WHERE' ##
     if(!is.null(where)){
         where <- match.arg(as.character(where), c("individuals", "records", "context", "dna"))
 
@@ -267,11 +267,11 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
                 return(NULL)
             }
             if(any(data %in% names(x@individuals))){
-                temp<-x@individuals[,data,drop=FALSE]
-                temp<-cbind(temp,rownames(x@individuals))
-                temp<-cbind(temp,rep("individuals",dim(temp)[1]))
+                temp<-x@individuals[,data,drop=FALSE] # get data
+                temp<-cbind(temp,rownames(x@individuals)) # add individualID
+                temp<-cbind(temp,rep("individuals",dim(temp)[1])) # add source
                 result<-temp
-                names(result)<-c(data,"individualID","source")
+                names(result)<-c(data,"individualID", "source")
             } else {
                 warning(paste("data '", data, "'was not found in @individuals"))
                 return(NULL)
@@ -357,71 +357,15 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
     } # end if 'where' provided
     else{
         ## ELSE, LOOK EVERYWHERE ##
-
-        ## LOOK FOR 'DATA' IN INDIVIDUALS ##
-        if(!is.null(x@individuals)){
-            if(any(data %in% names(x@individuals))){
-                temp <- x@individuals[,data,drop=FALSE]
-                ## temp<-cbind(temp,rownames(x@individuals))
-                temp <- cbind(temp,rep("individuals", nrow(temp)))
-                colnames(temp)<-c(data,"source")
-                rownames(temp) <- rownames(x@individuals)
-                result <- temp
-            }
+        result <- NULL
+        i <- 1
+        while(is.null(result)){
+            if(i>4) break
+            result <- suppressWarnings(get.data(x, data=data, where=c("individuals", "records", "context", "dna")[i],
+                                                drop=drop, showSource=showSource))
+            i <- i+1
         }
 
-
-        ## LOOK FOR 'DATA' IN RECORDS ##
-        if(!is.null(x@records)){
-            ## look in @records ##
-            if(any(data %in% names(x@records))){
-                return(x@records[[data]])
-            }
-
-            ## look within slots in @records ##
-            for(i in 1:length(x@records)){
-                if(any(data %in% names(x@records[[i]]))){
-                    temp <- x@records[[i]][, data, drop=FALSE]
-                    temp <- cbind(temp, rep(paste("records", names(x@records)[i], sep="."), nrow(temp)))
-                    colnames(temp) <- c(data, "source")
-                    rownames(temp) <- rownames(x@records[[i]])
-                    result <- rbind(result,temp)
-                }
-            }
-        }
-
-
-        ## LOOK FOR 'DATA' IN CONTEXT ##
-        if(!is.null(x@context)){
-            ## look in @context ##
-            if(any(data %in% names(x@context))){
-                return(x@context[[data]])
-            }
-
-            ## look within slots in @context ##
-            for(i in 1:length(x@context)){
-                if(any(data %in% names(x@context[[i]]))){
-                    temp <- x@context[[i]][, data, drop=FALSE]
-                    temp <- cbind(temp, rep(paste("context", names(x@context)[i], sep="."), nrow(temp)))
-                    colnames(temp) <- c(data, "source")
-                    rownames(temp) <- rownames(x@context[[i]])
-                    result <- rbind(result,temp)
-                }
-            }
-        }
-
-
-
-        ## LOOK FOR 'DATA' IN DNA ##
-        if(!is.null(x@dna)){
-            if(any(data %in% names(x@dna@meta))){
-                temp <- x@dna@meta[,data,drop=FALSE]
-                temp <- cbind(temp,rep("dna", nrow(temp)))
-                colnames(temp) <- c(data, "source")
-                rownames(temp) <- rownames(x@dna@meta)
-                result <- rbind(result,temp)
-            }
-        }
     } # end search everywhere
 
 
