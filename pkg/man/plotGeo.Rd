@@ -66,5 +66,6 @@ plotGeo(ToyOutbreak,location=c('lon','lat'), zoom=15,
 
 }
 \author{
-	Rolf Ypma
+  Original version by Rolf Ypma.
+  Tweaks by Thibaut Jombart.
 }

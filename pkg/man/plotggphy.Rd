@@ -140,6 +140,6 @@ p <- plotggphy(x, branch.unit = "year", tip.color = "location",
 
 }
 \author{
-  Anton Camacho
+  Original versoin by Anton Camacho, modified by Thibaut Jombart.
 }
 
