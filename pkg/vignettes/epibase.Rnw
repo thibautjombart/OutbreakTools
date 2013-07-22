@@ -203,7 +203,7 @@ plot(oc.static, main="Static contact network")
 onset <- c(1, 2, 3, 4, 5)
 terminus <- c(1.2, 4, 3.5, 4.1, 6)
 oc.dynamic <- new("obkContacts",cf,ct, directed=FALSE,
-                  contactStart=onset, contactEnd=terminus)
+                  start=onset, end=terminus)
 slotNames(oc.dynamic)
 oc.dynamic
 @
@@ -215,7 +215,7 @@ using \texttt{get.contacts} (or alternatively, \texttt{network.extract} on the
 \texttt{networkDynamic} object directly).
 As a reminder, here is the input of the graph \texttt{oc.dynamic}:
 <<>>=
-data.frame(onset,terminus,ct,cf)
+as.data.frame(oc.dynamic)
 @
 And here are various plots, first of the full (collapsed) contact network, then for different time
 intervals (0--2, 2--4, 4--6):
@@ -377,11 +377,16 @@ ToyOutbreakRaw$trees
 
 All this information will be compiled into a single object by:
 <<>>=
+attach(ToyOutbreakRaw)
+
 x <- new ("obkData", individuals=individuals, records=records,
           contacts=contacts, contacts.start=contacts.start,
           contacts.end=contacts.end, dna=dna,
           dna.individualID=dna.info$individualID,
           dna.date=dna.info$date, sample=dna.info$sample, trees=trees)
+
+detach(ToyOutbreakRaw)
+
 head(x)
 summary(x)
 @
@@ -800,8 +805,9 @@ Note that dates can also be provided as character strings in any sensible format
 Finally, note that several filters can be specified at the same time.
 For instance, in the following we extract European data collected between the 1st June and the 31st August:
 <<lastsubset>>=
-temp <- get.data(x, "location")=="Europe"
-toKeep <- rownames(get.data(x, "location",drop=FALSE))[temp]
+temp <- get.data(x, "location")
+head(temp)
+toKeep <- temp$individualID[temp$location=="Europe"]
 x.summerEur <- subset(x, date.from="01/06/2009", date.to="31/08/2009",
                       indiv=toKeep)
 summary(x.summerEur)
@@ -843,13 +849,15 @@ library(ape)
 plot(get.trees(x2)[[1]])
 axisPhylo()
 @
-
+or alternatively:
+<<>>=
+plot(x2, "phylo")
+@
 \noindent Note that we could ask for a different model of evolution, for instance Kimura's 2
-parameters distance, and we may want to display the tree and indicate collection dates using tip colors;
-this can be done by:
+parameters distance:
 <<tree1,fig.keep="last",out.width=".75\\textwidth">>=
-tree1 <- make.phylo(x.summerEur, locus=1, ask=FALSE, model="K80",
-                    plot=TRUE, color.by="dat")
+x3 <- make.phylo(x.summerEur, locus=1, ask=FALSE, model="K80")
+plot(get.trees(x3)[[1]])
 axisPhylo()
 @
 
@@ -881,8 +889,9 @@ Default is \texttt{beta=0.001}.
 Default is \texttt{nu=10}.
 \item \texttt{L}: length of genetic sequences to be generated. Default is \texttt{L=1000}.
 \item \texttt{mu}: rate of mutation per site per transmission event. Default is \texttt{mu=0.001}.
-\item \texttt{showPlots}: logical indicating whether to plot the SIR trajectory over time, the transmission tree,
-and the phylogenetic tree if created. Default is \texttt{showPlots=FALSE}.
+\item \texttt{plot}: logical indicating whether to create a plot of the SIR trajectory over
+  time. Default is \texttt{plot=TRUE}. Plot will be a \texttt{ggplot} object stored as the
+  \texttt{\$plot} slot of the returned list.
 \item \texttt{makePhyloTree}: logical indicating whether to create a neighbor-joining tree from the simulated sequences.
 Default is \texttt{makePhyloTree=FALSE}.
 \end{itemize}
@@ -891,14 +900,24 @@ Let us look at an example in a very small population of size \texttt{N=50} and w
 raised accordingly to generate a few transmission events:
 <<fig.width=10, out.width="\\textwidth">>=
 set.seed(1)
-x <- simuEpi(N=50,beta=0.01,showPlots=TRUE,makePhylo=TRUE)
+x <- simuEpi(N=50, D=20, beta=0.01,plot=TRUE,makePhylo=TRUE)
 summary(x)
+x$dynamics
+summary(x$x)
 @
 
-We can see that 11 individuals got infected over the default period of \texttt{D=10} days during which the outbreak
-was simulated. The panel on the left shows the trajectories for the number of susceptible, infectious and removed
-individuals over time. The panel in the middle shows the transmission tree. The panel on the right shows a Neighbor-Joining
-tree based on the simulated sequence data.
+The output of the function is a list containing the SIR dynamics (\texttt{x\$dynamics}), an
+\texttt{obkData} object (\texttt{x\$x}) and an optional \texttt{ggplot} graphic of the SIR dynamics (\texttt{x\$plot}).
+We can see that \Sexpr{get.nindividuals(x$x)} individuals got infected over the time period of \texttt{D=20} days during which the outbreak
+was simulated.
+The actual transmission tree is stored as contact information:
+<<>>=
+plot(x$x, "contacts", main="Transmission tree")
+@
+The object also possesses a Neighbor-Joining tree based on the simulated sequence data:
+<<>>=
+plot(x$x, "phylo")
+@
 
 
 
@@ -939,31 +958,33 @@ Let's plot the outbreak of equine influenza provided in \texttt{HorseFlu}:
 data(HorseFlu)
 summary(HorseFlu)
 @
-\noindent then plot
+\noindent The default plot is a timeline showing all time-stamped data
 <<plottime1>>=
 plot(HorseFlu,'timeline')
 @
-
-These are a lot of horses in one plot, and we may want to restrict the plot to a selection of individuals.
-We can do this by a vector specifying the indices of the individuals to plot. Lets plot the first twenty:
-<<plotfirst20>>=
-plot(HorseFlu,selection=1:20)
+This warning makes sense: in this dataset, there is simply too much information for us to visualize
+it alltogether.
+This can be improved by passing further arguments to \texttt{plotIndividualTimeline}:
+<<>>=
+args(plotIndividualTimeline)
 @
-
-\noindent Notice that the names of the individuals are now plotted. The default behaviour is to plot these when less than fifty individuals are plotted, but we can manually override this by setting \texttt{plotNames}.
-The plotting of sampling times is toggled by \texttt{plotSamples}. This defaults to TRUE, as an error will be generated when no 'date' fields can be found to plot, as would be the case for the equine dataset.
+For instance, we can choose to visualize only vaccination dates:
+<<>>=
+plot(HorseFlu,'timeline', what="Vac")
+@
+note that the argument \texttt{what} actually uses regular expressions to find matching fields in
+the data, so that here \texttt{'Vac'} allows us to keep \texttt{FirstVac} and \texttt{LastVac}.
 \\
 
-We can also colour individuals by a characteristic provided in the \texttt{obkData} object.
-In this case, let us colour the horses by the yard they were in, a column called 'yardID'
+Individuals can also be ordered and colored according to individual meta information.
+For instance, to visualize collection dates of DNA and sort individuals per yards:
 <<>>=
-plot(HorseFlu,selection=1:20,colorBy='yardID')
+plotIndividualTimeline(HorseFlu, what="dna", colorBy="yardID", orderBy="yardID",plotNames=TRUE)
 @
-
-\noindent It might be useful to also order the individuals, which can be done according to some
-provided information (here, the yard) using \texttt{orderBy}:
-<<>>=
-plot(HorseFlu,selection=1:20,colorBy='yardID',orderBy='yardID')
+Note that only individuals for which requested information is present (here, DNA sequences) are plotted.
+It is also possible to specify a subset of individuals using \texttt{selection}:
+<<plotfirst20>>=
+plot(HorseFlu,selection=1:20, colorBy="yardID", orderBy="yardID", size=5)
 @
 
 
