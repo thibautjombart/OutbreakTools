@@ -69,28 +69,28 @@ plotIndividualTimeline <- function(x, what="", selection=NULL, ordering=NULL, or
     if(length(toKeep)<1) stop("No date information to be used for the timeline plot")
     df.ts <- df.ts[, toKeep,drop=FALSE]
 
-    ## melt into long form, careful to convert dates to characters and back
+    ## convert dates to characters and back
     isDate <- sapply(df.ts, inherits, "Date")
     for(i in 1:ncol(df.ts)) if(inherits(df.ts[[i]], "Date")) df.ts[[i]] <- as.character(df.ts[[i]])
 
     ## add individualID and melt
     df.ts$individualID <- individualID
-    df.ts$yITL <- 1:nrow(df.ts)
-    df.ts <- melt(df.ts, id.var=c("individualID","yITL"))
+    df.ts <- melt(df.ts, id.var=c("individualID"))
 
     ## remove NAs, restore Date class
     df.ts <- na.omit(df.ts)
     df.ts$value <- .process.Date(df.ts$value)
-    names(df.ts) <- c("individualID", "yITL", "type", "date")
+    df.ts$yITL <- as.integer(factor(df.ts$individualID, levels=unique(df.ts$individualID)))
+    names(df.ts) <- c("individualID", "type", "date", "yITL")
 
 
     ## GET THE DATA.FRAME FOR THE INDIVIDUAL LINES ##
     df.ind <- x@individuals[ordering,,drop=FALSE]
-    df.ind$yITL <- 1:nrow(df.ind)
 
     ## keep only relevant individuals
     df.ind <- df.ind[unique(df.ts$individualID),,drop=FALSE]
     df.ind$individualID <- rownames(df.ind)
+    df.ind$yITL <- 1:nrow(df.ind)
 
 
     ##df.full <- merge(df.ts, df.ind, by="individualID", all.x=TRUE, all.y=FALSE, sort=FALSE) # not needed
@@ -113,7 +113,7 @@ plotIndividualTimeline <- function(x, what="", selection=NULL, ordering=NULL, or
 
     ## add indiv labels
     if(plotNames){
-        out <- out + scale_y_discrete(aes(name="Individuals", label=individualID))
+        out <- out + scale_y_discrete(name="Individuals", labels=df.ind$individualID)
     } else {
         out <- out + scale_y_discrete(name="Individuals",breaks=NULL)
     }
