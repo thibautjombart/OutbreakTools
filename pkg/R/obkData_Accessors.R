@@ -361,14 +361,11 @@ setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSo
     } # end if 'where' provided
     else{
         ## ELSE, LOOK EVERYWHERE ##
-        result <- NULL
-        i <- 1
-        while(is.null(result)){
-            if(i>4) break
-            result <- suppressWarnings(get.data(x, data=data, where=c("individuals", "records", "context", "dna")[i],
-                                                drop=drop, showSource=TRUE))
-            i <- i+1
-        }
+        result <- lapply(c("individuals", "records", "context", "dna"), function(e)
+                         suppressWarnings(get.data(x, data=data, where=e, drop=drop, showSource=TRUE)))
+
+        result <- Reduce("rbind", result)
+        if(nrow(result)>0) rownames(result) <- NULL
 
     } # end search everywhere
 
