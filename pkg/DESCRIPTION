@@ -1,12 +1,8 @@
 Package: epibase
 Version: 0.1-2
-Date: 2013/06/20
+Date: 2013/07/22
 Title: basic tools for the analysis of disease outbreaks.
-Author: {The Hackout team (In alphabetic order: David Aanensen, Marc Baguelin,
-    Paul Birrell, Simon Cauchemez, Anton Camacho, Caroline Colijn, Anne Cori,
-    Xavier Didelot, Ken Eames, Christophe Fraser, Simon Frost, Niel Hens,
-    Joseph Hugues, Thibaut Jombart, Lulla Opatowski, Oliver Ratmann, Samuel
-    Soubeyrand, Marc Suchard, Jacco Wallinga, Rolf Ypma)}
+Author: The Hackout team (In alphabetic order: David Aanensen, Marc Baguelin, Paul Birrell, Simon Cauchemez, Anton Camacho, Caroline Colijn, Anne Cori, Xavier Didelot, Ken Eames, Christophe Fraser, Simon Frost, Niel Hens, Joseph Hugues, Thibaut Jombart, Lulla Opatowski, Oliver Ratmann, Samuel Soubeyrand, Marc Suchard, Jacco Wallinga, Rolf Ypma)
 Maintainer: Thibaut Jombart <t.jombart@imperial.ac.uk>
 Suggests:
     EpiEstim

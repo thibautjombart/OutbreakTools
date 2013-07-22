@@ -38,7 +38,7 @@
   \code{\link{plotggMST}}, \code{\link{plotggphy}}, \code{\link{plot.obkContacts}}.
 }
 \author{
-  Rolf Ypma  \email{Rolf.Ypma@rivm.nl}
+  Rolf Ypma  \email{Rolf.Ypma@rivm.nl}, 
   Thibaut Jombart \email{t.jombart@imperial.ac.uk}
 }
 \examples{

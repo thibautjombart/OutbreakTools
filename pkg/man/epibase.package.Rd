@@ -69,8 +69,8 @@
   \tabular{ll}{
     Package: \tab epibase\cr
     Type: \tab Package\cr
-    Version: \tab 0.1-0\cr
-    Date: \tab 2013-05-22 \cr
+    Version: \tab 0.1-3\cr
+    Date: \tab 2013-07-22 \cr
     License: \tab GPL (>=2)
   }
 }
