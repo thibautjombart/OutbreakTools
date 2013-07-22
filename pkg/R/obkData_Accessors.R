@@ -249,6 +249,11 @@ setMethod("get.ncontacts", "obkData", function(x, from=NULL, to=NULL, ...){
 ## tries to find any type of data within the obkData object
 ##
 setMethod("get.data", "obkData", function(x, data, where=NULL, drop=TRUE, showSource=TRUE, ...){
+    ## disable bloody stringsAsFactor ##
+    o.saf <- options("stringsAsFactors")
+    on.exit(options(o.saf))
+    options(stringsAsFactors=FALSE)
+
     data <- as.character(data)
 
     result <- data.frame()
