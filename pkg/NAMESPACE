@@ -37,6 +37,10 @@ importFrom(networkDynamic, "activate.edges", "network.extract", "is.networkDynam
 
 importFrom(scales, "date_breaks", "date_format")
 
+importFrom(rjson, "fromJSON")
+
+
+
 ## IMPORTS TO FIX LATER ##
 ## importFrom(plyr, "rename") # must be something else
 
