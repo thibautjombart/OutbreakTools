@@ -35,5 +35,6 @@ Collate:
     'utils.R'
     'plotGeo.R'
     'annotatedTreeReader.R'
+    'importFromJSON.R'
     'zzz.R'
     'epibase.R'

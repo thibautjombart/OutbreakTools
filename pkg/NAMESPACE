@@ -5,6 +5,7 @@
 exportPattern("^[^\\.]")
 export(".process.Date")
 export(".inlineSummary")
+export(".restoreNumericType")
 
 # Import all packages listed as Imports or Depends
 import(methods, network, ggplot2, knitr)
