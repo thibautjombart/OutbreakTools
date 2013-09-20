@@ -4,11 +4,22 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
         ## convert from json to list
         datind <- fromJSON(individuals)
 
-        ## get data into a data.frame
-        tabind <- Reduce(rbind.data.frame, lapply(datind, unlist, recursive=TRUE))
-        if(!is.data.frame(tabind)){ # case of 1 single row
-            tabind <- data.frame(t(tabind))
+        ## get data into a data.frame ##
+        ## get all fields
+        temp <- lapply(datind, unlist, recursive=TRUE)
+        allfields <- unique(unlist(lapply(temp, names)))
+
+        ## function to fill in vectors so that they all have 'allfields' entries
+        f1 <- function(x){
+            out <- as.character(rep(NA, length(allfields)))
+            names(out) <- allfields
+            out[names(x)] <- x
+            return(out)
         }
+
+        tabind <- matrix(unlist(lapply(temp, f1)), nrow=length(datind), byrow=TRUE)
+        tabind <- as.data.frame(tabind)
+        names(tabind) <- allfields
 
         ## restore numerics where needed
         tabind <- data.frame(lapply(tabind, .restoreNumericType))
