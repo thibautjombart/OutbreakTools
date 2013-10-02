@@ -37,7 +37,7 @@ importFrom(networkDynamic, "activate.edges", "network.extract", "is.networkDynam
 importFrom(scales, "date_breaks", "date_format")
 
 ## IMPORTS TO FIX LATER ##
-## importFrom(plyr, "rename") # must be something else
+importFrom(plyr, "rename") # must be something else
 
 ## importFrom(network, "network.vertex.names", "network.vertex.names<-",
 ##            "delete.vertices", "network.initialize", "add.edge", "%n%", "%n%<-",
