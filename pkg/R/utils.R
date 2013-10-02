@@ -111,3 +111,18 @@
 }
 
 
+
+
+
+
+## RESTORE NUMERIC TYPE TO A VECTOR IF NEEDED ##
+.restoreNumericType <- function(x){
+    if(all(is.na(x))) return(x)
+    x.nona <- x[!is.na(x)]
+
+    ## find numeric types ##
+    temp <- sub("-{0,1}[[:digit:].]*e{0,1}[[:digit:].]*","", x)
+    if(all(temp=="")) return(as.numeric(x))
+
+    return(x)
+}
