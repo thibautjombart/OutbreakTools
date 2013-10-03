@@ -31,7 +31,15 @@ phylo2ggphy<-function(phylo,tip.dates=NULL,branch.unit=NULL,verbose=FALSE){
 
 	if(!is.rooted(phy)){
 
-		phy<-root(phy,node=phy.root,resolve.root=TRUE)
+		sel <- which(edge$beg == phy.root)[1]
+		outgroup <- edge$end[sel]
+		
+		if (outgroup > N.tips){
+	   		outgroup <- prop.part(phy)[outgroup - N.tips]			
+		}
+		
+		phy <- root(phy, outgroup = unlist(outgroup), resolve.root = TRUE)		
+
 		edge<-as.data.frame(phy$edge)
 		names(edge)<-c("beg","end")
 
