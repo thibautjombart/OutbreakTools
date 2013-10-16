@@ -50,6 +50,11 @@ plot(HorseFlu,orderBy='yardID',colorBy='yardID')
 plot(HorseFlu,orderBy='yardID',colorBy='yardID',
      selection=1:30) # only the first 30
 
+## plot contacts
+data(ToyOutbreak)
+plot(ToyOutbreak, "contacts")
+
+\dontrun{
 ## plot geographic distribution of individuals
 plot(HorseFlu, "geo", location=c('lon','lat'), colorBy='sex',
      zoom=12,center='9')
@@ -57,10 +62,6 @@ plot(HorseFlu, "geo", location=c('lon','lat'), colorBy='sex',
 ## plot minimum spanning tree for first 10 individuals
 get.nindividuals(HorseFlu)
 plot(subset(HorseFlu, individuals=1:10), "mst")
-
-## plot contacts
-data(ToyOutbreak)
-plot(ToyOutbreak, "contacts")
-
+}
 }
 \keyword{multivariate}

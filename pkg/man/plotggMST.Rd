@@ -21,6 +21,7 @@
 }
 
 \examples{
+\dontrun{
 ## load data
 data(HorseFlu)
 x <- HorseFlu
@@ -35,7 +36,7 @@ x <- ToyOutbreak
 ## plot minimum spanning tree for gene1
 plotggMST(x, locus="gene1")
 
-
+}
 }
 \author{
   Joseph Hughes

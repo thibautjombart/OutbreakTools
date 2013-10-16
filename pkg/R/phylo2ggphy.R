@@ -33,12 +33,12 @@ phylo2ggphy<-function(phylo,tip.dates=NULL,branch.unit=NULL,verbose=FALSE){
 
 		sel <- which(edge$beg == phy.root)[1]
 		outgroup <- edge$end[sel]
-		
+
 		if (outgroup > N.tips){
-	   		outgroup <- prop.part(phy)[outgroup - N.tips]			
-		}
-		
-		phy <- root(phy, outgroup = unlist(outgroup), resolve.root = TRUE)		
+                    outgroup <- prop.part(phy)[outgroup - N.tips]
+                }
+
+		phy <- root(phy, outgroup = unlist(outgroup), resolve.root = TRUE)
 
 		edge<-as.data.frame(phy$edge)
 		names(edge)<-c("beg","end")
@@ -107,7 +107,7 @@ phylo2ggphy<-function(phylo,tip.dates=NULL,branch.unit=NULL,verbose=FALSE){
 		visited<-c(visited,cur.node)
 	}
 
-	
+
     if(!is.null(tip.dates) & !is.null(branch.unit))
     	if(branch.unit%in%c("year","month","day")){
 #tip.date<-as.Date(extract.string(phy$tip.label,"_",2))
@@ -118,8 +118,8 @@ phylo2ggphy<-function(phylo,tip.dates=NULL,branch.unit=NULL,verbose=FALSE){
 		if(verbose){
 	        cat("X axis is converted into date\n")
 			new.tip.date<-root.date+df$age*time.unit
-			print(paste("reconstruction of nodes ages in Date format led to change of the tip age ranging:",range(new.tip.date-df$date)))	
-		}	
+			print(paste("reconstruction of nodes ages in Date format led to change of the tip age ranging:",range(new.tip.date-df$date)))
+		}
 
 #x coord as date
         x<-root.date+x*time.unit

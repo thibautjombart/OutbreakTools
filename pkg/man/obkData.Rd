@@ -372,12 +372,13 @@ plot(subset(x, 1:50), colorBy='Sex', size=4)
 ## plot contacts ##
 plot(x, "contacts", main="Contacts")
 
+\dontrun{
 ## visualize data on a map ##
 plot(x,'geo',location=c('lon','lat'),zoom=15,colorBy='Sex')
 
 ## plot the tree ##
 plotggphy(x)
 plotggphy(subset(x, 1:50), tip.color="Sex", color.pal="Set1")
-
+}
 }
 \keyword{classes}

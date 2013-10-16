@@ -70,7 +70,7 @@
     Package: \tab epibase\cr
     Type: \tab Package\cr
     Version: \tab 0.1-3\cr
-    Date: \tab 2013-07-22 \cr
+    Date: \tab 2013-11-05 \cr
     License: \tab GPL (>=2)
   }
 }
