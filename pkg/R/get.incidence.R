@@ -22,6 +22,8 @@ setMethod("get.incidence", "Date", function(x, first.date=NULL, last.date=NULL, 
     } else {
         last.date <- max(max(x, na.rm=TRUE), last.date)
     }
+    interval <- round(interval)
+    if(interval<1) interval <- 1
     out.dates <- seq(first.date, last.date, by=interval) # output dates
 
 
@@ -44,7 +46,7 @@ setMethod("get.incidence", "Date", function(x, first.date=NULL, last.date=NULL, 
 setMethod("get.incidence", "obkSequences", function(x, first.date=NULL, last.date=NULL, ...){
     if(is.null(x) || get.nsequences(x)<1) return(NULL)
 
-    out <- get.incidence(x@meta$date)
+    out <- get.incidence(x@meta$date, first.date=first.date, last.date=last.date, ...)
     return(out)
 
 }) # end obkSequences method
@@ -61,7 +63,7 @@ setMethod("get.incidence", "obkContacts", function(x, first.date=NULL, last.date
     if(is.null(x) || get.ncontacts(x)<1 || !is.networkDynamic(x@contacts)) return(NULL)
 
     ## CHECK THAT THIS IS A DYNAMIC CONTACT NETWORK ##
-    out <- get.incidence(as.data.frame(x)$onset)
+    out <- get.incidence(as.data.frame(x)$onset, first.date=first.date, last.date=last.date, ...)
     return(out)
 
 }) # end obkContacts method
