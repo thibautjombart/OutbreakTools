@@ -5,6 +5,8 @@
 ###################
 setGeneric("get.incidence", function(x, ...) standardGeneric("get.incidence"))
 
+
+
 #################
 ## Date method ##
 #################
@@ -45,8 +47,24 @@ setMethod("get.incidence", "obkSequences", function(x, first.date=NULL, last.dat
     out <- get.incidence(x@meta$date)
     return(out)
 
-}) # end get.incidence
+}) # end obkSequences method
 
+
+
+
+
+
+########################
+## obkContacts method ##
+########################
+setMethod("get.incidence", "obkContacts", function(x, first.date=NULL, last.date=NULL, ...){
+    if(is.null(x) || get.ncontacts(x)<1 || !is.networkDynamic(x@contacts)) return(NULL)
+
+    ## CHECK THAT THIS IS A DYNAMIC CONTACT NETWORK ##
+    out <- get.incidence(as.data.frame(x)$onset)
+    return(out)
+
+}) # end obkContacts method
 
 
 
