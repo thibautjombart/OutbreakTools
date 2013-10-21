@@ -96,7 +96,6 @@ setMethod("get.incidence", "obkContacts", function(x, first.date=NULL, last.date
 setMethod("get.incidence", "obkData", function(x, data, where=NULL, val.min=NULL, val.max=NULL, val.kept=NULL, regexp=NULL,
                                                first.date=NULL, last.date=NULL, interval=1, add.zero=TRUE, ...){
     ## HANDLE ARGUMENTS ##
-    where <- match.arg(where)
     if(is.null(val.min)) val.min <- -Inf
     if(is.null(val.max)) val.max <- Inf
 
@@ -117,7 +116,7 @@ setMethod("get.incidence", "obkData", function(x, data, where=NULL, val.min=NULL
     if(is.list(df) && !is.data.frame(df) && is.data.frame(df[[1]])) df <- df[[1]]
 
     ## get dates ##
-    if(!date %in% names(df)) stop("no date in the data")
+    if(!"date" %in% names(df)) stop("no date in the data")
     dates <- df$date
 
     ## get optional values associated to the dates ##
@@ -143,9 +142,9 @@ setMethod("get.incidence", "obkData", function(x, data, where=NULL, val.min=NULL
             toKeep <- toKeep & (values>=val.min & values<=val.max)
         }
 
-        ## if val.ok is provided ##
-        if(!is.null(val.ok)) {
-            toKeep <- toKeep & (values %in% val.ok)
+        ## if val.kept is provided ##
+        if(!is.null(val.kept)) {
+            toKeep <- toKeep & (values %in% val.kept)
         }
 
         ## if regexp is provided ##
@@ -159,10 +158,11 @@ setMethod("get.incidence", "obkData", function(x, data, where=NULL, val.min=NULL
     }
 
     ## CALL THE DATE PROCEDURE ##
+    if(length(dates)==0) return(NULL)
     out <- get.incidence(dates, first.date=first.date, last.date=last.date,
                          interval=interval, add.zero=add.zero)
 
     ## RETURN OUTPUT ##
     return(out)
-}) # end get.incidence
+}) # end obkData method
 
