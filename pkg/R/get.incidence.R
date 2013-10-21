@@ -10,30 +10,38 @@ setGeneric("get.incidence", function(x, ...) standardGeneric("get.incidence"))
 #################
 ## Date method ##
 #################
-setMethod("get.incidence", "Date", function(x, first.date=NULL, last.date=NULL,
+setMethod("get.incidence", "Date", function(x, from=NULL, to=NULL,
                                             interval=1, add.zero=TRUE, ...){
     ## GET DATES OF THE OUTPUT ##
-    if(is.null(first.date)){
-        first.date <- min(x, na.rm=TRUE)
-    } else {
-        if(!inherits(first.date, "Date")) first.date <- as.Date(first.date)
-        first.date <- min(min(x, na.rm=TRUE), first.date)
+    ## get first/last dates ##
+    first.date <- min(x, na.rm=TRUE)
+    last.date <- max(x, na.rm=TRUE)
+
+    ## handle from ##
+    if(is.null(from)){
+        from <- first.date
     }
-    if(is.null(last.date)){
-        last.date <- max(x, na.rm=TRUE)
-    } else {
-        if(!inherits(last.date, "Date")) last.date <- as.Date(last.date)
-        last.date <- max(max(x, na.rm=TRUE), last.date)
+    if(is.numeric(from)) from <- first.date+from
+    if(!inherits(from, "Date")) from <- as.Date(from)
+    from <- max(from, first.date)
+
+    ## handle to ##
+    if(is.null(to)){
+        to <- last.date
     }
-    if(is.null(interval) || interval<1) interval <- 1
+    if(is.numeric(to)) to <- first.date+to
+    if(!inherits(to, "Date")) to <- as.Date(to)
+    to <- min(to, last.date)
+
+    ## generate output dates ##
     interval <- round(interval)
-    out.dates <- seq(first.date, last.date, by=interval) # output dates
+    out.dates <- seq(from, to, by=interval) # output dates
 
 
     ## COMPUTE INCIDENCE ##
     ## incid is computed for time intervals
     ## incid on interval [d1,d2[ is named after d1
-    breaks <- c(as.integer(out.dates), as.integer(last.date)+interval)
+    breaks <- c(as.integer(out.dates), as.integer(to)+interval)
     incid <- table(cut(as.integer(x), breaks=breaks, right=FALSE))
 
     out <- data.frame(date=out.dates, incidence=as.integer(incid))
@@ -41,7 +49,7 @@ setMethod("get.incidence", "Date", function(x, first.date=NULL, last.date=NULL,
     ## add zero at the end if needed
     if(add.zero && incid[length(incid)] > 1e-14){
         out <- as.list(out)
-        out$date <- c(out$date, last.date+interval)
+        out$date <- c(out$date, to+interval)
         out$incidence <- c(out$incidence, 0L)
         out <- as.data.frame(out)
     }
@@ -56,11 +64,11 @@ setMethod("get.incidence", "Date", function(x, first.date=NULL, last.date=NULL,
 #########################
 ## obkSequences method ##
 #########################
-setMethod("get.incidence", "obkSequences", function(x, first.date=NULL, last.date=NULL,
+setMethod("get.incidence", "obkSequences", function(x, from=NULL, to=NULL,
                                                     interval=1, add.zero=TRUE, ...){
     if(is.null(x) || get.nsequences(x)<1) return(NULL)
 
-    out <- get.incidence(x@meta$date, first.date=first.date, last.date=last.date,
+    out <- get.incidence(x@meta$date, from=from, to=to,
                          interval=interval, add.zero=add.zero, ...)
     return(out)
 
@@ -74,12 +82,12 @@ setMethod("get.incidence", "obkSequences", function(x, first.date=NULL, last.dat
 ########################
 ## obkContacts method ##
 ########################
-setMethod("get.incidence", "obkContacts", function(x, first.date=NULL, last.date=NULL,
+setMethod("get.incidence", "obkContacts", function(x, from=NULL, to=NULL,
                                                    interval=1, add.zero=TRUE, ...){
     if(is.null(x) || get.ncontacts(x)<1 || !is.networkDynamic(x@contacts)) return(NULL)
 
     ## CHECK THAT THIS IS A DYNAMIC CONTACT NETWORK ##
-    out <- get.incidence(as.data.frame(x)$onset, first.date=first.date, last.date=last.date,
+    out <- get.incidence(as.data.frame(x)$onset, from=from, to=to,
                          interval=interval, add.zero=add.zero, ...)
     return(out)
 
@@ -96,7 +104,7 @@ setMethod("get.incidence", "obkContacts", function(x, first.date=NULL, last.date
 ## 'values' are optional and can be used to subset the retained 'dates'
 ## (e.g. define what a positive case is)
 setMethod("get.incidence", "obkData", function(x, data, where=NULL, val.min=NULL, val.max=NULL, val.kept=NULL, regexp=NULL,
-                                               first.date=NULL, last.date=NULL, interval=1, add.zero=TRUE, ...){
+                                               from=NULL, to=NULL, interval=1, add.zero=TRUE, ...){
     ## HANDLE ARGUMENTS ##
     if(is.null(val.min)) val.min <- -Inf
     if(is.null(val.max)) val.max <- Inf
@@ -108,7 +116,7 @@ setMethod("get.incidence", "obkData", function(x, data, where=NULL, val.min=NULL
 
     ## call specific procedures if applicable ##
     if(inherits(df, c("obkSequences", "obkContacts"))) {
-        return(get.incidence(df, first.date=first.date, last.date=last.date,
+        return(get.incidence(df, from=from, to=to,
                              interval=interval, add.zero=add.zero))
     }
 
@@ -161,7 +169,7 @@ setMethod("get.incidence", "obkData", function(x, data, where=NULL, val.min=NULL
 
     ## CALL THE DATE PROCEDURE ##
     if(length(dates)==0) return(NULL)
-    out <- get.incidence(dates, first.date=first.date, last.date=last.date,
+    out <- get.incidence(dates, from=from, to=to,
                          interval=interval, add.zero=add.zero)
 
     ## RETURN OUTPUT ##

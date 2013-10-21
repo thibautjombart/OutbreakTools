@@ -35,27 +35,31 @@
 \usage{
 get.incidence(x, \dots)
 
-\S4method{get.incidence}{Date}(x, first.date=NULL, last.date=NULL,
+\S4method{get.incidence}{Date}(x, from=NULL, to=NULL,
           interval=1, add.zero=TRUE, \dots)
 
-\S4method{get.incidence}{obkSequences}(x, first.date=NULL, last.date=NULL,
+\S4method{get.incidence}{obkSequences}(x, from=NULL, to=NULL,
           interval=1, add.zero=TRUE, \dots)
 
-\S4method{get.incidence}{obkContacts}(x, first.date=NULL, last.date=NULL,
+\S4method{get.incidence}{obkContacts}(x, from=NULL, to=NULL,
           interval=1, add.zero=TRUE, \dots)
 
 \S4method{get.incidence}{obkData}(x, data, where=NULL,
           val.min=NULL, val.max=NULL, val.kept=NULL, regexp=NULL,
-          first.date=NULL, last.date=NULL,
+          from=NULL, to=NULL,
           interval=1, add.zero=TRUE, \dots)
 
 }
 \arguments{
   \item{x}{an input object to seek incidence from.}
-  \item{first.date}{the first date to be considered, in \code{Date}
-    format, or a character string in the form 'YYYY-mm-dd' (e.g. 1982-08-20).}
-  \item{last.date}{the last date to be considered, in \code{Date}
-    format, or a character string in the form 'YYYY-mm-dd' (e.g. 1982-08-20).}
+  \item{from}{the first date to be considered, in \code{Date}
+    format, or a character string in the form 'YYYY-mm-dd'
+    (e.g. 1982-08-20); if numeric, will be interpreted as number of days
+    from the first date.}
+  \item{to}{the last date to be considered, in \code{Date}
+    format, or a character string in the form 'YYYY-mm-dd'
+    (e.g. 1982-08-20); if numeric, will be interpreted as number of days
+    from the first date.}
   \item{interval}{the time interval to be used to computed incidence, in
     number of days.}
   \item{add.zero}{a logical indicating if a zero should be added at the
@@ -94,7 +98,7 @@ date (D1), including the first date, and excluding the second one (D2).
 dates <- as.Date("2001-01-01") + c(0,1,2,1,1,4)
 get.incidence(dates)
 get.incidence(dates, interval=2)
-get.incidence(dates, interval=2, first.date="2001-01-03")
+get.incidence(dates, interval=2, from="2001-01-03")
 
 ## OBKDATA/OBKCONTACTS/OBKSEQUENCES OBJECTS ##
 data(ToyOutbreak)
