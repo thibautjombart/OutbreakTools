@@ -16,11 +16,13 @@ setMethod("get.incidence", "Date", function(x, first.date=NULL, last.date=NULL,
     if(is.null(first.date)){
         first.date <- min(x, na.rm=TRUE)
     } else {
+        if(!inherits(first.date, "Date")) first.date <- as.Date(first.date)
         first.date <- min(min(x, na.rm=TRUE), first.date)
     }
     if(is.null(last.date)){
         last.date <- max(x, na.rm=TRUE)
     } else {
+        if(!inherits(last.date, "Date")) last.date <- as.Date(last.date)
         last.date <- max(max(x, na.rm=TRUE), last.date)
     }
     if(is.null(interval) || interval<1) interval <- 1
