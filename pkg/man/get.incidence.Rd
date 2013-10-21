@@ -1,6 +1,8 @@
 % \encoding{UTF-8}
 \name{get.incidence}
 
+\alias{get.incidence}
+
 \alias{get.incidence,Date-method}
 \alias{get.incidence.Date}
 
