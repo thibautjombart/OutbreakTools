@@ -121,7 +121,7 @@
     x.nona <- x[!is.na(x)]
 
     ## find numeric types ##
-    temp <- sub("-{0,1}[[:digit:].]*e{0,1}[[:digit:].]*","", x)
+    temp <- sub("-{0,1}[[:digit:].]*e{0,1}[[:digit:].]*","", x.nona)
     if(all(temp=="")) return(as.numeric(x))
 
     return(x)
