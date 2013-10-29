@@ -74,7 +74,8 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
 
         ## get the final list for @records ##
         ## get list
-        listtabrec <- split(tabrec, tabrec[,grep("choice",names(tabrec), ignore.case=TRUE)])
+        temp <- grep("choice",names(tabrec), ignore.case=TRUE)
+        listtabrec <- split(tabrec[-temp], tabrec[,temp])
 
         ## remove columns which are all NAs
         listtabrec <- lapply(listtabrec,f2)
@@ -83,8 +84,12 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
         ## FILTER TABS FOR CONTACT INFORMATION ##
         contact.info <- grep("contact", names(listtabrec), ignore.case=TRUE)
         if(length(contact.info)>0){
+            ## extract the right table ##
             tabcontacts <- listtabrec[[contact.info]]
             listtabrec <- listtabrec[-contact.info]
+
+            ## create a from-to table ##
+
         }
     }
 
