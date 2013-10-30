@@ -15,11 +15,37 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
         return(out)
     }
 
+    ## function to make new unique labels from fields matching 'name' in a data.frame
+    f3 <- function(x, sep=" "){
+        ## look for fields 'name', generate unique ID ##
+        temp <- grep("name", names(x), ignore.case=TRUE)
+        if(length(temp)>0){
+            name.fields <- names(x)[temp]
+
+            ## check order ##
+            ## 'first' name first
+            temp <- grep("first", name.fields, ignore.case=TRUE)
+            if(length(temp)>0) name.fields <- c(name.fields[temp],name.fields[-temp])
+
+            ## 'last' or 'sur' names last
+            temp <- grep("last", name.fields, ignore.case=TRUE)
+            if(length(temp)>0) name.fields <- c(name.fields[-temp],name.fields[temp])
+            temp <- grep("sur", name.fields, ignore.case=TRUE)
+            if(length(temp)>0) name.fields <- c(name.fields[-temp],name.fields[temp])
+
+            ## generate new unique names ##
+            out <- apply(x[,name.fields],1,paste, collapse=sep)
+            out <- make.unique(out)
+            return(out)
+        } else
+        return(NULL)
+    }
+
 
     ## INITIALIZE RESULTS ##
-    tabind <- NULL
-    listtabrec <- NULL
-    tabcontacts <- NULL
+    individuals.input <- NULL
+    records.input <- NULL
+    contacts.input <- NULL
 
 
     ## EXTRACT INDIVIDUAL DATA ##
@@ -33,17 +59,30 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
         allfields <- unique(unlist(lapply(temp, names)))
 
         ## get data into a data.frame
-        tabind <- matrix(unlist(lapply(temp, f1)), nrow=length(datind), byrow=TRUE)
-        tabind <- as.data.frame(tabind)
-        names(tabind) <- allfields
+        individuals.input <- matrix(unlist(lapply(temp, f1)), nrow=length(datind), byrow=TRUE)
+        individuals.input <- as.data.frame(individuals.input)
+        names(individuals.input) <- allfields
 
         ## restore numerics where needed
-        tabind <- data.frame(lapply(tabind, .restoreNumericType))
+        individuals.input <- data.frame(lapply(individuals.input, .restoreNumericType))
 
         ## restore dates were needed
-        areDates <- grep("date", names(tabind), ignore.case=TRUE)
+        areDates <- grep("date", names(individuals.input), ignore.case=TRUE)
         if(length(areDates)>1) for(i in areDates){
-            tabind[[i]] <- .process.Date(tabind[[i]])
+            individuals.input[[i]] <- .process.Date(individuals.input[[i]])
+        }
+
+        ## look for fields 'name', generate unique ID ##
+        temp <- grep("name",names(individuals.input))
+        if(length(temp)>0 && !"individualID" %in% names(individuals.input)){
+            ## make new labels
+            newnames <- apply(individuals.input[,temp],1,paste, collapse=" ")
+
+            ## make sure they're all unique
+            newnames <- make.unique(newnames)
+
+            ## assign labels
+            row.names(individuals.input) <- individuals.input$individualID <- newnames
         }
     }
 
@@ -75,18 +114,24 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
         ## get the final list for @records ##
         ## get list
         temp <- grep("choice",names(tabrec), ignore.case=TRUE)
-        listtabrec <- split(tabrec[-temp], tabrec[,temp])
+        records.input <- split(tabrec[-temp], tabrec[,temp])
 
         ## remove columns which are all NAs
-        listtabrec <- lapply(listtabrec,f2)
+        records.input <- lapply(records.input,f2)
 
 
         ## FILTER TABS FOR CONTACT INFORMATION ##
-        contact.info <- grep("contact", names(listtabrec), ignore.case=TRUE)
+        contact.info <- grep("contact", names(records.input), ignore.case=TRUE)
         if(length(contact.info)>0){
             ## extract the right table ##
-            tabcontacts <- listtabrec[[contact.info]]
-            listtabrec <- listtabrec[-contact.info]
+            contacts.input <- records.input[[contact.info]]
+            records.input <- records.input[-contact.info]
+
+            ## match contact info with known individuals ##
+            if(!is.null(individual.input)){
+
+            }
+            ## find if contacts are dated or not ##
 
             ## create a from-to table ##
 
@@ -97,6 +142,6 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
     ## TODO: TREAT contacts, context ##
 
     ## BUILD OBJECT AND RETURN ##
-    out <- new("obkData", individuals=tabind, records=listtabrec)
+    out <- new("obkData", individuals=individuals.input, records=records.input)
     return(out)
-}
+} # end JSON2obkData
