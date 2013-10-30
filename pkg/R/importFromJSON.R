@@ -52,7 +52,7 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
             ## assign labels
             row.names(individuals.input) <- individuals.input$individualID <- temp
         }
-    }
+    } # end individuals info
 
 
     ## EXTRACT RECORDS DATA ##
@@ -88,6 +88,25 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
         records.input <- lapply(records.input,f2)
 
 
+        ## create clever labels and assign individualID  / restore dates ##
+        if(!is.null(individuals.input)){
+            for(i in 1:length(records.input)){
+                ## labels ##
+                fieldToMatch <- intersect(
+                                          grep("key", names(individuals.input), ignore.case=TRUE, value=TRUE),
+                                          grep("key", names(records.input[[i]]), ignore.case=TRUE, value=TRUE)
+                                          )
+                temp <- merge(records.input[[i]], individuals.input, by=fieldToMatch, all.x=TRUE, all.y=FALSE)$individualID
+                records.input[[i]]$individualID <- temp
+
+                ## dates ##
+                areDates <- grep("date", names(records.input[[i]]), ignore.case=TRUE)
+                if(length(areDates)>1) for(j in areDates){
+                    records.input[[i]][[j]] <- .process.Date( records.input[[i]][[j]])
+                }
+            } # end labels/dates stuff
+        }
+
         ## FILTER TABS FOR CONTACT INFORMATION ##
         contact.info <- grep("contact", names(records.input), ignore.case=TRUE)
         if(length(contact.info)>0){
@@ -97,21 +116,15 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
 
             ## look for fields 'name', generate unique ID, if no field 'individualID' ##
             temp <- .retrieveLabelsFromDataframe(contacts.input)
-            if(!"individualID" %in% names(contacts.input) && !is.null(temp)){
+            if("individualID" %in% names(contacts.input) && !is.null(temp)){
                 ## assign labels
-                contacts.input$to <- temp
-            }
-
-            ## match contact info with known individuals, get 'from-to' matrix ##
-            if(!is.null(individual.input)){
-                fieldToMatch <- intersect(
-                                          grep("key", names(individuals.input), ignore.case=TRUE, value=TRUE),
-                                          grep("key", names(contacts.input), ignore.case=TRUE, value=TRUE)
-                                          )
-                from <- merge(individuals.input, contacts.input, by=fieldToMatch)$individualID
-                to <- contacts.input$to
+                from <- contacts.input$individualID
+                to <- temp
                 fromto <- data.frame(from, to)
-            } else stop("contact information provided without individual information")
+            } else {
+                warning("contact information provided without individual information, or without proper names of contacts - ignoring.")
+                fromto <- NULL
+            }
 
             ## find if contacts are dated or not ##
             areDates <- sapply(contacts.input, inherits, "Date")
@@ -129,6 +142,18 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
                 date.end <- contacts.input[,date.end]
             } # end dates for contacts
         } # end contact info
+
+
+        ## SORT OUT THE DATE FIELD ##
+        if(!is.null(records.input)){
+            for(i in 1:length(records.input)){
+                if(!"date" %in% names(records.input[[i]])){
+                    areDates <- sapply(records.input[[i]], inherits, "Date")
+                    names(records.input[[i]])[areDates][1] <- "date"
+                }
+            }
+        } # end sort out 'date' field in records
+
     } # end records info
 
 
