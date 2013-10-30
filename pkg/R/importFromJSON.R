@@ -75,8 +75,8 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
 
         ## restore dates were needed
         areDates <- grep("date", names(tabrec), ignore.case=TRUE)
-        if(length(areDates)>1) for(i in areDates){
-            tabrec[[i]] <- .process.Date(tabrec[[i]])
+        for(i in areDates){
+            tabrec[,i] <- .process.Date(tabrec[,i])
         }
 
         ## get the final list for @records ##
