@@ -19,7 +19,7 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
     ## INITIALIZE RESULTS ##
     individuals.input <- NULL
     records.input <- NULL
-    contacts.input <- NULL
+    contacts.input <- fromto <- date.start <- date.end <- NULL
 
 
     ## EXTRACT INDIVIDUAL DATA ##
@@ -102,26 +102,40 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
                 contacts.input$to <- temp
             }
 
-            ## match contact info with known individuals ##
+            ## match contact info with known individuals, get 'from-to' matrix ##
             if(!is.null(individual.input)){
                 fieldToMatch <- intersect(
                                           grep("key", names(individuals.input), ignore.case=TRUE, value=TRUE),
                                           grep("key", names(contacts.input), ignore.case=TRUE, value=TRUE)
                                           )
                 from <- merge(individuals.input, contacts.input, by=fieldToMatch)$individualID
+                to <- contacts.input$to
+                fromto <- data.frame(from, to)
             } else stop("contact information provided without individual information")
 
             ## find if contacts are dated or not ##
+            areDates <- sapply(contacts.input, inherits, "Date")
+            if(any(areDates)){
+                ## seek starting date ##
+                date.start <- unique(unlist(lapply(c("first","start","begin","initial","from"),
+                                                 function(txt) grep(txt, names(contacts.input)[areDates], ignore.case=TRUE, value=TRUE))
+                                          ))[1]
+                date.start <- contacts.input[,date.start]
 
-            ## create a from-to table ##
+                ## seek ending date ##
+                date.end <- unique(unlist(lapply(c("last","end","until","final","to"),
+                                                 function(txt) grep(txt, names(contacts.input)[areDates], ignore.case=TRUE, value=TRUE))
+                                          ))[1]
+                date.end <- contacts.input[,date.end]
+            } # end dates for contacts
+        } # end contact info
+    } # end records info
 
-        }
-    }
 
-
-    ## TODO: TREAT contacts, context ##
+    ## TODO: TREAT context ##
 
     ## BUILD OBJECT AND RETURN ##
-    out <- new("obkData", individuals=individuals.input, records=records.input)
+    out <- new("obkData", individuals=individuals.input, records=records.input,
+               contacts=fromto, contacts.start=date.start, contacts.end=date.end)
     return(out)
 } # end JSON2obkData
