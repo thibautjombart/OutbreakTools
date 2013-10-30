@@ -115,6 +115,9 @@
 
 
 
+#########################
+## .restoreNumericType ##
+#########################
 ## RESTORE NUMERIC TYPE TO A VECTOR IF NEEDED ##
 .restoreNumericType <- function(x){
     if(all(is.na(x))) return(x)
@@ -126,3 +129,36 @@
 
     return(x)
 }
+
+
+
+
+
+##################################
+## .retrieveLabelsFromDataframe ##
+##################################
+## FUNCTION TO MAKE NEW UNIQUE LABELS FROM FIELDS MATCHING 'NAME' IN A DATA.FRAME ##
+.retrieveLabelsFromDataframe <- function(x, sep=" "){
+    ## look for fields 'name', generate unique ID ##
+    temp <- grep("name", names(x), ignore.case=TRUE)
+    if(length(temp)>0){
+        name.fields <- names(x)[temp]
+
+        ## check order ##
+        ## 'first' name first
+        temp <- grep("first", name.fields, ignore.case=TRUE)
+        if(length(temp)>0) name.fields <- c(name.fields[temp],name.fields[-temp])
+
+        ## 'last' or 'sur' names last
+        temp <- grep("last", name.fields, ignore.case=TRUE)
+        if(length(temp)>0) name.fields <- c(name.fields[-temp],name.fields[temp])
+        temp <- grep("sur", name.fields, ignore.case=TRUE)
+        if(length(temp)>0) name.fields <- c(name.fields[-temp],name.fields[temp])
+
+        ## generate new unique names ##
+        out <- apply(x[,name.fields],1,paste, collapse=sep)
+        out <- make.unique(out)
+        return(out)
+    } else
+    return(NULL)
+} # end .retrieveLabelsFromDataframe

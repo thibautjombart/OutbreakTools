@@ -15,32 +15,6 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
         return(out)
     }
 
-    ## function to make new unique labels from fields matching 'name' in a data.frame
-    f3 <- function(x, sep=" "){
-        ## look for fields 'name', generate unique ID ##
-        temp <- grep("name", names(x), ignore.case=TRUE)
-        if(length(temp)>0){
-            name.fields <- names(x)[temp]
-
-            ## check order ##
-            ## 'first' name first
-            temp <- grep("first", name.fields, ignore.case=TRUE)
-            if(length(temp)>0) name.fields <- c(name.fields[temp],name.fields[-temp])
-
-            ## 'last' or 'sur' names last
-            temp <- grep("last", name.fields, ignore.case=TRUE)
-            if(length(temp)>0) name.fields <- c(name.fields[-temp],name.fields[temp])
-            temp <- grep("sur", name.fields, ignore.case=TRUE)
-            if(length(temp)>0) name.fields <- c(name.fields[-temp],name.fields[temp])
-
-            ## generate new unique names ##
-            out <- apply(x[,name.fields],1,paste, collapse=sep)
-            out <- make.unique(out)
-            return(out)
-        } else
-        return(NULL)
-    }
-
 
     ## INITIALIZE RESULTS ##
     individuals.input <- NULL
@@ -72,17 +46,11 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
             individuals.input[[i]] <- .process.Date(individuals.input[[i]])
         }
 
-        ## look for fields 'name', generate unique ID ##
-        temp <- grep("name",names(individuals.input))
-        if(length(temp)>0 && !"individualID" %in% names(individuals.input)){
-            ## make new labels
-            newnames <- apply(individuals.input[,temp],1,paste, collapse=" ")
-
-            ## make sure they're all unique
-            newnames <- make.unique(newnames)
-
+        ## look for fields 'name', generate unique ID, if no field 'individualID' ##
+        temp <- .retrieveLabelsFromDataframe(individuals.input)
+        if(!"individualID" %in% names(individuals.input) && !is.null(temp)){
             ## assign labels
-            row.names(individuals.input) <- individuals.input$individualID <- newnames
+            row.names(individuals.input) <- individuals.input$individualID <- temp
         }
     }
 
@@ -127,10 +95,22 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
             contacts.input <- records.input[[contact.info]]
             records.input <- records.input[-contact.info]
 
+            ## look for fields 'name', generate unique ID, if no field 'individualID' ##
+            temp <- .retrieveLabelsFromDataframe(contacts.input)
+            if(!"individualID" %in% names(contacts.input) && !is.null(temp)){
+                ## assign labels
+                contacts.input$to <- temp
+            }
+
             ## match contact info with known individuals ##
             if(!is.null(individual.input)){
+                fieldToMatch <- intersect(
+                                          grep("key", names(individuals.input), ignore.case=TRUE, value=TRUE),
+                                          grep("key", names(contacts.input), ignore.case=TRUE, value=TRUE)
+                                          )
+                from <- merge(individuals.input, contacts.input, by=fieldToMatch)$individualID
+            } else stop("contact information provided without individual information")
 
-            }
             ## find if contacts are dated or not ##
 
             ## create a from-to table ##
