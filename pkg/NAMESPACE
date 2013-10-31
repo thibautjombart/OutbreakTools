@@ -6,6 +6,9 @@ exportPattern("^[^\\.]")
 export(".process.Date")
 export(".inlineSummary")
 export(".restoreNumericType")
+export(".retrieveLabelsFromDataframe")
+
+
 
 # Import all packages listed as Imports or Depends
 import(methods, network, ggplot2, knitr)
@@ -33,8 +36,9 @@ importFrom(sna, "gplot.layout.fruchtermanreingold", "geodist")
 
 importFrom(ggmap, "geocode", "get_map", "ggmap")
 
-importFrom(networkDynamic, "activate.edges", "network.extract", "is.networkDynamic", "network.collapse", "get.change.times", "as.data.frame.networkDynamic")
+## importFrom(networkDynamic, "activate.edges", "network.extract", "is.networkDynamic", "network.collapse", "get.change.times", "as.data.frame.networkDynamic")
 
+import(networkDynamic)
 importFrom(scales, "date_breaks", "date_format")
 
 importFrom(rjson, "fromJSON")
