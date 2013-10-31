@@ -270,7 +270,8 @@ setMethod ("as.data.frame", "obkContacts", function(x, row.names = NULL, optiona
             out$head <- lab[out$head]
         }
     } else {
-        out <- as.matrix(x, matrix.type="edgelist", use.labels=use.labels)
+        out <- as.data.frame(as.matrix(x, matrix.type="edgelist", use.labels=use.labels))
+        colnames(out) <- c("from","to")
     }
 
     return(out)
