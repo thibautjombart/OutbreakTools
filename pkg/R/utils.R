@@ -138,7 +138,7 @@
 ## .retrieveLabelsFromDataframe ##
 ##################################
 ## FUNCTION TO MAKE NEW UNIQUE LABELS FROM FIELDS MATCHING 'NAME' IN A DATA.FRAME ##
-.retrieveLabelsFromDataframe <- function(x, sep=" "){
+.retrieveLabelsFromDataframe <- function(x, sep=" ", unique=TRUE){
     ## look for fields 'name', generate unique ID ##
     temp <- grep("name", names(x), ignore.case=TRUE)
     if(length(temp)>0){
@@ -157,7 +157,9 @@
 
         ## generate new unique names ##
         out <- apply(x[,name.fields],1,paste, collapse=sep)
-        out <- make.unique(out)
+        if(unique) {
+            out <- make.unique(out)
+        }
         return(out)
     } else
     return(NULL)

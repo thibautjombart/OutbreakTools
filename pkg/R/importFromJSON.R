@@ -115,7 +115,7 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
             records.input <- records.input[-contact.info]
 
             ## look for fields 'name', generate unique ID, if no field 'individualID' ##
-            temp <- .retrieveLabelsFromDataframe(contacts.input)
+            temp <- .retrieveLabelsFromDataframe(contacts.input, unique=FALSE)
             if("individualID" %in% names(contacts.input) && !is.null(temp)){
                 ## assign labels
                 from <- contacts.input$individualID
