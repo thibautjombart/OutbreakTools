@@ -159,6 +159,27 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
 
     ## TODO: TREAT context ##
 
+
+    ## CLEAN USELESS FIELDS ##
+    ## fields to remove
+    hidden.fields <- c("_entries","[.]accuracy","[.]bearing","[.]provider", "^id$",
+                       "^created$","^DeviceID$", "lastEdited", "uploaded", "_key")
+
+    ## individuals
+    if(!is.null(individuals.input)){
+        toRemove <- unlist(lapply(hidden.fields, function(e) grep(e, names(individuals.input),ignore.case=TRUE)))
+        individuals.input <- individuals.input[,-toRemove,drop=FALSE]
+    }
+
+    ## records
+    if(!is.null(records.input)){
+        for(i in 1:length(records.input)){
+            toRemove <- unlist(lapply(hidden.fields, function(e) grep(e, names(records.input[[i]]),ignore.case=TRUE)))
+            records.input[[i]] <- records.input[[i]][,-toRemove,drop=FALSE]
+        }
+    }
+
+
     ## BUILD OBJECT AND RETURN ##
     out <- new("obkData", individuals=individuals.input, records=records.input,
                contacts=fromto, contacts.start=date.start, contacts.end=date.end)
