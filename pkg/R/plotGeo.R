@@ -7,7 +7,7 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c("lon","lat"))
 
 ## Function to plot cases on a map
 
-plotGeo <- function(x, location='location', zoom='auto', source='google',
+plotGeo <- function(x, location=NULL, zoom='auto', source='google',
                     colorBy=NULL, shapeBy=NULL, center=NULL, ...){
     ## function to plot cases on a map
     ## names gives the name of the column with location information
@@ -18,6 +18,19 @@ plotGeo <- function(x, location='location', zoom='auto', source='google',
 
     ## GET THE DATA ##
     if(is.null(x@individuals)) stop("no information on individuals - x@individuals is empty")
+
+    ## set 'location' to NULL if wrong field provided
+    if(!is.null(location) && !all(location %in% names(x@individuals))) {
+        warning(paste("location", location, "is not in the individual data - ignoring."))
+        location <- NULL
+    }
+
+    ## handle NULL in 'location' - try to find lat/lon ##
+    if(is.null(location)){
+        lonField <- unlist(lapply(c("longitude", "^lon$", "^x$"), function(e) grep(e, names(x@individuals), ignore.case=TRUE, value=TRUE)))[1]
+        latField <- unlist(lapply(c("latitude", "^lat$", "lattitude", "^y$"), function(e) grep(e, names(x@individuals), ignore.case=TRUE, value=TRUE)))[1]
+        location <- c(lonField, latField)
+    }
     isLonLat <- length(location)==2
     if(!isLonLat){
         ## get the actual lon/lat
