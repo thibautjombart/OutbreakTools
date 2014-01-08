@@ -1,7 +1,7 @@
 #epidase documentation for RData using roxygen2
 #put you .RData in the /data directory
 #add you roxygen2 description of your data below
-#run roxygenize("./pkg") in the root directory of the epibase package
+#run roxygenize("./pkg") in the root directory of the OutbreakTools package
 
 #' @name FluH1N1pdm2009
 #' @title Dataset from the 2009 influenza A/H1N1 pandemic

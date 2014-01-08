@@ -1,24 +1,24 @@
 \encoding{UTF-8}
-\name{epibase-package}
-\alias{epibase-package}
-\alias{epibase}
+\name{OutbreakTools-package}
+\alias{OutbreakTools-package}
+\alias{OutbreakTools}
 \docType{package}
-\title{The epibase package}
+\title{The OutbreakTools package}
 \description{
-  \code{epibase} is a package providing basic tools for the analysis of
-  disease outbreaks. Its main features lie in handling possibly very
-  different types of data within a coherent framework, represented by the
-  class \linkS4class{obkData} (for "outbreak data"). This class allows
-  to store and manipulate data on samples, individuals, records
-  interventions, genetic sequences, phylogenetic trees and contact
-  networks, most of this information being time-stamped and possibly
-  geo-referenced.\cr
+  \code{OutbreakTools} (previously known as 'epibase') is a package
+  providing basic tools for the analysis of disease outbreaks. Its main
+  features lie in handling possibly very different types of data within
+  a coherent framework, represented by the class \linkS4class{obkData}
+  (for "outbreak data"). This class allows to store and manipulate data
+  on samples, individuals, records interventions, genetic sequences,
+  phylogenetic trees and contact networks, most of this information
+  being time-stamped and possibly geo-referenced.\cr
 
   For a more complete overview of the package, look at the tutorial
-  vignette \code{epibase} accessible using:\cr
-  \code{vignette("epibase", package="epibase")}\cr
+  vignette \code{OutbreakTools} accessible using:\cr
+  \code{vignette("OutbreakTools", package="OutbreakTools")}\cr
 
-  The main features of \code{epibase} include:
+  The main features of \code{OutbreakTools} include:
   \itemize{
     \item \linkS4class{obkData}: the main class of objects storing
     outbreak data; this formal class is provided with a number of
@@ -62,15 +62,15 @@
     \code{\link{ToyOutbreakRaw}}, \code{\link{FluH1N1pdm2009}}
   }
 
-   To cite epibase, please use the reference given by
-   \code{citation("epibase")}.
+   To cite OutbreakTools, please use the reference given by
+   \code{citation("OutbreakTools")}.
  }
 \details{
   \tabular{ll}{
-    Package: \tab epibase\cr
+    Package: \tab OutbreakTools\cr
     Type: \tab Package\cr
-    Version: \tab 0.1-3\cr
-    Date: \tab 2013-11-05 \cr
+    Version: \tab 0.1-0\cr
+    Date: \tab 2014-01-10 \cr
     License: \tab GPL (>=2)
   }
 }
@@ -86,8 +86,8 @@
 \keyword{manip}
 \keyword{multivariate}
 \seealso{
-  epibase depends on or is related to several packages.
-  The main non-base packages epibase relies on are:
+  OutbreakTools depends on or is related to several packages.
+  The main non-base packages OutbreakTools relies on are:
   \itemize{
     \item ape: phylogenetic reconstruction
     \item ggplot2: advanced graphics

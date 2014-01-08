@@ -24,7 +24,7 @@ BeastRData <- function(dir_RData) {
 
 	require(RCurl)
 	require(ape)
-	require(epibase)
+	require(OutbreakTools)
 	urlPhylo <- getURL("https://raw.github.com/trvrb/influenza-dynamics-practical/master/output/pandemic_geo.mcc")
 	my.phylo <- read.nexus(textConnection(urlPhylo))
 
@@ -44,7 +44,7 @@ BeastRData <- function(dir_RData) {
 
 main<-function(){
 	
-	dir_RData<-"/Users/tonton/Documents/GitProjects/epibase/code/pkg/data"
+	dir_RData<-"/Users/tonton/Documents/GitProjects/OutbreakTools/code/pkg/data"
 	BeastRData(dir_RData)
 	load(paste(dir_RData,"FluH1N1pdm2009.RData",sep="/"))
 

@@ -29,10 +29,10 @@
 \alias{POSIXctOrNULL}
 \alias{POSIXctOrNULL-class}
 
-\title{Auxiliary classes for epibase}
+\title{Auxiliary classes for OutbreakTools}
 \description{
   These formal (S4) classes are defined for internal use in
-  \code{epibase}. They include unions of existing classes with the type
+  \code{OutbreakTools}. They include unions of existing classes with the type
   \code{NULL}, and conversion of existing S3 classes into S4.
 }
 \author{Thibaut Jombart}

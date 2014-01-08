@@ -1,6 +1,6 @@
-Package: epibase
-Version: 0.1-4
-Date: 2013/11/04
+Package: OutbreakTools
+Version: 0.1-0
+Date: 2014/01/10
 Title: basic tools for the analysis of disease outbreaks.
 Author: The Hackout team (In alphabetic order: David Aanensen, Marc Baguelin, Paul Birrell, Simon Cauchemez, Anton Camacho, Caroline Colijn, Anne Cori, Xavier Didelot, Ken Eames, Christophe Fraser, Simon Frost, Niel Hens, Joseph Hugues, Thibaut Jombart, Lulla Opatowski, Oliver Ratmann, Samuel Soubeyrand, Marc Suchard, Jacco Wallinga, Rolf Ypma)
 Maintainer: Thibaut Jombart <t.jombart@imperial.ac.uk>
@@ -37,4 +37,4 @@ Collate:
     'annotatedTreeReader.R'
     'importFromJSON.R'
     'zzz.R'
-    'epibase.R'
+    'OutbreakTools.R'
