@@ -6,8 +6,8 @@ Author: The Hackout team (In alphabetic order: David Aanensen, Marc Baguelin, Pa
 Maintainer: Thibaut Jombart <t.jombart@imperial.ac.uk>
 Suggests:
     EpiEstim
-Depends:  R (>= 3.0.0), methods, ggplot2, network, knitr, networkDynamic
-Imports: utils, RColorBrewer, ape, reshape2, sna, plyr, ggmap, scales, rjson
+Depends:  R (>= 3.0.0), methods, ggplot2, network, knitr
+Imports: utils, RColorBrewer, ape, reshape2, sna, plyr, ggmap, scales, rjson, networkDynamic
 Description: basic tools for the analysis of disease outbreaks.
 License: GPL (>=2)
 LazyLoad: yes

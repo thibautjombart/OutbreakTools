@@ -36,9 +36,9 @@ importFrom(sna, "gplot.layout.fruchtermanreingold", "geodist")
 
 importFrom(ggmap, "geocode", "get_map", "ggmap")
 
-## importFrom(networkDynamic, "activate.edges", "network.extract", "is.networkDynamic", "network.collapse", "get.change.times", "as.data.frame.networkDynamic")
+importFrom(networkDynamic, "activate.edges", "network.extract", "is.networkDynamic", "network.collapse", "get.change.times", "as.data.frame.networkDynamic")
 
-import(networkDynamic)
+##import(networkDynamic)
 importFrom(scales, "date_breaks", "date_format")
 
 importFrom(rjson, "fromJSON")
