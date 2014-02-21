@@ -148,7 +148,7 @@ plotggphy <- function(x, which.tree = 1, ladderize = TRUE, show.tip.label = NULL
 
     p <- ggplot(data = df.edge)
     p <- p + geom_segment(data = df.edge, aes(x = x.beg, xend = x.end, y = y.beg, yend = y.end), lineend = "round")
-    p <- p + scale_y_continuous("", labels = NULL)
+    p <- p + scale_y_continuous("", breaks = NULL)
 
     if (is.x.date) {
         to_parse <- paste("scale_x_date(\"Time\"", ifelse(is.null(axis.date.format), "", ",labels=date_format(axis.date.format)"),
