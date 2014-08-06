@@ -214,10 +214,148 @@ setMethod ("show", "obkContacts", function(object){
 ## plot,obkContacts: no visible binding for global variable ‘y’
 if(getRversion() >= "2.15.1")  utils::globalVariables("y")
 
-setMethod ("plot", "obkContacts", function(x, y=NULL, labels=get.individuals(x), ...){
-    plot(x@contacts, label=labels, ...)
-    return(invisible())
+## previous version of plot contacts:
+
+# setMethod ("plot", "obkContacts", function(x, y=NULL, labels=get.individuals(x), ...){
+#     plot(x@contacts, label=labels, ...)
+#     return(invisible())
+# })
+
+
+## version of plot contacts with option to color by a factor from names(x@individuals):
+# NOTE: changed labels bc get.individuals(x) may not be the set of individuals for which we have contacts data
+
+setMethod ("plot", "obkContacts", function(x, y=NULL, displaylabels=TRUE, circularize=FALSE,
+                                           indColorBy=NULL, col.pal=c("funky", "seasun", "spectral", "azur", "wasp"), ...){
+
+    ## need to determine placement for full network
+    df <- as.data.frame(x@contacts)
+    set.seed(1)
+    
+    # get layout
+    if(circularize==FALSE){
+      allXY <- network.layout.fruchtermanreingold(get.contacts(x@contacts),NULL)
+    }else{
+      allXY <- network.layout.circle(get.contacts(x@contacts),NULL)
+    }
+    
+    # get node matrix for color scheme
+    indsT <- unique(df$tail)
+    indsH <- unique(df$head)
+    toRemove <- indsH %in%indsT
+    inds <- sort(as.numeric(c(indsT, indsH[!toRemove])))
+    
+    ## convert indColorBy to col input for plot
+    if(is.null(indColorBy)){
+      n.levels <- 1}
+    else{
+      if(any(is.na(as.factor(get(indColorBy, x@individuals)[inds])))==TRUE){
+        get.levels <- levels(as.factor(get(indColorBy, x@individuals)[inds]))
+        get.levels <- c("NA", get.levels)
+        n.levels <- length(get.levels)
+      }else{
+        get.levels <- levels(as.factor(get(indColorBy, x@individuals)[inds]))
+        n.levels <- length(get.levels)
+      }
+    }
+    
+    # get color palette
+    myCol <- get(col.pal)
+    
+    ## get network object
+    g <- get.contacts(x)    
+    
+    ## get color scheme for plot
+    if(is.null(indColorBy)){
+      myCol <- myCol(n.levels)
+    }else{
+      if(any(is.na(as.factor(get(indColorBy, x@individuals)[inds])))==TRUE){
+        scheme <- get(indColorBy, x@individuals)[inds]
+        scheme <- replace(scheme, which(is.na(scheme)), 0)
+        scheme <- scheme+1
+        scheme <- as.numeric(as.factor(scheme))
+      }else{
+        scheme <- get(indColorBy, x@individuals)[inds]
+        scheme <- as.numeric(as.factor(scheme))
+      }
+
+      # generate colours for all factor levels 
+      myCol <- myCol(n.levels)
+      # repeat/ reorder colours according to scheme
+      myCol <- myCol[scheme]
+      # reorder colours by vertex name order
+      index <- as.numeric(network.vertex.names(g))
+      myCol <- myCol[index]
+    }
+    
+    
+    ## make the plot
+    par(mar=rep(1,4),xpd=TRUE)
+    plot(g, displaylabels=displaylabels, coord=allXY, vertex.col=myCol, ...)
+    
+    
+    # get levels for legend
+    if(!is.null(indColorBy)){
+      if(any(is.na(as.factor(get(indColorBy, x@individuals)[inds])))==TRUE){
+        get.levels <- levels(as.factor(get(indColorBy, x@individuals)[inds]))
+        get.levels <- c("NA", get.levels)
+      }else{
+        get.levels <- levels(as.factor(get(indColorBy, x@individuals)[inds]))
+      }
+      # plot legend
+      legend(x="topright", legend=get.levels, bg="white", fill=get(col.pal)(n.levels), 
+             ncol=1, cex=1.2, title=indColorBy)
+    }
+    
+return(invisible())
 })
+
+
+
+
+
+
+#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

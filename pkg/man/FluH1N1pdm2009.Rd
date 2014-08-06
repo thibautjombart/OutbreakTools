@@ -13,7 +13,7 @@
   514 genetic sequences of influenza A/H1N1/2009
   haemagglutinin (HA). \item\code{tree}: a
   \code{\link{multiphylo}} object containing the maximum
-  clade credibility (MCC) tree obtained via the Beast
+  posterior probability tree obtained via the Beast
   analysis of the 514 genetic sequences. }
 }
 \examples{
@@ -52,6 +52,9 @@ detach(FluH1N1pdm2009)
   of the H1N1 influenza pandemic from sequence data},
   available at
   \url{https://github.com/trvrb/influenza-dynamics-practical}.
+  In particular, the maximum
+  posterior probability tree is taken from the sampled trees available at:
+  \url{https://github.com/trvrb/dynamics-practical/blob/master/output/pandemic_geo.trees}.
 }
 \keyword{datasets}
 
