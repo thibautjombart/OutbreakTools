@@ -1,9 +1,16 @@
+			CHANGES IN OUTBREAKTOOLS 0.1-1
+BUG FIXES
+	o examples involving plotting maps commented out to prevent check
+	to fail when no internet connection
+
+
+
 			CHANGES IN OUTBREAKTOOLS 0.1-0
 NEW FEATURES
 	o epibase 0.1-2 becomes OutbreakTools 0.1-0 due to a trademark
 	infringement.
 
-	
+
 
 			CHANGES IN EPIBASE 0.1-2
 
