@@ -23,7 +23,7 @@ setMethod("get.incidence", "Date", function(x, from=NULL, to=NULL,
     }
     if(is.numeric(from)) from <- first.date+from
     if(!inherits(from, "Date")) from <- as.Date(from)
-    from <- max(from, first.date)
+    from <- min(from, first.date)
 
     ## handle to ##
     if(is.null(to)){
@@ -31,7 +31,7 @@ setMethod("get.incidence", "Date", function(x, from=NULL, to=NULL,
     }
     if(is.numeric(to)) to <- first.date+to
     if(!inherits(to, "Date")) to <- as.Date(to)
-    to <- min(to, last.date)
+    to <- max(to, last.date)
 
     ## generate output dates ##
     interval <- round(interval)
