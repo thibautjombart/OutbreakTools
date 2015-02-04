@@ -133,7 +133,7 @@ setMethod("summary", "obkData", function(object, ...){
 
 
 ## test:
-## library(epibase)
+## library(OutbreakTools)
 ## data(HorseFlu)
 ## summary(HorseFlu)
 ## summary(new("obkData"))

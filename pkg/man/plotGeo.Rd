@@ -2,7 +2,7 @@
 \alias{plotGeo}
 \title{Function to plot cases on a map}
 \usage{
-  plotGeo(x, location='location', zoom='auto', source='google',
+  plotGeo(x, location=NULL, zoom='auto', source='google',
           colorBy=NULL, shapeBy=NULL, center=NULL, \dots)
 
 }

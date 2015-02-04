@@ -1,5 +1,5 @@
 \documentclass{article}
-% \VignettePackage{epibase}
+% \VignettePackage{OutbreakTools}
 % \VignetteIndexEntry{Handling disease outbreak data}
 
 \usepackage{graphicx}
@@ -9,7 +9,7 @@
 
 \usepackage[utf8]{inputenc} % for UTF-8/single quotes from sQuote()
 \newcommand{\code}[1]{{{\tt #1}}}
-\title{Handling disease outbreak data using \textit{epibase} \Sexpr{packageDescription("epibase", fields = "Version")}}
+\title{Handling disease outbreak data using \textit{OutbreakTools} \Sexpr{packageDescription("OutbreakTools", fields = "Version")}}
 \author{Thibaut Jombart, Xavier Didelot, Rolf Ypma, Lulla Opatowski, Anne Cori}
 \date{\today}
 
@@ -22,10 +22,10 @@
 
 \begin{document}
 
-%\SweaveOpts{prefix.string = figs/epibase, echo=TRUE, eval=TRUE, fig = FALSE, eps = FALSE, pdf = TRUE}
+%\SweaveOpts{prefix.string = figs/OutbreakTools, echo=TRUE, eval=TRUE, fig = FALSE, eps = FALSE, pdf = TRUE}
 
 <<>>=
-opts_chunk$set(echo=TRUE, fig.path='figs/epibase-', cache=TRUE)
+opts_chunk$set(echo=TRUE, fig.path='figs/OutbreakTools-', cache=TRUE)
 @
 
 
@@ -41,9 +41,9 @@ opts_chunk$set(echo=TRUE, fig.path='figs/epibase-', cache=TRUE)
 \maketitle
 
 \begin{abstract}
-  This vignette introduces the main functionalities of \textit{epibase}, a package implementing
+  This vignette introduces the main functionalities of \textit{OutbreakTools}, a package implementing
   basic tools for the analysis of outbreak data.  Disease outbreak data can be varied and complex,
-  and one of the core features of \textit{epibase} lies in the formal (S4) class \texttt{obkData},
+  and one of the core features of \textit{OutbreakTools} lies in the formal (S4) class \texttt{obkData},
   which allows for storing and handling a variety of data about individuals, samples, contact
   structures, or even clinical events.  Beyond introducing this data structure, this tutorial
   illustrates how these objects can be handled and analyzed in R.
@@ -62,7 +62,7 @@ opts_chunk$set(echo=TRUE, fig.path='figs/epibase-', cache=TRUE)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 In this section, we first detail the structure of the core classes used for storing information in
-\textit{epibase}, and then explain how to import data into the package, and how to handle data once imported.
+\textit{OutbreakTools}, and then explain how to import data into the package, and how to handle data once imported.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -70,7 +70,7 @@ In this section, we first detail the structure of the core classes used for stor
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Data collected during outbreaks can be hugely diverse and complex.
-In \textit{epibase}, our purpose is to have a general class of objects which can store virtually any
+In \textit{OutbreakTools}, our purpose is to have a general class of objects which can store virtually any
 information sampled during outbreak, without the user worrying about storage issues.
 For most purposes, the core class \texttt{obkData} will be treated as a black box, with which the
 user can interact using specific functions called \textit{accessors}, without having to worry about
@@ -83,7 +83,7 @@ the internal structure of the object.
 The class \texttt{obkData} is used to store various types of information.
 The definition of the class in terms of R objects can be obtained by:
 <<>>=
-library(epibase)
+library(OutbreakTools)
 getClassDef("obkData")
 @
 One can also examine a structure using an empty object:
@@ -242,10 +242,10 @@ For more information, refer to the vignette distributed with the package (\textt
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Getting data into \textit{epibase}}
+\subsection{Getting data into \textit{OutbreakTools}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Storing data in \textit{epibase} requires the following, fairly simple steps:
+Storing data in \textit{OutbreakTools} requires the following, fairly simple steps:
 \begin{enumerate}
 \item read data into R
   \begin{enumerate}
@@ -438,7 +438,7 @@ The phylosophy underlying formal (S4) classes is that the internal representatio
 complex as long as accessing the information is simple.
 This is made possible by decoupling storage and accession: the user is not meant to access the
 content of the object directly, but has to use \textit{accessors} to retrieve the information.
-In this section, we detail the existing accessors for object classes implemented in \textit{epibase}.
+In this section, we detail the existing accessors for object classes implemented in \textit{OutbreakTools}.
 We use the notation ``\texttt{[\textit{possible-values}]}'' to list or describe possible values of an argument;
 the symbols ``\texttt{[]}'' should be omitted from the actual command line. For instance:\\
 
@@ -679,7 +679,7 @@ subset(x, indiv=1, locus=1, date.from="01 03 2001")
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\textit{epibase} provides basic functionality for the simulation of outbreak data through the \texttt{simuEpi} function.
+\textit{OutbreakTools} provides basic functionality for the simulation of outbreak data through the \texttt{simuEpi} function.
 A basic SIR (susceptible-infectious-removed) model is assumed, and the result is returned as an \texttt{obkData} object.
 The arguments are as following:
 \begin{itemize}
@@ -835,7 +835,7 @@ plot(data,'mst',individualID=42)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 The package \textit{ape} implements a wide range of genetic distances (see \texttt{?dist.dna}) and
 most usual algorithms for distance-based phylogenetic reconstruction.
-In \textit{epibase}, the function \texttt{get.phylo} is a wrapper for these methods, allowing to
+In \textit{OutbreakTools}, the function \texttt{get.phylo} is a wrapper for these methods, allowing to
 derive trees for a selection or all the genes present in an \texttt{obkData} object.
 We illustrate this procedure using the simulated outbreak \texttt{ToyOutbreak}:
 <<>>=

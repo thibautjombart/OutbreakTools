@@ -1,11 +1,11 @@
 source("/Users/tonton/Documents/Project/Rfiles/Utils.R")
 library(ggplot2)
 library(scales)
-setwd("/Users/tonton/Documents/GitProjects/epibase/code/misc")
-source("/Users/tonton/Documents/GitProjects/epibase/code/pkg/R/phylo2ggphy.R")
-source("/Users/tonton/Documents/GitProjects/epibase/code/pkg/R/plotggphy.R")
+setwd("/Users/tonton/Documents/GitProjects/OutbreakTools/code/misc")
+source("/Users/tonton/Documents/GitProjects/OutbreakTools/code/pkg/R/phylo2ggphy.R")
+source("/Users/tonton/Documents/GitProjects/OutbreakTools/code/pkg/R/plotggphy.R")
 
-library(epibase)
+library(OutbreakTools)
 
 test<-function(){
 
@@ -15,11 +15,11 @@ test<-function(){
     my_phylo<-read.nexus(file=paste(dir,file,sep="/"))
     phylo<-ladderize(my_phylo)
     
-    p<-epibase:::plotggphy(phylo,branch.unit="year",guess.tip.dates.from.labels=T,set.guess=list(prefix="_",order=2))
+    p<-OutbreakTools:::plotggphy(phylo,branch.unit="year",guess.tip.dates.from.labels=T,set.guess=list(prefix="_",order=2))
     
     tip_dates<-as.Date(extract_string(phylo$tip.label,"_",2))
     tip_attribute<-data.frame(label=phylo$tip.labe,tip.dates=tip_dates,tip.col=1:length(tip_dates))
-    p<-epibase:::plotggphy(phylo,branch.unit="year",tip.attribute=tip_attribute,tip.colour="tip.col",tip.dates="tip.dates")
+    p<-OutbreakTools:::plotggphy(phylo,branch.unit="year",tip.attribute=tip_attribute,tip.colour="tip.col",tip.dates="tip.dates")
     
     #H1N1 example
     phylo<-read.nexus("../../pandemic_geo.mcc")

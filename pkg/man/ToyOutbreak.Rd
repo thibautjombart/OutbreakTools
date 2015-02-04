@@ -57,10 +57,11 @@ plot(get.contacts(ToyOutbreak, from=2, to=2.1),
 plot(get.contacts(ToyOutbreak, from=3, to=3.1),
      main="Contact network - day 3", displaylabels=TRUE)
 
+\dontrun{
 ## Mapping the outbreak (by sex) ##
 plot(ToyOutbreak,'geo',location=c('lon','lat'), isLonLat=TRUE, zoom=13,
      colorBy='Sex')
-
+}
 }
 \keyword{dataset}
 \author{

@@ -299,7 +299,7 @@ setMethod("initialize", "obkData", function(.Object, individuals=NULL, records=N
 
 ## ## TEST CONTEXT
 
-# library(epibase)
+# library(OutbreakTools)
 # data(ToyOutbreakRaw)
 # names(ToyOutbreakRaw)
 

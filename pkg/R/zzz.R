@@ -2,9 +2,9 @@
 ## Used to display message at loading
 ##
 .onAttach <- function(libname, pkgname){
-    pkg.version <- packageDescription("epibase", fields = "Version")
+    pkg.version <- packageDescription("OutbreakTools", fields = "Version")
 
-    startup.txt <- paste(" epibase", pkg.version, "has been loaded\n")
+    startup.txt <- paste(" OutbreakTools", pkg.version, "has been loaded\n")
 
     packageStartupMessage(startup.txt)
 }

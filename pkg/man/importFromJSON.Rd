@@ -1,7 +1,7 @@
 \encoding{UTF-8}
 \name{JSON2obkData}
 \alias{JSON2obkData}
-\title{Import data from JSON file into epibase}
+\title{Import data from JSON file into OutbreakTools}
 \description{
   \code{JSON2obkData} imports outbreak data stored in one or several
   JSON files and converts it into an \linkS4class{obkData} object.

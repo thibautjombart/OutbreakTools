@@ -20,8 +20,8 @@ data(HorseFlu)
 x <- HorseFlu
 
 ### create a subset DNAbin
-id49<-subset(x,individuals="49") # warning message is returned
-dna49<-get.dna(id49)[[1]]
+id49 <- subset(x,individuals="49") # warning message is returned
+dna49 <- get.dna(id49)[[1]]
 
 ### get a particular sequence id with summary.seq$uniqseqID4[5]
 ### get number of sequences length(summary.seq$uniqseqID4)
