@@ -43,6 +43,8 @@ importFrom(scales, "date_breaks", "date_format")
 
 importFrom(rjson, "fromJSON")
 
+importFrom(RCurl, "getURLContent")
+
 
 
 ## IMPORTS TO FIX LATER ##

@@ -1,20 +1,49 @@
+
+##################
+## JSON2obkData ##
+##################
+
 JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=NULL){
-    ## AUXILIARY FUNCTIONS ##
+    
+  ## AUXILIARY FUNCTIONS ##
     ## function to fill in vectors so that they all have 'allfields' entries
     f1 <- function(x){
         out <- as.character(rep(NA, length(allfields)))
         names(out) <- allfields
         out[names(x)] <- x
         return(out)
-    }
+    } # end f1
 
-    ## function removing all columns of a data.frame that are all NAs
-    f2 <- function(x){
-        toKeep <- sapply(x, function(e) !all(is.na(e)))
-        out <- x[,toKeep,drop=FALSE]
-        return(out)
-    }
+    
+    ## fn testing for output==integer(0) (used in f2 fn below)
+    is.integer0 <- function(x){
+      is.integer(x) && length(x) == 0L
+    } # end is.integer0
+    
+    
+    ## function removing all columns of a data.frame that are all <NA>s, ""s, or "NR"s   
+    f2 <- function(x) {  
+      NAsByColumn <- sapply(c(1:ncol(x)), function(e) 
+        if(class(x[,e])=="Date"){ # if the column is a date column (blanks and NRs not allowed)
+          which(is.na(x[,e]))
+        }else{
+          c(which(x[,e]==""), which(x[,e]=="NR"), which(is.na(x[,e])))
+        }
+      )
+      colsToRemove <- which(sapply(c(1:length(NAsByColumn)), function(e) length(NAsByColumn[[e]]))==dim(x)[[1]])
+      if(!is.integer0(colsToRemove)){
+        x <- x[,-colsToRemove] ## remove columns that are all NA
+        NAsByColumn <- NAsByColumn[-colsToRemove]
+      }
+      for(j in 1:length(NAsByColumn)){ ## replace "" and NR with NA
+        if(!is.integer0(NAsByColumn[[j]])){
+          x[,j] <- replace(x[,j], NAsByColumn[[j]], NA)
+        }
+      }
+      return(x)
+    } # end f2
 
+    
 
     ## INITIALIZE RESULTS ##
     individuals.input <- NULL
@@ -185,3 +214,84 @@ JSON2obkData <- function(individuals=NULL, records=NULL, contacts=NULL, context=
                contacts=fromto, contacts.start=date.start, contacts.end=date.end)
     return(out)
 } # end JSON2obkData
+
+
+
+
+
+
+
+
+
+
+#####################
+## .importFromJSON ##
+#####################
+
+## FUNCTION TO READ CSV DATA FROM AN EPICOLLECT PROJECT (eg. project.URL <- "plus.epicollect.net/whodemo") ##
+## DATA ARE CONVERTED INTO OBKDATA ##
+.importFromJSON <- function(project.URL=NULL, individuals.URL=NULL, records.URL=NULL, contacts.URL=NULL, context.URL=NULL){
+  
+  # require(RCurl)
+  
+  ## if(tolower(.readExt(individuals.URL))!="json") {
+  ##     warning(paste("data file", url, "is not a json file - aborting"))
+  ##     return(NULL)
+  ## }
+  
+  ## INITIALIZE JSON OBJECTS ##
+  individuals.json <- records.json <- contacts.json <- context.json <- NULL
+  
+  
+  ## ACCESS URL'S CONTENTS ##
+  ## get URLs of different forms
+  if(!is.null(project.URL)){
+    ## remove potential last "/"
+    project.URL <- sub("/$", "", project.URL)
+    
+    ## make sure .xml is not part of the main URL
+    project.URL <- sub(".xml", "", project.URL)
+    project.xml <- paste(project.URL, "xml", sep=".")
+    
+    # CHECK to avoid error --> irrecoverable shiny failure
+    if(class(try(getURLContent(project.xml), silent=TRUE))=="try-error"){
+      out <- NULL
+    }else{  
+      
+      ## get fields containing form names
+      forms.txt <- grep("form num", unlist(strsplit(getURLContent(project.xml),"\t")), value=TRUE)
+      forms.txt <- gsub("\"","",forms.txt)
+      
+      ## get form names
+      forms.names <- sub("^.*name=","", forms.txt)
+      forms.names <- sub(" key.*$", "", forms.names)
+      
+      ## get URL for @individuals
+      individuals.form <- forms.names[grep("num=1",forms.txt)]
+      individuals.URL <- paste(project.URL,"/", individuals.form,".json", sep="")
+      
+      ## get URL for @records (first one after 'individuals')
+      if(length(forms.names)>1){
+        records.form <- forms.names[-grep("num=1",forms.txt)][1]
+        records.URL <- paste(project.URL,"/", records.form,".json", sep="")
+      }
+    }
+  }
+  
+  ## retrieve individual JSON files
+  if(!is.null(individuals.URL)) individuals.json <- getURLContent(individuals.URL)
+  if(!is.null(records.URL)) records.json <- getURLContent(records.URL)
+  if(!is.null(contacts.URL)) contacts.json <- getURLContent(contacts.URL)
+  if(!is.null(context.URL)) context.json <- getURLContent(context.URL)
+  
+  if(!is.null(individuals.json)){
+    firstChar <- substr(individuals.json, 1, 1)
+    if(firstChar=="<"){
+      out <- NULL
+    }else{
+      ## CONVERT INPUTS INTO OBKDATA ##      
+      out <- JSON2obkData(individuals=individuals.json, records=records.json, contacts=contacts.json, context=context.json)
+    }
+  }
+  return(out)
+} # end .importFromJSON
