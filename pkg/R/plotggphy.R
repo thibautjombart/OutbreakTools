@@ -216,12 +216,25 @@ plotggphy <- function(x, which.tree = 1, ladderize = TRUE, show.tip.label = NULL
         if (is.character(tmp) || is.factor(tmp)) {
             if (length(unique(tmp)) > nMaxCol) {
                 warning(paste("too many tip colors for palette", color.palette, ": we use default palette instead"))
-                p <- p + scale_color_discrete(tip.color)
+                x <- tryCatch(eval(parse(text='p + scale_color_discrete(tip.color)')))                
+                if(!"error" %in% class(tryCatch(print(x), error= function(e) e))){                  
+                  p <- p + scale_color_discrete(tip.color)
+                }                                                                     
             } else {
+              x <- tryCatch(eval(parse(text='p + scale_color_brewer(tip.color, palette = color.palette)')))                
+              if(!"error" %in% class(tryCatch(print(x), error= function(e) e))){                
                 p <- p + scale_color_brewer(tip.color, palette = color.palette)
+              }else{
+                warning(paste("To avoid error 'Continuous value supplied to discrete scale' resulting from", color.palette, "we use default palette instead"))
+              }                  
             }
         } else {
+          x <- tryCatch(eval(parse(text='p + scale_color_gradientn(tip.color, colours = brewer.pal(nMaxCol, color.palette))')))                
+          if(!"error" %in% class(tryCatch(print(x), error= function(e) e))){            
             p <- p + scale_color_gradientn(tip.color, colours = brewer.pal(nMaxCol, color.palette))
+          }else{
+            warning(paste("To avoid error 'Discrete value supplied to continuous scale' resulting from", color.palette, "we use default palette instead"))
+          }            
         }
     }
 

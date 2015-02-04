@@ -1,3 +1,5 @@
+
+
 ####################
 ## extract_string ##
 ####################
@@ -68,7 +70,7 @@
             else
                 format <- paste("%Y","%m","%d", sep=symb)
         }
-        else if(nchar(temp)[3]==4){
+        else if(!is.na(temp[3]) && nchar(temp)[3]==4){
             if(bshape)
                 format <- paste("%d","%b","%Y", sep=symb)
             else
@@ -94,6 +96,7 @@
 ## FUNCTION TO GET INLINE SUMMARY FOR ONE VECTOR ##
 .inlineSummary <- function(x, ...){
     cat("class: ", class(x), ",  ", sep="")
+    if(!all(is.na(x))){
     if(inherits(x,"Date")) {
         cat("mean: ", format(mean(x, na.rm=TRUE), ...),
             ", range: [", format(min(x, na.rm=TRUE), ...), ";", format(max(x, na.rm=TRUE), ...), "],  ",
@@ -107,22 +110,34 @@
             min(table(x)), ";", max(table(x)), "],  ",
             sum(is.na(x)), " NAs", sep="")
     }
+    }else{
+      if(inherits(x,"Date")) {
+        cat("mean: ", format(mean(x), ...),
+            ", range: [", format(min(x), ...), ";", format(max(x), ...), "],  ",
+            sum(is.na(x)), " NAs", sep="")
+      } else if(is.numeric(x)){
+        cat("mean: ", format(mean(x), ...), ",  sd:", format(sd(x), ...),
+            ", range: [", format(min(x), ...), ";", format(max(x), ...), "],  ",
+            sum(is.na(x)), " NAs", sep="")
+      } else if(is.character(x) || is.factor(x)){
+        cat(length(unique(x)), " unique values,  frequency range: [",
+            min(table(x)), ";", max(table(x)), "],  ",
+            sum(is.na(x)), " NAs", sep="")
+      }
+    }
     cat("\n")
 }
-
-
-
 
 
 
 ## RESTORE NUMERIC TYPE TO A VECTOR IF NEEDED ##
 .restoreNumericType <- function(x){
     if(all(is.na(x))) return(x)
-    x.nona <- x[!is.na(x)]
+    x.nona <- x[!is.na(x)] 
 
     ## find numeric types ##
-    temp <- sub("-{0,1}[[:digit:].]*e{0,1}[[:digit:].]*","", x)
-    if(all(temp=="")) return(as.numeric(x))
-
+    temp <- sub("-{0,1}[[:digit:].]*e{0,1}-{0,1}[[:digit:].]*","", x.nona)
+    if(all(temp=="")) return(as.numeric(as.character(x)))  
     return(x)
 }
+

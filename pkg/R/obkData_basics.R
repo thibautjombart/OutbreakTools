@@ -41,8 +41,13 @@ setMethod("summary", "obkData", function(object, ...){
         if(is.null(x$individualID)){
             cat(indent, nrow(x), " entries\n", sep="")
         } else {
+          if(!all(is.na(x$date))){
             cat(indent, nrow(x), " entries,  ", length(unique(x$individualID)), " individuals, from ",
                 as.character(min(x$date, na.rm=TRUE)), " to ", as.character(max(x$date,na.rm=TRUE)), "\n", sep="")
+          }else{
+            cat(indent, nrow(x), " entries,  ", length(unique(x$individualID)), " individuals, from ",
+                as.character(min(x$date)), " to ", as.character(max(x$date)), "\n", sep="")
+          }
         }
         if(ncol(x)>2){
             temp <- x
@@ -94,9 +99,15 @@ setMethod("summary", "obkData", function(object, ...){
     ## handle @dna ##
     if(!is.null(object@dna)){
         cat("== @dna ==\n")
+        if(!all(is.na(object@dna@meta$date))){
         cat(get.nsequences(object)," sequences across ", get.nlocus(object), " loci, ",
             get.nindividuals(object@dna), " individuals, from ", as.character(min(object@dna@meta$date, na.rm=TRUE)),
             " to ", as.character(max(object@dna@meta$date, na.rm=TRUE)), "\n", sep="")
+        }else{
+          cat(get.nsequences(object)," sequences across ", get.nlocus(object), " loci, ",
+              get.nindividuals(object@dna), " individuals, from ", as.character(min(object@dna@meta$date)),
+              " to ", as.character(max(object@dna@meta$date)), "\n", sep="")
+        }
         cat("length of concatenated alignment: ", sum(sapply(object@dna@dna,ncol)), " nucleotides\n", sep="")
         cat("Attached meta data:\n")
         f1(object@dna@meta)
