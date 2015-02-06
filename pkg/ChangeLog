@@ -1,19 +1,22 @@
+			CHANGES IN OUTBREAKTOOLS 0.1-12
+NEW FEATURES
+	o Modified summary and .inlineSummary functions to handle NAs more effectively.
+
+	o Modified JSON2obkData function to filter out a wider range of missing values
+	under different notations (ie. NA, "", "NR") when importing data from JSON format
+	and converting to obkData objects.
+
+	o Added .importFromJSON function to allow for automatic retrieval (with
+	package RCurl), reformatting (into slots appropriate to obkData class)
+	, and conversion of JSON-formatted data from URL addresses to obkData
+	objects (with JSON2obkData function).
+
+
+
 			CHANGES IN OUTBREAKTOOLS 0.1-1
 BUG FIXES
 	o examples involving plotting maps commented out to prevent check
 	to fail when no internet connection
-	
-	o Modified summary and .inlineSummary functions to handle NAs more effectively.
-	
-	o Modified JSON2obkData function to filter out a wider range of missing values 
-	under different notations (ie. NA, "", "NR") when importing data from JSON format
-	and converting to obkData objects. 
-	
-NEW FEATURES
-	o Added .importFromJSON function to allow for automatic retrieval (with 
-	package RCurl), reformatting (into slots appropriate to obkData class)
-	, and conversion of JSON-formatted data from URL addresses to obkData 
-	objects (with JSON2obkData function).
 
 
 			CHANGES IN OUTBREAKTOOLS 0.1-0
