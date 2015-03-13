@@ -2,6 +2,7 @@
 \name{Plot obkData}
 \alias{plot.obkData}
 \alias{plot,obkData-method}
+\alias{plot,obkData,ANY-method}
 \title{Plot outbreak data}
 \description{
   The plot method of \linkS4class{obkData} objects includes various

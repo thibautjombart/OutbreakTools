@@ -10,6 +10,7 @@
 \alias{show.obkContacts}
 \alias{print.obkContacts}
 \alias{plot,obkContacts-method}
+\alias{plot,obkContacts,ANY-method}
 \alias{plot.obkContacts}
 
 \alias{get.ncontacts,obkContacts-method}

@@ -1,3 +1,8 @@
+			CHANGES IN OUTBREAKTOOLS 0.1-13
+BUG FIXES
+	o Minor modifications to documentation to pass new CRAN checks.
+
+
 			CHANGES IN OUTBREAKTOOLS 0.1-12
 NEW FEATURES
 	o Modified summary and .inlineSummary functions to handle NAs more effectively.

@@ -1,5 +1,6 @@
 ^\.travis\.yml$
 ^\.git
 ^develop
-
+^misc
+README.md
 
