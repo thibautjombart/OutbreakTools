@@ -8,7 +8,7 @@ Suggests:
     EpiEstim
 Depends:  R (>= 3.0.0), methods, ggplot2, network, knitr
 Imports: utils, RColorBrewer, ape, reshape2, sna, plyr, ggmap, scales, rjson, networkDynamic, RCurl
-Description: OutbreakTools implements basic tools for storing, handling and visualizing disease outbreak data, as well as simple analysis tools. It defines the new formal class obkData which can be used to store any case-base outbreak data, and provides summaries for these objects, alongside a range of functions for subsetting and data manipulation. It implements a range of graphics for visualising timelines, maps, contact networks and genetic analyses. It also includes a simple case-base outbreak simulation tool.
+Description: This package implements basic tools for storing, handling and visualizing disease outbreak data, as well as simple analysis tools. It defines the new formal class obkData which can be used to store any case-base outbreak data, and provides summaries for these objects, alongside a range of functions for subsetting and data manipulation. It implements a range of graphics for visualising timelines, maps, contact networks and genetic analyses. It also includes a simple case-base outbreak simulation tool.
 License: GPL (>=2)
 LazyLoad: yes
 VignetteBuilder: knitr
