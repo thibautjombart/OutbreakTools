@@ -7,6 +7,9 @@
 .strip.annotations <- function(text) {
     annotations <- list()
     end <- 1
+    
+    # Merge node and branch annotations
+    text <- gsub("\\[&(.*?)\\]:\\[&(.*?)\\]", "\\[&\\1,\\2\\]", text)
 
     pattern = "\\[&.*?\\]"
 
@@ -74,6 +77,8 @@
     } else {
         if (!is.na(suppressWarnings(as.numeric(value)))) { # is a number
             value = as.numeric(value)
+        } else { # is a string
+        	 value <- gsub("\\\"","", value)
         }
     }
     return(value)
