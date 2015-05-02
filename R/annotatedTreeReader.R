@@ -136,7 +136,9 @@
         tip.label[tip] <<- X[1]
         edge.length[j] <<- as.numeric(X[2])
         
-        permute[[j]] <<- annotations[[k]] ## permute traits
+        if (length(annotations) > 0) {
+        	permute[[j]] <<- annotations[[k]] ## permute traits
+        }
             
         k <<- k + 1L
         tip <<- tip + 1L
@@ -148,7 +150,9 @@
         node.label[current.node - nb.tip] <<- X[1]
         edge.length[l] <<- as.numeric(X[2])
         
-        permute[[l]] <<- annotations[[k]] ## permute traits
+        if (length(annotations) >  0) {
+        	permute[[l]] <<- annotations[[k]] ## permute traits
+        }
 
         k <<- k + 1L
         current.node <<- edge[l, 1]
