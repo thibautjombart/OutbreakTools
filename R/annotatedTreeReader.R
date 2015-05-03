@@ -321,6 +321,7 @@ read.annotated.tree <- function (file = "", text = NULL, tree.names = NULL, skip
     obj
 }
 
+
 read.annotated.nexus <- function (file, tree.names = NULL) {
     X <- scan(file = file, what = "", sep = "\n", quiet = TRUE)
     LEFT <- grep("\\[", X)
@@ -399,10 +400,10 @@ read.annotated.nexus <- function (file, tree.names = NULL) {
     STRING <- gsub("\\[&R\\]", "", STRING)
 
     ## TODO Parse out tree-level traits
-    nms.trees <- sub(" *= *.*", "", STRING)
+    nms.trees <- sub(" * = *.*", "", STRING)
     nms.trees <- sub("^ *tree *", "", nms.trees, ignore.case = TRUE)
 
-    STRING <- sub("^.*?= *", "", STRING)
+    STRING <- sub("^.*? = *", "", STRING)
     STRING <- gsub("\\s", "", STRING)
 
     ##    browser()
