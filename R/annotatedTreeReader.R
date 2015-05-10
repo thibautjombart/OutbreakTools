@@ -132,12 +132,12 @@
         edge[j, 1] <<- current.node
         edge[j, 2] <<- tip
         index[tip] <<- j
-        X <- unlist(strsplit(tpc[k], ":"))
+        X <- unlist(strsplit(new.tpc[k], ":"))
         tip.label[tip] <<- X[1]
-        edge.length[j] <<- as.numeric(X[2])
+        edge.length[j] <<- as.numeric(X[3])
         
         if (length(annotations) > 0) {
-        	permute[[j]] <<- annotations[[k]] ## permute traits
+        	permute[[j]] <<- annotations[[as.numeric(X[2])]] ## permute traits
         }
             
         k <<- k + 1L
@@ -146,12 +146,12 @@
     }
     go.down <- function() {
         l <- index[current.node]
-        X <- unlist(strsplit(tpc[k], ":"))
+        X <- unlist(strsplit(new.tpc[k], ":"))
         node.label[current.node - nb.tip] <<- X[1]
-        edge.length[l] <<- as.numeric(X[2])
+        edge.length[l] <<- as.numeric(X[3])
         
         if (length(annotations) >  0) {
-        	permute[[l]] <<- annotations[[k]] ## permute traits
+        	permute[[l]] <<- annotations[[as.numeric(X[2])]] ## permute traits
         }
 
         k <<- k + 1L
@@ -172,12 +172,24 @@
     result = .strip.annotations(tp)
     annotations = result$annotations
     new.tp.stripped = result$tree
+    
+    root.annotation.number <- NULL 
+    m <- regexpr("\\[\\d+\\];", new.tp.stripped)
+    if (m != -1) {
+    	root.annotation.number <- as.numeric(
+    		gsub("\\[(\\d+)\\];", "\\1", regmatches(new.tp.stripped, m)))
+    }
 
     annotations = lapply(annotations, .parse.traits, header=TRUE)
 
     tp.stripped = gsub("\\[.*?\\]","",tp)
     tpc <- unlist(strsplit(tp.stripped, "[\\(\\),;]"))
     tpc <- tpc[nzchar(tpc)]
+    
+    new.tp.stripped <- gsub("\\[\\d+\\];", ";", new.tp.stripped)
+    new.tp.stripped <- gsub("\\[(\\d+)\\]",":\\1:", new.tp.stripped)
+    new.tpc <- unlist(strsplit(new.tp.stripped, "[\\(\\),;]"))
+    new.tpc <- new.tpc[nzchar(new.tpc)]
 
     tsp <- unlist(strsplit(tp.stripped, NULL))
     skeleton <- tsp[tsp %in% c("(", ")", ",", ";")]
@@ -233,6 +245,10 @@
     class(obj) <- "phylo"
     attr(obj, "order") <- "cladewise"
 
+    if (!is.null(root.annotation.number)) {
+    	obj$root.annotation <- annotations[root.annotation.number]
+    }    
+    
     obj$annotations = permute
     obj
 }
