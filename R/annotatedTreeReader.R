@@ -476,21 +476,23 @@ read.annotated.nexus <- function (file, tree.names = NULL) {
     if (Ntree == 1) {
         trees <- trees[[1]]
         if (translation) {
-            trees$tip.label <- if (length(colon))
-                TRANS[, 2]
-            else TRANS[, 2][as.numeric(trees$tip.label)]
+            trees$tip.label <- # if (length(colon)) {
+                # TRANS[, 2]
+            #} else {
+            	TRANS[, 2][as.numeric(trees$tip.label)]
+            #}
         }
     }
     else {
         if (!is.null(tree.names))
             names(trees) <- tree.names
         if (translation) {
-            if (length(colon) == Ntree)
-                attr(trees, "TipLabel") <- TRANS[, 2]
-            else {
+            # if (length(colon) == Ntree)
+              #  attr(trees, "TipLabel") <- TRANS[, 2]
+            #else {
                 for (i in 1:Ntree) trees[[i]]$tip.label <- TRANS[, 2][as.numeric(trees[[i]]$tip.label)]
                 trees <- .compressTipLabel(trees)
-            }
+            #}
         }
         class(trees) <- "multiPhylo"
         if (!all(nms.trees == ""))
