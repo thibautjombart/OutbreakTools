@@ -9,7 +9,8 @@
     end <- 1
     
     # Merge node and branch annotations
-    text <- gsub("\\[&(.*?)\\]:\\[&(.*?)\\]", "\\[&\\1,\\2\\]", text)
+    text <- gsub("\\[&(.*?)\\]:\\[&(.*?)\\]", ":\\[&\\1,\\2\\]", text)
+    text <- gsub("\\[&(.*?)\\]:", ":\\[&\\1]", text) 
 
     pattern = "\\[&.*?\\]"
 
@@ -187,7 +188,7 @@
     tpc <- tpc[nzchar(tpc)]
     
     new.tp.stripped <- gsub("\\[\\d+\\];", ";", new.tp.stripped)
-    new.tp.stripped <- gsub("\\[(\\d+)\\]",":\\1:", new.tp.stripped)
+    new.tp.stripped <- gsub("\\[(\\d+)\\]","\\1:", new.tp.stripped)
     new.tpc <- unlist(strsplit(new.tp.stripped, "[\\(\\),;]"))
     new.tpc <- new.tpc[nzchar(new.tpc)]
 
