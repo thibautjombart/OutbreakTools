@@ -13,7 +13,7 @@
 \usepackage[utf8]{inputenc} % for UTF-8/single quotes from sQuote()
 \newcommand{\code}[1]{{{\tt #1}}}
 \title{Handling disease outbreak data using \textit{OutbreakTools} \Sexpr{packageDescription("OutbreakTools", fields = "Version")}}
-\author{Thibaut Jombart, Xavier Didelot, Rolf Ypma, Lulla Opatowski, Anne Cori}
+\author{Thibaut Jombart \and Xavier Didelot \and Rolf Ypma \and Lulla Opatowski \and Anne Cori \and Marc A.~Suchard}
 \date{\today}
 
 
@@ -24,6 +24,7 @@
 
 
 \begin{document}
+%\SweaveOpts{concordance=TRUE}
 
 
 <<eval=TRUE,echo=FALSE,results='hide'>>=
