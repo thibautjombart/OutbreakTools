@@ -511,8 +511,12 @@ read.annotated.nexus <- function (file, tree.names = NULL) {
 
     # Add tree-level annotations back on
     if (!is.null(annotations.trees)) {
-    	for (i in 1:Ntree) {
-    		trees[[i]]$tree.annotations <- annotations.trees[[i]]
+    	if (Ntree == 1) {
+    		trees$tree.annotations <- annotations.trees[[1]]
+    	} else {
+    		for (i in 1:Ntree) {
+    			trees[[i]]$tree.annotations <- annotations.trees[[i]]
+    		}
     	}
     }
 
