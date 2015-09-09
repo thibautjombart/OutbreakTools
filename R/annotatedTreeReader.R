@@ -247,7 +247,7 @@
     attr(obj, "order") <- "cladewise"
 
     if (!is.null(root.annotation.number)) {
-    	obj$root.annotation <- annotations[root.annotation.number]
+    	obj$root.annotation <- annotations[[root.annotation.number]]
     }
 
     obj$annotations = permute
