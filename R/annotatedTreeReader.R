@@ -135,7 +135,8 @@
         index[tip] <<- j
         X <- unlist(strsplit(new.tpc[k], ":"))
         tip.label[tip] <<- X[1]
-        edge.length[j] <<- as.numeric(X[3])
+        index <- length(X)
+        edge.length[j] <<- as.numeric(X[index])
 
         if (length(annotations) > 0) {
         	permute[[j]] <<- annotations[[as.numeric(X[2])]] ## permute traits
@@ -149,7 +150,8 @@
         l <- index[current.node]
         X <- unlist(strsplit(new.tpc[k], ":"))
         node.label[current.node - nb.tip] <<- X[1]
-        edge.length[l] <<- as.numeric(X[3])
+        index <- length(X)
+        edge.length[l] <<- as.numeric(X[index])
 
         if (length(annotations) >  0) {
         	permute[[l]] <<- annotations[[as.numeric(X[2])]] ## permute traits
