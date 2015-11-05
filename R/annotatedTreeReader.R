@@ -176,6 +176,9 @@
     annotations = result$annotations
     new.tp.stripped = result$tree
 
+    # patched for 0.0 root branch length from BEAST2 (not confirmed)
+    new.tp.stripped <- gsub("\\]0.0;", "\\];", new.tp.stripped)
+
     root.annotation.number <- NULL
     m <- regexpr("\\[\\d+\\];", new.tp.stripped)
     if (m != -1) {
