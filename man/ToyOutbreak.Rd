@@ -59,7 +59,7 @@ plot(get.contacts(ToyOutbreak, from=3, to=3.1),
 
 \dontrun{
 ## Mapping the outbreak (by sex) ##
-plot(ToyOutbreak,'geo',location=c('lon','lat'), isLonLat=TRUE, zoom=13,
+plot(ToyOutbreak,'geo',location=c('lon','lat'), zoom=13,
      colorBy='Sex')
 }
 }

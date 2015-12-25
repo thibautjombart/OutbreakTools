@@ -1,6 +1,6 @@
 \name{plotggphy}
 \alias{plotggphy}
-\title{Function to plot phylogenies using \code{\link{ggplot2}}}
+\title{Function to plot phylogenies using \code{ggplot2}}
 \usage{
   plotggphy(x, which.tree = 1, ladderize = TRUE,
     show.tip.label = NULL, tip.label.size = 3,
@@ -103,7 +103,7 @@
   or two-element numeric vector)}
 }
 \description{
-  Function to plot phylogenies using \code{\link{ggplot2}}
+  Function to plot phylogenies using \code{ggplot2}
 }
 \examples{
 ## load the dataset

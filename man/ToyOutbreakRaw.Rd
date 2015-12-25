@@ -89,7 +89,7 @@ plot(get.contacts(x, from=3, to=3.1), main="Contact network - day 3",
      displaylabels=TRUE)
 
 ## Mapping the outbreak (by sex) ##
-plot(x,'geo',location=c('lon','lat'),isLonLat=TRUE,zoom=13,colorBy='Sex')
+plot(x,'geo',location=c('lon','lat'),zoom=13,colorBy='Sex')
 
 }
 \keyword{dataset}
