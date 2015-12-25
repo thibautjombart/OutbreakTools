@@ -45,6 +45,8 @@ importFrom(rjson, "fromJSON")
 
 importFrom(RCurl, "getURLContent")
 
+importFrom("graphics", "legend", "lines", "par", "title")
+importFrom("stats", "na.omit", "rbinom", "reshape", "runif", "sd")
 
 
 ## IMPORTS TO FIX LATER ##
