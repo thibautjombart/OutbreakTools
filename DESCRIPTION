@@ -1,12 +1,12 @@
 Package: OutbreakTools
-Version: 0.1-14
-Date: 2015-12-25
+Version: 0.1-15
+Date: 2017-09-27
 Title: Basic Tools for the Analysis of Disease Outbreaks
 Author: The Hackout team (In alphabetic order: David Aanensen, Marc Baguelin, Paul Birrell, Simon Cauchemez, Anton Camacho, Caroline Colijn, Anne Cori, Xavier Didelot, Ken Eames, Christophe Fraser, Simon Frost, Niel Hens, Joseph Hugues, Thibaut Jombart, Lulla Opatowski, Oliver Ratmann, Samuel Soubeyrand, Marc Suchard, Jacco Wallinga, Rolf Ypma)
 Maintainer: Thibaut Jombart <thibautjombart@gmail.com>
 Suggests:
     EpiEstim
-Depends:  R (>= 3.0.0), methods, ggplot2, network, knitr
+Depends: R (>= 3.0.0), methods, ggplot2, network, knitr
 Imports: utils, RColorBrewer, ape, reshape2, sna, plyr, ggmap, scales, rjson, networkDynamic, RCurl
 Description: Implements basic tools for storing, handling and visualizing disease outbreak data, as well as simple analysis tools. OutbreakTools defines the new formal class obkData which can be used to store any case-base outbreak data, and provides summaries for these objects, alongside a range of functions for subsetting and data manipulation. It implements a range of graphics for visualising timelines, maps, contact networks and genetic analyses. It also includes a simple case-base outbreak simulation tool.
 License: GPL (>=2)

@@ -323,7 +323,10 @@ read.annotated.tree <- function (file = "", text = NULL, tree.names = NULL, skip
         obj <- vector("list", Ntree)
         obj[colon] <- lapply(STRING[colon], .annotated.tree.build)
         nocolon <- (1:Ntree)[!1:Ntree %in% colon]
-        obj[nocolon] <- lapply(STRING[nocolon], clado.build)
+        ## obj[nocolon] <- lapply(STRING[nocolon], clado.build)
+        ## change for compatibility with ape 5.0
+        obj[nocolon] <- lapply(STRING[nocolon],
+                               function(e) ape::read.tree(text = e))
     }
     for (i in 1:Ntree) {
         ROOT <- length(obj[[i]]$tip.label) + 1
