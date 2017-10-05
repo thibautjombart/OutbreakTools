@@ -1,4 +1,3 @@
-# Default NAMESPACE created by R
 # Remove the previous line if you edit this file
 
 # Export all names
@@ -23,7 +22,7 @@ importFrom(ape, "as.character.DNAbin", "as.DNAbin", "as.DNAbin.alignment", "as.D
            "fastme.bal", "fastme.ols", "mst", "root", "unroot", "is.rooted", "ladderize","drop.tip",
            "plot.phylo", "print.phylo", "c.multiPhylo", "[.multiPhylo", "[[<-.multiPhylo",
            "[[.multiPhylo", "$<-.multiPhylo", "$.multiPhylo", "plot.multiPhylo", "print.multiPhylo",
-           "axisPhylo", ".compressTipLabel", "clado.build", "prop.part")
+           "axisPhylo", ".compressTipLabel", "prop.part")
 
 ## importFrom(adegenet, "bluepal", "redpal", "greenpal", "seasun", "spectral", "funky", "num2col",
 ##            "fac2col", "any2col", "transp", "findMutations", "findMutations.DNAbin")
